@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Records</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<h1>Employee</h1>
+
+<label for="filter">Filter by ID:</label>
+<input type="number" id="filter" placeholder="Enter ID">
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Address</th>
+            <th>Salary</th>
+        </tr>
+    </thead>
+    <tbody id="employeeTableBody"></tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        // Function to fetch and display records
+        function fetchAndDisplayRecords(filterId) {
+            let url = '/api/employee';
+
+            if (filterId !== undefined && filterId !== '') {
+                url += `/${filterId}`;
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (data) {
+                    displayRecords(data);
+                },
+                error: function (error) {
+                    console.error('Error fetching records:', error);
+                }
+            });
+        }
+
+        // Function to display records in the table
+        function displayRecords(records) {
+            const tableBody = $('#employeeTableBody');
+            tableBody.empty();
+
+            if (Array.isArray(records)) {
+                // If records is an array, iterate over it
+                records.forEach(function (record) {
+                    appendRow(record);
+                });
+            } else {
+                // If records is a single object, append a single row
+                appendRow(records);
+            }
+        }
+
+        // Function to append a row to the table
+        function appendRow(record) {
+            const row = `<tr>
+                            <td>${record.ID}</td>
+                            <td>${record.NAME}</td>
+                            <td>${record.AGE}</td>
+                            <td>${record.ADDRESS}</td>
+                            <td>${record.SALARY}</td>
+                         </tr>`;
+            $('#employeeTableBody').append(row);
+        }
+
+        // Initial fetch and display of records
+        fetchAndDisplayRecords();
+
+        // Event listener for filter input changes
+        $('#filter').on('input', function () {
+            const filterId = $(this).val();
+            fetchAndDisplayRecords(filterId);
+        });
+    });
+</script>
+</body>
+</html>
