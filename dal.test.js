@@ -29,7 +29,7 @@ describe('Testing functionallity of the DAL' , () => {
     })
 
     it('updated_data', async () => {
-        await dal.update_emplyee(3, {'NAME': 'bot bob', 'TEXT': 'hi', 'TIME': '00:00:00','SUPER-ID':0})
+        await dal.update_data(3, {'NAME': 'bot bob', 'TEXT': 'hi', 'TIME': '00:00:00','SUPER-ID':0})
         const expected = 'bot bob'
         const data_id_3 = await dal.get_by_id(3)
         const actual = data_id_3.NAME
@@ -47,7 +47,7 @@ describe('Testing functionallity of the DAL' , () => {
   
     
     // complete all other tests for all methods:
-    // update_emplyee(id, updated_data)
+    // update_data(id, updated_data)
     // delete_data(id)
     // new_data(new_emp)
     // delete_all ?
