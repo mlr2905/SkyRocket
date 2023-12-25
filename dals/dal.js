@@ -30,7 +30,7 @@ async function create_table_if_not_exist() {
 
     if (!tableExists) {
       await connectedKnex.schema.createTable('CHATSTORAGE', (table) => {
-        table.increments('Id').primary(); // This creates a SERIAL column
+        table.increments('ID').primary(); // This creates a SERIAL column
         table.string('Name').notNullable();
         table.string('Text').notNullable();
            
@@ -68,7 +68,7 @@ async function new_message(new_mes) {
 
 async function update_message(id, updated_message) {
     // db.run('update CHATSTORAGE ....')
-    const result = await connectedKnex('CHATSTORAGE').where('Id', id).update(updated_message)
+    const result = await connectedKnex('CHATSTORAGE').where('ID', id).update(updated_message)
     return updated_message
 }
 
