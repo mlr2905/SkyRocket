@@ -34,7 +34,9 @@ async function create_table_if_not_exist() {
         table.string('Name').notNullable();
         table.string('Text').notNullable();
         table.time('Time', {precision: 0});
-        table.integer('Type', {allowNull: false});
+        table.string('Type').notNullable();
+        table.integer('association', {allowNull: false}).notNullable();
+        
       });
     }
 
