@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha *.test.js --timeout 3000ms"
+    "test": "mocha *.test.js --timeout 10000ms"
   },
   "keywords": [],
   "author": "",

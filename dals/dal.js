@@ -33,6 +33,7 @@ async function create_table_if_not_exist() {
         table.increments('ID').primary(); // This creates a SERIAL column
         table.string('NAME').notNullable();
         table.string('TEXT').notNullable();
+           
       });
     }
 

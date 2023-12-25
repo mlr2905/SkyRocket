@@ -7,8 +7,8 @@ describe('Testing functionallity of the DAL', () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
         await dal.new_message({ 'ID': 1, 'NAME': 'bot', 'TEXT': 'hello'})  // id: 1
-        await dal.new_message({ 'ID': 2, 'NAME': 'Teddy', 'TEXT': 'hello' }) //id 2
-        await dal.new_message({ 'ID': 3, 'NAME': 'bot', 'TEXT': 'hello' }) // Id: 3
+        await dal.new_message({ 'ID': 2, 'NAME': 'michael', 'TEXT': 'hello' }) //id 2
+        await dal.new_message({ 'ID': 3, 'NAME': 'Teddy', 'TEXT': 'hello' }) // Id: 3
     })
 
     it('get_all', async () => {
@@ -27,8 +27,8 @@ describe('Testing functionallity of the DAL', () => {
         assert.strictEqual(expected, actual)
     })
 
-    it('updated_message', async () => {
-        await dal.update_emplyee(3, { 'NAME': 'MOSHE', 'TEXT': 'hello'})
+    it('update_message', async () => {
+        await dal.update_message(3, { 'NAME': 'MOSHE', 'TEXT': 'hello'})
         const expected = 'MOSHE'
         const message_id_3 = await dal.get_by_id(3)
         const actual = message_id_3.NAME
@@ -44,15 +44,15 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_message', async () => {
-        await dal.new_message({ 'NAME': 'Shuli', 'TEXT': 'hello'}) // Id: 4
-        const expected = 'Shuli'
+        await dal.new_message({ 'NAME': 'Shuddli', 'TEXT': 'hexdwdwdwdllo'}) // Id: 4
+        const expected = 'Shuddli'
         const message_id_4 = await dal.get_by_id(4)
         assert.strictEqual(expected, message_id_4.NAME)
     })
 
 
     // complete all other tests for all methods:
-    // update_emplyee(id, updated_message)
+    // update_message(id, updated_message)
     // delete_message(id)
     // new_message(new_emp)
     // delete_all ?
