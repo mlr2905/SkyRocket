@@ -43,7 +43,7 @@ router.put('/:id', async (request, response) => {
     if (user) {
         // user exists ==> perform update
         const updated_user_req = request.body
-        const result = await dal.update_emplyee(user_id, updated_user_req)
+        const result = await dal.update_data(user_id, updated_user_req)
         response.json(updated_user_req)
     }
     else {
@@ -59,7 +59,7 @@ router.patch('/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const user = await dal.get_by_id(user_id)
     // override only existing fields in the user from the db
-    const result = await dal.update_emplyee(user_id, { ...user, ...updated_user_req })
+    const result = await dal.update_data(user_id, { ...user, ...updated_user_req })
     response.json({ result })
 
 })
