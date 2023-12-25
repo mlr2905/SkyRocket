@@ -17,6 +17,11 @@ app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 })
+async function funk1(){
+    await del.create_table_if_not_exist();
+}
+
+funk1()
 
 app.use('/api/messages', message_router)
 
