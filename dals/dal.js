@@ -30,10 +30,11 @@ async function create_table_if_not_exist() {
 
     if (!tableExists) {
       await connectedKnex.schema.createTable('CHATSTORAGE', (table) => {
-        table.increments('ID').primary(); // This creates a SERIAL column
+        table.increments('Id').primary(); // This creates a SERIAL column
         table.string('Name').notNullable();
         table.string('Text').notNullable();
-           
+        table.time('Time', {precision: 0});
+        table.integer('Type', {allowNull: false});
       });
     }
 
@@ -42,7 +43,7 @@ async function create_table_if_not_exist() {
 async function delete_all() {
     // db.run('update CHATSTORAGE ....')
     const result = await connectedKnex('CHATSTORAGE').del()
-    await connectedKnex.raw('ALTER SEQUENCE "CHATSTORAGE_ID_seq" RESTART WITH 1');
+    await connectedKnex.raw('ALTER SEQUENCE "CHATSTORAGE_Id_seq" RESTART WITH 1');
     return result    
 }
 
@@ -54,7 +55,7 @@ async function get_all() {
 
 async function get_by_id(id) {
     // db.run('select * from CHATSTORAGE where id=?')
-    const message = await connectedKnex('CHATSTORAGE').select('*').where('ID', id).first()
+    const message = await connectedKnex('CHATSTORAGE').select('*').where('Id', id).first()
     return message
 }
 
@@ -68,13 +69,13 @@ async function new_message(new_mes) {
 
 async function update_message(id, updated_message) {
     // db.run('update CHATSTORAGE ....')
-    const result = await connectedKnex('CHATSTORAGE').where('ID', id).update(updated_message)
+    const result = await connectedKnex('CHATSTORAGE').where('Id', id).update(updated_message)
     return updated_message
 }
 
 async function delete_message(id) {
     // db.run('update CHATSTORAGE ....')
-    const result = await connectedKnex('CHATSTORAGE').where('ID', id).del()
+    const result = await connectedKnex('CHATSTORAGE').where('Id', id).del()
     return result
 }
 
