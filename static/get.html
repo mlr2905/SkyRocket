@@ -30,7 +30,7 @@
     $(document).ready(function () {
         // Function to fetch and display records
         function fetchAndDisplayRecords(filterId) {
-            let url = '/api/allmessage';
+            let url = '/api/message';
 
             if (filterId !== undefined && filterId !== '') {
                 url += `/${filterId}`;
