@@ -2,6 +2,17 @@
 const knex = require('knex')
 const config = require('config')
 
+// const connectedKnex = knex({
+//     client: 'pg',
+//     version: '13',
+//     connection: {
+//         host: '127.0.0.1',
+//         user: 'postgres',
+//         password: 'admin',
+//         database: 'postgres'
+//     }
+// })
+
 const connectedKnex = knex({
     client: 'pg',
     version: '13',
@@ -15,15 +26,15 @@ const connectedKnex = knex({
 })
 
 async function create_table_if_not_exist() {
-    const tableExists = await connectedKnex.schema.hasTable('ALLCHAT');
+    const tableExists = await connectedKnex.schema.hasTable('CHATSTORAGE');
 
     if (!tableExists) {
-      await connectedKnex.schema.createTable('ALLCHAT', (table) => {
+      await connectedKnex.schema.createTable('CHATSTORAGE', (table) => {
         table.increments('ID').primary(); // This creates a SERIAL column
         table.string('NAME').notNullable();
         table.string('TEXT').notNullable();
         table.timestamp('TIME').notNullable();
-        table.integer('SUPER-ID').notNullable();
+        table.integer('SUPER_ID').notNullable()
     
       });
     }
@@ -31,45 +42,45 @@ async function create_table_if_not_exist() {
 }
 
 async function delete_all() {
-    // db.run('update ALLCHAT ....')
-    const result = await connectedKnex('ALLCHAT').del()
-    await connectedKnex.raw('ALTER SEQUENCE "ALLCHAT_ID_seq" RESTART WITH 1');
+    // db.run('update CHATSTORAGE ....')
+    const result = await connectedKnex('CHATSTORAGE').del()
+    await connectedKnex.raw('ALTER SEQUENCE "CHATSTORAGE_ID_seq" RESTART WITH 1');
     return result    
 }
 
 async function get_all() {
-    // db.run('select * from ALLCHAT')
-    const data = await connectedKnex('ALLCHAT').select('*')
-    return data
+    // db.run('select * from CHATSTORAGE')
+    const messages = await connectedKnex('CHATSTORAGE').select('*')
+    return messages
 }
 
 async function get_by_id(id) {
-    // db.run('select * from ALLCHAT where id=?')
-    const data = await connectedKnex('ALLCHAT').select('*').where('ID', id).first()
-    return data
+    // db.run('select * from CHATSTORAGE where id=?')
+    const message = await connectedKnex('CHATSTORAGE').select('*').where('ID', id).first()
+    return message
 }
 
-async function new_data(new_emp) {
-    // db.run('insert into ALLCHAT ....')
+async function new_message(new_mes) {
+    // db.run('insert into CHATSTORAGE ....')
     // result[0] will be the new ID given by the SQL
-    // Insert into ALLCHAT values(....)
-    const result = await connectedKnex('ALLCHAT').insert(new_emp)
-    return { ...new_emp, ID: result[0] }
+    // Insert into CHATSTORAGE values(....)
+    const result = await connectedKnex('CHATSTORAGE').insert(new_mes)
+    return { ...new_mes, ID: result[0] }
 }
 
-async function update_data(id, updated_data) {
-    // db.run('update ALLCHAT ....')
-    const result = await connectedKnex('ALLCHAT').where('ID', id).update(updated_data)
-    return updated_data
+async function update_message(id, updated_message) {
+    // db.run('update CHATSTORAGE ....')
+    const result = await connectedKnex('CHATSTORAGE').where('ID', id).update(updated_message)
+    return updated_message
 }
 
-async function delete_data(id) {
-    // db.run('update ALLCHAT ....')
-    const result = await connectedKnex('ALLCHAT').where('ID', id).del()
+async function delete_message(id) {
+    // db.run('update CHATSTORAGE ....')
+    const result = await connectedKnex('CHATSTORAGE').where('ID', id).del()
     return result
 }
 
 module.exports = {
-    get_all, get_by_id, new_data, update_data, delete_data, 
+    get_all, get_by_id, new_message, update_message, delete_message, 
     delete_all, create_table_if_not_exist
 }

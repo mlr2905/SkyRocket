@@ -4,7 +4,7 @@ const path = require('path')
 const express = require('express')
 const body_parser = require('body-parser')
 
-const data_router = require('./routers/data_router')
+const message_router = require('./routers/message_router')
 
 logger.info('==== System start =======')
 
@@ -18,6 +18,6 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 })
 
-app.use('/api/data', data_router)
+app.use('/api/message', message_router)
 
 logger.info('==== System stop =======')
