@@ -7,9 +7,9 @@ describe('Testing functionallity of the DAL', () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
         await dal.new_message({ 'ID': 1, 'NAME': 'bot', 'TEXT': 'hello', 'TIME': '14:56:00', 'SUPER-ID': 0 })  // id: 1
-        await dal.new_message({ 'ID': 2, 'NAME': 'Teddy', 'TEXT': 'hello', 'TIME': '14:00:00', 'SUPER-ID': 2 }) //id 2
-        await dal.new_message({ 'ID': 3, 'NAME': 'bot', 'TEXT': 'hello', 'TIME': '13:00:00', 'SUPER-ID': 3 }) // Id: 3
-    }, 20000)
+        await dal.new_message({ 'ID': 2, 'NAME': 'Teddy', 'TEXT': 'hello', 'TIME': '14:00:00', 'SUPER-ID': 1 }) //id 2
+        await dal.new_message({ 'ID': 3, 'NAME': 'bot', 'TEXT': 'hello', 'TIME': '13:00:00', 'SUPER-ID': 2 }) // Id: 3
+    })
 
     it('get_all', async () => {
         const expected = 3
@@ -17,7 +17,7 @@ describe('Testing functionallity of the DAL', () => {
         const actual = messages.length
         console.log(actual);
         assert.strictEqual(expected, actual)
-    }, 2000000)
+    })
 
     it('get_by_id', async () => {
         const expected = 'Teddy'
