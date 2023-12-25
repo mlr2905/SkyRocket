@@ -30,7 +30,7 @@ async function create_table_if_not_exist() {
 
     if (!tableExists) {
       await connectedKnex.schema.createTable('CHATSTORAGE', (table) => {
-        table.increments('ID').primary(); // This creates a SERIAL column
+        table.increments('Id').primary(); // This creates a SERIAL column
         table.string('Name').notNullable();
         table.string('Text').notNullable();
            
@@ -42,7 +42,7 @@ async function create_table_if_not_exist() {
 async function delete_all() {
     // db.run('update CHATSTORAGE ....')
     const result = await connectedKnex('CHATSTORAGE').del()
-    await connectedKnex.raw('ALTER SEQUENCE "CHATSTORAGE_ID_seq" RESTART WITH 1');
+    await connectedKnex.raw('ALTER SEQUENCE "CHATSTORAGE_Id_seq" RESTART WITH 1');
     return result    
 }
 
@@ -52,33 +52,33 @@ async function get_all() {
     return messages
 }
 
-async function get_by_id(id) {
-    // db.run('select * from CHATSTORAGE where id=?')
-    const message = await connectedKnex('CHATSTORAGE').select('*').where('ID', id).first()
+async function get_by_Id(Id) {
+    // db.run('select * from CHATSTORAGE where Id=?')
+    const message = await connectedKnex('CHATSTORAGE').select('*').where('Id', Id).first()
     return message
 }
 
 async function new_message(new_mes) {
     // db.run('insert into CHATSTORAGE ....')
-    // result[0] will be the new ID given by the SQL
+    // result[0] will be the new Id given by the SQL
     // Insert into CHATSTORAGE values(....)
     const result = await connectedKnex('CHATSTORAGE').insert(new_mes)
-    return { ...new_mes, ID: result[0] }
+    return { ...new_mes, Id: result[0] }
 }
 
-async function update_message(id, updated_message) {
+async function update_message(Id, updated_message) {
     // db.run('update CHATSTORAGE ....')
-    const result = await connectedKnex('CHATSTORAGE').where('ID', id).update(updated_message)
+    const result = await connectedKnex('CHATSTORAGE').where('Id', Id).update(updated_message)
     return updated_message
 }
 
-async function delete_message(id) {
+async function delete_message(Id) {
     // db.run('update CHATSTORAGE ....')
-    const result = await connectedKnex('CHATSTORAGE').where('ID', id).del()
+    const result = await connectedKnex('CHATSTORAGE').where('Id', Id).del()
     return result
 }
 
 module.exports = {
-    get_all, get_by_id, new_message, update_message, delete_message, 
+    get_all, get_by_Id, new_message, update_message, delete_message, 
     delete_all, create_table_if_not_exist
 }
