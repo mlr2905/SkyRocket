@@ -6,9 +6,9 @@ describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
-        await dal.new_message({ 'ID': 1, 'NAME': 'bot', 'TEXT': 'hello', 'TIME': '14:56:00', 'SUPER-ID': 0 })  // id: 1
-        await dal.new_message({ 'ID': 2, 'NAME': 'Teddy', 'TEXT': 'hello', 'TIME': '14:00:00', 'SUPER-ID': 1 }) //id 2
-        await dal.new_message({ 'ID': 3, 'NAME': 'bot', 'TEXT': 'hello', 'TIME': '13:00:00', 'SUPER-ID': 2 }) // Id: 3
+        await dal.new_message({ 'ID': 1, 'NAME': 'bot', 'TEXT': 'hello', 'TIME': '14:56:00'})  // id: 1
+        await dal.new_message({ 'ID': 2, 'NAME': 'Teddy', 'TEXT': 'hello', 'TIME': '14:00:00' }) //id 2
+        await dal.new_message({ 'ID': 3, 'NAME': 'bot', 'TEXT': 'hello', 'TIME': '13:00:00'}) // Id: 3
     })
 
     it('get_all', async () => {
@@ -28,7 +28,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('updated_message', async () => {
-        await dal.update_emplyee(3, { 'NAME': 'MOSHE', 'TEXT': 'hello', 'TIME': '00:00:00', 'SUPER-ID': 0 })
+        await dal.update_emplyee(3, { 'NAME': 'MOSHE', 'TEXT': 'hello', 'TIME': '00:00:00'})
         const expected = 'MOSHE'
         const message_id_3 = await dal.get_by_id(3)
         const actual = message_id_3.NAME
@@ -44,7 +44,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_message', async () => {
-        await dal.new_message({ 'NAME': 'Shuli', 'TEXT': 'hello', 'TIME': '00:00:00', 'SUPER-ID': 0 }) // Id: 4
+        await dal.new_message({ 'NAME': 'Shuli', 'TEXT': 'hello', 'TIME': '00:00:00'}) // Id: 4
         const expected = 'Shuli'
         const message_id_4 = await dal.get_by_id(4)
         assert.strictEqual(expected, message_id_4.NAME)

@@ -34,7 +34,6 @@ async function create_table_if_not_exist() {
         table.string('NAME').notNullable();
         table.string('TEXT').notNullable();
         table.timestamp('TIME').notNullable();
-        table.integer('SUPER_ID')
     
       });
     }
