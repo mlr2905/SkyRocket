@@ -7,6 +7,8 @@ describe('Testing functionallity of the DAL' , () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
         await dal.new_data({ 'ID': 1,'NAME': 'bot', 'TEXT': 'hello', 'TIME': '00:00:00','SUPER-ID':0})  // Id: 1
+        await dal.new_data({ 'ID': 2,'NAME': 'bot', 'TEXT': 'test', 'TIME': '00:00:00','SUPER-ID':0}) //id: 2
+        await dal.new_data({ 'ID': 3,'NAME': 'bot', 'TEXT': 'hi', 'TIME': '00:00:00','SUPER-ID':0})  //id:3
          }, 20000)
 
 
@@ -19,7 +21,7 @@ describe('Testing functionallity of the DAL' , () => {
     }, 20000)
 
     it('get_by_id', async () => {
-        const expected = 'Teddy'
+        const expected = 'bot'
         const data_id_3 = await dal.get_by_id(3)
         const actual = data_id_3.NAME
         console.log(actual);
@@ -27,8 +29,8 @@ describe('Testing functionallity of the DAL' , () => {
     })
 
     it('updated_data', async () => {
-        await dal.update_emplyee(3, { 'NAME': 'MOSHE', 'AGE': 30, 'ADDRESS': 'Chicago', 'SALARY': 19000.00})
-        const expected = 'MOSHE'
+        await dal.update_emplyee(3, {'NAME': 'bot bob', 'TEXT': 'hi', 'TIME': '00:00:00','SUPER-ID':0})
+        const expected = 'bot bob'
         const data_id_3 = await dal.get_by_id(3)
         const actual = data_id_3.NAME
         console.log(actual);
@@ -42,13 +44,7 @@ describe('Testing functionallity of the DAL' , () => {
         assert.strictEqual(expected, data_id_3)
     })        
 
-    it('new_data', async () => {
-        await dal.new_data({ 'NAME': 'Shuli', 'AGE': 22, 'ADDRESS': 'TEL AVIV', 'SALARY': 49000.00}) // Id: 4
-        const expected = 'Shuli'
-        const data_id_4 = await dal.get_by_id(4)
-        assert.strictEqual(expected, data_id_4.NAME)
-    })        
-
+  
     
     // complete all other tests for all methods:
     // update_emplyee(id, updated_data)
