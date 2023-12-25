@@ -21,7 +21,6 @@ const connectedKnex = knex({
         user: config.db_cloud.user,
         password: config.db_cloud.password,
         database: config.db_cloud.database,
-        ssl: true
     }
 })
 
