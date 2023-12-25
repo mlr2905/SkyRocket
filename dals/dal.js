@@ -21,9 +21,9 @@ async function create_table_if_not_exist() {
       await connectedKnex.schema.createTable('ALLCHAT', (table) => {
         table.increments('ID').primary(); // This creates a SERIAL column
         table.string('NAME').notNullable();
-        table.string('text').notNullable();
-        table.timestamp('time').notNullable();
-        table.integer('super id');
+        table.string('TEXT').notNullable();
+        table.timestamp('TIME').notNullable();
+        table.integer('SUPER-ID');
     
       });
     }

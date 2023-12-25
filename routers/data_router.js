@@ -2,18 +2,18 @@ const express = require('express')
 const router = express.Router()
 const dal = require('../dals/dal')
 
-// '/api/employee'
+// '/api/data'
 // GET 
 router.get('/hello', async (request, response) => {
     response.json({'status': 'success'})
 })
 
-// '/api/employee'
+// '/api/data'
 // GET 
 router.get('/', async (request, response) => {
     try {
-    const employees = await dal.get_all()
-    response.json(employees)
+    const data = await dal.get_all()
+    response.json(data)
     }
     catch (e) {
         response.json({'error': JSON.stringify(e)})
@@ -33,7 +33,7 @@ router.get('/:id', async (request, response) => {
 // POST
 router.post('/', async (request, response) => {
     const new_user = request.body
-    const result = await dal.new_employee(new_user)
+    const result = await dal.new_data(new_user)
     response.status(201).json(result)
 })
 // PUT
@@ -49,7 +49,7 @@ router.put('/:id', async (request, response) => {
     else {
         // user does NOT exist ==> perform insert
         const new_user = request.body
-        const result = await dal.new_employee(new_user)
+        const result = await dal.new_data(new_user)
         response.status(201).json(result)
     }
 })
@@ -67,7 +67,7 @@ router.patch('/:id', async (request, response) => {
 // DELETE
 router.delete('/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-    const result = await dal.delete_employee(user_id)
+    const result = await dal.delete_data(user_id)
     response.status(204).json({ result })
 
 })
