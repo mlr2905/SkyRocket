@@ -31,8 +31,8 @@ async function create_table_if_not_exist() {
     if (!tableExists) {
       await connectedKnex.schema.createTable('CHATSTORAGE', (table) => {
         table.increments('ID').primary(); // This creates a SERIAL column
-        table.string('NAME').notNullable();
-        table.string('TEXT').notNullable();
+        table.string('Name').notNullable();
+        table.string('Text').notNullable();
            
       });
     }
