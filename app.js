@@ -2,6 +2,8 @@
 const logger = require('./logger/my_logger')
 const path = require('path')
 const express = require('express')
+app.use(cors());
+
 const body_parser = require('body-parser')
 
 const message_router = require('./routers/message_router')
