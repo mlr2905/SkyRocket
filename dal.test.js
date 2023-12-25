@@ -7,8 +7,8 @@ describe('Testing functionallity of the DAL', () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
         await dal.new_message({ 'ID': 1, 'NAME': 'bot', 'TEXT': 'hello'})  // id: 1
-        await dal.new_message({ 'ID': 2, 'NAME': 'michael', 'TEXT': 'hello' }) //id 2
-        await dal.new_message({ 'ID': 3, 'NAME': 'Teddy', 'TEXT': 'hello' }) // Id: 3
+        await dal.new_message({ 'ID': 2, 'NAME': 'michael', 'TEXT': 'helnlo' }) //id 2
+        await dal.new_message({ 'ID': 3, 'NAME': 'Teddy', 'TEXT': 'helnnlo' }) // Id: 3
     })
 
     it('get_all', async () => {
