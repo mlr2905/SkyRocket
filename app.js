@@ -20,6 +20,7 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 })
 app.use(cors());
-app.use('/api/message', message_router)
-
+app.use('/api/message', message_router, (req, res) => {
+    res.header('Access-Control-Allow-Origin', 'cloud-memory.onrender.com/');
+  });
 logger.info('==== System stop =======')
