@@ -19,8 +19,7 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 })
 
-app.use('/api/message', message_router)
-app.get("/api/all-message", (req, res) => {
+app.use('/api/message', message_router,(req, res) => {
   const message = {
     id: 1,
     text: "Hello, world!",
@@ -30,5 +29,5 @@ app.get("/api/all-message", (req, res) => {
 
   // Set the CORS header
   res.header("Access-Control-Allow-Origin", "*");
-});
+})
 logger.info('==== System stop =======')
