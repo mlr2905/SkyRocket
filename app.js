@@ -20,5 +20,15 @@ app.listen(3000, () => {
 })
 
 app.use('/api/message', message_router)
+app.get("/api/message", (req, res) => {
+  const message = {
+    id: 1,
+    text: "Hello, world!",
+  };
 
+  res.status(200).json(message);
+
+  // Set the CORS header
+  res.header("Access-Control-Allow-Origin", "*");
+});
 logger.info('==== System stop =======')
