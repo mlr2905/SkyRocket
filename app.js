@@ -19,6 +19,6 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 })
 
-app.use('/api/message', message_router,cors())
+app.use('/api/message', message_router)
 
 logger.info('==== System stop =======')
