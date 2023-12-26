@@ -2,7 +2,6 @@
 const logger = require('./logger/my_logger')
 const path = require('path')
 const express = require('express')
-app.use(cors());
 
 const body_parser = require('body-parser')
 
@@ -20,6 +19,6 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 })
 
-app.use('/api/message', message_router)
+app.use('/api/message', message_router,cors())
 
 logger.info('==== System stop =======')
