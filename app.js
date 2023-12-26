@@ -20,7 +20,7 @@ app.listen(3000, () => {
 })
 
 app.use('/api/message', message_router)
-app.get("/api/message", (req, res) => {
+app.get("/api/all-message", (req, res) => {
   const message = {
     id: 1,
     text: "Hello, world!",
