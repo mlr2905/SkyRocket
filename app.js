@@ -19,15 +19,6 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 })
 
-app.use('/api/message', message_router,(req, res) => {
-  const message = {
-    id: 1,
-    text: "Hello, world!",
-  };
+app.use('/api/message', message_router)
 
-  res.status(200).json(message);
-
-  // Set the CORS header
-  res.header("Access-Control-Allow-Origin", "*");
-})
 logger.info('==== System stop =======')
