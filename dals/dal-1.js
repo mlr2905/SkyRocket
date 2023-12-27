@@ -20,7 +20,7 @@ async function create_table_if_not_exist() {
     if (!tableExists) {
         await connectedKnex.schema.createTable('chat1', (table) => {
             table.increments('id').primary(); // This creates a SERIAL column
-            table.string('name').notNullable();
+            table.string('user').notNullable();
             table.string('text').notNullable();
             table.time('time', { precision: 0 });
             table.string('type').notNullable();
