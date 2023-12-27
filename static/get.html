@@ -19,7 +19,9 @@
             <th>ID</th>
             <th>NAME</th>
             <th>TEXT</th>
-         
+            <th>TIME</th>
+            <th>TYPE</th>
+            <th>ASSCIATION</th>
         </tr>
     </thead>
     <tbody id="messageTableBody"></tbody>
@@ -67,8 +69,13 @@
         function appendRow(record) {
             const row = `<tr>
                             <td>${record.Id}</td>
-                            <td>${record.Name}</td>
-                            <td>${record.Text}</td>
+                            <td>${record.name}</td>
+                            <td>${record.text}</td>
+                            <td>${record.time}</td>
+                            <td>${record.type}</td>
+                            <td>${record.association}</td>
+
+
                          </tr>`;
             $('#messageTableBody').append(row);
         }

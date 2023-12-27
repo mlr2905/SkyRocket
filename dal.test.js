@@ -6,9 +6,9 @@ describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
-        await dal.new_message({ 'Id': 1, 'Name': 'bot', 'Text': 'hello','Time': '12:00:00', 'Type':'text','association': '1'})  // id: 1
-        await dal.new_message({ 'Id': 2, 'Name': 'michael', 'Text': 'helnlo' ,'Time': '12:00:00', 'Type':'text','association': '1'}) //id 2
-        await dal.new_message({ 'Id': 3, 'Name': 'Teddy', 'Text': 'helnnlo','Time': '12:00:00',  'Type':'text','association': '1'}) // Id: 3
+        await dal.new_message({ 'id': 1, 'name': 'bot', 'text': 'hello','time': '12:00:00', 'type':'text','association': '1'})  // id: 1
+        await dal.new_message({ 'id': 2, 'name': 'michael', 'text': 'helnlo' ,'time': '12:00:00', 'type':'text','association': '1'}) //id 2
+        await dal.new_message({ 'id': 3, 'name': 'Teddy', 'text': 'helnnlo','time': '12:00:00',  'type':'text','association': '1'}) // Id: 3
     })
 
     it('get_all', async () => {
@@ -22,16 +22,16 @@ describe('Testing functionallity of the DAL', () => {
     it('get_by_id', async () => {
         const expected = 'Teddy'
         const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.Name
+        const actual = message_id_3.name
         console.log(actual);
         assert.strictEqual(expected, actual)
     })
 
     it('update_message', async () => {
-        await dal.update_message(3, { 'Name': 'MOSHE', 'Text': 'hello','Time': '12:00:00', 'Type':'text','association': '1'})
+        await dal.update_message(3, { 'name': 'MOSHE', 'text': 'hello','time': '12:00:00', 'type':'text','association': '1'})
         const expected = 'MOSHE'
         const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.Name
+        const actual = message_id_3.name
         console.log(actual);
         assert.strictEqual(expected, actual)
     })
@@ -44,10 +44,10 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_message', async () => {
-        await dal.new_message({ 'Id': 4,'Name': 'Shuddli', 'Text': 'hexdwdwdwdllo','Time': '12:00:00',  'Type':'text','association': '1'}) // Id: 4
+        await dal.new_message({ 'id': 4,'name': 'Shuddli', 'text': 'hexdwdwdwdllo','time': '12:00:00',  'type':'text','association': '1'}) // Id: 4
         const expected = 'Shuddli'
         const message_id_4 = await dal.get_by_id(4)
-        assert.strictEqual(expected, message_id_4.Name)
+        assert.strictEqual(expected, message_id_4.name)
     })
 
 
