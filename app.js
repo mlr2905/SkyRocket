@@ -10,6 +10,8 @@ const chat1_router = require('./routers/chat1_router')
 const chat2_router = require('./routers/chat2_router')
 const chat3_router = require('./routers/chat3_router')
 const chat4_router = require('./routers/chat4_router')
+const chat5_router = require('./routers/chat5_router')
+
 
 
 logger.info('==== System start =======')
@@ -32,6 +34,9 @@ app.use('/api/chat1', chat1_router)
 app.use('/api/chat2', chat2_router)
 app.use('/api/chat3', chat3_router)
 app.use('/api/chat4', chat4_router)
+app.use('/api/online', chat5_router)
+
+
 
 
 
