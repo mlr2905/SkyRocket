@@ -26,5 +26,8 @@ app.use('/api/message', message_router)
 app.use(cors({
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 }));
+app.use(cors({
+    origin: ['file:///C:/Ecom/project/QuickChat/files%20js/%D7%9E.html', 'https://www.google.com/']
+}));
 
 logger.info('==== System stop =======')
