@@ -22,7 +22,6 @@ app.listen(3000, () => {
 ;
 
 // Enable All CORS Requests
-app.use(cors());
-app.use('/api/message', message_router)
+app.use('/api/message', message_router,cors())
 
 logger.info('==== System stop =======')
