@@ -36,8 +36,4 @@ app.use('/api/chat3', chat3_router)
 app.use('/api/chat4', chat4_router)
 app.use('/api/online', chat5_router)
 
-
-
-
-
 logger.info('==== System stop =======')

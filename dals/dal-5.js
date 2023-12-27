@@ -51,7 +51,7 @@ async function new_message(new_mes) {
     // result[0] will be the new ID given by the SQL
     // Insert into online values(....)
     const result = await connectedKnex('online').insert(new_mes)
-    return { ...new_mes, ID: result[0] }
+    return { ...new_mes, id: result[0] }
 }
 
 async function update_message(id, updated_message) {
