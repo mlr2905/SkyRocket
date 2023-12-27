@@ -12,6 +12,8 @@ logger.info('==== System start =======')
 
 const app = express()
 const port = 3000
+
+app.use(cors());
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/'))) 
 
@@ -23,11 +25,6 @@ app.listen(3000, () => {
 
 // Enable All CORS Requests
 app.use('/api/message', message_router)
-app.use(cors({
-    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
-}));
-app.use(cors({
-    origin: ['file:///C:/Ecom/project/QuickChat/files%20js/%D7%9E.html', 'https://www.google.com/']
-}));
+
 
 logger.info('==== System stop =======')
