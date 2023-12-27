@@ -6,7 +6,11 @@ const cors = require('cors');
 
 const body_parser = require('body-parser')
 
-const message_router = require('./routers/message_router')
+const chat1_router = require('./routers/chat1_router')
+const chat2_router = require('./routers/chat2_router')
+const chat3_router = require('./routers/chat3_router')
+const chat4_router = require('./routers/chat4_router')
+
 
 logger.info('==== System start =======')
 
@@ -24,7 +28,11 @@ app.listen(3000, () => {
 ;
 
 // Enable All CORS Requests
-app.use('/api/message', message_router)
+app.use('/api/chat1', chat1_router)
+app.use('/api/chat2', chat2_router)
+app.use('/api/chat3', chat3_router)
+app.use('/api/chat4', chat4_router)
+
 
 
 logger.info('==== System stop =======')
