@@ -50,7 +50,7 @@
                 (Array.isArray(records) ? records[1] : records[1]).forEach(appendRow1);
                 (Array.isArray(records) ? records[2] : records[2]).forEach(appendRow2);
                 (Array.isArray(records) ? records[3] : records[3]).forEach(appendRow3);
-                (Array.isArray(records) ? records[4] : records[4]).forEach(appendRow3);
+                (Array.isArray(records) ? records[4] : records[4]).forEach(appendRow4);
 
 
             };
@@ -91,15 +91,14 @@
                     <td>${record.time}</td>
                     <td>${record.type}</td>
                     </tr>`);
-                    const no ="on"
                     const appendRow4 = record => tableBody.append(`
                 <tr>
                     <td>connected</td>
                     <td>${record.id}</td>
                     <td>${record.user}</td>
-                    <td>${no}</td>
+                    <td></td>
                     <td>${record.time}</td>
-                    <td>${no}</td>
+                    <td></td>
                     </tr>`);
                     
                     
