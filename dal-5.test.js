@@ -7,7 +7,7 @@ describe('Testing functionallity of the DAL', () => {
         await dal.delete_all()
         await dal.new_message({ 'id': 1, 'user': 'bot', 'time': '12:00:00' }) // id: 1
         await dal.new_message({ 'id': 2, 'user': 'bot', 'time': '12:00:00' }) // id: 2
-        await dal.new_message({ 'id': 3, 'user': 'bot', 'time': '12:00:00'}) // Id: 3
+        await dal.new_message({ 'id': 3, 'user': 'bot', 'time': '12:00:00' }) // Id: 3
         await dal.new_message({ 'id': 4, 'user': 'bot', 'time': '12:00:00' }) // Id: 4
         await dal.new_message({ 'id': 5, 'user': 'bot', 'time': '12:00:00' }) // Id: 5
     })
