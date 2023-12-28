@@ -35,7 +35,7 @@ async function get_all() {
     const c = await connectedKnex('chat3').select('*')
     const d = await connectedKnex('chat4').select('*')
     const e = await connectedKnex('connected').select('*')
-    const arr = { 1: a, 2: b, 3: c, 4: d, 5: e }
+    const arr = { 0: a, 1: b, 2: c, 3: d, 4: e }
     return arr
 }
 
@@ -46,7 +46,7 @@ async function get_by_id(id) {
     const c = await connectedKnex('chat3').select('*').where('id', id).first()
     const d = await connectedKnex('chat4').select('*').where('id', id).first()
     const e = await connectedKnex('connected').select('*').where('id', id).first()
-    const arr = { 1: a, 2: b, 3: c, 4: d, 5: e }
+    const arr = { 0: a, 1: b, 2: c, 3: d, 4: e }
     return arr
 }
 
