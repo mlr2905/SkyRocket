@@ -5,6 +5,7 @@ const express = require('express')
 const cors = require('cors');
 
 const body_parser = require('body-parser')
+const chats_router = require('./routers/chats/chats_router')
 const chat1_router = require('./routers/chats/chat1_router')
 const chat2_router = require('./routers/chats/chat2_router')
 const chat3_router = require('./routers/chats/chat3_router')
@@ -24,7 +25,7 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 });
 
-// Enable All CORS Requests
+app.use('/api/chats', chats_router)
 app.use('/api/chat1', chat1_router)
 app.use('/api/chat2', chat2_router)
 app.use('/api/chat3', chat3_router)

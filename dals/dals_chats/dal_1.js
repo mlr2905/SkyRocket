@@ -39,6 +39,7 @@ async function delete_all() {
 async function get_all() {
     // db.run('select * from chat1')
     const messages = await connectedKnex('chat1').select('*')
+
     return messages
 }
 
