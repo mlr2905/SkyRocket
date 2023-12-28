@@ -1,15 +1,15 @@
 const assert = require('assert')
-const dal = require('./dals/dal-4')
+const dal = require('../dals/chats_dals/dal_5')
 
 describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // id: 1
-        await dal.new_message({ 'id': 2, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // id: 2
-        await dal.new_message({ 'id': 3, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 3
-        await dal.new_message({ 'id': 4, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 4
-        await dal.new_message({ 'id': 5, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 5
+        await dal.new_message({ 'id': 1, 'user': 'bot', 'time': '12:00:00' }) // id: 1
+        await dal.new_message({ 'id': 2, 'user': 'bot', 'time': '12:00:00' }) // id: 2
+        await dal.new_message({ 'id': 3, 'user': 'bot', 'time': '12:00:00' }) // Id: 3
+        await dal.new_message({ 'id': 4, 'user': 'bot', 'time': '12:00:00' }) // Id: 4
+        await dal.new_message({ 'id': 5, 'user': 'bot', 'time': '12:00:00' }) // Id: 5
     })
 
     it('get_all', async () => {
@@ -29,7 +29,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('update_message', async () => {
-        await dal.update_message(3, { 'user': 'bot', 'text': 'hello', 'time': '12:10:00', 'type': 'text' })
+        await dal.update_message(3, { 'user': 'bot', 'time': '12:10:00' })
         const expected = '12:10:00'
         const message_id_3 = await dal.get_by_id(3)
         const actual = message_id_3.time
@@ -45,15 +45,14 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_message', async () => {
-        await dal.new_message({ 'id': 6, 'user': 'bot', 'text': 'hello', 'time': '12:10:00', 'type': 'text' }) // Id: 6
+        await dal.new_message({ 'id': 6, 'user': 'bot',  'time': '12:10:00'}) // Id: 6
         const expected = '12:10:00'
         const message_id_6 = await dal.get_by_id(6)
         assert.strictEqual(expected, message_id_6.time)
     })
 
-    it('Confirm_one_line',async () => {
+    it('delete_all',async () => {
         await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // id: 1
     })
 
 

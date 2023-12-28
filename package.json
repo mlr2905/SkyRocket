@@ -1,11 +1,11 @@
 {
-  "name": "30.11.2023",
-  "version": "1.0.0",
+  "name": "quickchat",
+  "version": "1.0.1",
   "description": "NODEJS POSTGRESQL",
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha *.test.js --timeout 50000ms"
+    "test": "mocha tests/*/*.test.js --timeout 50000ms"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,5 @@
 const assert = require('assert')
-const dal = require('./dals/dal-1')
+const dal = require('../dals/chats_dals/dal_4')
 
 describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
@@ -10,7 +10,6 @@ describe('Testing functionallity of the DAL', () => {
         await dal.new_message({ 'id': 3, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 3
         await dal.new_message({ 'id': 4, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 4
         await dal.new_message({ 'id': 5, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 5
-
     })
 
     it('get_all', async () => {
@@ -56,6 +55,7 @@ describe('Testing functionallity of the DAL', () => {
         await dal.delete_all()
         await dal.new_message({ 'id': 1, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // id: 1
     })
+
 
     // complete all other tests for all methods:
     // update_message(id, update_message)
