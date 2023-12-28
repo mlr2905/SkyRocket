@@ -26,7 +26,6 @@ async function delete_all() {
     await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
     const e = await connectedKnex('connected').del()
     await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
-    return a, b, c, d, e
 }
 
 async function get_all() {

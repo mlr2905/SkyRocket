@@ -31,9 +31,9 @@
         $(document).ready(() => {
             const tableBody = $('#dataTableBody');
       
-            const fetchAndDisplay = (filterId) => {
+            const fetchAndDisplay = () => {
                 $.ajax({
-                    url: `/api/chats${filterId ? `/${filterId}` : ''}`,
+                    url: `/api/chats ${filterId ? `/${filterId}` : ''}`,
                     success: data => displayRecords(data),
                     error: error => console.error('Error fetching records:', error)
                 });
