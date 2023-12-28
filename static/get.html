@@ -64,7 +64,13 @@
                     const name_id = { 0: "chat-1", 1: "chat-2", 2: "chat-3",3: "chat-4", 4: "connected" }
                     id_name_chat = filter_id
                     name_chat = name_id[filter_id]
-                    records[filter_id].forEach(appendRow0);
+                    if(filter_id === "4"){
+                        records[filter_id].forEach(appendRow4);
+
+                    }else{
+                        records[filter_id].forEach(appendRow0);
+
+                    }
 
                 }
 
