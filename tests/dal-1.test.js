@@ -1,6 +1,5 @@
 const assert = require('assert')
 const dal = require('../dals/dals_chats/dal_1')
-
 describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
         await dal.create_table_if_not_exist()
