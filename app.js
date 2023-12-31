@@ -28,11 +28,11 @@ const port = 3000
 app.use(cors());
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/')))
-
 app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 });
+app.use('/api/all', all_router)
 
 app.use('/api/chats', chats_router)
 app.use('/api/chat1', chat1_router)
@@ -46,6 +46,5 @@ app.use('/api/customers', customers_router)
 app.use('/api/flights', flights_router)
 app.use('/api/tickets', tickets_router)
 app.use('/api/users', users_router)
-app.use('/api/all', all_router)
 
 logger.info('==== System stop =======')
