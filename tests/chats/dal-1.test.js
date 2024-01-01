@@ -1,6 +1,5 @@
 const assert = require('assert')
-const dal = require('../dals/dals_chats/dal_2')
-
+const dal = require('../../dals/dals_chats/dal_1')
 describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
         await dal.create_table_if_not_exist()
@@ -10,6 +9,7 @@ describe('Testing functionallity of the DAL', () => {
         await dal.new_message({ 'id': 3, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 3
         await dal.new_message({ 'id': 4, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 4
         await dal.new_message({ 'id': 5, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // Id: 5
+
     })
 
     it('get_all', async () => {
