@@ -14,11 +14,11 @@
     <input type="number" id="filter" placeholder="Enter ID">
 
     <table border="1" id="table">
-        <thead id="trbody" >
-            
+        <thead id="trbody">
+
         </thead>
         <tbody id="dataTableBody">
-    </tbody>
+        </tbody>
     </table>
     <script>
         let filter_id = undefined
@@ -27,23 +27,26 @@
 
         const fetchAndDisplay = (filterid) => {
             let myTable = document.querySelector("#trbody");
-            let mytable2 = document.querySelector("#dataTableBody"); 
+            let mytable2 = document.querySelector("#dataTableBody");
             myTable.innerHTML = ''
             mytable2.innerHTML = ''
 
             let newTr = document.createElement("tr");
-            const users = ['table number','table name','id', 'username', 'password', 'email'];
-            const countries = ['table number','table name','id', 'name', 'country_id','continent (join)']
-            const airlines = ['table number','table name','id', 'name', 'continent_id', 'user_id','user_name (join)']
-            const customers = ['table number','table name','id', 'first_name', 'last_name', 'address', 'phone_no', 'credit_card_no', 'user_id','user_name (join)']
-            const flights = ['table number','table name','id', 'airline_id', 'origin_country_id', 'destination_country_id', 'departuer_time', 'landing_time', 'remaining_tickets','airline_name (join)','origin_country_name (join)','destination_country_name (join)']
-            const tickets = ['table number','table name','id', 'flight_id', 'customer_id']
+            const users = ['table number', 'table name', 'id', 'username', 'password', 'email'];
+            const countries = ['table number', 'table name', 'id', 'name', 'country_id', 'continent (join)']
+            const airlines = ['table number', 'table name', 'id', 'name', 'continent_id', 'user_id', 'user_name (join)']
+            const customers = ['table number', 'table name', 'id', 'first_name', 'last_name', 'address', 'phone_no', 'credit_card_no', 'user_id', 'user_name (join)']
+            const flights = ['table number', 'table name', 'id', 'airline_id', 'origin_country_id', 'destination_country_id', 'departuer_time', 'landing_time', 'remaining_tickets', 'airline_name (join)', 'origin_country_name (join)', 'destination_country_name (join)']
+            const tickets = ['table number', 'table name', 'id', 'flight_id', 'customer_id','flight_destination (join)','passanger_first_name (join)','passanger_last_name (join)','user_name (join)']
+            const passangers = ['table number', 'table name','id','first_name','last_nameת','date_of_birth','passport_number']
             if (filter_id === '0') users.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '1') countries.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '2') airlines.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '3') customers.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '4') flights.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '5') tickets.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
+            if (filter_id === '6') passangers.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
+
             myTable.appendChild(newTr);
 
             if (filterid !== undefined && filterid !== '') {
@@ -58,10 +61,10 @@
         };
 
         const displayRecords = records => {
-            const appendFunctions = [appendRow0, appendRow1, appendRow2, appendRow3, appendRow4, appendRow5];
+            const appendFunctions = [appendRow0, appendRow1, appendRow2, appendRow3, appendRow4, appendRow5,appendRow6];
             records[parseInt(filter_id)].forEach(appendFunctions[parseInt(filter_id)]);
         };
-        const name = {0: 'users',1:'countries',2:'airlines',3:'customers',4:'flights',5: 'tickets'}
+        const name = { 0: 'users', 1: 'countries', 2: 'airlines', 3: 'customers', 4: 'flights', 5: 'tickets',6:'passangers' }
         const appendRow0 = records => tableBody.append(`
                 <tr>
                     <td>${filter_id}</td>
@@ -132,8 +135,26 @@
                     <td>${records.id}</td>
                     <td>${records.flight_id}</td>
                     <td>${records.customer_id}</td>
+                    <td>${records.flight_destination}</td>
+                    <td>${records.first_name}</td>
+                    <td>${records.last_name}</td>
+                    <td>${records.user_name}</td>
+                    </tr>`);
+                    const appendRow6 = records => tableBody.append(`
+                <tr>
+                    <td>${filter_id}</td>
+                    <td>${name[filter_id]}</td>
+                    <td>${records.id}</td>
+                    <td>${records.first_name}</td>
+                    <td>${records.last_name}</td>
+                    <td>${records.date_of_birth}</td>
+                    <td>${records.passport_number}</td>
+
+            
                     </tr>`);
 
+
+                
         $('#filter').on('input', function () {
             filter_id = $(this).val();
             fetchAndDisplay(filter_id);

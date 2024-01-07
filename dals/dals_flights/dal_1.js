@@ -36,7 +36,11 @@ async function delete_all() {
 
 async function get_all() {
     // db.run('select * from users')
-    const messages = await connectedKnex('users').select('*')
+    const messages = await connectedKnex('users')
+    .select('users.*', 'roles.role_name')
+    .from('users')
+    .join('roles', 'users.role_id', 'roles.id');
+  
 
     return messages
 }
