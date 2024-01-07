@@ -20,11 +20,15 @@ async function create_table_if_not_exist() {
     if (!tableExists) {
         await connectedKnex.schema.createTable('customers', (table) => {
             table.increments('id').primary(); // This creates a SERIAL column
-            table.string('name', 255).notNullable(); // Use string for VARCHAR
-            table.integer('country_id').unsigned(); // Ensure unsigned for FK
-            table.foreign('country_id').references('countries').on('id');
-            table.bigInteger('user_id').unique().unsigned(); // Unsigned for FK
-            table.foreign('user_id').references('users').on('id');
+            table.string('first_name', 255).notNullable().comment('Customer first name');
+            table.string('last_name', 255).notNullable().comment('Customer last name');
+            table.string('address', 255).notNullable().comment('Customer address');
+            table.string('phone_no', 255).notNullable().unique().comment('Customer phone number');
+            table.string('credit_card_no', 255).notNullable().unique().comment('Customer credit card number');
+            table.bigInteger('user_id').notNullable().unique().comment('User ID linked to this customer');
+            table.foreign('user_id').references('users.id');
+       
+        
         });
     }
 }
@@ -38,8 +42,11 @@ async function delete_all() {
 
 async function get_all() {
     // db.run('select * from customers')
-    const messages = await connectedKnex('customers').select('*')
-
+    const messages = await connectedKnex('customers')
+    .join('users', 'users.id', 'customers.user_id')
+    .select('customers.*', 'users.username');
+  
+  
     return messages
 }
 
