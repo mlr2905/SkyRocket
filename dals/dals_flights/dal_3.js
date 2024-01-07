@@ -37,14 +37,22 @@ async function delete_all() {
 
 async function get_all() {
     // db.run('select * from airlines')
-    const messages = await connectedKnex('airlines').select('*')
+    const messages = await connectedKnex('airlines')
+  .leftJoin('users', 'users.id', '=', 'airlines.user_id')
+  .leftJoin('countries', 'countries.id', '=', 'airlines.user_id') 
+  .select('airlines.*',  'countries.country_name', 'users.username as user_name'); 
 
     return messages
 }
 
 async function get_by_id(id) {
     // db.run('select * from airlines where id=?')
-    const message = await connectedKnex('airlines').select('*').where('id', id).first()
+    const message = await connectedKnex('airlines')
+    .select('airlines.*','countries.country_name','users.username as user_name')
+    .leftJoin('users', 'users.id', '=', 'airlines.user_id')
+    .leftJoin('countries', 'countries.id', '=', 'airlines.user_id') 
+    .where('airlines.id', id)
+    .first();
     return message
 }
 

@@ -31,10 +31,26 @@ async function delete_all() {
 async function get_all() {
     // db.run('select * from chat1')
     const a = await connectedKnex('users').select('*')
-    const b = await connectedKnex('countries').select('*')
+    const b = await connectedKnex('countries')
+    .select('countries.*', 'continents.continent')
+    .from('countries')
+    .join('continents', 'countries.continent_id', 'continents.id');
+   
     const c = await connectedKnex('airlines').select('*')
+    .leftJoin('users', 'users.id', '=', 'airlines.user_id')
+    .leftJoin('countries', 'countries.id', '=', 'airlines.user_id') 
+    .select('airlines.*',  'countries.country_name', 'users.username as user_name'); 
+  
     const d = await connectedKnex('customers').select('*')
+    .join('users', 'users.id', 'customers.user_id')
+    .select('customers.*', 'users.username as user_name');
+  
     const e = await connectedKnex('flights').select('*')
+    .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
+    .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
+    .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
+    .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name');
+    
     const f = await connectedKnex('tickets').select('*')
 
     const arr = { 0: a, 1: b, 2: c, 3: d, 4: e ,5:f}

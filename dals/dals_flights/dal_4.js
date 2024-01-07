@@ -44,7 +44,7 @@ async function get_all() {
     // db.run('select * from customers')
     const messages = await connectedKnex('customers')
     .join('users', 'users.id', 'customers.user_id')
-    .select('customers.*', 'users.username');
+    .select('customers.*', 'users.username as user_name');
   
   
     return messages
@@ -52,7 +52,11 @@ async function get_all() {
 
 async function get_by_id(id) {
     // db.run('select * from customers where id=?')
-    const message = await connectedKnex('customers').select('*').where('id', id).first()
+    const message = await connectedKnex('customers')
+    .select('customers.*', 'users.username as user_name')
+    .leftJoin('users', 'users.id', '=', 'customers.user_id')
+    .where('customers.id', id)
+    .first()
     return message
 }
 

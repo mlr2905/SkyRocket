@@ -14,12 +14,11 @@
     <input type="number" id="filter" placeholder="Enter ID">
 
     <table border="1" id="table">
-        <thead>
-            <tr>
-            <tr id="trbody"></tr>
-            <td id="dataTableBody"></td>
+        <thead id="trbody" >
+            
         </thead>
-
+        <tbody id="dataTableBody">
+    </tbody>
     </table>
     <script>
         let filter_id = undefined
@@ -28,20 +27,23 @@
 
         const fetchAndDisplay = (filterid) => {
             let myTable = document.querySelector("#trbody");
+            let mytable2 = document.querySelector("#dataTableBody"); 
             myTable.innerHTML = ''
-            let newTr = document.createElement("tbody");
-            const users = ['id', 'username', 'password', 'email'];
-            const customers = ['id', 'first_name', 'last_name', 'address', 'phone_no', 'credit_card_no', 'user_id']
-            const airlines = ['id', 'name', 'continent_id', 'user_id']
-            const countries = ['id', 'name', 'continent_id']
-            const flights = ['id', 'airline_id', 'origin_country_id', 'destination_country_id', 'departuer_time', 'landing_time', 'remaining_tickets']
-            const tickets = ['id', 'flight_id', 'customer_id']
+            mytable2.innerHTML = ''
+
+            let newTr = document.createElement("tr");
+            const users = ['table number','table name','id', 'username', 'password', 'email'];
+            const countries = ['table number','table name','id', 'name', 'country_id','continent (join)']
+            const airlines = ['table number','table name','id', 'name', 'continent_id', 'user_id','user_name (join)']
+            const customers = ['table number','table name','id', 'first_name', 'last_name', 'address', 'phone_no', 'credit_card_no', 'user_id','user_name (join)']
+            const flights = ['table number','table name','id', 'airline_id', 'origin_country_id', 'destination_country_id', 'departuer_time', 'landing_time', 'remaining_tickets','airline_name (join)','origin_country_name (join)','destination_country_name (join)']
+            const tickets = ['table number','table name','id', 'flight_id', 'customer_id']
             if (filter_id === '0') users.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '1') countries.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '5') tickets.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '2') airlines.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '3') customers.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '4') flights.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
+            if (filter_id === '5') tickets.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             myTable.appendChild(newTr);
 
             if (filterid !== undefined && filterid !== '') {
@@ -59,67 +61,77 @@
             const appendFunctions = [appendRow0, appendRow1, appendRow2, appendRow3, appendRow4, appendRow5];
             records[parseInt(filter_id)].forEach(appendFunctions[parseInt(filter_id)]);
         };
-
-        const appendRow0 = record => tableBody.append(`
+        const name = {0: 'users',1:'countries',2:'airlines',3:'customers',4:'flights',5: 'tickets'}
+        const appendRow0 = records => tableBody.append(`
                 <tr>
                     <td>${filter_id}</td>
                     <td>${name[filter_id]}</td>
-                    <td>${record.id}</td>
-                    <td>${record.username}</td>
-                    <td>${record.password}</td>
-                    <td>${record.email}</td>
+                    <td>${records.id}</td>
+                    <td>${records.username}</td>
+                    <td>${records.password}</td>
+                    <td>${records.email}</td>
                     </tr>`);
-        const appendRow1 = record => tableBody.append(`
+        const appendRow1 = records => tableBody.append(`
             <tr>
                     <td>${filter_id}</td>
                     <td>${name[filter_id]}</td>
-                    <td>${record.id}</td>
-                    <td>${record.name}</td>
-                    <td>${record.continent_id}</td>
+                    <td>${records.id}</td>
+                    <td>${records.country_name}</td>
+                    <td>${records.continent_id}</td>
+                    <td>${records.continent}</td>
+
                     </tr>`);
-        const appendRow2 = record => tableBody.append(`
+        const appendRow2 = records => tableBody.append(`
                 <tr>
                     <td>${filter_id}</td>
                     <td>${name[filter_id]}</td>
-                    <td>${record.id}</td>
-                    <td>${record.name}</td>
-                    <td>${record.country_id}</td>
-                    <td>${record.user_id}</td>
+                    <td>${records.id}</td>
+                    <td>${records.name}</td>
+                    <td>${records.country_id}</td>
+                    <td>${records.user_id}</td>
+                    <td>${records.user_name}</td>
                     </tr>`);
 
-        const appendRow3 = record => tableBody.append(`
+        const appendRow3 = records => tableBody.append(`
                     <tr>
                     <td>${filter_id}</td>
                     <td>${name[filter_id]}</td>
-                    <td>${record.id}</td>
-                    <td>${record.first_name}</td>
-                    <td>${record.last_name}</td>
-                    <td>${record.address}</td>
-                    <td>${record.phone_no}</td>
-                    <td>${record.credit_card_no}</td>
-                    <td>${record.user_id}</td>
+                    <td>${records.id}</td>
+                    <td>${records.first_name}</td>
+                    <td>${records.last_name}</td>
+                    <td>${records.address}</td>
+                    <td>${records.phone_no}</td>
+                    <td>${records.credit_card_no}</td>
+                    <td>${records.user_id}</td>
+                    <td>${records.user_name}</td>
+
                     </tr>`);
 
-        const appendRow4 = record => tableBody.append(`
+        const appendRow4 = records => tableBody.append(`
                 <tr>
                     <td>${filter_id}</td>
                     <td>${name[filter_id]}</td>
-                    <td>${record.id}</td>
-                    <td>${record.airline_id}</td>
-                    <td>${record.origin_country_id}</td>
-                    <td>${record.destination_country_id}</td>
-                    <td>${record.departuer_time}</td>
-                    <td>${record.landing_time}</td>
-                    <td>${record.remaining_tickets}</td>
+                    <td>${records.id}</td>
+                    <td>${records.airline_id}</td>
+                    <td>${records.origin_country_id}</td>
+                    <td>${records.destination_country_id}</td>
+                    <td>${records.departuer_time}</td>
+                    <td>${records.landing_time}</td>
+                    <td>${records.remaining_tickets}</td>
+                    <td>${records.airline_name}</td>
+                    <td>${records.origin_country_name}</td>
+                    <td>${records.destination_country_name}</td>
+
+
                     </tr>`);
 
-        const appendRow5 = record => tableBody.append(`
+        const appendRow5 = records => tableBody.append(`
                 <tr>
                     <td>${filter_id}</td>
                     <td>${name[filter_id]}</td>
-                    <td>${record.id}</td>
-                    <td>${record.flight_id}</td>
-                    <td>${record.customer_id}</td>
+                    <td>${records.id}</td>
+                    <td>${records.flight_id}</td>
+                    <td>${records.customer_id}</td>
                     </tr>`);
 
         $('#filter').on('input', function () {

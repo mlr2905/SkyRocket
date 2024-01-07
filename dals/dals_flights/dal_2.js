@@ -21,8 +21,8 @@ async function create_table_if_not_exist() {
         await connectedKnex.schema.createTable('countries', (table) => {
             table.increments('id').primary(); // This creates a SERIAL column
             table.string('name_continent').notNullable();
-            table.integer('continent_id').notNullable();
-            table.foreign('continent_id').references('continents').on('id');
+            table.integer('country_name').notNullable();
+            table.foreign('country_name').references('continents').on('id');
         });
     }
 }
@@ -37,7 +37,7 @@ async function delete_all() {
 async function get_all() {
     // db.run('select * from countries')
     const messages = await connectedKnex('countries')
-    .select('countries.*', 'continents.name')
+    .select('countries.*', 'continents.continent')
     .from('countries')
     .join('continents', 'countries.continent_id', 'continents.id');
     return messages
@@ -45,7 +45,11 @@ async function get_all() {
 
 async function get_by_id(id) {
     // db.run('select * from countries where id=?')
-    const message = await connectedKnex('countries').select('*').where('id', id).first()
+    const message = await connectedKnex('countries')
+    .select('countries.*', 'continents.*')
+    .leftJoin('continents', 'continents.id', '=', 'countries.continent_id')
+    .where('countries.id', id)
+    .first();
     return message
 }
 
