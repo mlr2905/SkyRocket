@@ -37,23 +37,25 @@ async function delete_all() {
 
 async function get_all() {
     // db.run('select * from tickets')
-    const messages = await connectedKnex('tickets')
+    const tickets = await connectedKnex('tickets')
     .leftJoin('countries', 'countries.id', 'tickets.flight_id')
     .leftJoin('users', 'users.id', 'tickets.customer_id')
     .leftJoin('passengers', 'passengers.id', 'tickets.passenger_id')
-    .select('tickets.*', 'countries.country_name as flight_destination', 'passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name', 'users.username as user_name');
+    .leftJoin('flights', 'flights.id', 'tickets.passenger_id')
+    .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
+    .select('tickets.*','airlines.name as airline_name' ,'countries.country_name as flight_destination',
+     'passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name','users.username as user_name');
 
-
-    return messages
+    return tickets
 }
 
 async function get_by_id(id) {
     // db.run('select * from tickets where id=?')
-    const message = await connectedKnex('tickets').select('*').where('id', id).first()
-    return message
+    const ticket = await connectedKnex('tickets').select('*').where('id', id).first()
+    return ticket
 }
 
-async function new_message(new_mes) {
+async function new_ticket(new_mes) {
     // db.run('insert into tickets ....')
     // result[0] will be the new ID given by the SQL
     // Insert into tickets values(....)
@@ -61,19 +63,19 @@ async function new_message(new_mes) {
     return { ...new_mes, id: result[0] }
 }
 
-async function update_message(id, updated_message) {
+async function update_ticket(id, updated_ticket) {
     // db.run('update tickets ....')
-    const result = await connectedKnex('tickets').where('id', id).update(updated_message)
-    return updated_message
+    const result = await connectedKnex('tickets').where('id', id).update(updated_ticket)
+    return updated_ticket
 }
 
-async function delete_message(id) {
+async function delete_ticket(id) {
     // db.run('update tickets ....')
     const result = await connectedKnex('tickets').where('id', id).del()
     return result
 }
 
 module.exports = {
-    get_all, get_by_id, new_message, update_message, delete_message,
+    get_all, get_by_id, new_ticket, update_ticket, delete_ticket,
     delete_all, create_table_if_not_exist
 }

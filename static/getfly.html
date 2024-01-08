@@ -44,7 +44,7 @@
             const airlines = ['table number', 'table name', 'id', 'name', 'continent_id', 'user_id', 'user_name (join)']
             const customers = ['table number', 'table name', 'id', 'first_name', 'last_name', 'address', 'phone_no', 'credit_card_no', 'user_id', 'user_name (join)']
             const flights = ['table number', 'table name', 'id', 'airline_id', 'origin_country_id', 'destination_country_id', 'departuer_time', 'landing_time', 'remaining_tickets', 'airline_name (join)', 'origin_country_name (join)', 'destination_country_name (join)']
-            const tickets = ['table number', 'table name', 'id', 'flight_id', 'customer_id','flight_destination (join)','passanger_first_name (join)','passanger_last_name (join)','user_name (join)']
+            const tickets = ['table number', 'table name', 'id', 'flight_id', 'customer_id','airline_name (join)','flight_destination (join)','passanger_first_name (join)','passanger_last_name (join)','user_name (join)']
             const passangers = ['table number', 'table name','id','first_name','last_nameת','date_of_birth','passport_number']
             if (filter_id === '0') users.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '1') countries.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
@@ -142,11 +142,13 @@
                     <td>${records.id}</td>
                     <td>${records.flight_id}</td>
                     <td>${records.customer_id}</td>
+                    <td>${records.airline_name}</td>
                     <td>${records.flight_destination}</td>
-                    <td>${records.first_name}</td>
-                    <td>${records.last_name}</td>
+                    <td>${records.passanger_first_name}</td>
+                    <td>${records.passanger_last_name}</td>
                     <td>${records.user_name}</td>
                     </tr>`);
+
                     const appendRow6 = records => tableBody.append(`
                 <tr>
                     <td>${filter_id}</td>

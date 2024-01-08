@@ -42,25 +42,25 @@ async function delete_all() {
 
 async function get_all() {
     // db.run('select * from customers')
-    const messages = await connectedKnex('customers')
+    const customers = await connectedKnex('customers')
     .join('users', 'users.id', 'customers.user_id')
     .select('customers.*', 'users.username as user_name');
   
   
-    return messages
+    return customers
 }
 
 async function get_by_id(id) {
     // db.run('select * from customers where id=?')
-    const message = await connectedKnex('customers')
+    const customer = await connectedKnex('customers')
     .select('customers.*', 'users.username as user_name')
     .leftJoin('users', 'users.id', '=', 'customers.user_id')
     .where('customers.id', id)
     .first()
-    return message
+    return customer
 }
 
-async function new_message(new_mes) {
+async function new_customer(new_mes) {
     // db.run('insert into customers ....')
     // result[0] will be the new ID given by the SQL
     // Insert into customers values(....)
@@ -68,19 +68,19 @@ async function new_message(new_mes) {
     return { ...new_mes, id: result[0] }
 }
 
-async function update_message(id, updated_message) {
+async function update_customer(id, updated_customer) {
     // db.run('update customers ....')
-    const result = await connectedKnex('customers').where('id', id).update(updated_message)
-    return updated_message
+    const result = await connectedKnex('customers').where('id', id).update(updated_customer)
+    return updated_customer
 }
 
-async function delete_message(id) {
+async function delete_customer(id) {
     // db.run('update customers ....')
     const result = await connectedKnex('customers').where('id', id).del()
     return result
 }
 
 module.exports = {
-    get_all, get_by_id, new_message, update_message, delete_message,
+    get_all, get_by_id, new_customer, update_customer, delete_customer,
     delete_all, create_table_if_not_exist
 }

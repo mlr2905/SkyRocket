@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const dal = require('../../dals/dals_flights/dal_6')
+const dal = require('../../dals/dals_flights/dal_6') // פה לשנות
 
 // '/api/message'
 // GET 
