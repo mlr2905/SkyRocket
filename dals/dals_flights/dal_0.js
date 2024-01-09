@@ -38,7 +38,7 @@ async function get_all() {
    
     const c = await connectedKnex('airlines').select('*')
     .leftJoin('users', 'users.id', '=', 'airlines.user_id')
-    .leftJoin('countries', 'countries.id', '=', 'airlines.user_id') 
+    .leftJoin('countries', 'countries.id', '=', 'airlines.country_id') 
     .select('airlines.*',  'countries.country_name', 'users.username as user_name'); 
   
     const d = await connectedKnex('customers').select('*')

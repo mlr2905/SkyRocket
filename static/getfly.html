@@ -69,13 +69,13 @@
             mytable2.innerHTML = ''
 
             let newTr = document.createElement("tr");
-            const users = ['Table number and name', 'ID', 'USERNAME', 'PASSWORD', 'EMAIL'];
-            const countries = ['Table number and name', 'ID', 'NAME', 'COUNTRY_ID', 'CONTINENT (JOIN)'];
-            const airlines = ['Table number and name', 'ID', 'NAME', 'CONTINENT_ID', 'USER_ID', 'USER_NAME (JOIN)'];
-            const customers = ['Table number and name', 'ID', 'FIRST_NAME', 'LAST_NAME', 'ADDRESS', 'PHONE_NO', 'CREDIT_CARD_NO', 'USER_ID', 'USER_NAME (JOIN)'];
-            const flights = ['Table number and name', 'ID', 'AIRLINE_ID', 'ORIGIN_COUNTRY_ID', 'DESTINATION_COUNTRY_ID', 'DEPARTUER_TIME', 'LANDING_TIME', 'REMAINING_TICKETS', 'AIRLINE_NAME (JOIN)', 'ORIGIN_COUNTRY_NAME (JOIN)', 'DESTINATION_COUNTRY_NAME (JOIN)'];
-            const tickets = ['Table number and name', 'ID', 'FLIGHT_ID', 'CUSTOMER_ID', 'AIRLINE_NAME (JOIN)', 'FLIGHT_DESTINATION (JOIN)', 'PASSANGER_FIRST_NAME (JOIN)', 'PASSANGER_LAST_NAME (JOIN)', 'USER_NAME (JOIN)'];
-            const passangers = ['Table number and name', 'ID', 'FIRST_NAME', 'LAST_NAMEת', 'DATE_OF_BIRTH', 'PASSPORT_NUMBER'];
+            const users = ['TABLE NUMBER AND NAME', 'ID', 'USERNAME', 'PASSWORD', 'EMAIL'];
+            const countries = ['TABLE NUMBER AND NAME', 'ID', 'NAME', 'COUNTRY_ID', 'CONTINENT (JOIN)'];
+            const airlines = ['TABLE NUMBER AND NAME', 'ID', 'NAME', 'CONTINENT_ID', 'USER_ID','COUNTRY_NAME (JOIN)', 'USER_NAME (JOIN)'];
+            const customers = ['TABLE NUMBER AND NAME', 'ID', 'FIRST_NAME', 'LAST_NAME', 'ADDRESS', 'PHONE_NO', 'CREDIT_CARD_NO', 'USER_ID', 'USER_NAME (JOIN)'];
+            const flights = ['TABLE NUMBER AND NAME', 'ID', 'AIRLINE_ID', 'ORIGIN_COUNTRY_ID', 'DESTINATION_COUNTRY_ID', 'DEPARTUER_TIME', 'LANDING_TIME', 'REMAINING_TICKETS', 'AIRLINE_NAME (JOIN)', 'ORIGIN_COUNTRY_NAME (JOIN)', 'DESTINATION_COUNTRY_NAME (JOIN)'];
+            const tickets = ['TABLE NUMBER AND NAME', 'ID', 'FLIGHT_ID', 'CUSTOMER_ID', 'AIRLINE_NAME (JOIN)', 'FLIGHT_DESTINATION (JOIN)', 'PASSANGER_FIRST_NAME (JOIN)', 'PASSANGER_LAST_NAME (JOIN)', 'USER_NAME (JOIN)'];
+            const passangers = ['TABLE NUMBER AND NAME', 'ID', 'FIRST_NAME', 'LAST_NAMEת', 'DATE_OF_BIRTH', 'PASSPORT_NUMBER'];
 
             if (filter_id === '0') users.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '1') countries.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
@@ -135,6 +135,7 @@
                     <td>${records.name}</td>
                     <td>${records.country_id}</td>
                     <td>${records.user_id}</td>
+                    <td>${records.country_name}</td>
                     <td>${records.user_name}</td>
                     </tr>`);
 

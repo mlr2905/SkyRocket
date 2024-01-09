@@ -39,7 +39,7 @@ async function get_all() {
     // db.run('select * from airlines')
     const airlines = await connectedKnex('airlines')
   .leftJoin('users', 'users.id', '=', 'airlines.user_id')
-  .leftJoin('countries', 'countries.id', '=', 'airlines.user_id') 
+  .leftJoin('countries', 'countries.id', '=', 'airlines.country_id') 
   .select('airlines.*',  'countries.country_name', 'users.username as user_name'); 
 
     return airlines
@@ -50,7 +50,7 @@ async function get_by_id(id) {
     const airline = await connectedKnex('airlines')
     .select('airlines.*','countries.country_name','users.username as user_name')
     .leftJoin('users', 'users.id', '=', 'airlines.user_id')
-    .leftJoin('countries', 'countries.id', '=', 'airlines.user_id') 
+    .leftJoin('countries', 'countries.id', '=', 'airlines.country_id') 
     .where('airlines.id', id)
     .first();
     return airline
