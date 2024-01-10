@@ -18,7 +18,7 @@ const customers_router = require('./routers/flights/customers_router')
 const flights_router = require('./routers/flights/flights_router')
 const tickets_router = require('./routers/flights/tickets_router')
 const users_router = require('./routers/flights/users_router')
-const all_tables_router = require('./routers/flights/all_tabless_router')
+const all_tables_router = require('./routers/flights/all_tables_router')
 
 
 logger.info('==== System start =======')
