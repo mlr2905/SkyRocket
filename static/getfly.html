@@ -73,7 +73,7 @@
             const countries = ['TABLE NUMBER AND NAME', 'ID', 'NAME', 'COUNTRY_ID', 'CONTINENT (JOIN)'];
             const airlines = ['TABLE NUMBER AND NAME', 'ID', 'NAME', 'CONTINENT_ID', 'USER_ID','COUNTRY_NAME (JOIN)', 'USER_NAME (JOIN)'];
             const customers = ['TABLE NUMBER AND NAME', 'ID', 'FIRST_NAME', 'LAST_NAME', 'ADDRESS', 'PHONE_NO', 'CREDIT_CARD_NO', 'USER_ID', 'USER_NAME (JOIN)'];
-            const flights = ['TABLE NUMBER AND NAME', 'ID', 'AIRLINE_ID', 'ORIGIN_COUNTRY_ID', 'DESTINATION_COUNTRY_ID', 'DEPARTUER_TIME', 'LANDING_TIME', 'REMAINING_TICKETS', 'AIRLINE_NAME (JOIN)', 'ORIGIN_COUNTRY_NAME (JOIN)', 'DESTINATION_COUNTRY_NAME (JOIN)'];
+            const flights = ['TABLE NUMBER AND NAME', 'ID', 'AIRLINE_ID', 'ORIGIN_COUNTRY_ID', 'DESTINATION_COUNTRY_ID', 'DEPARTURE_TIME', 'LANDING_TIME', 'REMAINING_TICKETS', 'AIRLINE_NAME (JOIN)', 'ORIGIN_COUNTRY_NAME (JOIN)', 'DESTINATION_COUNTRY_NAME (JOIN)'];
             const tickets = ['TABLE NUMBER AND NAME', 'ID', 'FLIGHT_ID', 'CUSTOMER_ID', 'AIRLINE_NAME (JOIN)', 'FLIGHT_DESTINATION (JOIN)', 'PASSANGER_FIRST_NAME (JOIN)', 'PASSANGER_LAST_NAME (JOIN)', 'USER_NAME (JOIN)'];
             const passangers = ['TABLE NUMBER AND NAME', 'ID', 'FIRST_NAME', 'LAST_NAMEת', 'DATE_OF_BIRTH', 'PASSPORT_NUMBER'];
 
@@ -160,7 +160,7 @@
                     <td>${records.airline_id}</td>
                     <td>${records.origin_country_id}</td>
                     <td>${records.destination_country_id}</td>
-                    <td>${records.departuer_time}</td>
+                    <td>${records.departure_time}</td>
                     <td>${records.landing_time}</td>
                     <td>${records.remaining_tickets}</td>
                     <td>${records.airline_name}</td>
