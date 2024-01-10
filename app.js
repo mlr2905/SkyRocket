@@ -18,7 +18,7 @@ const customers_router = require('./routers/flights/customers_router')
 const flights_router = require('./routers/flights/flights_router')
 const tickets_router = require('./routers/flights/tickets_router')
 const users_router = require('./routers/flights/users_router')
-const all_tabless_router = require('./routers/flights/all_tabless_router')
+const all_tables_router = require('./routers/flights/all_tabless_router')
 
 
 logger.info('==== System start =======')
@@ -33,7 +33,7 @@ app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 });
-app.use('/api/all_tabless', all_tabless_router)
+app.use('/api/all_tables', all_tables_router)
 
 app.use('/api/chats', chats_router)
 app.use('/api/chat1', chat1_router)
