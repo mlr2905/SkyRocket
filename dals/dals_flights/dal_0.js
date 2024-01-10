@@ -30,7 +30,11 @@ async function delete_all() {
 
 async function get_all() {
     // db.run('select * from chat1')
-    const a = await connectedKnex('users').select('*')
+    const a = await connectedKnex('users')
+    .select('users.*', 'roles.role_name')
+    .from('users')
+    .join('roles', 'users.role_id', 'roles.id');
+    
     const b = await connectedKnex('countries')
     .select('countries.*', 'continents.continent')
     .from('countries')
