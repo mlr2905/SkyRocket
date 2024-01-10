@@ -19,12 +19,11 @@ async function create_table_if_not_exist() {
 
     if (!tableExists) {
         await connectedKnex.schema.createTable('tickets', (table) => {
-            table.increments('id').primary(); // This creates a SERIAL column
-        table.bigInteger('customer_id').unsigned().notNullable(); // Unsigned for FK
-        table.unique(['flight_id', 'customer_id']); // Unique composite index
-        table.foreign('customer_id').references('customers').on('id');
-        // Add other necessary columns here
-        });
+            table.increments('id').primary();
+            table.integer('flight_id').notNullable().references('flights.id');
+            table.integer('customer_id').unique().notNullable().references('customers.id');
+            table.integer('passenger_id').unique().notNullable().references('passengers.id');
+                });
     }
 }
 

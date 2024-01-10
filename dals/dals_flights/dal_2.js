@@ -22,7 +22,7 @@ async function create_table_if_not_exist() {
             table.increments('id').primary(); // This creates a SERIAL column
             table.string('name_continent').notNullable();
             table.integer('country_name').notNullable();
-            table.foreign('country_name').references('continents').on('id');
+            table.foreign('continent_id').references('continents').on('id');
         });
     }
 }

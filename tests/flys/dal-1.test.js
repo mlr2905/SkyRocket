@@ -49,7 +49,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_message', async () => {
-        await dal.new_message({ 'id': 6, 'username': 'michael', 'password': 'fsds33', 'email': 'c@gmail.com' }) // Id: 6
+        await dal.new_message({ 'id': 6, 'username': 'michael', 'password': 'ferf444', 'email': 'c@gmail.com' }) // Id: 6
         const expected = 'michael'
         const message_id_6 = await dal.get_by_id(6)
         assert.strictEqual(expected, message_id_6.username)
@@ -57,13 +57,7 @@ describe('Testing functionallity of the DAL', () => {
 
     it('Confirm_one_line',async () => {
         await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'user': 'bot', 'text': 'hello', 'time': '12:00:00', 'type': 'text' }) // id: 1
+        await dal.new_message({ 'id': 1,  'username': 'michael', 'password': 'ferf444', 'email': 'c@gmail.com' }) // id: 1
     })
-
-    // complete all other tests for all methods:
-    // update_message(id, update_message)
-    // delete_message(id)
-    // new_message(new_emp)
-    // delete_all ?
 
 })

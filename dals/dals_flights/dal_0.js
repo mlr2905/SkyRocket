@@ -14,19 +14,19 @@ const connectedKnex = knex({
     }
 })
 
-async function delete_all() {
-    // db.run('update chat1 ....')
-    const a = await connectedKnex('chat1').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
-    const b = await connectedKnex('chat2').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
-    const c = await connectedKnex('chat3').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
-    const d = await connectedKnex('chat4').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
-    const e = await connectedKnex('connected').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
-}
+// async function delete_all() {
+//     // db.run('update chat1 ....')
+//     const a = await connectedKnex('chat1').del()
+//     await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+//     const b = await connectedKnex('chat2').del()
+//     await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+//     const c = await connectedKnex('chat3').del()
+//     await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+//     const d = await connectedKnex('chat4').del()
+//     await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+//     const e = await connectedKnex('connected').del()
+//     await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+// }
 
 async function get_all() {
     // db.run('select * from chat1')
@@ -34,7 +34,7 @@ async function get_all() {
     .select('users.*', 'roles.role_name')
     .from('users')
     .join('roles', 'users.role_id', 'roles.id');
-    
+
     const b = await connectedKnex('countries')
     .select('countries.*', 'continents.continent')
     .from('countries')
@@ -86,5 +86,5 @@ async function get_by_id(id) {
 
 
 module.exports = {
-    get_all, get_by_id, delete_all
+    get_all, get_by_id
 }

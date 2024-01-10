@@ -21,7 +21,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('get_by_id', async () => {
-        const expected = 'bot'
+        const expected = '1'
         const message_id_3 = await dal.get_by_id(3)
         const actual = message_id_3.airline_id
         console.log(actual);

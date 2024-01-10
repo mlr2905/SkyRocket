@@ -5,35 +5,35 @@ describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'name': 'admin',  'country_id': '1', 'user_id': '1'}) // id: 1
-        await dal.new_message({ 'id': 2, 'name': 'michael','country_id': '2', 'user_id': '2'}) // id: 2
-        await dal.new_message({ 'id': 3, 'name': 'idit',   'country_id': '3', 'user_id': '3'}) // Id: 3
-        await dal.new_message({ 'id': 4, 'name': 'rachel', 'country_id': '4', 'user_id': '4'}) // Id: 4
-        await dal.new_message({ 'id': 5, 'name': 'meital', 'country_id': '5', 'user_id': '5'}) // Id: 5
+        await dal.new_message({ 'id': 1, 'first_name': 'idit', 'last_name': 'rozental', 'address': 'israel', 'phone_no': '+972503424253', 'credit_card_no': '2255', 'user_id': 1 }) // id: 1
+        await dal.new_message({ 'id': 1, 'first_name': 'meital', 'last_name': 'rozental', 'address': 'israel', 'phone_no': '+972507462964', 'credit_card_no': '4422', 'user_id': 2 }) // id: 2
+        await dal.new_message({ 'id': 3, 'first_name': 'yosef', 'last_name': 'rozental', 'address': 'israel', 'phone_no': '+972506372833', 'credit_card_no': '6586', 'user_id': 3 }) // id: 3
+        await dal.new_message({ 'id': 1, 'first_name': 'Atlas', 'last_name': 'Air', 'address': 'American', 'phone_no': '+141523581961', 'credit_card_no': '3932', 'user_id': 4 }) // id: 4
+        await dal.new_message({ 'id': 1, 'first_name': 'American', 'last_name': 'Airlines', 'address': 'American', 'phone_no': '+14152358132', 'credit_card_no': '5234', 'user_id': 5 }) // id: 5
+
     })
 
-  
-    it('get_all', async () => {
-        const expected = 5
-        const messages = await dal.get_all()
-        const actual = messages.length
-        console.log(actual);
-        assert.strictEqual(expected, actual)
-    })
+        it('get_all', async () => {
+            const expected = 5
+            const messages = await dal.get_all()
+            const actual = messages.length
+            console.log(actual);
+            assert.strictEqual(expected, actual)
+        })
 
     it('get_by_id', async () => {
-        const expected = 'bot'
+        const expected = 'yosef'
         const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.name
+        const actual = message_id_3.first_name
         console.log(actual);
         assert.strictEqual(expected, actual)
     })
 
     it('update_message', async () => {
-        await dal.update_message(3, {  'name': 'ai',   'country_id': '3', 'user_id': '3'})
-        const expected = 'ai'
+        await dal.update_message(3, { 'first_name': 'American', 'last_name': 'Airlines', 'address': 'American', 'phone_no': '+14152358652', 'credit_card_no': '5234', 'user_id': 5 })
+        const expected = '+14152358652'
         const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.name
+        const actual = message_id_3.phone_no
         console.log(actual);
         assert.strictEqual(expected, actual)
     })
@@ -46,15 +46,15 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_message', async () => {
-        await dal.new_message({ 'id': 6, 'name': 'meital', 'country_id': '6', 'user_id': '6' }) // Id: 6
-        const expected = 'meital'
+        await dal.new_message({ 'id': 6,'first_name': 'Egypt', 'last_name': 'Air', 'address': 'Egypt', 'phone_no': '+2022597325', 'credit_card_no': '6362', 'user_id': 6  }) // Id: 6
+        const expected = 'Egypt'
         const message_id_6 = await dal.get_by_id(6)
-        assert.strictEqual(expected, message_id_6.name)
+        assert.strictEqual(expected, message_id_6.first_name)
     })
 
-    it('Confirm_one_line',async () => {
+    it('Confirm_one_line', async () => {
         await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'name': 'admin',  'country_id': '1', 'user_id': '1' }) // id: 1
+        await dal.new_message({ 'id': 1, 'first_name': 'idit', 'last_name': 'rozental', 'address': 'israel', 'phone_no': '+972503424253', 'credit_card_no': '2255', 'user_id': 1 }) // id: 1
     })
 
 
