@@ -90,7 +90,7 @@
             if (filterid !== undefined && filterid !== '') {
                 filter_id = `${filterid}`;
             }
-            let url = "/api/all"
+            let url = "/api/all_tabless"
             $.ajax({
                 url: url,
                 success: data => displayRecords(data),
