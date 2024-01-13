@@ -57,12 +57,13 @@ async function get_all() {
     
     const f = await connectedKnex('tickets')  
     .leftJoin('countries', 'countries.id', 'tickets.flight_id')
-    .leftJoin('users', 'users.id', 'tickets.customer_id')
+    .leftJoin('customers', 'customers.id', 'tickets.customer_id')
     .leftJoin('passengers', 'passengers.id', 'tickets.passenger_id')
     .leftJoin('flights', 'flights.id', 'tickets.passenger_id')
     .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
-    .select('tickets.*','airlines.name as airline_name' ,'countries.country_name as flight_destination', 'passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name','users.username as user_name');
-
+    .select('tickets.*','airlines.name as airline_name' ,'countries.country_name as flight_destination',
+     'passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name',
+     'customers.first_name','customers.last_name');
    const h = await connectedKnex('passengers').select('*')
 
     const arr = { 0: a, 1: b, 2: c, 3: d, 4: e ,5:f,6:h}
