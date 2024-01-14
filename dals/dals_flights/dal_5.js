@@ -31,6 +31,7 @@ async function create_table_if_not_exist() {
             table.integer('remaining_tickets').notNullable();
         });
     }
+    
 }
 
 async function delete_all() {
