@@ -1,11 +1,34 @@
 
-const dal_5 = require('../../dals/dals_flights/dal_5')
-const dal_6 = require('../../dals/dals_flights/dal_6')
+const dal_1 = require('../dals/dals_flights/dal_1')
+const dal_2 = require('../dals/dals_flights/dal_2')
+const dal_3 = require('../dals/dals_flights/dal_3')
+const dal_4 = require('../dals/dals_flights/dal_4')
+const dal_5 = require('../dals/dals_flights/dal_5')
+const dal_6 = require('../dals/dals_flights/dal_6')
+
+async function pass_users(username, email, password) {
+    try {
+      // בודקת אם קיבלה סיסמה
+      if (password !== '') {
+        // מפעילה את הפרוצדורה sp_i_users
+        const results = await dal_1.sp_i_users(username, email, password);
+
+      } else {
+        // מפעילה את הפרוצדורה sp_pass_users
+        const results = await dal_1.sp_pass_users(username, email);
+
+      }
+    } catch (error) {
+      console.error('Error passing users:', error);
+      throw error; // מעבירה את השגיאה הלאה
+    }
+  }
+  
 
 async function get_all_flights() {
   try {
     // בודקת אם הטבלה קיימת (בהנחה שיש פונקציית tableExists ב-DAL)
-    const tableExists = await connectedKnex.schema.hasTable('flights');
+    const tableExists = await dal_5.Checks_if_a_table_exists('flights');
 
     if (tableExists) {
       // אם הטבלה קיימת, מפעילה את הפונקציה get_all מה-DAL
@@ -48,5 +71,5 @@ async function delete_flight(id) {
 }
 
 module.exports = {
-    delete_flight, purchase_ticket
+    delete_flight, purchase_ticket,pass_users
 }

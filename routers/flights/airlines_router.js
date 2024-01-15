@@ -7,7 +7,7 @@ const dal = require('../../dals/dals_flights/dal_3')
 // GET 
 router.get('/', async (request, response) => {
     try {
-        const airlines = await dal.get_all()
+        const airlines = await bl.get_all_flights()
         response.json(airlines)
     }
     catch (e) {

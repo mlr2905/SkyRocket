@@ -50,7 +50,7 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
                 if (Cells_manager.online[i].user === Cells_manager.name_connected) { //Checking if my user has been logged out
                     Cells_manager.connected = "not"
                 }
-                let url = `/api/connected/${id}`
+                let url = `/api/connected/${id}`    
                 fetch(url, {
                     method: "DELETE"
                 }).then(response => {

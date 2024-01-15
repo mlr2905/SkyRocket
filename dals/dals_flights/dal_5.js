@@ -14,6 +14,11 @@ const connectedKnex = knex({
     }
 })
 
+
+async function Checks_if_a_table_exists(){
+    const tableExists = await connectedKnex.schema.hasTable('flights');
+return tableExists
+}
 async function create_table_if_not_exist() {
     const tableExists = await connectedKnex.schema.hasTable('flights');
 
@@ -31,7 +36,6 @@ async function create_table_if_not_exist() {
             table.integer('remaining_tickets').notNullable();
         });
     }
-    
 }
 
 async function delete_all() {

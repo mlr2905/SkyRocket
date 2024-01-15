@@ -27,12 +27,33 @@ async function create_table_if_not_exist() {
     }
 }
 
+async function sp_i_users(name,email,password){
+    const result = await connectedKnex.raw(`CALL sp_i_users('${name}','${email}','${password}');`)
+}
+
+async function sp_pass_users(name,email){
+    const result = await connectedKnex.raw(`CALL sp_pass_users('${name}','${email}','');`)    
+      
+}
 async function delete_all() {
     // db.run('update users ....')
     const result = await connectedKnex('users').del()
     await connectedKnex.raw('ALTER SEQUENCE "users_id_seq" RESTART WITH 1');
     return result
 }
+
+async function getNextUserId() {
+    try {
+      const result = await connectedKnex.raw(`SELECT get_next_user_id()`);
+      return result;
+    } catch (error) {
+      console.error('Error fetching next user ID:', error);
+      throw error; // Re-throw the error for further handling
+    }
+  }
+  
+
+
 
 async function get_all() {
     // db.run('select * from users')
@@ -73,5 +94,5 @@ async function delete_user(id) {
 
 module.exports = {
     get_all, get_by_id, new_user, update_user, delete_user,
-    delete_all, create_table_if_not_exist
+    delete_all, create_table_if_not_exist,sp_i_users,sp_pass_users,getNextUserId
 }
