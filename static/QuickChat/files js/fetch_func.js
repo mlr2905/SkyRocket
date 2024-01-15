@@ -71,7 +71,7 @@ function post_data() {//Sending a text message, a link to YouTube, Tiktok, Faceb
 }
 
 async function put(number, value) { //Editing of a message of any type to any type
-    let new_text = value
+    Cells_manager.new_text = value
     Cells_manager.string_name = "text"
     link_type()
     Cells_manager.new_time = time_new()
