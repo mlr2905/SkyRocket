@@ -20,6 +20,7 @@ const tickets_router = require('./routers/flights/tickets_router')
 const users_router = require('./routers/flights/users_router')
 const all_tables_router = require('./routers/flights/all_tables_router')
 
+const cors = require('cors');
 
 logger.info('==== System start =======')
 
