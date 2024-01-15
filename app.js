@@ -20,7 +20,6 @@ const tickets_router = require('./routers/flights/tickets_router')
 const users_router = require('./routers/flights/users_router')
 const all_tables_router = require('./routers/flights/all_tables_router')
 
-const cors = require('cors');
 
 logger.info('==== System start =======')
 
@@ -34,6 +33,8 @@ app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 });
+app.use(cors());
+
 app.use('/api/all_tables', all_tables_router)
 
 app.use('/api/chats', chats_router)
