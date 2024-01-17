@@ -57,7 +57,23 @@ async function get_by_id(id) {
 
 async function delete_user(id) {
     // db.run('update users ....')
-    const result = await connectedKnex('users').where('id', id).del()
+
+    const delete_user = await connectedKnex('users').where('id', id)
+    if(delete_user){
+        const customer = await connectedKnex('customers').select('*').where('user_id', id).first()
+        if(customer){
+            const ticket = await connectedKnex('tickets').select('*').where('CUSTOMER_ID', id).first()
+            if(ticket){
+                const passenger = await connectedKnex('passengers').select('*').where('user_creates_id', id).first()
+                if(passenger){
+                    const passenger = await connectedKnex('passengers').select('*').where('user_creates_id', id).first().del()
+                }
+                const ticket = await connectedKnex('tickets').select('*').where('CUSTOMER_ID', id).first().del()  
+            }
+            const customer = await connectedKnex('customers').select('*').where('user_id', id).first().del()  
+        }
+        const delete_user = await connectedKnex('users').where('id', id).del()
+    }
     return result
 }
 

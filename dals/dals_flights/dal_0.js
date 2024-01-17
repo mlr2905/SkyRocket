@@ -78,8 +78,10 @@ async function get_by_id(id) {
     const d = await connectedKnex('customers').select('*').where('id', id).first()
     const e = await connectedKnex('flights').select('*').where('id', id).first()
     const f = await connectedKnex('tickets').select('*').where('id', id).first()
+    const h = await connectedKnex('passengers').select('*').where('id', id).first()
 
-    const arr = { 0: a, 1: b, 2: c, 3: d, 4: e ,5:f}
+
+    const arr = { 0: a, 1: b, 2: c, 3: d, 4: e ,5:f,6:h}
     return arr
 }
 
