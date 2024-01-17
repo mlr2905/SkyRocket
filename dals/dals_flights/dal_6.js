@@ -14,26 +14,35 @@ const connectedKnex = knex({
     }
 })
 
-async function create_table_if_not_exist() {
-    const tableExists = await connectedKnex.schema.hasTable('tickets');
+// ---------------User functions only and admin---------------
 
-    if (!tableExists) {
-        await connectedKnex.schema.createTable('tickets', (table) => {
-            table.increments('id').primary();
-            table.integer('flight_id').notNullable().references('flights.id');
-            table.integer('customer_id').unique().notNullable().references('customers.id');
-            table.integer('passenger_id').unique().notNullable().references('passengers.id');
-                });
-    }
+async function new_ticket(new_ticket) {
+    // db.run('insert into tickets ....')
+    // result[0] will be the new ID given by the SQL
+    // Insert into tickets values(....)
+    const result = await connectedKnex('tickets').insert(new_ticket)
+    return { ...new_ticket, id: result[0] }
 }
 
-async function delete_all() {
+async function get_by_id(id) {
+    // db.run('select * from tickets where user_id=?')
+    const ticket = await connectedKnex('tickets').select('*').where('user_id', id).first()
+    return ticket
+}
+
+async function delete_ticket(id) {
     // db.run('update tickets ....')
-    const result = await connectedKnex('tickets').del()
-    await connectedKnex.raw('ALTER SEQUENCE "tickets_id_seq" RESTART WITH 1');
+    const result = await connectedKnex('tickets').where('id', id).del()
     return result
 }
 
+// ---------------Admin permission only---------------
+
+async function update_ticket(id, updated_ticket) {
+    // db.run('update tickets ....')
+    const result = await connectedKnex('tickets').where('id', id).update(updated_ticket)
+    return updated_ticket
+}
 async function get_all() {
     // db.run('select * from tickets')
     const tickets = await connectedKnex('tickets')
@@ -49,33 +58,28 @@ async function get_all() {
     return tickets
 }
 
-async function get_by_id(id) {
-    // db.run('select * from tickets where id=?')
-    const ticket = await connectedKnex('tickets').select('*').where('id', id).first()
-    return ticket
-}
-
-async function new_ticket(new_mes) {
-    // db.run('insert into tickets ....')
-    // result[0] will be the new ID given by the SQL
-    // Insert into tickets values(....)
-    const result = await connectedKnex('tickets').insert(new_mes)
-    return { ...new_mes, id: result[0] }
-}
-
-async function update_ticket(id, updated_ticket) {
+async function delete_all() {
     // db.run('update tickets ....')
-    const result = await connectedKnex('tickets').where('id', id).update(updated_ticket)
-    return updated_ticket
-}
-
-async function delete_ticket(id) {
-    // db.run('update tickets ....')
-    const result = await connectedKnex('tickets').where('id', id).del()
+    const result = await connectedKnex('tickets').del()
+    await connectedKnex.raw('ALTER SEQUENCE "tickets_id_seq" RESTART WITH 1');
     return result
 }
 
+// async function create_table_if_not_exist() {
+//     const tableExists = await connectedKnex.schema.hasTable('tickets');
+
+//     if (!tableExists) {
+//         await connectedKnex.schema.createTable('tickets', (table) => {
+//             table.increments('id').primary();
+//             table.integer('flight_id').notNullable().references('flights.id');
+//             table.integer('customer_id').unique().notNullable().references('customers.id');
+//             table.integer('passenger_id').unique().notNullable().references('passengers.id');
+//                 });
+//     }
+// }
+
 module.exports = {
     get_all, get_by_id, new_ticket, update_ticket, delete_ticket,
-    delete_all, create_table_if_not_exist
+    delete_all
+    // , create_table_if_not_exist
 }

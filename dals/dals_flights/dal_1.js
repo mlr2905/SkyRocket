@@ -14,7 +14,7 @@ const connectedKnex = knex({
     }
 })
 
-// ---------------User functions only---------------
+// ---------------User functions only and admin---------------
 
 //new_user
 async function sp_i_users(name, email, password) {
@@ -24,14 +24,14 @@ async function sp_i_users(name, email, password) {
 //new_user (Automatically generates a password)
 async function sp_pass_users(name, email) {
     const new_user = await connectedKnex.raw(`CALL sp_pass_users('${name}','${email}','');`)
-    return new_user 
+    return new_user
 }
 
 async function update_user(id, emall, password) {
     try {
         if (emall === null) {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${emall}, '${password}');`)
-            return update 
+            return update
         }
         if (password === null) {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${emall}', ${password});`)
@@ -39,7 +39,7 @@ async function update_user(id, emall, password) {
         }
     }
     catch (e) {
-        throw     console.error('Not carried out:', e);
+        throw console.error('Not carried out:', e);
         ; // Re-throw the error for further handling
     }
 }
@@ -47,34 +47,23 @@ async function update_user(id, emall, password) {
 async function get_by_id(id) {
     // db.run('select * from users where id=?')
     const user = await connectedKnex('users')
-    .select('users.*', 'roles.role_name')
-    .join('roles', 'users.role_id', 'roles.id')
-    .where('users.id', id)
-    .first();
+        .select('users.*', 'roles.role_name')
+        .join('roles', 'users.role_id', 'roles.id')
+        .where('users.id', id)
+        .first();
 
     return user
 }
 
 async function delete_user(id) {
     // db.run('update users ....')
+    const id_check = await connectedKnex('users').where('id', id)
 
-    const delete_user = await connectedKnex('users').where('id', id)
-    if(delete_user){
-        const customer = await connectedKnex('customers').select('*').where('user_id', id).first()
-        if(customer){
-            const ticket = await connectedKnex('tickets').select('*').where('CUSTOMER_ID', id).first()
-            if(ticket){
-                const passenger = await connectedKnex('passengers').select('*').where('user_creates_id', id).first()
-                if(passenger){
-                    const passenger = await connectedKnex('passengers').select('*').where('user_creates_id', id).first().del()
-                }
-                const ticket = await connectedKnex('tickets').select('*').where('CUSTOMER_ID', id).first().del()  
-            }
-            const customer = await connectedKnex('customers').select('*').where('user_id', id).first().del()  
-        }
-        const delete_user = await connectedKnex('users').where('id', id).del()
+    if (id_check) {
+        const delete_user = await connectedKnex.raw(`CALL delete_user(${id});`)
+        return delete_user
+
     }
-    return result
 }
 
 // ---------------Admin permission only---------------
@@ -102,7 +91,7 @@ async function get_next_user_id() {
         return result
 
     } catch (e) {
-        throw    console.error('Error fetching next user ID:', e);
+        throw console.error('Error fetching next user ID:', e);
 
     }
 }
@@ -113,7 +102,7 @@ async function set_id_user(id) {
         return result;
 
     } catch (e) {
-        throw    console.error('Error fetching next user ID:', e);
+        throw console.error('Error fetching next user ID:', e);
 
     }
 }
