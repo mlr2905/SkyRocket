@@ -79,12 +79,12 @@
 
             if (filter_id === '0') users.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '1') countries.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '2') airlines.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '3') customers.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
+            if (filter_id === '2') customers.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
+            if (filter_id === '3') airlines.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '4') flights.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '5') tickets.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
             if (filter_id === '6') passangers.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-
+            
             myTable.appendChild(newTr);
 
             if (filterid !== undefined && filterid !== '') {
