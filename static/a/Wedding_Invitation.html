@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<script>
+    function post_data() {//Sending a text message, a link to YouTube, Tiktok, Facebook, or a photo link or a regular link
+        const first_name = document.getElementById('first_name').value
+        const last_name = document.getElementById('last_name').value
+        const people = document.getElementById('people').value
+        const phone_number = document.getElementById('phone_number').value
+
+        let url = "https://cloud-memory.onrender.com/api/inviteds"
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: `{
+                    "first_name": "${first_name}",
+                    "last_name": "${last_name}",
+                    "people": "${people}",
+                    "phone_number": "${phone_number}"
+                }`})
+    }
+</script>
+
+<body>
+    <form class=" mt-5 mx-auto col-6 col-md-8 col-lg-6 was-validated " id="from" style="display: block;">
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <input type="text" class="form-control" id="first_name" placeholder="ישראל" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <input type="text" class="form-control" id="last_name" placeholder="ישראלי"  required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <input type="text" class="form-control mb-2" id="phone_number" minlength="9" maxlength="10"
+                    placeholder="0501234567.." min="10" required><br />
+            </div>
+            <div class="col-md-4 mb-3">
+                <input type="number" class="form-control" id="people" placeholder="3" value="" required>
+            </div>
+
+            <button onclick="post_data()" class="btn bg-warning col" type="button"><b>connect</b></button>
+    </form>
+</body>
+
+</html>
