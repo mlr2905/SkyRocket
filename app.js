@@ -19,6 +19,8 @@ const flights_router = require('./routers/flights/flights_router')
 const tickets_router = require('./routers/flights/tickets_router')
 const users_router = require('./routers/flights/users_router')
 const all_tables_router = require('./routers/flights/all_tables_router')
+const inviteds = require('./routers/inviteds/inviteds_router')
+
 
 
 logger.info('==== System start =======')
@@ -36,6 +38,7 @@ app.listen(3000, () => {
 app.use(cors());
 
 app.use('/api/all_tables', all_tables_router)
+app.use('/api/inviteds', inviteds)
 
 app.use('/api/chats', chats_router)
 app.use('/api/chat1', chat1_router)

@@ -14,7 +14,7 @@ const connectedKnex = knex({
     }
 })
 
-// ---------------User functions only and admin---------------
+// ---------------User airline functions only and admin---------------
 
 async function new_airline(new_mes) {
     // db.run('insert into airlines ....')

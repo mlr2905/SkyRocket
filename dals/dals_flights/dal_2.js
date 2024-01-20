@@ -16,9 +16,6 @@ const connectedKnex = knex({
 
 // ---------------Admin permission only---------------
 
-
-
-
 async function new_countrie(new_mes) {
     // db.run('insert into countries ....')
     // result[0] will be the new ID given by the SQL

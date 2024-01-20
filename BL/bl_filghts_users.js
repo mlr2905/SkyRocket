@@ -63,6 +63,8 @@ async function delete_account(id) {
 
   }
 }
+// func customers
+
 
 // async function update_user(id, updated_user) {
 
