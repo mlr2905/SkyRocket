@@ -54,7 +54,7 @@ async function get_all() {
     .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
     .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
     .leftJoin('planes', 'planes.id', 'flights.plane_id')
-    .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name','planes.seat as Total tickets')
+    .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name','planes.seat as Total_tickets')
        
     const f = await connectedKnex('tickets')  
     .leftJoin('countries', 'countries.id', 'tickets.flight_id')
