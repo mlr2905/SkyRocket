@@ -40,16 +40,16 @@ async function get_all() {
     .from('countries')
     .join('continents', 'countries.continent_id', 'continents.id');
    
-    const c = await connectedKnex('airlines').select('*')
+    const c = await connectedKnex('airlines')
     .leftJoin('users', 'users.id', '=', 'airlines.user_id')
     .leftJoin('countries', 'countries.id', '=', 'airlines.country_id') 
     .select('airlines.*',  'countries.country_name', 'users.username as user_name'); 
   
-    const d = await connectedKnex('customers').select('*')
+    const d = await connectedKnex('customers')
     .join('users', 'users.id', 'customers.user_id')
     .select('customers.*', 'users.username as user_name');
   
-    const e = await connectedKnex('flights').select('*')
+    const e = await connectedKnex('flights')
     .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
     .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
     .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
