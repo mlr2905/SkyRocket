@@ -69,7 +69,7 @@ async function get_all() {
    const g = await connectedKnex('chairs')
    .leftJoin('chair_3', 'chair_3.id', 'chairs.char_id')
    .leftJoin('passengers', 'passengers.id', 'chairs.passenger_id')
-   .select('chairs.*,chair_3.name,passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name')
+   .select('chairs.*','chair_3.name','passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name')
 
 
     const arr = { 0: a, 1: b, 2: c, 3: d, 4: e ,5:f,6:h,7:g}
