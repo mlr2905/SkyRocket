@@ -66,13 +66,13 @@ async function get_all() {
     'passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name',
     'customers.first_name','customers.last_name',"seats.name as seat");
    const h = await connectedKnex('passengers').select('*')
-   const g = await connectedKnex('chairs')
-   .leftJoin('chair_3', 'chair_3.id', 'chairs.char_id')
-   .leftJoin('passengers', 'passengers.id', 'chairs.passenger_id')
-   .select('chairs.*','chair_3.name','passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name')
+//    const g = await connectedKnex('chairs')
+//    .leftJoin('chair_3', 'chair_3.id', 'chairs.char_id')
+//    .leftJoin('passengers', 'passengers.id', 'chairs.passenger_id')
+//    .select('chairs.*','chair_3.name','passengers.first_name as passanger_first_name','passengers.last_name as passanger_last_name')
 
 
-    const arr = { 0: a, 1: b, 2: c, 3: d, 4: e ,5:f,6:h,7:g}
+    const arr = { 0: a, 1: b, 2: c, 3: d, 4: e ,5:f,6:h}
     return arr
 }
 
