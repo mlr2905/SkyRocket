@@ -16,17 +16,17 @@ const connectedKnex = knex({
 
 // ---------------User functions only and admin---------------
 
-async function new_ticket(new_ticket) {
+async function new_ticket(ticket) {
     // db.run('insert into tickets ....')
     // result[0] will be the new ID given by the SQL
     // Insert into tickets values(....)
-    const result = await connectedKnex('tickets').insert(new_ticket)
-    return { ...new_ticket, id: result[0] }
+    const result = await connectedKnex('tickets').insert(ticket)
+    return { ...ticket, id: result[0] }
 }
 
 async function get_by_id(id) {
     // db.run('select * from tickets where user_id=?')
-    const ticket = await connectedKnex('tickets').select('*').where('user_id', id).first()
+    const ticket = await connectedKnex('tickets').select('*').where('id', id).first()
     return ticket
 }
 

@@ -62,7 +62,7 @@ async function delete_account(id) {
     return console.error('The ID you specified does not exist:', error);
 
   }
-}
+} 
 // func customers
 
 
@@ -72,13 +72,12 @@ async function delete_account(id) {
 
 // }
 
-
+// flights
 
 async function get_all_flights() {
   try {
-    // בודקת אם הטבלה קיימת (בהנחה שיש פונקציית tableExists ב-DAL)
     const tableExists = await dal_5.Checks_if_a_table_exists('flights');
-
+ 
     if (tableExists) {
       // אם הטבלה קיימת, מפעילה את הפונקציה get_all מה-DAL
       const flights = await dal_5.get_all('flights');
@@ -92,13 +91,14 @@ async function get_all_flights() {
   }
 }
 
-async function purchase_ticket(flight_id, customer_id, passenger_id) {
+async function purchase_ticket(flight_id, customer_id, passenger_id,user_id,sead_id) {
   try {
     const flight = await dal_5.get_by_id(flight_id)
     if (flight) {
       if (flight.remaining_tickets > 0) {
         await dal_5.update_flight({ ...flight, remaining_tickets: remaining_tickets - 1 })
-        await dal_6.new_ticket(flight_id, customer_id, passenger_id)
+        await dal_6.new_ticket(flight_id, customer_id, passenger_id,user_id,sead_id)
+        return dal_6
       }
       else
         return Error('no tickets left')

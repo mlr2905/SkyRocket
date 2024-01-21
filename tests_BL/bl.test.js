@@ -1,6 +1,8 @@
  const assert = require('assert')
 const bl = require('../BL/bl_filghts_users')
 const dal_1 = require('../dals/dals_flights/dal_1')
+const dal_6 = require('../dals/dals_flights/dal_6')
+
 
 
 describe('Testing functionallity of the bl', () => {
@@ -47,13 +49,24 @@ describe('Testing functionallity of the bl', () => {
     //     const new_user = await bl.get_by_id_user(36)
     //     assert.strictEqual(expected, new_user.password)
     // })
-        it('delete_account', async () => {
-        await  bl.delete_account(37)
-        const expected = undefined
+    //     it('delete_account', async () => {
+    //     await  bl.delete_account(37)
+    //     const expected = undefined
     
-        const new_user = await bl.get_by_id_user(37)
-        assert.strictEqual(expected, new_user)
+    //     const new_user = await bl.get_by_id_user(37)
+    //     assert.strictEqual(expected, new_user)
+    // })
+
+    it('purchase_ticket', async () => {
+       await dal_6.new_ticket(2,1,9,1,251)
+
+        const expected = 251
+        const new_user = await dal_6.get_by_id(1)
+        assert.strictEqual(expected, new_user.seat_id)
     })
+
+
+    
 
 })
 
