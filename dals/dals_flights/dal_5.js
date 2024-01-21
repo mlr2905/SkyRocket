@@ -22,8 +22,9 @@ async function get_all() {
         .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
         .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
         .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
-        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name',
-            'destination_countries.country_name as destination_country_name');
+        .leftJoin('planes', 'planes.id', 'flights.plane_id')
+        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name','planes.seat as Total tickets')
+       
 
     return flights
 }
@@ -44,7 +45,9 @@ async function get_by_id(id) {
         .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
         .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
         .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
-        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name')
+        .leftJoin('planes', 'planes.id', 'flights.plane_id')
+
+        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name','planes.seat as Total tickets')
         .where('flights.id', id).first()
     return flight
 }
