@@ -16,12 +16,13 @@ const connectedKnex = knex({
 
 // ---------------User functions only and admin---------------
 
-async function new_ticket(ticket) {
+async function new_ticket(new_t) {
     // db.run('insert into tickets ....')
     // result[0] will be the new ID given by the SQL
     // Insert into tickets values(....)
-    const result = await connectedKnex('tickets').insert(ticket)
-    return { ...ticket, id: result[0] }
+    const result = await connectedKnex('tickets').insert(new_t)
+    return { ...new_t, id: result[0] }
+ 
 }
 
 async function get_by_id(id) {

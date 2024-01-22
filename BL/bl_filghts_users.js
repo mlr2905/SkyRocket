@@ -91,13 +91,17 @@ async function get_all_flights() {
   }
 }
 
-async function purchase_ticket(flight_id, customer_id, passenger_id,user_id,sead_id) {
+async function purchase_ticket(new_ticket) {
+  console.log(new_ticket)
   try {
-    const flight = await dal_5.get_by_id(flight_id)
+    const flight = await dal_5.get_by_id(new_ticket.flight_id)
+
     if (flight) {
       if (flight.remaining_tickets > 0) {
-        await dal_5.update_flight({ ...flight, remaining_tickets: remaining_tickets - 1 })
-        await dal_6.new_ticket(flight_id, customer_id, passenger_id,user_id,sead_id)
+        console.log(flight.remaining_tickets)
+        await dal_5.update_flight({ ...flight, remaining_tickets: remaining_tickets - 1, })
+        await dal_6.new_ticket(new_ticket)
+        
         return dal_6
       }
       else
