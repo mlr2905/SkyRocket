@@ -29,12 +29,8 @@ async function get_by_id(id) {
     const passenger = await connectedKnex('passengers').select('*').where('user_id', id).first()
     return passenger
 }
+new_passenger ,get_by_id
 
-async function delete_passenger(id) {
-    // db.run('update passengers ....')
-    const result = await connectedKnex('passengers').where('id', id).del()
-    return result
-}
 
 // ---------------Admin permission only---------------
 
@@ -43,6 +39,12 @@ async function update_passenger(id, updated_passenger) {
     const result = await connectedKnex('passengers').where('id', id).update(updated_passenger)
     return updated_passenger
 }
+async function delete_passenger(id) {
+    // db.run('update passengers ....')
+    const result = await connectedKnex('passengers').where('id', id).del()
+    return result
+}
+
 async function get_all() {
     // db.run('select * from passengers')
     const passengers = await connectedKnex('passengers').select('*')

@@ -23,8 +23,8 @@ async function get_all() {
         .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
         .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
         .leftJoin('planes', 'planes.id', 'flights.plane_id')
-        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name','planes.seat as Total tickets')
-       
+        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name', 'planes.seat as Total tickets')
+
 
     return flights
 }
@@ -47,17 +47,29 @@ async function get_by_id(id) {
         .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
         .leftJoin('planes', 'planes.id', 'flights.plane_id')
 
-        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name','planes.seat as Total_tickets')
+        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name', 'planes.seat as Total_tickets')
         .where('flights.id', id).first()
     return flight
 }
 
-async function update_flight( updated_flight) {
+async function update_flight(id, updated_flight) {
     // db.run('update flights ....')
-    const result = await connectedKnex('flights').where('id', 2).update(updated_flight)
+    const result = await connectedKnex('flights').where('id', id).update(updated_flight)
     return updated_flight
 }
 
+async function update_remaining_tickets(id) {
+    // db.run('update flights ....')
+    const result = await connectedKnex.raw(`CALL update_remaining_tickets(${id})`)
+    if (result.error) {
+
+        console.log(result.error);
+
+    } else {
+
+        return result
+    }
+}
 async function delete_flight(id) {
     // db.run('update flights ....')
     const result = await connectedKnex('flights').where('id', id).del()
@@ -93,7 +105,7 @@ async function delete_all() {
 // }
 
 module.exports = {
-    get_all, get_by_id, new_flight, update_flight, delete_flight,
+    get_all, get_by_id, new_flight, update_flight, update_remaining_tickets, delete_flight,
     delete_all
     // , create_table_if_not_exist
 }

@@ -17,6 +17,7 @@ const connectedKnex = knex({
 // ---------------User functions only and admin---------------
 
 async function new_ticket(new_t) {
+    console.log(new_t)
     // db.run('insert into tickets ....')
     // result[0] will be the new ID given by the SQL
     // Insert into tickets values(....)
