@@ -45,23 +45,24 @@ async function update_user(id, email, password) {
     return `${user_id.username}${update_user}`
   }
   else {
-    return console.error('The ID you specified does not exist:', error);
+    return console.error('The ID you specified does not exist:');
 
   }
 }
 
 async function delete_account(id) {
+
   const user_id = await dal_1.get_by_id(id);
 
   if (user_id) {
     const delete_user = await dal_1.delete_user(id);
-    return delete_user
 
+    return delete_user
   }
 
   else {
 
-    return console.error('The ID you specified does not exist:', error);
+    return console.error('The ID you specified does not exist');
 
   }
 }
@@ -70,12 +71,12 @@ async function delete_account(id) {
 async function new_customer(new_c) {
   try {
 
-      const new_customer =  await dal_4.new_customer(new_c);
+    const new_customer = await dal_4.new_customer(new_c);
 
-        return new_customer
+    return new_customer
 
-      }
-       
+  }
+
   catch (e) {
     // check error
   }
@@ -112,7 +113,7 @@ async function get_by_id_flights(id) {
 
     if (get_by_id) {
       return get_by_id
-     
+
     } else {
       return console.error('The hand does not exist in Bella'); // מחזירה null אם הטבלה לא קיימת
     }
@@ -124,7 +125,7 @@ async function get_by_id_flights(id) {
 
 
 //tickets
-async function purchase_ticket(new_ticket) {
+async function purchase_ticket(new_ticket, test) {
   try {
     const flight = await dal_5.get_by_id(new_ticket.flight_id)
 
@@ -132,9 +133,9 @@ async function purchase_ticket(new_ticket) {
 
       if (flight.remaining_tickets > 0) {
         const id = parseInt(flight.id);
-
-        await dal_5.update_remaining_tickets(id);
-
+        if (test === undefined) {
+          await dal_5.update_remaining_tickets(id);
+        }
         await dal_6.new_ticket(new_ticket);
 
         return new_ticket
@@ -161,10 +162,10 @@ async function purchase_ticket(new_ticket) {
 async function new_passenger(new_p) {
   try {
 
-      const new_passenger =  await dal_7.new_passenger(new_p);
-        return new_passenger
-      }
-       
+    const new_passenger = await dal_7.new_passenger(new_p);
+    return new_passenger
+  }
+
   catch (e) {
     // check error
   }
@@ -173,14 +174,14 @@ async function new_passenger(new_p) {
 
 async function get_by_id_passenger(id) {
 
-  const passenger_id = await dal_7.get_by_id(id);
+  const passenger_id = await dal_7.get_by_id_passenger(id);
   return passenger_id
 
 }
 
 
 module.exports = {
- purchase_ticket, create_user, get_by_id_flights, update_user, get_by_id_user, delete_account,new_customer
- ,get_by_id_customer,update_customer,get_by_id_passenger,new_passenger
+  purchase_ticket, create_user, get_by_id_flights, update_user, get_by_id_user, delete_account, new_customer
+  , get_by_id_customer, update_customer, get_by_id_passenger, new_passenger
 
 }

@@ -87,7 +87,7 @@ async function delete_all() {
 
 async function get_next_user_id() {
     try {
-        let result = await connectedKnex.raw(`SELECT get_next_user_id()`);
+        let result = await connectedKnex.raw(`SELECT last_value FROM users_id_seq;`);
         return result
 
     } catch (e) {

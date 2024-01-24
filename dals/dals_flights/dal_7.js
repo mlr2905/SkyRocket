@@ -24,12 +24,11 @@ async function new_passenger(new_passenger) {
     return { ...new_passenger, id: result[0] }
 }
 
-async function get_by_id(id) {
+async function get_by_id_passenger(id) {
     // db.run('select * from passengers where user_id=?')
     const passenger = await connectedKnex('passengers').select('*').where('user_id', id).first()
     return passenger
 }
-new_passenger ,get_by_id
 
 
 // ---------------Admin permission only---------------
@@ -52,6 +51,12 @@ async function get_all() {
     return passengers
 }
 
+async function get_by_id(id) {
+    // db.run('select * from passengers where user_id=?')
+    const passenger = await connectedKnex('passengers').select('*').where('id', id).first()
+    return passenger
+}
+
 async function delete_all() {
     // db.run('update passengers ....')
     const result = await connectedKnex('passengers').del()
@@ -59,6 +64,28 @@ async function delete_all() {
     return result
 }
 
+// ---------------Test functions only---------------
+
+async function  get_next_passenger_id() {
+    try {
+        let result = await connectedKnex.raw(`SELECT last_value FROM passengers_id_seq;`);
+        return result
+
+    } catch (e) {
+        throw console.error('Error fetching next user ID:', e);
+
+    }
+}
+async function set_id_passenger(id) {
+    try {
+        const result = await connectedKnex.raw(`CALL reset_id_passenger(${id})`);
+        return result;
+
+    } catch (e) {
+        throw console.error('Error fetching next user ID:', e);
+
+    }
+}
 // async function create_table_if_not_exist() {
 //     const tableExists = await connectedKnex.schema.hasTable('passengers');
 
@@ -74,6 +101,6 @@ async function delete_all() {
 
 module.exports = {
     get_all, get_by_id, new_passenger, update_passenger, delete_passenger,
-    delete_all
+    delete_all,get_by_id_passenger,get_next_passenger_id,set_id_passenger
     // , create_table_if_not_exist
 }

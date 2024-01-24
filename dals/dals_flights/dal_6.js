@@ -17,7 +17,6 @@ const connectedKnex = knex({
 // ---------------User functions only and admin---------------
 
 async function new_ticket(new_t) {
-    console.log(new_t)
     // db.run('insert into tickets ....')
     // result[0] will be the new ID given by the SQL
     // Insert into tickets values(....)
@@ -68,6 +67,30 @@ async function delete_all() {
     return result
 }
 
+// ---------------Test functions only---------------
+
+async function get_next_ticket_id() {
+    try {
+        let result = await connectedKnex.raw(`SELECT last_value FROM tickets_id_seq;`);
+        return result
+
+    } catch (e) {
+        throw console.error('Error fetching next user ID:', e);
+
+    }
+} 
+
+async function set_id_ticket(id) {
+    try {
+        const result = await connectedKnex.raw(`CALL reset_id_ticket(${id})`);
+        return result;
+
+    } catch (e) {
+        throw console.error('Error fetching next user ID:', e);
+
+    }
+}
+
 // async function create_table_if_not_exist() {
 //     const tableExists = await connectedKnex.schema.hasTable('tickets');
 
@@ -82,7 +105,6 @@ async function delete_all() {
 // }
 
 module.exports = {
-    get_all, get_by_id, new_ticket, update_ticket, delete_ticket,
-    delete_all
+    get_all, get_by_id, new_ticket, update_ticket, delete_ticket,get_next_ticket_id,set_id_ticket,delete_all
     // , create_table_if_not_exist
 }
