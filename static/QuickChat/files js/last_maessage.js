@@ -23,14 +23,14 @@ async function last_message() { //Shows recent messages in chat details with sen
         };
 
         if (last_m[a].user === Cells_manager.name) {
-            user_name = "you"
+            user_name = "you:"
             imgMap[i].src = Cells_manager.img_user;
         }
         else {
             user_name = last_m[a].user
             imgMap[i].src = "bot.png"
         }
-        h4_son.innerHTML = user_name
+        h4_son.innerHTML = `${<h4>user_name</h4>}:`
         p_son_time.innerHTML = last_m[a].time
         div2.appendChild(h4_son)
         div2.appendChild(p_son_time)
