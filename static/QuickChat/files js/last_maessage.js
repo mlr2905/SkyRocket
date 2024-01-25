@@ -40,9 +40,9 @@ async function last_message() { //Shows recent messages in chat details with sen
         else {
             span_son.innerHTML = "link message!!"
         }
-        p_son_b.innerHTML = a
+        p_son_b.innerHTML = `<p>${a}</p>`
         div.appendChild(span_son)
-        div2.appendChild(p_son_b)
+        div.appendChild(p_son_b)
         div.appendChild(p_son_time)
 
     }
