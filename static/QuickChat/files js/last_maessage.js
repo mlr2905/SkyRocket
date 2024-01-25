@@ -10,7 +10,7 @@ async function last_message() { //Shows recent messages in chat details with sen
         let a = last_m.length - 1
         let div = document.getElementById(`p-${i}`)
         div.innerHTML = " "
-        let span2_son = document.createElement('p')
+        let p_son = document.createElement('p')
         let div2 = document.getElementById(`user-name${i}`)
         div2.innerHTML = " "
         let h5_son = document.createElement('h5')
@@ -35,13 +35,13 @@ async function last_message() { //Shows recent messages in chat details with sen
         div.appendChild(h5_son)
 
         if (last_m[a].type === "text") {
-            span2_son.innerHTML = last_m[a].text
+            p_son.innerHTML = last_m[a].text
         }
         else {
-            span2_son.innerHTML = "link message!!"
+            p_son.innerHTML = "link message!!"
         }
         p_son_b.innerHTML = a
-        div.appendChild(span2_son)
+        div.appendChild(p_son)
         div.appendChild(p_son_b)
         div2.appendChild(p_son_time)
 
