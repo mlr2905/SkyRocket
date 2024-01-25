@@ -27,7 +27,7 @@ async function last_message() { //Shows recent messages in chat details with sen
         }
         else {
             user_name = last_m[a].user
-            imgMap[i].src = "man.png"
+            imgMap[i].src = "bot.png"
         }
 
         p_son_time.innerHTML = last_m[a].time
