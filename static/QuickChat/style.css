@@ -4,8 +4,8 @@ body {
     background-attachment: fixed;
     background: #ccc;
     margin: 0;
-    height: 90vh;
-    width: 80%;
+    height: 80vh;
+    width: 90%;
     background-image: url("wallpaper-dark.jpg");
     padding: 2%;
 }
@@ -14,9 +14,6 @@ body {
     text-align: center;
     margin-bottom: 2%;
 }
-
-
-
 
 .date_day {
     background-color: #f39c12;
@@ -82,9 +79,6 @@ body {
     justify-content: center;
 }
 
-
-
-
 .iconify-icon {
     Cursor: pointer;
 
@@ -93,8 +87,6 @@ body {
 .margin-left {
     margin-left: 31%;
 }
-
-
 
 #emoji-1,#image{
         Cursor: pointer;
@@ -125,7 +117,6 @@ body {
         rgba(60, 66, 87, 0.08) 0px 2px 5px 0px;
 
     position: absolute;
-
 }
 
 #all-emoji .row {
@@ -150,7 +141,6 @@ body {
 
 *[id^="message-"] {
     Cursor: pointer;
-
 }
 
 
@@ -163,8 +153,6 @@ body {
     border-radius: 10%;
     border: 2% solid rgb(248, 187, 5);
     margin-left: 35%;
-
-
     box-shadow:
         rgba(0, 0, 0, 0) 0px 0px 0px 0px,
         rgba(0, 0, 0, 0) 0px 0px 0px 0px,
@@ -173,7 +161,6 @@ body {
         rgba(0, 0, 0, 0) 0px 0px 0px 0px,
         rgba(0, 0, 0, 0) 0px 0px 0px 0px,
         rgba(60, 6, 87, 0.08) 0px 2px 5px 0px;
-
 }
 
 .chat-list .chat-box {
@@ -214,8 +201,6 @@ body {
     color: #000;
 }
 
-
-
 .chat-list .chat-box .chat-details .text-message {
     display: flex;
     justify-content: space-between;
@@ -225,7 +210,6 @@ body {
 .chat-list .chat-box .chat-details .text-message p {
     color: #282727;
     font-size: 0.9em;
-    overlay: hidden;
 }
 
 img {
@@ -278,17 +262,11 @@ img {
     min-width: 100%
 }
 
-
-
 .flex {
     -webkit-box-flex: 1;
     -ms-flex: 1 1 auto;
     flex: 1 1 auto
 }
-
-
-
-
 
 @media (max-width:991.98px) {
     .padding {
@@ -303,8 +281,6 @@ img {
         margin-left: 50%;
         margin-top: 0%;
     }
-
-
 }
 
 @media (max-width:767.98px) {
