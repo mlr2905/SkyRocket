@@ -30,18 +30,19 @@ async function last_message() { //Shows recent messages in chat details with sen
             user_name = last_m[a].user
             imgMap[i].src = "bot.png"
         }
+        
         p_son_time.innerHTML = last_m[a].time
-        div2.appendChild(h5_son)
         div2.appendChild(p_son_time)
 
         if (last_m[a].type === "text") {
-            p_son.innerHTML = `${user_name}: ${last_m[a].text}`
+            h5_son.innerHTML = `${user_name}: <h6>${last_m[a].text}</h6`
         }
         else {
-            p_son.innerHTML = "link message!!"
+            h5_son.innerHTML = `${user_name}: <h6>"link message!!"</h6`
         }
+        div2.appendChild(h5_son)
+
         p_son_b.innerHTML = a
-        div.appendChild(p_son)
         div.appendChild(p_son_b)
     }
 }
