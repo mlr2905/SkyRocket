@@ -23,7 +23,7 @@ async function last_message() { //Shows recent messages in chat details with sen
 
         if (last_m[a].user === Cells_manager.name) {
             user_name = "you"
-            imgMap[i].src = Cells_manager.img_user;
+            imgMap[i].src = Cells_manager.img_user === '' ? "man.png" : Cells_manager.img_user;
         }
         else {
             user_name = last_m[a].user
@@ -34,11 +34,11 @@ async function last_message() { //Shows recent messages in chat details with sen
 
         if (last_m[a].type === "text") {
 
-            p_son.innerHTML = last_m[a].text.length > 25 ? `<b>${user_name}</b>: "Long message!!"`: `<b>${user_name}</b>: ${last_m[a].text}`
+            p_son.innerHTML = last_m[a].text.length > 25 ? `<b>${user_name}</b>: Long message!!`: `<b>${user_name}</b>: ${last_m[a].text}`
 
         }
         else {
-            p_son.innerHTML = `<h6>${user_name}</h6>: ${last_m[a].text}`
+            p_son.innerHTML = `<b>${user_name}<b>: ${last_m[a].text}`
         }
         div2.appendChild(p_son)
         div.appendChild(p_son_time)
