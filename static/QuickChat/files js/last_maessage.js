@@ -33,14 +33,16 @@ async function last_message() { //Shows recent messages in chat details with sen
         p_son_time.innerHTML = last_m[a].time
 
         if (last_m[a].type === "text") {
-            if(last_m[a].type.length > 25){
-                p_son.innerHTML = `<b>${user_name}</b>: "Long message!!"}`
 
-            }
-            else{
-                p_son.innerHTML = `<h6>${user_name}</h6>: ${last_m[a].text}`
+                if(last_m[a].text.length > 25){
 
-            }
+                    p_son.innerHTML = `<b>${user_name}</b>: "Long message!!"}`
+
+                }
+                else{
+                    p_son.innerHTML = `<b>${user_name}</b>: ${last_m[a].text}`
+
+                }
         }
         else {
             p_son.innerHTML = `<h6>${user_name}</h6>: ${last_m[a].text}`
