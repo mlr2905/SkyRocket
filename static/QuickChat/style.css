@@ -233,7 +233,7 @@ img {
     object-fit: cover;
 }
 
-.chat-list .chat-box .chat-details .text-head b {
+.chat-list .chat-box .chat-details .text-message b {
     background: #06e744;
     color: #fff;
     min-width: 20px;
