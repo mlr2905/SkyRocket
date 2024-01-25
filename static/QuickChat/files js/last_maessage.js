@@ -42,6 +42,6 @@ async function last_message() { //Shows recent messages in chat details with sen
         div2.appendChild(p_son_time)
 
         p_son_b.innerHTML = a
-        div.appendChild(p_son_b)
+        div2.appendChild(p_son_b)
     }
 }
