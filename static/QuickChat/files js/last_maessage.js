@@ -13,7 +13,6 @@ async function last_message() { //Shows recent messages in chat details with sen
         let p_son = document.createElement('p')
         let div2 = document.getElementById(`user-name${i}`)
         div2.innerHTML = " "
-        let p_son = document.createElement('p')
         let p_son_time = document.createElement('p')
         let p_son_b = document.createElement('b')
         let user_name = null
