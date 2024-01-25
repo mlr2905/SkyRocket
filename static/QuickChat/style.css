@@ -120,7 +120,7 @@ body {
 }
 
 #all-emoji .row {
-    margin-left: 6%;
+    margin-left: 2%;
 }
 
 .emojis {
@@ -239,7 +239,7 @@ img {
     background: #cb9f58;
 }
 .online {
-    margin-left: 70%;
+    margin-left: 90%;
     margin-right: 20%;
     margin-top: -35%;
     height: 50%;
