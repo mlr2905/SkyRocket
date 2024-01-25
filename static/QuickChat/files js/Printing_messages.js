@@ -4,7 +4,7 @@ function message_sorting() {
         let id = Cells_manager.size_array[i].id
 
         Cells_manager.type_class = Cells_manager.size_array[i].user === Cells_manager.name ? "right" : "-";
-        Cells_manager.img = Cells_manager.size_array[i].user === Cells_manager.name ? Cells_manager.img_user : "bot.png";
+        Cells_manager.img = Cells_manager.size_array[i].user === Cells_manager.name ? Cells_manager.img_user : "man.png";
         Cells_manager.user_or_Another_user = Cells_manager.size_array[i].user === Cells_manager.name ? "user" : "Another-user";
 
     
