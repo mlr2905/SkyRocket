@@ -14,7 +14,7 @@ async function last_message() { //Shows recent messages in chat details with sen
         let div2 = document.getElementById(`user-name${i}`)
         div2.innerHTML = " "
         let h5_son = document.createElement('h5')
-        let p_son_time = document.createElement('span')
+        let p_son_time = document.createElement('p')
         let p_son_b = document.createElement('b')
         let user_name = null
         const imgMap = {
