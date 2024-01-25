@@ -30,7 +30,7 @@ async function last_message() { //Shows recent messages in chat details with sen
             user_name = last_m[a].user
             imgMap[i].src = "bot.png"
         }
-        h4_son.innerHTML = `${<h4>user_name</h4>}:`
+        h4_son.innerHTML = `<h4>${user_name}:<h4>`
         p_son_time.innerHTML = last_m[a].time
         div2.appendChild(h4_son)
         div2.appendChild(p_son_time)
