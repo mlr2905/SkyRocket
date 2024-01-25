@@ -23,7 +23,7 @@ async function last_message() { //Shows recent messages in chat details with sen
 
         if (last_m[a].user === Cells_manager.name) {
             user_name = "you"
-            imgMap[i].src = Cells_manager.img_user === '' ? "man.png" : Cells_manager.img_user;
+            imgMap[i].src = Cells_manager.img_user === " " ? "man.png" : Cells_manager.img_user;
         }
         else {
             user_name = last_m[a].user
