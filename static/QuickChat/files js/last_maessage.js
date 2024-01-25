@@ -33,10 +33,10 @@ async function last_message() { //Shows recent messages in chat details with sen
         p_son_time.innerHTML = last_m[a].time
 
         if (last_m[a].type === "text") {
-            p_son.innerHTML = `${user_name}: ${last_m[a].text}`
+            p_son.innerHTML = `<h6>${user_name}</h6>: ${last_m[a].text}`
         }
         else {
-            p_son.innerHTML = `${user_name}: "link message!!"`
+            p_son.innerHTML = `<h6>${user_name}</h6>: ${last_m[a].text}`
         }
         div2.appendChild(p_son)
         div2.appendChild(p_son_time)
