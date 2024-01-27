@@ -6,10 +6,10 @@ function message_sorting() {
         Cells_manager.type_class = Cells_manager.size_array[i].user === Cells_manager.name ? "right" : "-";
         Cells_manager.img = Cells_manager.size_array[i].user === Cells_manager.name ? Cells_manager.img_user : "bot.png";
         Cells_manager.user_or_Another_user = Cells_manager.size_array[i].user === Cells_manager.name ? "user" : "Another-user";
-        if(Cells_manager.img === "" ){
+        if(Cells_manager.img === " " ){
             
             Cells_manager.img =  "man.png"
-        }  
+        } 
     
         if (Cells_manager.size_array[i].type === "text") {
             text_message(i, id)
@@ -38,6 +38,7 @@ function message_sorting() {
     let scroll_to_bottom = document.getElementById('box-body');
     scroll_to_bottom.scrollTop = scroll_to_bottom.scrollHeight;
 }
+
 function isLink_img(text) { //Tester with boosted in picture message
     return text.includes(".gif") || text.includes(".png") ||
         text.includes(".jpg") || text.includes(".svg") || text.includes(".jpeg");
