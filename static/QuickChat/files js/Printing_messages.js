@@ -7,7 +7,7 @@ function message_sorting() {
         Cells_manager.img = Cells_manager.size_array[i].user === Cells_manager.name ? Cells_manager.img_user : "bot.png";
         Cells_manager.user_or_Another_user = Cells_manager.size_array[i].user === Cells_manager.name ? "user" : "Another-user";
         if(Cells_manager.img === "" ){
-            "man.png"
+            Cells_manager.img =  "man.png"
         }  
     
         if (Cells_manager.size_array[i].type === "text") {
