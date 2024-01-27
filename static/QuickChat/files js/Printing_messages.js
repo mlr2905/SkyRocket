@@ -10,7 +10,7 @@ function message_sorting() {
             
             Cells_manager.img =  "man.png"
         } 
-    
+        
         if (Cells_manager.size_array[i].type === "text") {
             text_message(i, id)
         }
