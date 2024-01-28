@@ -32,42 +32,22 @@ function get() {
     message_sorting() //Printing_messages.js
 }
 
-function post_img() {
-    // 1. קבל את הקובץ שנבחר
-    const file = event.target.files[0];
-  
-    // 2. צור FileReader כדי לקרוא את תוכן הקובץ כ-data URL
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imgDataURL = e.target.result; // זהו ה-data URL של התמונה
-  
-      // 3. הכנת הנתונים לשליחה
-      Cells_manager.new_time = time_new(); // נניח ש-time_new מחזירה את הזמן הנוכחי
-      const data = {
-        user: Cells_manager.name,
-        text: imgDataURL,  // שולחים את ה-data URL של התמונה, לא את ה-src של התמונה
-        time: Cells_manager.new_time + ":00",
-        type: "img"
-      };
-  
-      // 4. שלח בקשת POST לשרת
-      fetch(`/api/chat${Cells_manager.chat_n}`, {
+function post_img() {//Only the sender sees the picture
+    Cells_manager.new_time = time_new()
+    const img = image1.src = URL.createObjectURL(event.target.files[0]);
+    const data = `{
+        "user": "${Cells_manager.name}",
+        "text": "${img}",
+        "time": "${Cells_manager.new_time}:00",
+        "type": "img"
+
+    }`
+    const url = `/api/chat${Cells_manager.chat_n}`
+    fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data) // המר את הנתונים לפורמט JSON
-      })
-      .then(response => {
-        // טיפול בתגובה מהשרת (בדוק אם ההעלאה הצליחה)
-      })
-      .catch(error => {
-        // טיפול בשגיאות
-      });
-    };
-  
-    // 5. התחלת קריאת הקובץ
-    reader.readAsDataURL(file);
-  }
-  
+        body: JSON.stringify(data) })
+}
 
 function post_data() {//Sending a text message, a link to YouTube, Tiktok, Facebook, or a photo link or a regular link
     if (document.getElementById("text").value !== "") {
