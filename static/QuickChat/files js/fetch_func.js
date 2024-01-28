@@ -32,48 +32,24 @@ function get() {
     message_sorting() //Printing_messages.js
 }
 
-// function post_img() {//Only the sender sees the picture
-//     Cells_manager.new_time = time_new()
-//     const img = image1.src = URL.createObjectURL(event.target.files[0]);
-//     const url = `/api/chat${Cells_manager.chat_n}`
-//     fetch(url, {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body:  `{
-//                     "user": "${Cells_manager.name}",
-//                     "text": "${img}",
-//                     "time": "${Cells_manager.new_time}:00",
-//                     "type": "img"
-
-//                 }`})
-// }
-
-
-function post_img() {
-      
-    const file = document.querySelector("input[type=file]").files[0];
-
-    const formData = new FormData();
-    
-    formData.append("file", file);
-    const url = `/api/chat${Cells_manager.chat_n}`;
-
+function post_img() {//Only the sender sees the picture
+    Cells_manager.new_time = time_new()
+    const img = image1.src = URL.createObjectURL(event.target.files[0]);
+    const url = `/api/chat${Cells_manager.chat_n}`
     fetch(url, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (response.ok) {
-          // הבקשה הצליחה
-        } else {
-          // הבקשה נכשלה
-        }
-      })
-      .catch((error) => {
-        // אירעה שגיאה
-      });
-    
-  }
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:  `{
+                    "user": "${Cells_manager.name}",
+                    "text": "${img}",
+                    "time": "${Cells_manager.new_time}:00",
+                    "type": "img"
+
+                }`})
+}
+
+
+
   
 function post_data() {//Sending a text message, a link to YouTube, Tiktok, Facebook, or a photo link or a regular link
     if (document.getElementById("text").value !== "") {
