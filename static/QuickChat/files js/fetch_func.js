@@ -40,14 +40,56 @@ function post_img() {//Only the sender sees the picture
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body:  `{
-            "user": "${Cells_manager.name}",
-            "text": "${img}",
-            "time": "${Cells_manager.new_time}:00",
-            "type": "img"
-    
-        }` })
+                    "user": "${Cells_manager.name}",
+                    "text": "${img}",
+                    "time": "${Cells_manager.new_time}:00",
+                    "type": "img"
+
+                }`})
 }
 
+
+function post_img() {
+    try {
+      Cells_manager.new_time = time_new();
+  
+      const selectedFile = event.target.files[0];
+      if (!selectedFile) {
+        throw new Error("No image file selected");
+      }
+  
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile); // Read image as base64 data
+  
+      reader.onload = () => {
+        const imgData = reader.result;
+  
+        const data = {
+          user: Cells_manager.name,
+          text: imgData, // Send base64 data directly
+          time: Cells_manager.new_time + ":00",
+          type: "img",
+        };
+  
+        const url = `/api/chat${Cells_manager.chat_n}`;
+        fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            // Handle successful response
+          })
+          .catch((error) => {
+            // Handle API errors
+          });
+      };
+    } catch (error) {
+      console.error("Error posting image:", error);
+      // Handle other errors gracefully
+    }
+  }
+  
 function post_data() {//Sending a text message, a link to YouTube, Tiktok, Facebook, or a photo link or a regular link
     if (document.getElementById("text").value !== "") {
         Cells_manager.new_time = time_new()
