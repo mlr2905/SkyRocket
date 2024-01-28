@@ -56,8 +56,9 @@ function post_img() {
     const formData = new FormData();
     
     formData.append("file", file);
-    
-    fetch("https://example.com/api/upload", {
+    const url = `/api/chat${Cells_manager.chat_n}`;
+
+    fetch(url, {
       method: "POST",
       body: formData,
     })
