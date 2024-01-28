@@ -38,7 +38,7 @@ function post_img() {//Only the sender sees the picture
     const url = `/api/chat${Cells_manager.chat_n}`
     fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/octet-stream' },
         body: `{
                     "user": "${Cells_manager.name}",
                     "text": "${img}",
