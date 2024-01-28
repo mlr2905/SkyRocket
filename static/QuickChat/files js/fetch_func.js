@@ -35,18 +35,17 @@ function get() {
 function post_img() {//Only the sender sees the picture
     Cells_manager.new_time = time_new()
     const img = image1.src = URL.createObjectURL(event.target.files[0]);
-    const data = `{
-        "user": "${Cells_manager.name}",
-        "text": "${img}",
-        "time": "${Cells_manager.new_time}:00",
-        "type": "img"
-
-    }`
     const url = `/api/chat${Cells_manager.chat_n}`
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data) })
+        body:  `{
+            "user": "${Cells_manager.name}",
+            "text": "${img}",
+            "time": "${Cells_manager.new_time}:00",
+            "type": "img"
+    
+        }` })
 }
 
 function post_data() {//Sending a text message, a link to YouTube, Tiktok, Facebook, or a photo link or a regular link
