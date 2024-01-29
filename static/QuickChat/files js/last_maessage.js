@@ -48,8 +48,10 @@ async function last_message() { //Shows recent messages in chat details with sen
         div2.appendChild(p_son)
         div2.appendChild(p_son_time)
 
-        p_son_b.innerHTML = `<p>.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;.</p>${a}`
-        
+        p_son_b.innerHTML = a
+        const emsp =  <p>.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;.</p>
+        div.appendChild(emsp)
+
         div.appendChild(p_son_b)
     }
 }
