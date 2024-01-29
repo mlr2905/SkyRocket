@@ -37,8 +37,12 @@ async function last_message() { //Shows recent messages in chat details with sen
             p_son.innerHTML = last_m[a].text.length > 25 ? `<b>${user_name}</b>: Long message!!`: `<b>${user_name}</b>: ${last_m[a].text}`
 
         }
+        if (last_m[a].type === "img") {
+            p_son.innerHTML = `<b>${user_name}</b>: photo message!!`
+
+        } 
         else {
-            p_son.innerHTML = `<b>${user_name}<b>: ${last_m[a].text}`
+            p_son.innerHTML = `<b>${user_name}</b>:link message!!`
         }
         div2.appendChild(p_son)
         div2.appendChild(p_son_time)
