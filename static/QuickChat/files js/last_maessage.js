@@ -52,7 +52,6 @@ async function last_message() { //Shows recent messages in chat details with sen
         p_son_b.innerHTML = a
         emsp.innerHTML =  `.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;.`
         div.appendChild(emsp)
-
         div.appendChild(p_son_b)
     }
 }
