@@ -40,14 +40,16 @@ async function last_message() { //Shows recent messages in chat details with sen
         if (last_m[a].type === "img") {
             p_son.innerHTML = `<b>${user_name}</b>: photo message!!`
 
-        } 
-        else {
-            p_son.innerHTML = `<b>${user_name}</b>:link message!!`
         }
+        if(last_m[a].type !== "img" && last_m[a].type !== "text") {
+            p_son.innerHTML = `<b>${user_name}</b>:link message!!`
+        } 
+        
         div2.appendChild(p_son)
         div2.appendChild(p_son_time)
 
-        p_son_b.innerHTML = a
+        p_son_b.innerHTML = `<p>.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;.</p>${a}`
+        
         div.appendChild(p_son_b)
     }
 }
