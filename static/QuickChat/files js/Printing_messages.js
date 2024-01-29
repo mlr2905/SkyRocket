@@ -46,7 +46,7 @@ function isLink_img(text) { //Tester with boosted in picture message
 
 function link_type() {//Checks if it is a link message and what type
     Cells_manager.new_time = time_new()
-    let img_or_no = isLink_img(Cells_manager.new_text)
+    let img_or_no = isLink_img(Cells_manager.new_text) || Cells_manager.new_text.includes("blob")
     let tube_or_no = Cells_manager.new_text.includes("youtu") || Cells_manager.new_text.includes("youtube")
     let tiktok_or_no = Cells_manager.new_text.includes("tiktok")
     let facebook_or_on = Cells_manager.new_text.includes("facebook")
