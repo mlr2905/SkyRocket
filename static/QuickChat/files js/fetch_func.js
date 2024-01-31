@@ -28,7 +28,7 @@ function get() {
     Cells_manager.size_array = JSON.parse(localStorage.getItem(`chat${Cells_manager.chat_n}`))
     Cells_manager.message_list = document.getElementById('box-body')
     Cells_manager.message_list.innerHTML = ""
-    const data_day = Cells_manager.time_date
+    const data_day = date_day_new()
     const div = document.getElementById('box-body')
     const son = document.createElement('div')
     son.innerHTML = `<div class="date_day">${data_day}</div>`

@@ -68,7 +68,7 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
 }
 
 function post_new_login(time) { //Connection of a user that does not exist
-const date = Cells_manager.time_date
+const date = date_day_new()
     let url = "/api/connected"
 
     fetch(url, {

@@ -12,12 +12,12 @@ function time_new() {
 }
 
 function date_day_new() {
-    const time_date = new Date();
-    const day = time_date.getDate()
-    const Month = time_date.getMonth() + 1
-    const Year = time_date.getFullYear()
-    const date = `${day}/${Month}/${Year}`
-    Cells_manager.time_date = date
+    Cells_manager.time_date = new Date();
+    const day = Cells_manager.time_date.getDate()
+    const Month = Cells_manager.time_date.getMonth() + 1
+    const Year = Cells_manager.time_date.getFullYear()
+    let Date_dey = `${day}/${Month}/${Year}`
+    return Date_dey
 }
 
 function difference_in_seconds(time1, time2) {
