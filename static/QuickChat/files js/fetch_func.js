@@ -2,7 +2,7 @@ intervalId = setInterval(push_update, 500)
 
 function push_update(ok) { //Updates the messages displayed in the chat only if there are changes
     if(Cells_manager.One_time !== true){
-        Cells_manager.time_date = date_day_new()
+        date_day_new()
         Cells_manager.One_time = true
     }
     if (Cells_manager.chat_n !== " " || ok === "ok") {
