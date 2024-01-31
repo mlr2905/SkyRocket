@@ -78,7 +78,7 @@ date +="T00:00:00.000Z"
         body: `{
                         "user":"${Cells_manager.name_connected}",
                         "time":"${time}"
-                        "date":"${date}"
+                        "date":${date}
 
                     }`}).then(response => {
             if (!response.ok) {
