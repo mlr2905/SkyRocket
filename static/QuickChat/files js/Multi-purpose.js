@@ -16,8 +16,8 @@ function date_day_new() {
     const d = Cells_manager.time_date.getDate()
     const m = Cells_manager.time_date.getMonth() + 1
     const Year = Cells_manager.time_date.getFullYear()
-    const day = d < 10 ? `0${a}` : `${a}`;
-    const Month = m < 10 ? `0${b}` : `${b}`;
+    const day = d < 10 ? `0${d}` : `${d}`;
+    const Month = m < 10 ? `0${m}` : `${m}`;
     let Date_dey = `${Year}-${Month}-${ day}`
     return Date_dey
 }
