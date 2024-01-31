@@ -13,11 +13,11 @@ function time_new() {
 
 function date_day_new() {
     Cells_manager.time_date = new Date();
-    const day = Cells_manager.time_date.getDate()
-    const Month = Cells_manager.time_date.getMonth() + 1
-    const Year = Cells_manager.time_date.getFullYear()
-    Cells_manager.time_date = `${day}/${Month}/${Year}`
-    return Cells_manager.time_date
+    const day = getDate()
+    const Month = getMonth() + 1
+    const Year = getFullYear()
+    const date = `${day}/${Month}/${Year}`
+    return date
 }
 
 function difference_in_seconds(time1, time2) {

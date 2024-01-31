@@ -1,6 +1,10 @@
 intervalId = setInterval(push_update, 500)
 
 function push_update(ok) { //Updates the messages displayed in the chat only if there are changes
+    if(Cells_manager.One_time !== true){
+        Cells_manager.time_date = date_day_new()
+        Cells_manager.One_time = true
+    }
     if (Cells_manager.chat_n !== " " || ok === "ok") {
         let url = `/api/chat${Cells_manager.chat_n}`
         fetch(url)
@@ -24,7 +28,7 @@ function get() {
     Cells_manager.size_array = JSON.parse(localStorage.getItem(`chat${Cells_manager.chat_n}`))
     Cells_manager.message_list = document.getElementById('box-body')
     Cells_manager.message_list.innerHTML = ""
-    const data_day = date_day_new()
+    const data_day = Cells_manager.time_date
     const div = document.getElementById('box-body')
     const son = document.createElement('div')
     son.innerHTML = `<div class="date_day">${data_day}</div>`
