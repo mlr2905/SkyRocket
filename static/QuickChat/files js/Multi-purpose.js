@@ -12,10 +12,10 @@ function time_new() {
 }
 
 function date_day_new() {
-    Cells_manager.time_date = new Date();
-    const day = getDate()
-    const Month = getMonth() + 1
-    const Year = getFullYear()
+    const time_date = new Date();
+    const day = time_date.getDate()
+    const Month = time_date.getMonth() + 1
+    const Year = time_date.getFullYear()
     const date = `${day}/${Month}/${Year}`
     return date
 }

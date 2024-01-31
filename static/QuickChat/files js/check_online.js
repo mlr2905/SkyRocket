@@ -7,7 +7,7 @@ async function check_online() { //A function that checks who logged in and who l
     Cells_manager.online = JSON.parse(localStorage.getItem("check-online"));
     let td = document.getElementById(`online`)
     const td_son = document.createElement("div");
-    td.innerHTML = ""
+    td.innerHTML = " "
     td_son.innerHTML = " "
     let users = [];
     Cells_manager.connected = "not"
