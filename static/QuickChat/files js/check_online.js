@@ -77,7 +77,7 @@ const date = date_day_new()
         body: `{
                         "user":"${Cells_manager.name_connected}",
                         "time":"${time}"
-                        "date":"${date}"
+                        "date":"${date}T00:00:00.000Z"
 
                     }`}).then(response => {
             if (!response.ok) {
