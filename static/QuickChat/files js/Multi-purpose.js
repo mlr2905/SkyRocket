@@ -16,8 +16,8 @@ function date_day_new() {
     const day = Cells_manager.time_date.getDate()
     const Month = Cells_manager.time_date.getMonth() + 1
     const Year = Cells_manager.time_date.getFullYear()
-    let Date_dey = `${day}/${Month}/${Year}`
-    return Date_dey
+    Cells_manager.time_date = `${day}/${Month}/${Year}`
+    return Cells_manager.time_date
 }
 
 function difference_in_seconds(time1, time2) {

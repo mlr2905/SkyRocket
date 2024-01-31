@@ -46,7 +46,7 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
             const time2 = new Date(`2023-11-29T${offline}`);
             const difference = difference_in_seconds(time1, time2);
 
-            if (difference > 60) {
+            if (difference > 30 || Cells_manager.time_date !== Cells_manager.online[i].date ) {
                 if (Cells_manager.online[i].user === Cells_manager.name_connected) { //Checking if my user has been logged out
                     Cells_manager.connected = "not"
                 }
@@ -68,7 +68,7 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
 }
 
 function post_new_login(time) { //Connection of a user that does not exist
-
+const date = date_day_new()
     let url = "/api/connected"
 
     fetch(url, {
@@ -77,6 +77,8 @@ function post_new_login(time) { //Connection of a user that does not exist
         body: `{
                         "user":"${Cells_manager.name_connected}",
                         "time":"${time}"
+                        "date":"${date}"
+
                     }`}).then(response => {
             if (!response.ok) {
                 console.error()
