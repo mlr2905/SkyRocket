@@ -68,8 +68,8 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
 }
 
 function post_new_login(time) { //Connection of a user that does not exist
-let date = date_day_new()
-date +="T00:00:00.000Z"
+// let date = date_day_new()
+// date +="T00:00:00.000Z"
     let url = "/api/connected"
 
     fetch(url, {
@@ -78,7 +78,7 @@ date +="T00:00:00.000Z"
         body: `{
                         "user":"${Cells_manager.name_connected}",
                         "time":"${time}"
-                        "date":${date}
+                        // "date":${date}
 
                     }`}).then(response => {
             if (!response.ok) {
