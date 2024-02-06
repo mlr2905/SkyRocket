@@ -4,10 +4,10 @@ function message_sorting() {
         let id = mainPage.size_array[i].id
 
         mainPage.type_class = mainPage.size_array[i].user === mainPage.name ? "right" : "-";
-        mainPage.img = mainPage.size_array[i].user === mainPage.name ? mainPage.img_user : "bot.png";
+        mainPage.img = mainPage.size_array[i].user === mainPage.name ? mainPage.img_user : "image/bot.png";
         mainPage.user_or_Another_user = mainPage.size_array[i].user === mainPage.name ? "user" : "Another-user";
         if (mainPage.img === " ") {
-            mainPage.img = "man.png"
+            mainPage.img = "image/man.png"
         }
 
         switch (mainPage.size_array[i].type) {

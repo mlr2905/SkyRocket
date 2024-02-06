@@ -19,7 +19,7 @@ async function last_message() {
 
         const user_name = last_m[a].user === mainPage.name ? "you" : last_m[a].user;
         const imgMap = { 1: img_user1, 2: img_user2, 3: img_user3, 4: img_user4 };
-        imgMap[i].src = user_name === "you" ? mainPage.img_user || "man.png" : "bot.png";
+        imgMap[i].src = user_name === "you" ? mainPage.img_user || "image/man.png" : "image/bot.png";
   
         p_son.innerHTML = `<b>${user_name}</b>: ${last_m[a].type === "text" && last_m[a].text.length > 25 ? "Long message!!" : last_m[a].text || "photo message!!" || "link message!!"}`;
   
