@@ -10,14 +10,19 @@ async function last_message() {
         localStorage.setItem(`chat${i}`, JSON.stringify(data));
         const last_m = data;
         const a = last_m.length - 1;
-        document.getElementById(`p-${i}`).innerHTML = "";
+        const div = document.getElementById(`p-${i}`);
+        div.innerHTML = "";
         const p_son = document.createElement('p');
         const emsp = document.createElement('p');
-        document.getElementById(`user-name${i}`).innerHTML = "";
+        const div2 = document.getElementById(`user-name${i}`);
+        div2.innerHTML = "";
+
         const user_name = last_m[a].user === mainPage.name ? "you" : last_m[a].user;
         const imgMap = { 1: img_user1, 2: img_user2, 3: img_user3, 4: img_user4 };
         imgMap[i].src = user_name === "you" ? mainPage.img_user || "man.png" : "bot.png";
+  
         p_son.innerHTML = `<b>${user_name}</b>: ${last_m[a].type === "text" && last_m[a].text.length > 25 ? "Long message!!" : last_m[a].text || "photo message!!" || "link message!!"}`;
+  
         div2.appendChild(p_son);
         div2.appendChild(document.createElement('p')).innerHTML = last_m[a].time;
         div.appendChild(emsp).innerHTML = `.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;.`;
