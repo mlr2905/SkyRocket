@@ -18,7 +18,7 @@ function date_day_new() {
     const Year = mainPage.time_date.getFullYear()
     const day = d < 10 ? `0${d}` : `${d}`;
     const Month = m < 10 ? `0${m}` : `${m}`;
-    let Date_dey = `${Year}-${Month}-${ day}`
+    let Date_dey = `${Year}-${Month}-${day}`
     return Date_dey
 }
 

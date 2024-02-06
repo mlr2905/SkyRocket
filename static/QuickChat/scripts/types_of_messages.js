@@ -38,7 +38,7 @@ function image_Message(i, id) {
         `
     mainPage.message_list.appendChild(mainPage.son)
     addCellClick(`message-${id}`, id)
-    addCellClick2(`img-${id}`, id)     
+    addCellClick2(`img-${id}`, id)
 }
 
 function link_message(i, id) {
@@ -160,5 +160,4 @@ function downloadImage(a) {
     link.href = image.src;
     link.download = " תמונה מהצאט";
     link.click();
-  }
-  
+}

@@ -46,11 +46,11 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
             const time2 = new Date(`2023-11-29T${offline}`);
             const difference = difference_in_seconds(time1, time2);
 
-            if (difference > 30 || mainPage.time_date !== mainPage.online[i].date ) {
+            if (difference > 30 || mainPage.time_date !== mainPage.online[i].date) {
                 if (mainPage.online[i].user === mainPage.name_connected) { //Checking if my user has been logged out
                     mainPage.connected = "not"
                 }
-                let url = `/api/connected/${id}`    
+                let url = `/api/connected/${id}`
                 fetch(url, {
                     method: "DELETE"
                 }).then(response => {
@@ -68,8 +68,8 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
 }
 
 function post_new_login(time) { //Connection of a user that does not exist
-// let date = date_day_new()
-// date +="T00:00:00.000Z"
+    let date = date_day_new()
+    date +="T00:00:00.000Z"
     let url = "/api/connected"
 
     fetch(url, {
@@ -78,7 +78,7 @@ function post_new_login(time) { //Connection of a user that does not exist
         body: `{
                         "user":"${mainPage.name_connected}",
                         "time":"${time}"
-                        // "date":${date}
+                        "date":${date}
 
                     }`}).then(response => {
             if (!response.ok) {

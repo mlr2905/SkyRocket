@@ -6,11 +6,11 @@ function message_sorting() {
         mainPage.type_class = mainPage.size_array[i].user === mainPage.name ? "right" : "-";
         mainPage.img = mainPage.size_array[i].user === mainPage.name ? mainPage.img_user : "bot.png";
         mainPage.user_or_Another_user = mainPage.size_array[i].user === mainPage.name ? "user" : "Another-user";
-        if(mainPage.img === " " ){
-            
-            mainPage.img =  "man.png"
-        } 
-        
+        if (mainPage.img === " ") {
+
+            mainPage.img = "man.png"
+        }
+
         if (mainPage.size_array[i].type === "text") {
             text_message(i, id)
         }

@@ -1,8 +1,8 @@
 const mainPage = new MainPage()
 
-function hide_and_show(name){
-            const div1 = document.getElementById(name);
-            div1.style.display = div1.style.display === "block" ? "none" : "block";
+function hide_and_show(name) {
+    const div1 = document.getElementById(name);
+    div1.style.display = div1.style.display === "block" ? "none" : "block";
 }
 
 function connect() {
@@ -32,7 +32,7 @@ function Hide_chats_rooms_and_room_cleaner() {
     hide_and_show("chats_rooms")
 }
 
-function exit_to_login_screen(){
+function exit_to_login_screen() {
     hide_and_show("chats_rooms")
     hide_and_show("onlines")
     hide_and_show("from")
@@ -49,9 +49,9 @@ function edit_or_delete_message(id) { //Edit or delete a message
             confirmButtonText: 'edit',
             denyButtonText: `delete`,
         }).then((result) => {
-            !result.isDismissed && (result.isConfirmed ? editing_message(id) : Swal.fire('The message has been deleted', '', 'info') && delete_(id));
-
-                      })
+            !result.isDismissed && (result.isConfirmed ? editing_message(id) :
+                Swal.fire('The message has been deleted', '', 'info') && delete_(id));
+        })
     }
     else {
         Swal.fire({
@@ -62,20 +62,19 @@ function edit_or_delete_message(id) { //Edit or delete a message
     }
 }
 
-//  async function dal 75
 async function editing_message(id) {
-        const { value: text } = await Swal.fire({
-            input: 'text',
-            inputLabel: 'Message',
-            inputPlaceholder: 'Type your message here...',
-            inputAttributes: {
-                'aria-label': 'Type your message here'
-            }, showCancelButton: true
-        })
-        if (text) {
-            [Swal.fire(text)]
-            put(id, text)
-        }
+    const { value: text } = await Swal.fire({
+        input: 'text',
+        inputLabel: 'Message',
+        inputPlaceholder: 'Type your message here...',
+        inputAttributes: {
+            'aria-label': 'Type your message here'
+        }, showCancelButton: true
+    })
+    if (text) {
+        [Swal.fire(text)]
+        put(id, text)
+    }
 }
 
 function activation(n) { //The function is responsible for displaying storage of the selected chat
@@ -88,13 +87,11 @@ function activation(n) { //The function is responsible for displaying storage of
         Show_connected_and_rooms()
         post_data() // test
         //Defining components for future use
-       
     }
     else {
         Swal.fire('You must enter a name!! Without a name you cannot enter the room', '', 'success')
     }
 }
-
 
 function add_img() {  //A function saves the user's image
     frame.src = URL.createObjectURL(event.target.files[0]);

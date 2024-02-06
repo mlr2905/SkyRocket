@@ -1,7 +1,7 @@
 intervalId = setInterval(push_update, 500)
 
 function push_update(ok) { //Updates the messages displayed in the chat only if there are changes
-  
+
     if (mainPage.chat_n !== " " || ok === "ok") {
         let url = `/api/chat${mainPage.chat_n}`
         fetch(url)
@@ -40,7 +40,7 @@ function post_img() {//Only the sender sees the picture
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:  `{
+        body: `{
                     "user": "${mainPage.name}",
                     "text": "${img}",
                     "time": "${mainPage.new_time}:00",
@@ -49,9 +49,6 @@ function post_img() {//Only the sender sees the picture
                 }`})
 }
 
-
-
-  
 function post_data() {//Sending a text message, a link to YouTube, Tiktok, Facebook, or a photo link or a regular link
     if (document.getElementById("text").value !== "") {
         mainPage.new_time = time_new()
@@ -94,13 +91,12 @@ async function put(number, value) { //Editing of a message of any type to any ty
         clearInterval(intervalId);
         const ok = "ok"
         push_update(ok)
-        push_update(ok)
         intervalId = setInterval(push_update, 500)
     }
 }
 
 function delete_(number) {//Deletes a message
-    let url =`/api/chat${mainPage.chat_n}/${number}`
+    let url = `/api/chat${mainPage.chat_n}/${number}`
     fetch(url, {
         method: 'DELETE'
     }).then(response => {
@@ -111,15 +107,18 @@ function delete_(number) {//Deletes a message
         }
     })
 }
-function id_message(i) {
-    let url = `/api/chat${i}`
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            localStorage.setItem(`id${i}`, JSON.stringify(data));
-        })
-    let date = JSON.parse(localStorage.getItem(`id${i}`))
-    let id_n = date
+
+async function id_message(i) {
+    const url = `/api/chat${i}`;
+    const response = await fetch(url);
+    let data = await response.json();
+
+    localStorage.setItem(`id${i}`, JSON.stringify(data));
+
+    let date = JSON.parse(localStorage.getItem(`id${i}`));
+    const id_n = date;
     const id = id_n.filter((item) => item.id === Math.max(...id_n.map((item) => item.id)));
+
     return id[0].id;
+
 }
