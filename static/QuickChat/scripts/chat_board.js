@@ -30,25 +30,25 @@ function connect() {
 }
 
 function Show_connected_rooms() {
-    const onlines = document.getElementById("onlines"); // Logged in users window
-    onlines.style.display = "block"
-    const chats_Room = document.getElementById("room"); // View of the chat
-    chats_Room.style.display = "block"
+    hide_and_show("onlines")
+    hide_and_show("room")
+
 }
 
 function Hide_chats_rooms_and_room_cleaner() {
     mainPage.size_array = []
     mainPage.message_list = document.getElementById('box-body')
     mainPage.message_list.innerHTML = " "
-
-    const div1 = document.getElementById("chats_rooms"); // View of the chat
-    div1.style.display = div1.style.display === "none" ? "block" : "none";
-    const div2 = document.getElementById("room");  // Chats menu
-    div2.style.display = div2.style.display === "none" ? "block" : "none";
+    hide_and_show("chats_rooms")
+    hide_and_show("room")
    
 }
 
 function exit_to_login_screen(){
+    hide_and_show("from")
+    hide_and_show("chats_rooms")
+    hide_and_show("onlines")
+
     const div1 = document.getElementById("from");
     div1.style.display = "block"
     const div2 = document.getElementById("chats_rooms");
