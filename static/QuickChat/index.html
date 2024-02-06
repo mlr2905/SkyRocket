@@ -10,7 +10,7 @@
     <script src="scripts/online_users.js"></script>
     <script src="scripts/emoji_keyboard.js"></script>
     <script src="scripts/http_client.js"></script>
-    <script src="scripts/handle_last_message.js"></script>
+    <script src="scripts/Show_last_message.js"></script>
     <script src="scripts/time_utils.js"></script>
     <script src="scripts/printing_messages.js"></script>
     <script src="scripts/types_of_messages.js"></script>
@@ -95,12 +95,12 @@
                             <h3 class="box-title" >Chats Rooms</h3>
                         </div>
                         <div class="box-body" >
-                            <div class="direct-chat-messages" id="box-body" onclick="hide_emojis()">
+                            <div class="direct-chat-messages" id="box-body" onclick="hide_and_show('all-emoji')">
                             </div>
                             <div class="box-footer">
                                 <form action="#" method="post">
                                     <div class="input-group">
-                                        <input type="text" onclick="hide_emojis()" id="text" name="message"
+                                        <input type="text" onclick="hide_and_show('all-emoji')" id="text" name="message"
                                             placeholder="Type Message ..." class="form-control">
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-warning btn-flat"
@@ -110,7 +110,7 @@
                                 </form>
                                 <br />
                                 <div class="row" style=" justify-content: center;">
-                                    <span id="emoji-1" onclick="Show_emojis()" style="margin-right: 4%;">
+                                    <span id="emoji-1" onclick="hide_and_show('all-emoji')" style="margin-right: 4%;">
                                         <iconify-icon icon="fe:smile"
                                             style='font-size:40px;color: #c69607'></iconify-icon>
                                     </span>

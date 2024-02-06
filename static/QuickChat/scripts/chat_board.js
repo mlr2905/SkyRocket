@@ -1,18 +1,8 @@
 const mainPage = new MainPage()
 
 function hide_and_show(name){
-      
             const div1 = document.getElementById(name);
-            if(div1.style.display === "block"){
-                div1.style.display ="none"
-            }
-            else{
-                div1.style.display ="block"
-            }
-
-       
-
-
+            div1.style.display = div1.style.display === "block" ? "none" : "block";
 }
 
 function connect() {
@@ -22,34 +12,29 @@ function connect() {
     intervalId = setInterval(last_message, 1500)
 
     if (mainPage.One_time !== 0) { //A one-time operation
-        check_online()
-        setInterval(check_online, 5000)
+        online_users()
+        setInterval(online_users, 5000)
         emoji_keyboard()
         mainPage.One_time = 0
     }
 }
 
-function Show_connected_rooms() {
+function Show_connected_and_rooms() {
     hide_and_show("onlines")
     hide_and_show("room")
-
 }
 
 function Hide_chats_rooms_and_room_cleaner() {
     mainPage.size_array = []
-    mainPage.message_list = document.getElementById('box-body')
-    mainPage.message_list.innerHTML = " "
-    hide_and_show("chats_rooms")
+    document.getElementById('box-body').innerHTML = "";
     hide_and_show("room")
-   
+    hide_and_show("chats_rooms")
 }
 
 function exit_to_login_screen(){
-    hide_and_show("from")
     hide_and_show("chats_rooms")
     hide_and_show("onlines")
-
-
+    hide_and_show("from")
 }
 
 function edit_or_delete_message(id) { //Edit or delete a message
@@ -77,8 +62,7 @@ function edit_or_delete_message(id) { //Edit or delete a message
 }
 
 //  async function dal 75
-  function editing_message(number) {
-    (async () => {
+async function editing_message(number) {
         const { value: text } = await Swal.fire({
             input: 'text',
             inputLabel: 'Message',
@@ -91,7 +75,6 @@ function edit_or_delete_message(id) { //Edit or delete a message
             [Swal.fire(text)]
             put(number, text)
         }
-    })()
 }
 
 function activation(n) { //The function is responsible for displaying storage of the selected chat

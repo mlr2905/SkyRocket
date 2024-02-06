@@ -1,4 +1,4 @@
-async function check_online() { //A function that checks who logged in and who logged out
+async function online_users() { //A function that checks who logged in and who logged out
     mainPage.name_connected = document.getElementById("name").value
     let url = "/api/connected"
     let response = await fetch(url)
