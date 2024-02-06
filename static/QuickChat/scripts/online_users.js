@@ -1,4 +1,5 @@
 async function online_users() { //A function that checks who logged in and who logged out
+    mainPage.date = date_day_new()
     mainPage.name_connected = document.getElementById("name").value
     let url = "/api/connected"
     let response = await fetch(url)
@@ -28,27 +29,26 @@ async function online_users() { //A function that checks who logged in and who l
     delete_out_user()
 }
 
-function clock_repair() {  //Clock repair according to the requested format
+function adding_seconds() {  //Clock repair according to the requested format
     let time = time_new()
     time += `:${mainPage.time_date.getSeconds() < 10 ? `0${mainPage.time_date.getSeconds()}` : mainPage.time_date.getSeconds()}`;
     return time
 }
 
 function delete_out_user() { //A function that checks if 60 seconds have passed since logging in, and if so, removes the user
-    let time = clock_repair()
+    let time = adding_seconds()
     for (let i = 0; i < mainPage.online.length; i++) {
         if (mainPage.online[i].time !== undefined) {
             let id = mainPage.online[i].id
             //All the following fields for the "if" to work
             let a = mainPage.online[i].time
             const offline = time;
-            let date = date_day_new()
 
-            const time1 = new Date(`${date}T${a}`);
-            const time2 = new Date(`${date}T${offline}`);
+            const time1 = new Date(`${mainPage.date}T${a}`);
+            const time2 = new Date(`${mainPage.date}T${offline}`);
             const difference = difference_in_seconds(time1, time2);
 
-            if (difference > 30 || date !== mainPage.online[i].date) {
+            if (difference > 30 || mainPage.date !== mainPage.online[i].date) {
                 if (mainPage.online[i].user === mainPage.name_connected) { //Checking if my user has been logged out
                     mainPage.connected = "not"
                 }
@@ -64,13 +64,13 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
             }
         }
     }
+
     if (mainPage.connected !== "ok") {
         post_new_login(time)
     }
 }
 
 function post_new_login(time) { //Connection of a user that does not exist
-    let date = date_day_new()
     let url = "/api/connected"
 
     fetch(url, {
@@ -79,7 +79,7 @@ function post_new_login(time) { //Connection of a user that does not exist
         body: `{
                         "user":"${mainPage.name_connected}",
                         "time":"${time}",
-                        "date":"${date}"
+                        "date":"${mainPage.date}"
 
                     }`}).then(response => {
             if (!response.ok) {
@@ -87,6 +87,3 @@ function post_new_login(time) { //Connection of a user that does not exist
             }
         });
 }
-
-
-

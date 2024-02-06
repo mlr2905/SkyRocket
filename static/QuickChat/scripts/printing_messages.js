@@ -7,33 +7,17 @@ function message_sorting() {
         mainPage.img = mainPage.size_array[i].user === mainPage.name ? mainPage.img_user : "bot.png";
         mainPage.user_or_Another_user = mainPage.size_array[i].user === mainPage.name ? "user" : "Another-user";
         if (mainPage.img === " ") {
-
             mainPage.img = "man.png"
         }
 
-        if (mainPage.size_array[i].type === "text") {
-            text_message(i, id)
+        switch (mainPage.size_array[i].type) {
+            case "text": text_message(i, id);
+            case "img": image_Message(i, id);
+            case "link": link_message(i, id);
+            case "tube": youtube_message(i, id);
+            case "face": runfacebookScript(), facebook_message(i, id);
+            case "tiktok": runTikTokScript(), tiktok_message(i, id);    
         }
-        else {
-            if (mainPage.size_array[i].type == "img") {
-                image_Message(i, id)
-            }
-            if (mainPage.size_array[i].type === "link") {
-                link_message(i, id)
-            }
-            if (mainPage.size_array[i].type === "tube") {
-                youtube_message(i, id)
-            }
-            if (mainPage.size_array[i].type === "face") {
-                runfacebookScript()
-                facebook_message(i, id)
-            }
-            if (mainPage.size_array[i].type === "tiktok") {
-                runTikTokScript()
-                tiktok_message(i, id)
-            }
-        }
-
     }
     let scroll_to_bottom = document.getElementById('box-body');
     scroll_to_bottom.scrollTop = scroll_to_bottom.scrollHeight;
