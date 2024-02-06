@@ -62,7 +62,7 @@ function edit_or_delete_message(id) { //Edit or delete a message
 }
 
 //  async function dal 75
-async function editing_message(number) {
+async function editing_message(id) {
         const { value: text } = await Swal.fire({
             input: 'text',
             inputLabel: 'Message',
@@ -73,7 +73,7 @@ async function editing_message(number) {
         })
         if (text) {
             [Swal.fire(text)]
-            put(number, text)
+            put(id, text)
         }
 }
 
@@ -84,7 +84,7 @@ function activation(n) { //The function is responsible for displaying storage of
         mainPage.size_array = []
         document.querySelector("#text").addEventListener("keydown", handleEnter);
         hide_and_show("chats_rooms")
-        Show_connected_rooms()
+        Show_connected_and_rooms()
         post_data() // test
         //Defining components for future use
        
