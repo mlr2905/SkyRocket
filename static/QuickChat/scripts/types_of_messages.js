@@ -38,7 +38,7 @@ function image_Message(i, id) {
         `
     mainPage.message_list.appendChild(mainPage.son)
     addCellClick(`message-${id}`, id)
-    addCellClick2(`img-${id}`, id)
+    addCellClick2(`img-${id}`, id)     
 }
 
 function link_message(i, id) {
@@ -66,7 +66,10 @@ function youtube_message(i, id) {
     const parts = url.split("/");
     const videoId = parts[parts.length - 1];
     const id_link = videoId.split("?");
-    const firstPart = id_link[0];
+    let firstPart = id_link[0];
+    if(id_link[0] === 'watch'){
+        firstPart =id_link[1]
+    }
     mainPage.son.innerHTML = `
         <div class="direct-chat-msg ${mainPage.type_class}">
             <div class="direct-chat-info clearfix">
@@ -79,7 +82,7 @@ function youtube_message(i, id) {
             <img class="direct-chat-img" src="${mainPage.img}"  alt="message user image">
             <div class="direct-chat-text">
                 <iframe width="300" height="200"
-                src="https://www.youtube.com/embed/${firstPart}?si=cFQc8PdAdX4dZwNQ""
+                src="https://www.youtube.com/embed/${firstPart}?si=cFQc8PdAdX4dZwNQ"
                 title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
                 encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
@@ -160,4 +163,5 @@ function downloadImage(a) {
     link.href = image.src;
     link.download = " תמונה מהצאט";
     link.click();
-}
+  }
+  
