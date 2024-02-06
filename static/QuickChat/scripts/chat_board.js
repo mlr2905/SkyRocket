@@ -100,7 +100,7 @@ function activation(n) { //The function is responsible for displaying storage of
         mainPage.json_id = id_message(n) //Used by the post_data function
         mainPage.size_array = []
         document.querySelector("#text").addEventListener("keydown", handleEnter);
-        connect()
+        hide_and_show("chats_rooms")
         Show_connected_rooms()
         post_data() // test
         //Defining components for future use
