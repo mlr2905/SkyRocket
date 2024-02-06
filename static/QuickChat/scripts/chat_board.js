@@ -1,10 +1,19 @@
 const mainPage = new MainPage()
 
+function hide_and_show(name){
+      
+            const div1 = document.getElementById(name);
+            div1.style.display = div1.style.display === "block" ? "none" : "none";
+
+       
+
+
+}
+
 function connect() {
-    const div1 = document.getElementById("from"); //Login 
-    div1.style.display = div1.style.display === "block" ? "none" : "none";
-    const div2 = document.getElementById("chats_rooms"); // Chats menu
-    div2.style.display = div2.style.display === "none" ? "block" : "none";
+    hide_and_show("from")
+    hide_and_show("chats_rooms")
+
     intervalId = setInterval(last_message, 1500)
 
     if (mainPage.One_time !== 0) { //A one-time operation
@@ -37,7 +46,7 @@ function Hide_chats_rooms_and_room_cleaner() {
 function exit_to_login_screen(){
     const div1 = document.getElementById("from");
     div1.style.display = "block"
-    const div2 = document.getElementById("chats");
+    const div2 = document.getElementById("chats_rooms");
     div2.style.display =  "none"
     const div3 = document.getElementById("onlines"); // Logged in users window
     div3.style.display = "none"
