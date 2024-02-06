@@ -23,7 +23,7 @@ function Show_connected_rooms() {
 }
 
 function Hide_chats_rooms_and_room_cleaner() {
-    const div1 = document.getElementById("chats-rooms"); // View of the chat
+    const div1 = document.getElementById("chats_rooms"); // View of the chat
     div1.style.display = div1.style.display === "none" ? "block" : "none";
     const div2 = document.getElementById("room");  // Chats menu
     div2.style.display = div2.style.display === "none" ? "block" : "none";
