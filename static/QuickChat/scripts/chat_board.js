@@ -18,7 +18,7 @@ function connect() {
 function Show_connected_rooms() {
     const onlines = document.getElementById("onlines"); // Logged in users window
     onlines.style.display = "block"
-    const chats_Room = document.getElementById("chats-rooms"); // View of the chat
+    const chats_Room = document.getElementById("room"); // View of the chat
     chats_Room.style.display = "block"
 }
 
