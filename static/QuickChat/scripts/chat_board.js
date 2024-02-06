@@ -3,7 +3,12 @@ const mainPage = new MainPage()
 function hide_and_show(name){
       
             const div1 = document.getElementById(name);
-            div1.style.display = div1.style.display === "block" ? "none" : "none";
+            if(div1.style.display === "block"){
+                div1.style.display ="none"
+            }
+            else{
+                div1.style.display ="block"
+            }
 
        
 
