@@ -87,8 +87,8 @@ function activation(n) { //The function is responsible for displaying storage of
     if (mainPage.name !== '') {
         document.querySelector("#text").addEventListener("keydown", handleEnter);
         connect()
-        Show_connected_rooms
-        Show_connected_rooms
+        Show_connected_rooms()
+        // Show_connected_rooms()
         post_data() // test
         //Defining components for future use
         mainPage.chat_n = n // Used by fetch functions
