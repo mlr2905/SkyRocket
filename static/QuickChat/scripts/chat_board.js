@@ -49,12 +49,7 @@ function exit_to_login_screen(){
     hide_and_show("chats_rooms")
     hide_and_show("onlines")
 
-    const div1 = document.getElementById("from");
-    div1.style.display = "block"
-    const div2 = document.getElementById("chats_rooms");
-    div2.style.display =  "none"
-    const div3 = document.getElementById("onlines"); // Logged in users window
-    div3.style.display = "none"
+
 }
 
 function edit_or_delete_message(id) { //Edit or delete a message
