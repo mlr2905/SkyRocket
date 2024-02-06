@@ -78,7 +78,7 @@ function post_new_login(time) { //Connection of a user that does not exist
         headers: { "Content-Type": "application/json" },
         body: `{
                         "user":"${mainPage.name_connected}",
-                        "time":"${time}"
+                        "time":"${time}",
                         "date":"${date}"
 
                     }`}).then(response => {
