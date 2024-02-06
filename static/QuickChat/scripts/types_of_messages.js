@@ -68,7 +68,10 @@ function youtube_message(i, id) {
     const id_link = videoId.split("?");
     let firstPart = id_link[0];
     if(id_link[0] === 'watch'){
-        firstPart =id_link[1]
+        a =id_link[1]
+        const b = a.split("=");
+        firstPart = b[1]
+
     }
     mainPage.son.innerHTML = `
         <div class="direct-chat-msg ${mainPage.type_class}">
