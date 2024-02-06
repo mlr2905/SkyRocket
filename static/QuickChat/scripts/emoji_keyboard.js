@@ -1,4 +1,11 @@
 
+function hide_emojis() {  //Hides the emoji that are clicked on the chat screen or on input text
+    const div1 = document.getElementById("all-emoji");
+    div1.style.display = "none";
+}
+
+
+
 function copy_To_Clipboard(a) {//Copy the desired emoji to input text
     const input = document.getElementById('text')
     input.value += a;
