@@ -14,7 +14,10 @@ function copy_To_Clipboard(a) {//Copy the desired emoji to input text
     input.value += a;
 }
 
+
 function emoji_keyboard() {//Emoji keyboard creator
+    // async await
+
     const url = "https://emojis-e61p.onrender.com/emojis"
     fetch(url)
         .then(res => res.json())

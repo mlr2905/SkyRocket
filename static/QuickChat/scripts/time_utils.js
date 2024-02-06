@@ -1,8 +1,8 @@
 
 function time_new() {
-    Cells_manager.time_date = new Date();
-    const a = Cells_manager.time_date.getHours();
-    const b = Cells_manager.time_date.getMinutes();
+    mainPage.time_date = new Date();
+    const a = mainPage.time_date.getHours();
+    const b = mainPage.time_date.getMinutes();
     let minutes = 0
     let hours = 0
     hours = a < 10 ? `0${a}` : `${a}`;
@@ -12,10 +12,10 @@ function time_new() {
 }
 
 function date_day_new() {
-    Cells_manager.time_date = new Date();
-    const d = Cells_manager.time_date.getDate()
-    const m = Cells_manager.time_date.getMonth() + 1
-    const Year = Cells_manager.time_date.getFullYear()
+    mainPage.time_date = new Date();
+    const d = mainPage.time_date.getDate()
+    const m = mainPage.time_date.getMonth() + 1
+    const Year = mainPage.time_date.getFullYear()
     const day = d < 10 ? `0${d}` : `${d}`;
     const Month = m < 10 ? `0${m}` : `${m}`;
     let Date_dey = `${Year}-${Month}-${ day}`

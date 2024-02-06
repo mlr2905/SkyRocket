@@ -1,5 +1,5 @@
 async function last_message() { //Shows recent messages in chat details with sender name and number of messages
-    Cells_manager.name = document.getElementById('name').value
+    mainPage.name = document.getElementById('name').value
     for (let i = 1; i < 5; i++) {
         let url = `/api/chat${i}`
         let response = await fetch(url)
@@ -22,9 +22,9 @@ async function last_message() { //Shows recent messages in chat details with sen
             3: img_user3, 4: img_user4,
         };
 
-        if (last_m[a].user === Cells_manager.name) {
+        if (last_m[a].user === mainPage.name) {
             user_name = "you"
-            imgMap[i].src = Cells_manager.img_user === " " ? "man.png" : Cells_manager.img_user;
+            imgMap[i].src = mainPage.img_user === " " ? "man.png" : mainPage.img_user;
         }
         else {
             user_name = last_m[a].user

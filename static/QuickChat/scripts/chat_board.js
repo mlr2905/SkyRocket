@@ -1,42 +1,38 @@
-const Cells_manager = new Default_cells(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",)
+const mainPage = new MainPage()
 
-
-function Hide_div() {
-    const div1 = document.getElementById("onlines"); // Logged in users window
-    div1.style.display = "block"
-    const div2 = document.getElementById("page-content"); // View of the chat
-    div2.style.display = "block"
-
-}
-
-
-function Hide_div2() {
+function connect() {
     const div1 = document.getElementById("from"); //Login 
     div1.style.display = div1.style.display === "block" ? "none" : "none";
-    const div2 = document.getElementById("chats"); // Chats menu
+    const div2 = document.getElementById("chat_rooms"); // Chats menu
     div2.style.display = div2.style.display === "none" ? "block" : "none";
     intervalId = setInterval(last_message, 1500)
 
-    if (Cells_manager.One_time !== 0) { //A one-time operation
+    if (mainPage.One_time !== 0) { //A one-time operation
         check_online()
         setInterval(check_online, 5000)
         emoji_keyboard()
-        Cells_manager.One_time = 0
+        mainPage.One_time = 0
     }
 }
 
-function Hide_div3() {
-    const div1 = document.getElementById("page-content"); // View of the chat
-    div1.style.display = "none"
-    const div2 = document.getElementById("chats");  // Chats menu
-    div2.style.display = div2.style.display === "none" ? "block" : "none";
-    // Every time you go to chat profiles, a reset is performed
-    Cells_manager.size_array = []
-    Cells_manager.message_list = document.getElementById('box-body')
-    Cells_manager.message_list.innerHTML = ""
+function Show_connected_rooms() {
+    const onlines = document.getElementById("onlines"); // Logged in users window
+    onlines.style.display = "block"
+    const chats_Room = document.getElementById("chats-rooms"); // View of the chat
+    chats_Room.style.display = "block"
 }
 
-function main_screen(){
+function Hide_chats_rooms_and_room_cleaner() {
+    const div1 = document.getElementById("chats-rooms"); // View of the chat
+    div1.style.display = "none"
+    const div2 = document.getElementById("room");  // Chats menu
+    div2.style.display = div2.style.display === "none" ? "block" : "none";
+    mainPage.size_array = []
+    mainPage.message_list = document.getElementById('box-body')
+    mainPage.message_list.innerHTML = " "
+}
+
+function exit_to_login_screen(){
     const div1 = document.getElementById("from");
     div1.style.display = "block"
     const div2 = document.getElementById("chats");
@@ -45,11 +41,10 @@ function main_screen(){
     div3.style.display = "none"
 }
 
-function edit_or_delete(number) { //Edit or delete a message
-    const element = document.getElementById(`message-${number}`);
-    const classes = element.className;
+function edit_or_delete_message(id) { //Edit or delete a message
+    const message = document.getElementById(`message-${id}`);
 
-    if (classes === "user") {//Only the owner of the message can delete or edit
+    if (message.className === "user") {//Only the owner of the message can delete or edit
         Swal.fire({
             title: 'Edit or delete the message?',
             showDenyButton: true,
@@ -57,7 +52,7 @@ function edit_or_delete(number) { //Edit or delete a message
             confirmButtonText: 'edit',
             denyButtonText: `delete`,
         }).then((result) => {
-            !result.isDismissed && (result.isConfirmed ? text_editing(number) : Swal.fire('The message has been deleted', '', 'info') && delete_(number));
+            !result.isDismissed && (result.isConfirmed ? editing_message(id) : Swal.fire('The message has been deleted', '', 'info') && delete_(id));
 
                       })
     }
@@ -70,7 +65,8 @@ function edit_or_delete(number) { //Edit or delete a message
     }
 }
 
-function text_editing(number) {
+//  async function dal 75
+  function editing_message(number) {
     (async () => {
         const { value: text } = await Swal.fire({
             input: 'text',
@@ -88,26 +84,26 @@ function text_editing(number) {
 }
 
 function activation(n) { //The function is responsible for displaying storage of the selected chat
-    if (Cells_manager.name !== '') {
+    if (mainPage.name !== '') {
         document.querySelector("#text").addEventListener("keydown", handleEnter);
-        Hide_div2()
-        Hide_div()
-        Hide_div()
+        connect()
+        Show_connected_rooms
+        Show_connected_rooms
         post_data() // test
         //Defining components for future use
-        Cells_manager.chat_n = n // Used by fetch functions
-        Cells_manager.json_id = id_message(n) //Used by the post_data function
-        Cells_manager.size_array = []
+        mainPage.chat_n = n // Used by fetch functions
+        mainPage.json_id = id_message(n) //Used by the post_data function
+        mainPage.size_array = []
     }
     else {
-        Swal.fire('Must enter a name!! Without a name you can see recent messages', '', 'success')
+        Swal.fire('You must enter a name!! Without a name you cannot enter the room', '', 'success')
     }
 }
 
 
 function add_img() {  //A function saves the user's image
     frame.src = URL.createObjectURL(event.target.files[0]);
-    Cells_manager.img_user = frame.src
+    mainPage.img_user = frame.src
 }
 
 function handleEnter(enter) { //Makes the enter button work like a send button

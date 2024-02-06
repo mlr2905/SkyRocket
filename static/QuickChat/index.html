@@ -5,15 +5,15 @@
     <title>QuickChat</title>
     <!-- script my files -->
     <link rel="stylesheet" href="style.css">
-    <script src="files js/Default_cells.js"></script>
-    <script src="files js/chat_board.js"></script>
-    <script src="files js/check_online.js"></script>
-    <script src="files js/emoji_keyboard.js"></script>
-    <script src="files js/fetch_func.js"></script>
-    <script src="files js/last_maessage.js"></script>
-    <script src="files js/Multi-purpose.js"></script>
-    <script src="files js/Printing_messages.js"></script>
-    <script src="files js/Types of messages.js"></script>
+    <script src="scripts/MainPage.js"></script>
+    <script src="scripts/chat_board.js"></script>
+    <script src="scripts/online_users.js"></script>
+    <script src="scripts/emoji_keyboard.js"></script>
+    <script src="scripts/http_client.js"></script>
+    <script src="scripts/handle_last_message.js"></script>
+    <script src="scripts/time_utils.js"></script>
+    <script src="scripts/printing_messages.js"></script>
+    <script src="scripts/types_of_messages.js"></script>
     <!-- script bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -29,9 +29,9 @@
 
 <body>
     <h1 class="title" style="color: white;">QuickChat</h1>
-    <div class="chat-list col-md-4" id="chats" style=" display:none">
+    <div class="chat-list col-md-4" id="chat_rooms" style=" display:none">
         <div class="chat-box active">
-            <div class="chat-details" onclick="main_screen()">
+            <div class="chat-details" onclick="exit_to_login_screen()">
                 <div class="row">
                     <h3><b style='font-size:22px'>Chat Rooms</b></h3> 
                     <p>.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;.</p>                    
@@ -86,7 +86,7 @@
     </div>
     <br />
 
-    <div class="page-content" id="page-content" style="display: none">
+    <div class="chats-rooms" id="chats-rooms" style="display: none">
         <div class="padding">
             <div class="row container d-flex justify-content-center">
                 <div class="col-md-5">
@@ -120,7 +120,7 @@
                                                 style='font-size:40px;color: #c69607'></iconify-icon>
                                         </label>
                                     </div>
-                                    <div class="exit" onclick="Hide_div3()">
+                                    <div class="exit" onclick="Hide_chats_rooms_and_room_cleaner()">
                                         <iconify-icon icon="game-icons:exit-door"
                                             style='font-size:40px;color: #c69607;'></iconify-icon>
                                     </div>
@@ -147,7 +147,7 @@
                 <input type="file" onchange="add_img()" class="custom-file-input bg-warning" id="files" required>
                 <label class="custom-file-label" for="file"><b>add a picture</b></label>
             </div>
-            <button onclick="Hide_div2()" class="btn bg-warning col" type="button"><b>connect</b></button>
+            <button onclick="connect()" class="btn bg-warning col" type="button"><b>connect</b></button>
     </form>
     <br />
     </div>
