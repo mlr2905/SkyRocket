@@ -3,7 +3,7 @@ const mainPage = new MainPage()
 function connect() {
     const div1 = document.getElementById("from"); //Login 
     div1.style.display = div1.style.display === "block" ? "none" : "none";
-    const div2 = document.getElementById("chat_rooms"); // Chats menu
+    const div2 = document.getElementById("chats_rooms"); // Chats menu
     div2.style.display = div2.style.display === "none" ? "block" : "none";
     intervalId = setInterval(last_message, 1500)
 
