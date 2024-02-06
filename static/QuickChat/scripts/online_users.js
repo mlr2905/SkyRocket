@@ -42,8 +42,10 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
             //All the following fields for the "if" to work
             let a = mainPage.online[i].time
             const offline = time;
-            const time1 = new Date(`2023-11-29T${a}`);
-            const time2 = new Date(`2023-11-29T${offline}`);
+            let date = date_day_new()
+
+            const time1 = new Date(`${date}T${a}`);
+            const time2 = new Date(`${date}T${offline}`);
             const difference = difference_in_seconds(time1, time2);
 
             if (difference > 30 || mainPage.time_date !== mainPage.online[i].date) {
@@ -69,7 +71,7 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
 
 function post_new_login(time) { //Connection of a user that does not exist
     let date = date_day_new()
-    date +="T00:00:00.000Z"
+    // date +="T00:00:00.000Z"
     let url = "/api/connected"
 
     fetch(url, {
