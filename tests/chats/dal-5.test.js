@@ -5,11 +5,11 @@ describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
         await dal.create_table_if_not_exist()
         await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'user': 'bot', 'time': '12:00:00' }) // id: 1
-        await dal.new_message({ 'id': 2, 'user': 'bot', 'time': '12:00:00' }) // id: 2
-        await dal.new_message({ 'id': 3, 'user': 'bot', 'time': '12:00:00' }) // Id: 3
-        await dal.new_message({ 'id': 4, 'user': 'bot', 'time': '12:00:00' }) // Id: 4
-        await dal.new_message({ 'id': 5, 'user': 'bot', 'time': '12:00:00' }) // Id: 5
+        await dal.new_message({ 'id': 1, 'user': 'bot', 'time': '12:00:00','date': '2024-06-02T00:00:00.000Z'}) // id: 1
+        await dal.new_message({ 'id': 2, 'user': 'bot', 'time': '12:00:00' ,'date': '2024-02-06-T00:00:00.000Z'}) // id: 2
+        await dal.new_message({ 'id': 3, 'user': 'bot', 'time': '12:00:00','date': '2024-02-06' }) // Id: 3
+        await dal.new_message({ 'id': 4, 'user': 'bot', 'time': '12:00:00','date': '02-06-2024' }) // Id: 4
+        await dal.new_message({ 'id': 5, 'user': 'bot', 'time': '12:00:00','date': '06-02-2024' }) // Id: 5
     })
 
     it('get_all', async () => {
