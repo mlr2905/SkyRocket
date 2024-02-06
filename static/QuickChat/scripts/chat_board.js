@@ -23,13 +23,15 @@ function Show_connected_rooms() {
 }
 
 function Hide_chats_rooms_and_room_cleaner() {
+    mainPage.size_array = []
+    mainPage.message_list = document.getElementById('box-body')
+    mainPage.message_list.innerHTML = " "
+    
     const div1 = document.getElementById("chats_rooms"); // View of the chat
     div1.style.display = div1.style.display === "none" ? "block" : "none";
     const div2 = document.getElementById("room");  // Chats menu
     div2.style.display = div2.style.display === "none" ? "block" : "none";
-    mainPage.size_array = []
-    mainPage.message_list = document.getElementById('box-body')
-    mainPage.message_list.innerHTML = " "
+   
 }
 
 function exit_to_login_screen(){
