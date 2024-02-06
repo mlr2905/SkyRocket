@@ -24,7 +24,7 @@ function Show_connected_rooms() {
 
 function Hide_chats_rooms_and_room_cleaner() {
     const div1 = document.getElementById("chats-rooms"); // View of the chat
-    div1.style.display = "none"
+    div1.style.display = div1.style.display === "none" ? "block" : "none";
     const div2 = document.getElementById("room");  // Chats menu
     div2.style.display = div2.style.display === "none" ? "block" : "none";
     mainPage.size_array = []
@@ -88,7 +88,6 @@ function activation(n) { //The function is responsible for displaying storage of
         document.querySelector("#text").addEventListener("keydown", handleEnter);
         connect()
         Show_connected_rooms()
-        // Show_connected_rooms()
         post_data() // test
         //Defining components for future use
         mainPage.chat_n = n // Used by fetch functions
