@@ -26,7 +26,7 @@ function Hide_chats_rooms_and_room_cleaner() {
     mainPage.size_array = []
     mainPage.message_list = document.getElementById('box-body')
     mainPage.message_list.innerHTML = " "
-    
+
     const div1 = document.getElementById("chats_rooms"); // View of the chat
     div1.style.display = div1.style.display === "none" ? "block" : "none";
     const div2 = document.getElementById("room");  // Chats menu
@@ -87,14 +87,15 @@ function edit_or_delete_message(id) { //Edit or delete a message
 
 function activation(n) { //The function is responsible for displaying storage of the selected chat
     if (mainPage.name !== '') {
+        mainPage.chat_n = n // Used by fetch functions
+        mainPage.json_id = id_message(n) //Used by the post_data function
+        mainPage.size_array = []
         document.querySelector("#text").addEventListener("keydown", handleEnter);
         connect()
         Show_connected_rooms()
         post_data() // test
         //Defining components for future use
-        mainPage.chat_n = n // Used by fetch functions
-        mainPage.json_id = id_message(n) //Used by the post_data function
-        mainPage.size_array = []
+       
     }
     else {
         Swal.fire('You must enter a name!! Without a name you cannot enter the room', '', 'success')
