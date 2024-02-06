@@ -12,11 +12,17 @@ function message_sorting() {
 
         switch (mainPage.size_array[i].type) {
             case "text": text_message(i, id);
+                break;
             case "img": image_Message(i, id);
+                break;
             case "link": link_message(i, id);
+                break;
             case "tube": youtube_message(i, id);
+                break;
             case "face": runfacebookScript(), facebook_message(i, id);
-            case "tiktok": runTikTokScript(), tiktok_message(i, id);    
+                break;
+            case "tiktok": runTikTokScript(), tiktok_message(i, id);
+                break;
         }
     }
     let scroll_to_bottom = document.getElementById('box-body');
