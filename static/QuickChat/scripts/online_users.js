@@ -48,7 +48,7 @@ function delete_out_user() { //A function that checks if 60 seconds have passed 
             const time2 = new Date(`${date}T${offline}`);
             const difference = difference_in_seconds(time1, time2);
 
-            if (difference > 30 || mainPage.time_date !== mainPage.online[i].date) {
+            if (difference > 30 || date !== mainPage.online[i].date) {
                 if (mainPage.online[i].user === mainPage.name_connected) { //Checking if my user has been logged out
                     mainPage.connected = "not"
                 }
