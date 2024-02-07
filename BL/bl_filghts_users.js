@@ -1,7 +1,5 @@
 
 const dal_1 = require('../dals/dals_flights/dal_1')
-const dal_2 = require('../dals/dals_flights/dal_2')
-const dal_3 = require('../dals/dals_flights/dal_3')
 const dal_4 = require('../dals/dals_flights/dal_4')
 const dal_5 = require('../dals/dals_flights/dal_5')
 const dal_6 = require('../dals/dals_flights/dal_6')
@@ -66,6 +64,7 @@ async function delete_account(id) {
 
   }
 }
+
 // func customers
 
 async function new_customer(new_c) {
@@ -106,6 +105,21 @@ async function update_customer(update) {
 }
 
 // flights
+
+async function get_all_flights(id) {
+  try {
+
+    const new_customer = await dal_5.get_all(id);
+
+    return new_customer
+
+  }
+
+  catch (e) {
+    // check error
+  }
+
+}
 
 async function get_by_id_flights(id) {
   try {
@@ -181,7 +195,7 @@ async function get_by_id_passenger(id) {
 
 
 module.exports = {
-  purchase_ticket, create_user, get_by_id_flights, update_user, get_by_id_user, delete_account, new_customer
+  purchase_ticket, create_user, get_by_id_flights,get_all_flights, update_user, get_by_id_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_passenger, new_passenger
 
 }

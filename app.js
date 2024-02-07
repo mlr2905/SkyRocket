@@ -18,7 +18,7 @@ const flights_router = require('./routers/flights/flights_router')
 const tickets_router = require('./routers/flights/tickets_router')
 const users_router = require('./routers/flights/users_router')
 const all_tables_router = require('./routers/flights/all_tables_router')
-
+const filghts_users =require('./routers/flights/filghts_users')
 
 
 logger.info('==== System start =======')
@@ -47,5 +47,7 @@ app.use('/api/customers', customers_router)
 app.use('/api/flights', flights_router)
 app.use('/api/tickets', tickets_router)
 app.use('/api/users', users_router)
+app.use('/filghts_users', filghts_users)
+
 
 logger.info('==== System stop =======')
