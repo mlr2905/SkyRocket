@@ -22,6 +22,7 @@ async function create_user(username, email, password) {
     throw error; // מעבירה את השגיאה הלאה
   }
 }
+
 async function get_by_id_user(id) {
 
   const user_id = await dal_1.get_by_id(id);
@@ -82,7 +83,6 @@ async function update_user_airline(id, update_airline) {
   }
 }
 
-
 // flights
 
 async function get_all_flights() {
@@ -142,9 +142,6 @@ async function update_flight(id, update_flight) {
 
   }
 }
-
-
-
 
 async function delete_flight(id) {
   try {
