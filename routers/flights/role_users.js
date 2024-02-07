@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const bl = require('../../bl/bl_filghts_users')
 
-
 //filghts_users/users
 
 // GET by ID
@@ -23,6 +22,7 @@ router.post('/users', async (request, response) => {
     const result = await bl.create_user(new_user)
     response.status(201).json(result)
 })
+
 // PUT /PATCH
 router.put('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
@@ -42,7 +42,6 @@ router.delete('/users/:id', async (request, response) => {
 })
 
 //filghts_users/customers
-
 
 // GET by ID
 router.get('/customers/:id', async (request, response) => {
