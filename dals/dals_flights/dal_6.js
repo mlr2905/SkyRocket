@@ -27,7 +27,7 @@ async function new_ticket(new_t) {
 
 async function get_by_id(id) {
     // db.run('select * from tickets where user_id=?')
-    const ticket = await connectedKnex('tickets').select('*').where('id', id).first()
+    const ticket = await connectedKnex('tickets').select('*').where('user_id', id).first()
     return ticket
 }
 
