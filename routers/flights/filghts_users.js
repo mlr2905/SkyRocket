@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const bl = require('../../bl/bl_filghts_users')
+const bl = require('../../bl/bl_filghts_user')
 
 
 //filghts_users/users
