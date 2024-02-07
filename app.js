@@ -47,7 +47,7 @@ app.use('/api/customers', customers_router)
 app.use('/api/flights', flights_router)
 app.use('/api/tickets', tickets_router)
 app.use('/api/users', users_router)
-app.use('/filghts_users', filghts_users)
+app.use('/role_users', role_users)
 
 
 logger.info('==== System stop =======')
