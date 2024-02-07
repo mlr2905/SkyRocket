@@ -28,6 +28,20 @@ async function get_all() {
 
     return flights
 }
+// ---------------User functions only and admin---------------
+
+async function update_remaining_tickets(id) {
+    // db.run('update flights ....')
+    const result = await connectedKnex.raw(`CALL update_remaining_tickets(${id})`)
+    if (result.error) {
+
+        console.log(result.error);
+
+    } else {
+
+        return result
+    }
+}
 
 // ---------------airline_User functions only and admin---------------
 
@@ -57,21 +71,11 @@ async function update_flight(id, updated_flight) {
     return updated_flight
 }
 
-async function update_remaining_tickets(id) {
-    // db.run('update flights ....')
-    const result = await connectedKnex.raw(`CALL update_remaining_tickets(${id})`)
-    if (result.error) {
 
-        console.log(result.error);
-
-    } else {
-
-        return result
-    }
-}
 async function delete_flight(id) {
     // db.run('update flights ....')
-    const result = await connectedKnex('flights').where('id', id).del()
+    const result = await connectedKnex.raw(`CALL delete_flight(${id})`);
+    
     return result
 }
 

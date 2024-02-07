@@ -41,6 +41,8 @@ async function update_airline(id, updated_airline) {
     return updated_airline
 }
 
+// ---------------Admin permission only---------------
+
 async function delete_airline(id) {
     // db.run('update airlines ....')
     const result = await connectedKnex('airlines').where('id', id).del()
@@ -48,7 +50,6 @@ async function delete_airline(id) {
 }
 
 
-// ---------------Admin permission only---------------
 async function get_all() {
     // db.run('select * from airlines')
     const airlines = await connectedKnex('airlines')
