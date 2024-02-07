@@ -1,5 +1,5 @@
 const assert = require('assert')
-const bl = require('../BL/bl_filghts_users')
+const bl = require('../bl/bl_role_users')
 const dal_1 = require('../dals/dals_flights/dal_1')
 const dal_5 = require('../dals/dals_flights/dal_5')
 const dal_6 = require('../dals/dals_flights/dal_6')
