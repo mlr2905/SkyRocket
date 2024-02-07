@@ -34,7 +34,7 @@ router.put('/users/:id', async (request, response) => {
 })
 
 // DELETE
-router.delete('/:id', async (request, response) => {
+router.delete('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const result = await bl.delete_account(user_id)
     response.status(204).json({ result })
@@ -45,7 +45,7 @@ router.delete('/:id', async (request, response) => {
 
 
 // GET by ID
-router.get('/users/:id', async (request, response) => {
+router.get('/customers/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_customer(user_id)
     if (user) {
@@ -57,14 +57,14 @@ router.get('/users/:id', async (request, response) => {
 })
 
 // POST
-router.post('/users', async (request, response) => {
+router.post('/customers', async (request, response) => {
     const new_user = request.body
     const result = await bl.new_customer(new_user)
     response.status(201).json(result)
 })
 
 // PUT /PATCH
-router.put('/users/:id', async (request, response) => {
+router.put('/customers/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
         // user exists ==> perform update
         const updated_user_req = request.body
