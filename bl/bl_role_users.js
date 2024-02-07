@@ -171,6 +171,16 @@ async function purchase_ticket(new_ticket, test) {
 
 }
 
+async function get_by_id_ticket(id) {
+
+  const user_id = await dal_6.get_by_id(id);
+  return user_id
+
+}
+
+
+
+
 //new_passengers
 
 async function new_passenger(new_p) {
@@ -196,6 +206,6 @@ async function get_by_id_passenger(id) {
 
 module.exports = {
   purchase_ticket, create_user, get_by_id_flights,get_all_flights, update_user, get_by_id_user, delete_account, new_customer
-  , get_by_id_customer, update_customer, get_by_id_passenger, new_passenger
+  , get_by_id_customer, update_customer,get_by_id_ticket, get_by_id_passenger, new_passenger
 
 }

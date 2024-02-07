@@ -103,6 +103,17 @@ router.post('/tickets', async (request, response) => {
     const result = await bl.purchase_ticket(new_user)
     response.status(201).json(result)
 })
+// GET by ID
+router.get('/tickets/:id', async (request, response) => {
+    const user_id = parseInt(request.params.id)
+    const user = await bl.get_by_id_ticket(user_id)
+    if (user) {
+        response.json(user)
+    }
+    else {
+        response.status(404).json({ "error": `cannot find user with id ${user_id}` })
+    }
+})
 
 //filghts_users/passengers
 
