@@ -20,7 +20,7 @@ router.get('/users/:id', async (request, response) => {
 router.post('/users', async (request, response) => {
     const new_user = request.body
     const result = await bl.create_user(new_user)
-    response.status(201).json(result)
+    return  result
 })
 
 // PUT /PATCH

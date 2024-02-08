@@ -9,35 +9,44 @@ const dal_7 = require('../dals/dals_flights/dal_7')
 
 //func users
 async function create_user(uesr) {
-  console.log('1',uesr)
+  // בודק אם שם המשתמש קיים
+  const userExists = await db.query('SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)', [uesr.username]);
 
-  console.log('2',uesr.username)
-
-  const user_name = await dal_1.get_by_name(uesr.username);
-  console.log('3',user_name)
-  if (user_name === undefined) {
-
-    try {
-      // בודקת אם קיבלה סיסמה
-      if (uesr.password !== '') {
-        // מפעילה את הפרוצדורה sp_i_users
-        const new_user = await dal_1.sp_i_users(uesr);
-        return new_user
-      } else {
-        // מפעילה את הפרוצדורה sp_pass_users
-        const new_user = await dal_1.sp_pass_users(uesr);
-        return new_user
-      }
-    } catch (error) {
-      console.error('Error passing users:', error);
-      throw error; // מעבירה את השגיאה הלאה
-    }
+  // אם שם המשתמש קיים, החזר 404
+  if (userExists.rows[0].exists) {
+    return {
+      status: 404,
+      message: 'User exists in the system:',
+    };
   }
-  else {
-    const error = 'User exists in the system:'
-    return error
+  
+  // אם שם המשתמש אינו קיים, צור משתמש חדש
+  try {
+    // בודק אם קיבלה סיסמה
+    if (uesr.password !== '') {
+      // מפעילה את הפרוצדורה sp_i_users
+      const new_user = await dal_1.sp_i_users(uesr);
+      return {
+        status: 201,
+        message: 'User created successfully',
+        data: new_user,
+      };
+    } else {
+      // מפעילה את הפרוצדורה sp_pass_users
+      const new_user = await dal_1.sp_pass_users(uesr);
+      return {
+        status: 201,
+        message: 'User created successfully',
+        data: new_user,
+      };
+    }
+  } catch (error) {
+    console.error('Error passing users:', error);
+    throw error; // מעבירה את השגיאה הלאה
   }
 }
+
+
 
 async function get_by_id_user(id) {
 
