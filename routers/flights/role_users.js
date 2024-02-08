@@ -22,13 +22,11 @@ router.post('/users', async (request, response) => {
     const new_user = request.body
     try {
         const result = await bl.create_user(new_user)
-        if (result !== 'error') {
-            response.status(201).json(result)
-        }
-        else {
-        }
+        response.status(201).json(result)
+
+
     } catch (error) {
-        throw  response.status(404).json({ "error": `Username or email exist in the system ${new_user}` })
+        throw response.status(404).json({ "error": `Username or email exist in the system ${new_user.username}` })
         ; // מעבירה את השגיאה הלאה
     }
 

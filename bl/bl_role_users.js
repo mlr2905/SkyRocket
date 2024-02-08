@@ -10,22 +10,18 @@ const dal_7 = require('../dals/dals_flights/dal_7')
 //func users
 async function create_user(uesr) {
 
-  // אם שם המשתמש אינו קיים, צור משתמש חדש
-  try {
-    // בודק אם קיבלה סיסמה
-    if (uesr.password !== '') {
-      // מפעילה את הפרוצדורה sp_i_users
-      const new_user = await dal_1.sp_i_users(uesr);
-      return `User '${uesr.username}' successfully created`
-    } else {
-      // מפעילה את הפרוצדורה sp_pass_users
-      const new_user = await dal_1.sp_pass_users(uesr);
+  // בודק אם קיבלה סיסמה
+  if (uesr.password !== '') {
+    // מפעילה את הפרוצדורה sp_i_users
+    const new_user = await dal_1.sp_i_users(uesr);
+    return `User '${uesr.username}' successfully created`
+  } else {
+    // מפעילה את הפרוצדורה sp_pass_users
+    const new_user = await dal_1.sp_pass_users(uesr);
 
-      return `User '${uesr.username}' successfully created`
-    }
-  } catch (error) {
-    throw 'error'; // מעבירה את השגיאה הלאה
+    return `User '${uesr.username}' successfully created`
   }
+
 }
 
 
