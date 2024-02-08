@@ -24,7 +24,7 @@ async function create_user(uesr) {
       return `User '${uesr.username}' successfully created`
     }
   } catch (error) {
-    throw 'Username or email exist in the system'; // מעבירה את השגיאה הלאה
+    throw 'error'; // מעבירה את השגיאה הלאה
   }
 }
 
