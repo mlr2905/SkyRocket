@@ -17,6 +17,17 @@ const connectedKnex = knex({
 // ---------------User functions only and admin---------------
 
 //new_user
+async function sp_i_users_airlines(name, email, password) {
+    const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${name}','${email}','${password}');`)
+    return new_user
+}
+
+//new_user (Automatically generates a password)
+async function sp_pass_users_airlines(name, email) {
+    const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${name}','${email}','');`)
+    return new_user
+}
+
 async function sp_i_users(name, email, password) {
     const new_user = await connectedKnex.raw(`CALL sp_i_users('${name}','${email}','${password}');`)
     return new_user
@@ -121,6 +132,6 @@ async function set_id_user(id) {
 
 module.exports = {
     get_all, get_by_id, update_user, delete_user,
-    delete_all, sp_i_users, sp_pass_users, get_next_user_id, set_id_user
+    delete_all, sp_i_users, sp_pass_users,sp_i_users_airlines,sp_pass_users_airlines, get_next_user_id, set_id_user
     // ,create_table_if_not_exist
 }

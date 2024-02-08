@@ -5,16 +5,16 @@ const dal_5 = require('../dals/dals_flights/dal_5')
 
 
 //func users
-async function create_user(username, email, password) {
+async function create_user_airlines(uesr) {
   try {
     // בודקת אם קיבלה סיסמה
-    if (password !== '') {
+    if (uesr.password !== '') {
       // מפעילה את הפרוצדורה sp_i_users
-      const new_user = await dal_1.sp_i_users(username, email, password);
+      const new_user = await dal_1.sp_i_users_airlines(uesr.username, uesr.email, uesr.password);
       return new_user
     } else {
       // מפעילה את הפרוצדורה sp_pass_users
-      const new_user = await dal_1.sp_pass_users(username, email);
+      const new_user = await dal_1.sp_pass_users_airlines(uesr.username, uesr.email);
       return new_user
     }
   } catch (error) {
@@ -158,5 +158,5 @@ async function delete_flight(id) {
 
 
 module.exports = {
-  create_user,get_by_id_user,update_user,create_user_airline,get_by_id_user_airline,update_user_airline,
+  create_user_airlines,get_by_id_user,update_user,create_user_airline,get_by_id_user_airline,update_user_airline,
   get_all_flights,get_by_id_flights,create_new_flights,update_flight,delete_flight}
