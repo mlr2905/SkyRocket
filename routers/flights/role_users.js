@@ -23,6 +23,27 @@ router.post('/users', async (request, response) => {
     response.json(result)
 })
 
+router.post('/users', async (request, response) => {
+    try {
+      const new_user = request.body;
+      const result = await bl.create_user(new_user);
+  
+      if (result.exists) { // Assuming result indicates user existence
+        return response.status(409).json({ message: 'User already exists' });
+      }
+  
+      const createdUser = result.data; // Assuming result contains created user data
+  
+      return response.status(201).json({
+        message: 'User created successfully',
+        user: createdUser,
+      });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      return response.status(500).json({ message: 'Error creating user' });
+    }
+  });
+
 // PUT /PATCH
 router.put('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)

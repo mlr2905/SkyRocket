@@ -14,31 +14,20 @@ async function create_user(uesr) {
 
   // אם שם המשתמש קיים, החזר 404
   if (userExists.rows[0].exists) {
-    return {
-      status: 404,
-      message: 'User exists in the system:',
-    };
+    return userExists
   }
-  
+
   // אם שם המשתמש אינו קיים, צור משתמש חדש
   try {
     // בודק אם קיבלה סיסמה
     if (uesr.password !== '') {
       // מפעילה את הפרוצדורה sp_i_users
       const new_user = await dal_1.sp_i_users(uesr);
-      return {
-        status: 201,
-        message: 'User created successfully',
-        data: new_user,
-      };
+      return new_user
     } else {
       // מפעילה את הפרוצדורה sp_pass_users
       const new_user = await dal_1.sp_pass_users(uesr);
-      return {
-        status: 201,
-        message: 'User created successfully',
-        data: new_user,
-      };
+      return new_user;
     }
   } catch (error) {
     console.error('Error passing users:', error);
