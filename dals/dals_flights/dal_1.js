@@ -26,13 +26,13 @@ async function get_by_name(name) {
 //new_user
 async function sp_i_users_airlines(uesr) {
 
-    const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${uesr.username:}','${uesr.email}','${uesr.password}');`)
+    const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${uesr.username}','${uesr.email}','${uesr.password}');`)
     return new_user
 }
 
 //new_user (Automatically generates a password)
 async function sp_pass_users_airlines(uesr) {
-    const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${uesr.username:}','${uesr.email}','');`)
+    const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${uesr.username}','${uesr.email}','');`)
     return new_user
 }
 
