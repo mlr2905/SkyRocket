@@ -9,20 +9,29 @@ const dal_7 = require('../dals/dals_flights/dal_7')
 
 //func users
 async function create_user(uesr) {
-  try {
-    // בודקת אם קיבלה סיסמה
-    if (uesr.password !== '') {
-      // מפעילה את הפרוצדורה sp_i_users
-      const new_user = await dal_1.sp_i_users(uesr);
-      return new_user
-    } else {
-      // מפעילה את הפרוצדורה sp_pass_users
-      const new_user = await dal_1.sp_pass_users(uesr);
-      return new_user
+
+  const user_name = await dal_1.get_by_name(uesr.username);
+  if (user_name) {
+
+    try {
+      // בודקת אם קיבלה סיסמה
+      if (uesr.password !== '') {
+        // מפעילה את הפרוצדורה sp_i_users
+        const new_user = await dal_1.sp_i_users(uesr);
+        return new_user
+      } else {
+        // מפעילה את הפרוצדורה sp_pass_users
+        const new_user = await dal_1.sp_pass_users(uesr);
+        return new_user
+      }
+    } catch (error) {
+      console.error('Error passing users:', error);
+      throw error; // מעבירה את השגיאה הלאה
     }
-  } catch (error) {
-    console.error('Error passing users:', error);
-    throw error; // מעבירה את השגיאה הלאה
+  }
+  else {
+    return console.error('User exists in the system:', error);
+
   }
 }
 
@@ -205,7 +214,7 @@ async function get_by_id_passenger(id) {
 
 
 module.exports = {
-  purchase_ticket, create_user, get_by_id_flights,get_all_flights, update_user, get_by_id_user, delete_account, new_customer
-  , get_by_id_customer, update_customer,get_by_id_ticket, get_by_id_passenger, new_passenger
+  purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
+  , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger
 
 }

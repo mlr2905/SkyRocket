@@ -16,8 +16,19 @@ const connectedKnex = knex({
 
 // ---------------User functions only and admin---------------
 
+async function get_by_name(name) {
+    // db.run('select * from users where id=?')
+    const user = await connectedKnex('users')
+        .select('users.*', 'roles.role_name')
+        .join('roles', 'users.role_id', 'roles.id')
+        .where('users.username', name)
+        .first();
+
+    return user
+}
 //new_user
 async function sp_i_users_airlines(uesr) {
+
     const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${uesr.uesrname}','${uesr.email}','${uesr.password}');`)
     return new_user
 }
