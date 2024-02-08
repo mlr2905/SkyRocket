@@ -16,18 +16,17 @@ async function create_user(uesr) {
     if (uesr.password !== '') {
       // מפעילה את הפרוצדורה sp_i_users
       const new_user = await dal_1.sp_i_users(uesr);
-      return new_user
+      return uesr
     } else {
       // מפעילה את הפרוצדורה sp_pass_users
       const new_user = await dal_1.sp_pass_users(uesr);
-      return new_user;
+      return uesr;
     }
   } catch (error) {
     console.error('User exists in the system', error);
     throw error; // מעבירה את השגיאה הלאה
   }
 }
-
 
 
 async function get_by_id_user(id) {
