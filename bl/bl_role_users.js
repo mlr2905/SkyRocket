@@ -34,8 +34,8 @@ async function create_user(uesr) {
     }
   }
   else {
-    return console.error('User exists in the system:');
-
+    const error = 'User exists in the system:'
+    return error
   }
 }
 
