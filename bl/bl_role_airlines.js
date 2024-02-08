@@ -7,7 +7,7 @@ const dal_5 = require('../dals/dals_flights/dal_5')
 //func users
 async function create_user_airlines(uesr) {
   const user_name = await dal_1.get_by_name(uesr.username);
-  if (!user_name) {
+  if (user_name === undefined) {
     try {
       // בודקת אם קיבלה סיסמה
       if (uesr.password !== '') {

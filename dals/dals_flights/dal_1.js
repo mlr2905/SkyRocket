@@ -18,11 +18,8 @@ const connectedKnex = knex({
 
 async function get_by_name(name) {
     // db.run('select * from users where id=?')
-    const user = await connectedKnex('users')
-        .select('users.*', 'roles.role_name')
-        .join('roles', 'users.role_id', 'roles.id')
-        .where('users.username', name)
-        .first();
+
+    const user = await connectedKnex('users').select('*').where('username', name).first()
 
     return user
 }
@@ -143,6 +140,6 @@ async function set_id_user(id) {
 
 module.exports = {
     get_by_name, get_all, get_by_id, update_user, delete_user,
-    delete_all, sp_i_users, sp_pass_users,sp_i_users_airlines,sp_pass_users_airlines, get_next_user_id, set_id_user
+    delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, get_next_user_id, set_id_user
     // ,create_table_if_not_exist
 }
