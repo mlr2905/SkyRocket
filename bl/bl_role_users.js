@@ -16,11 +16,12 @@ async function create_user(uesr) {
     if (uesr.password !== '') {
       // מפעילה את הפרוצדורה sp_i_users
       const new_user = await dal_1.sp_i_users(uesr);
-      return uesr
+      
+      return `{"username" :${uesr.username},"message":"User successfully created"}`;
     } else {
       // מפעילה את הפרוצדורה sp_pass_users
       const new_user = await dal_1.sp_pass_users(uesr);
-      return uesr;
+      return `{"username" :${uesr.username},"message":"User successfully created"}`;
     }
   } catch (error) {
     console.error('User exists in the system', error);
