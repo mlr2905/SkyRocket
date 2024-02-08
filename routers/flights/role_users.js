@@ -20,22 +20,27 @@ router.get('/users/:id', async (request, response) => {
 // POST
 router.post('/users', async (request, response) => {
     const new_user = request.body
-    const result = await bl.create_user(new_user)
-    if (result !== 'error') {
-        response.status(201).json(result)
+    try {
+        const result = await bl.create_user(new_user)
+        if (result !== 'error') {
+            response.status(201).json(result)
+        }
+        else {
+        }
+    } catch (error) {
+        throw  response.status(404).json({ "error": `Username or email exist in the system ${new_user}` })
+        ; // מעבירה את השגיאה הלאה
     }
-    else {
-        response.status(404).json({ "error": `Username or email exist in the system ${new_user}` })
-    }
+
 })
 
 // PUT /PATCH
 router.put('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-        // user exists ==> perform update
-        const updated_user_req = request.body
-        const result = await bl.update_user(user_id, updated_user_req)
-        response.json(updated_user_req)
+    // user exists ==> perform update
+    const updated_user_req = request.body
+    const result = await bl.update_user(user_id, updated_user_req)
+    response.json(updated_user_req)
 
 })
 
@@ -71,10 +76,10 @@ router.post('/customers', async (request, response) => {
 // PUT /PATCH
 router.put('/customers/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-        // user exists ==> perform update
-        const updated_user_req = request.body
-        const result = await bl.update_customer(user_id, updated_user_req)
-        response.json(updated_user_req)
+    // user exists ==> perform update
+    const updated_user_req = request.body
+    const result = await bl.update_customer(user_id, updated_user_req)
+    response.json(updated_user_req)
 
 })
 
@@ -82,11 +87,11 @@ router.put('/customers/:id', async (request, response) => {
 
 router.get('/flights', async (request, response) => {
     try {
-    const customers = await bl.get_all_flights()
-    response.json(customers)
+        const customers = await bl.get_all_flights()
+        response.json(customers)
     }
     catch (e) {
-        response.json({'error': JSON.stringify(e)})
+        response.json({ 'error': JSON.stringify(e) })
     }
 })
 // GET by ID
