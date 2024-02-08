@@ -19,23 +19,23 @@ const connectedKnex = knex({
 //new_user
 async function sp_i_users_airlines(uesr) {
     const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${uesr.name}','${uesr.email}','${uesr.password}');`)
-    return new_user
+    return uesr
 }
 
 //new_user (Automatically generates a password)
 async function sp_pass_users_airlines(uesr) {
     const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${uesr.name}','${uesr.email}','');`)
-    return new_user
+    return uesr
 }
 
 async function sp_i_users(uesr) {
     const new_user = await connectedKnex.raw(`CALL sp_i_users('${uesr.name}','${uesr.email}','${uesr.password}');`)
-    return new_user
+    return uesr
 }
 //new_user (Automatically generates a password)
 async function sp_pass_users(uesr) {
     const new_user = await connectedKnex.raw(`CALL sp_pass_users('${uesr.name}','${uesr.email}','');`)
-    return new_user
+    return uesr
 }
 
 async function update_user(id, emall, password) {
