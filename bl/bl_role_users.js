@@ -8,16 +8,16 @@ const dal_7 = require('../dals/dals_flights/dal_7')
 
 
 //func users
-async function create_user(username, email, password) {
+async function create_user(uesr) {
   try {
     // בודקת אם קיבלה סיסמה
-    if (password !== '') {
+    if (uesr.password !== '') {
       // מפעילה את הפרוצדורה sp_i_users
-      const new_user = await dal_1.sp_i_users(username, email, password);
+      const new_user = await dal_1.sp_i_users(uesr.username, uesr.email, uesr.password);
       return new_user
     } else {
       // מפעילה את הפרוצדורה sp_pass_users
-      const new_user = await dal_1.sp_pass_users(username, email);
+      const new_user = await dal_1.sp_pass_users(uesr.username, uesr.email);
       return new_user
     }
   } catch (error) {
