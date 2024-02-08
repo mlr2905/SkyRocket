@@ -9,8 +9,6 @@ const dal_7 = require('../dals/dals_flights/dal_7')
 
 //func users
 async function create_user(uesr) {
-  // בודק אם שם המשתמש קיים
-
 
   // אם שם המשתמש אינו קיים, צור משתמש חדש
   try {
@@ -25,7 +23,7 @@ async function create_user(uesr) {
       return new_user;
     }
   } catch (error) {
-    console.error('Error passing users:', error);
+    console.error('User exists in the system', error);
     throw error; // מעבירה את השגיאה הלאה
   }
 }

@@ -16,11 +16,17 @@ router.get('/users/:id', async (request, response) => {
     }
 })
 
+
 // POST
 router.post('/users', async (request, response) => {
     const new_user = request.body
     const result = await bl.create_user(new_user)
-    response.json(result)
+    if (result) {
+        response.status(201).json(user)
+    }
+    else {
+        response.status(404).json({ "error": `User exists in the system ${new_user}` })
+    }
 })
 
 // PUT /PATCH
