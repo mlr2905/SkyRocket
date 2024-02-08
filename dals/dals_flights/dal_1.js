@@ -17,24 +17,24 @@ const connectedKnex = knex({
 // ---------------User functions only and admin---------------
 
 //new_user
-async function sp_i_users_airlines(name, email, password) {
-    const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${name}','${email}','${password}');`)
+async function sp_i_users_airlines(uesr) {
+    const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${uesr.name}','${uesr.email}','${uesr.password}');`)
     return new_user
 }
 
 //new_user (Automatically generates a password)
-async function sp_pass_users_airlines(name, email) {
-    const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${name}','${email}','');`)
+async function sp_pass_users_airlines(uesr) {
+    const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${uesr.name}','${uesr.email}','');`)
     return new_user
 }
 
-async function sp_i_users(name, email, password) {
-    const new_user = await connectedKnex.raw(`CALL sp_i_users('${name}','${email}','${password}');`)
+async function sp_i_users(uesr) {
+    const new_user = await connectedKnex.raw(`CALL sp_i_users('${uesr.name}','${uesr.email}','${uesr.password}');`)
     return new_user
 }
 //new_user (Automatically generates a password)
-async function sp_pass_users(name, email) {
-    const new_user = await connectedKnex.raw(`CALL sp_pass_users('${name}','${email}','');`)
+async function sp_pass_users(uesr) {
+    const new_user = await connectedKnex.raw(`CALL sp_pass_users('${uesr.name}','${uesr.email}','');`)
     return new_user
 }
 

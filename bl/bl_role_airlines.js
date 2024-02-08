@@ -10,11 +10,11 @@ async function create_user_airlines(uesr) {
     // בודקת אם קיבלה סיסמה
     if (uesr.password !== '') {
       // מפעילה את הפרוצדורה sp_i_users
-      const new_user = await dal_1.sp_i_users_airlines(uesr.username, uesr.email, uesr.password);
+      const new_user = await dal_1.sp_i_users_airlines(uesr);
       return new_user
     } else {
       // מפעילה את הפרוצדורה sp_pass_users
-      const new_user = await dal_1.sp_pass_users_airlines(uesr.username, uesr.email);
+      const new_user = await dal_1.sp_pass_users_airlines(uesr);
       return new_user
     }
   } catch (error) {
