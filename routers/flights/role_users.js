@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const bl = require('../../bl/bl_role_users')
+const bl = require('../../bl/bl_filghts_users')
 
 //filghts_users/users
 
@@ -22,27 +22,6 @@ router.post('/users', async (request, response) => {
     const result = await bl.create_user(new_user)
     response.json(result)
 })
-
-router.post('/users', async (request, response) => {
-    try {
-      const new_user = request.body;
-      const result = await bl.create_user(new_user);
-  
-      if (result.exists) { // Assuming result indicates user existence
-        return response.status(409).json({ message: 'User already exists' });
-      }
-  
-      const createdUser = result.data; // Assuming result contains created user data
-  
-      return response.status(201).json({
-        message: 'User created successfully',
-        user: createdUser,
-      });
-    } catch (error) {
-      console.error('Error creating user:', error);
-      return response.status(500).json({ message: 'Error creating user' });
-    }
-  });
 
 // PUT /PATCH
 router.put('/users/:id', async (request, response) => {
@@ -123,17 +102,6 @@ router.post('/tickets', async (request, response) => {
     const new_user = request.body
     const result = await bl.purchase_ticket(new_user)
     response.status(201).json(result)
-})
-// GET by ID
-router.get('/tickets/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_ticket(user_id)
-    if (user) {
-        response.json(user)
-    }
-    else {
-        response.status(404).json({ "error": `cannot find user with id ${user_id}` })
-    }
 })
 
 //filghts_users/passengers

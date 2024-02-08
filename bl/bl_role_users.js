@@ -10,12 +10,7 @@ const dal_7 = require('../dals/dals_flights/dal_7')
 //func users
 async function create_user(uesr) {
   // בודק אם שם המשתמש קיים
-  const userExists = await db.query('SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)', [uesr.username]);
 
-  // אם שם המשתמש קיים, החזר 404
-  if (userExists.rows[0].exists) {
-    return userExists
-  }
 
   // אם שם המשתמש אינו קיים, צור משתמש חדש
   try {
