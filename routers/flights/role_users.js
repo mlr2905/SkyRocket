@@ -21,7 +21,7 @@ router.get('/users/:id', async (request, response) => {
 router.post('/users', async (request, response) => {
     const new_user = request.body
     const result = await bl.create_user(new_user)
-    if (result !== 'Username or email exist in the system') {
+    if (result) {
         response.status(201).json(result)
     }
     else {
