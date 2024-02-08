@@ -9,8 +9,12 @@ const dal_7 = require('../dals/dals_flights/dal_7')
 
 //func users
 async function create_user(uesr) {
+  console.log('1',uesr)
+
+  console.log('2',uesr.username)
 
   const user_name = await dal_1.get_by_name(uesr.username);
+  console.log('3',user_name)
   if (user_name === undefined) {
 
     try {
@@ -30,7 +34,7 @@ async function create_user(uesr) {
     }
   }
   else {
-    return console.error('User exists in the system:', error);
+    return console.error('User exists in the system:');
 
   }
 }
