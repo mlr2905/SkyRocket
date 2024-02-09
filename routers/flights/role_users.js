@@ -8,18 +8,18 @@ const bl = require('../../bl/bl_role_users')
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {
-    const user = await bl.get_by_id_user(user_id)
-    if (user) {
-        response.json(user)
-    }
-    else{
-        throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+        const user = await bl.get_by_id_user(user_id)
+        if (user) {
+            response.json(user)
+        }
+        else {
+            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
 
+        }
+
+    } catch (error) {
+        throw response.status(503).json({ "error": `The request failed, try again later ` })
     }
-   
-} catch (error) {
-    throw response.status(503).json({ "error": `The request failed, try again later ` })
-}
 })
 
 // POST
@@ -51,25 +51,34 @@ router.put('/users/:id', async (request, response) => {
         catch (error) {
             throw response.status(503).json({ "error": `The request failed, try again later  ` })
             ; // מעבירה את השגיאה הלאה
-        }    }
-    else{
+        }
+    }
+    else {
         throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
 
     }
     // user exists ==> perform update
-    
+
 })
 
 // DELETE
 router.delete('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-    try {
-    const result = await bl.delete_account(user_id)
-    response.status(200).json({ result })
+    const user = await bl.get_by_id_user(user_id)
+
+    if (user) {
+        try {
+            const result = await bl.delete_account(user_id)
+            response.status(200).json({ result })
+        }
+        catch (error) {
+            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+            ; // מעבירה את השגיאה הלאה
+        }
     }
-    catch (error) {
+    else {
         throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-        ; // מעבירה את השגיאה הלאה
+
     }
 })
 
