@@ -77,7 +77,7 @@ router.delete('/users/:id', async (request, response) => {
         }
     }
     else {
-        throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+        throw response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
 
     }
 })

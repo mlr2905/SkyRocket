@@ -54,7 +54,7 @@ async function delete_account(id) {
   if (user_id) {
     const delete_user = await dal_1.delete_user(id);
 
-    return delete_user
+    return `User '${user_id.username}' deleted successfully `
   }
 
   else {
