@@ -41,6 +41,9 @@ async function update_user(id, email, password) {
     const update_user = await dal_1.update_user(id, email, password);
     return `${user_id.username}${update_user}`
   }
+  else{
+    return user_id
+  }
   
 }
 

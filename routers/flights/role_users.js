@@ -18,8 +18,7 @@ router.get('/users/:id', async (request, response) => {
     }
    
 } catch (error) {
-    throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-    ; // מעבירה את השגיאה הלאה
+    throw response.status(503).json({ "error": `The request failed, try again later ` })
 }
 })
 
@@ -39,17 +38,24 @@ router.post('/users', async (request, response) => {
 
 // PUT 
 router.put('/users/:id', async (request, response) => {
+    
     const user_id = parseInt(request.params.id)
+    if (user) {
+        try {
+            const updated_user_req = request.body
+            const result = await bl.update_user(user_id, updated_user_req)
+            response.json(updated_user_req)
+        }
+        catch (error) {
+            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+            ; // מעבירה את השגיאה הלאה
+        }    }
+    else{
+        throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+
+    }
     // user exists ==> perform update
-    try {
-    const updated_user_req = request.body
-    const result = await bl.update_user(user_id, updated_user_req)
-    response.json(updated_user_req)
-}
-catch (error) {
-    throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-    ; // מעבירה את השגיאה הלאה
-}
+    
 })
 
 // DELETE
