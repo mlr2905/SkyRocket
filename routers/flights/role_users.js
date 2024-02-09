@@ -12,8 +12,11 @@ router.get('/users/:id', async (request, response) => {
     if (user) {
         response.json(user)
     }
-   
+    else{
+        throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
 
+    }
+   
 } catch (error) {
     throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
     ; // מעבירה את השגיאה הלאה
@@ -28,7 +31,7 @@ router.post('/users', async (request, response) => {
         response.status(201).json(result)
 
     } catch (error) {
-        throw response.status(404).json({ "error": `Username or email exist in the system ${new_user.username}` })
+        throw response.status(409).json({ "error": `Username or email exist in the system ${new_user.username}` })
         ; // מעבירה את השגיאה הלאה
     }
 
