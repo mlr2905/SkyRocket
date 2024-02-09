@@ -41,10 +41,10 @@ async function update_user(id, email, password) {
     const update_user = await dal_1.update_user(id, email, password);
     return `${user_id.username}${update_user}`
   }
-  else{
+  else {
     return user_id
   }
-  
+
 }
 
 async function delete_account(id) {
@@ -59,7 +59,7 @@ async function delete_account(id) {
 
   else {
 
-    return console.error('The ID you specified does not exist');
+    return `The ID ${id} you specified does not exist`;
 
   }
 }

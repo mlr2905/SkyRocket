@@ -69,7 +69,7 @@ router.delete('/users/:id', async (request, response) => {
     if (user) {
         try {
             const result = await bl.delete_account(user_id)
-            response.status(200).json({ result })
+            response.status(200).json( result[0] )
         }
         catch (error) {
             throw response.status(503).json({ "error": `The request failed, try again later  ` })
