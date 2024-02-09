@@ -30,7 +30,7 @@ router.post('/users', async (request, response) => {
         response.status(201).json(result)
 
     } catch (error) {
-        throw response.status(409).json({ "error": `Username or email exist in the system ${new_user.username}` })
+        throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
         ; // מעבירה את השגיאה הלאה
     }
 
