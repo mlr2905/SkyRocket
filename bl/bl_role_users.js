@@ -66,17 +66,11 @@ async function delete_account(id) {
 
 // func customers
 
-async function new_customer(new_c) {
-  try {
+async function new_customer(new_cus) {
 
-    const new_customer = await dal_4.new_customer(new_c);
-
-    return new_customer
-
-  }
-
-  catch (e) {
-    // check error
+  const new_customer = await dal_4.new_customer(new_cus);
+  if (new_customer) {
+    return new_cus
   }
 
 }
@@ -136,7 +130,6 @@ async function get_by_id_flights(id) {
   }
 }
 
-
 //tickets
 async function purchase_ticket(new_ticket, test) {
   try {
@@ -176,9 +169,6 @@ async function get_by_id_ticket(id) {
   return user_id
 
 }
-
-
-
 
 //new_passengers
 

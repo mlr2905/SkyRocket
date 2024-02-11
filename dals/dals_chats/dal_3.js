@@ -1,18 +1,8 @@
 
 const knex = require('knex')
 const config = require('config')
+const connectedKnex = db.database()
 
-const connectedKnex = knex({
-    client: 'pg',
-    version: '15',
-    connection: {
-        host: config.db_cloud.host,
-        user: config.db_cloud.user,
-        password: config.db_cloud.password,
-        database: config.db_cloud.database,
-        ssl: true
-    }
-})
 
 async function create_table_if_not_exist() {
     const tableExists = await connectedKnex.schema.hasTable('chat3');

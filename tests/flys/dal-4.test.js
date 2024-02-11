@@ -13,6 +13,8 @@ describe('Testing functionallity of the DAL', () => {
 
     })
 
+    
+
         it('get_all', async () => {
             const expected = 5
             const messages = await dal.get_all()

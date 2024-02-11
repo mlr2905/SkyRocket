@@ -57,7 +57,6 @@ router.put('/users/:id', async (request, response) => {
         throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
 
     }
-    // user exists ==> perform update
 
 })
 
@@ -69,7 +68,7 @@ router.delete('/users/:id', async (request, response) => {
     if (user) {
         try {
             const result = await bl.delete_account(user_id)
-            response.status(200).json({ result })
+            response.status(204).json({ result })
         }
         catch (error) {
             throw response.status(503).json({ "error": `The request failed, try again later  ` })
@@ -89,7 +88,7 @@ router.get('/customers/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_customer(user_id)
     if (user) {
-        response.json(user)
+        responsestatus(200).json(user)
     }
     else {
         response.status(404).json({ "error": `cannot find user with id ${user_id}` })
@@ -100,8 +99,12 @@ router.get('/customers/:id', async (request, response) => {
 router.post('/customers', async (request, response) => {
     const new_user = request.body
     const result = await bl.new_customer(new_user)
-    response.status(201).json(result)
-})
+    if (user) {
+        responsestatus(201).json(user)
+    }
+    else {
+        response.status(409).json({ "error": `There is a customer with the details I mentioned` })
+    }})
 
 // PUT /PATCH
 router.put('/customers/:id', async (request, response) => {
@@ -159,7 +162,7 @@ router.get('/passengers/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_passenger(user_id)
     if (user) {
-        response.json(user)
+        response.status(200).json(user)
     }
     else {
         response.status(404).json({ "error": `cannot find user with id ${user_id}` })

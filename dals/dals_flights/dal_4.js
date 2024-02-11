@@ -1,27 +1,17 @@
+const db = require('../../database/database`')
 
 const knex = require('knex')
-const config = require('config')
 
-const connectedKnex = knex({
-    client: 'pg',
-    version: '15',
-    connection: {
-        host: config.db_cloud.host,
-        user: config.db_cloud.user,
-        password: config.db_cloud.password,
-        database: config.db_cloud.database,
-        ssl: true
-    }
-})
+const connectedKnex = db.database()
 
 // ---------------User functions only and admin---------------
 
-async function new_customer(new_mes) {
-    // db.run('insert into customers ....')
-    // result[0] will be the new ID given by the SQL
-    // Insert into customers values(....)
-    const result = await connectedKnex('customers').insert(new_mes)
-    return { ...new_mes, id: result[0] }
+async function new_customer(new_cus) {
+ 
+    const new_customer = await connectedKnex.raw(`SELECT create_new_customer(
+        '${new_cus.first_name}','${new_cus.last_name}','${new_cus.address}'
+        ,'${new_cus.phone_no}','${new_cus.credit_card_no}','${new_cus.user_id}');`)
+    return new_customer
 }
 
 async function get_by_id(id) {
