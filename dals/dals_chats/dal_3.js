@@ -1,8 +1,6 @@
-
 const knex = require('knex')
-const config = require('config')
-const connectedKnex = db.database()
-
+const db = require('../../a-db/db`')
+const connectedKnex = db.connect()
 
 async function create_table_if_not_exist() {
     const tableExists = await connectedKnex.schema.hasTable('chat3');

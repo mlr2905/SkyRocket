@@ -1,9 +1,6 @@
-
 const knex = require('knex')
-const config = require('config')
-
-const connectedKnex = db.database()
-
+const db = require('../../a-db/db`')
+const connectedKnex = db.connect()
 
 // ---------------Admin permission only---------------
 

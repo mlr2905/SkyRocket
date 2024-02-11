@@ -1,7 +1,7 @@
 const knex = require('knex')
 const config = require('config')
 
-function database(){
+function connect(){
 
 const connectedKnex = knex({
     client: 'pg',
