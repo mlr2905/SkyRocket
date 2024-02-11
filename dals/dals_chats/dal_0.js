@@ -1,5 +1,5 @@
 const knex = require('knex')
-const db = require('../../a-db/db`')
+const db = require('../../a_db/db`')
 const connectedKnex = db.connect()
 
 
@@ -8,13 +8,13 @@ async function delete_all() {
     const a = await connectedKnex('chat1').del()
     await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
     const b = await connectedKnex('chat2').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+    await connectedKnex.raw('ALTER SEQUENCE "chat2_id_seq" RESTART WITH 1');
     const c = await connectedKnex('chat3').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+    await connectedKnex.raw('ALTER SEQUENCE "chat3_id_seq" RESTART WITH 1');
     const d = await connectedKnex('chat4').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+    await connectedKnex.raw('ALTER SEQUENCE "chat4_id_seq" RESTART WITH 1');
     const e = await connectedKnex('connected').del()
-    await connectedKnex.raw('ALTER SEQUENCE "chat1_id_seq" RESTART WITH 1');
+    await connectedKnex.raw('ALTER SEQUENCE "connected_id_seq" RESTART WITH 1');
 }
 
 async function get_all() {

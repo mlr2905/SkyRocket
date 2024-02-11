@@ -1,5 +1,5 @@
 const knex = require('knex')
-const db = require('../../a-db/db`')
+const db = require('../../a_db/db`')
 const connectedKnex = db.connect()
 
 async function create_table_if_not_exist() {
