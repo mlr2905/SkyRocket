@@ -4,7 +4,7 @@ const dal_3 = require('../dals/dals_flights/dal_3')
 const dal_5 = require('../dals/dals_flights/dal_5')
 
 
-//func users
+//func users 
 async function create_user_airlines(uesr) {
   const user_name = await dal_1.get_by_name(uesr.username);
   if (user_name === undefined) {
@@ -53,9 +53,9 @@ async function update_user(id, email, password) {
   }
 }
 
-///User airline
+/// airline
 
-async function create_user_airline(username) {
+async function create_airline(username) {
   try {
     // בודקת אם קיבלה סיסמה
 
@@ -67,16 +67,16 @@ async function create_user_airline(username) {
     console.error('Error passing users:', error);
     throw error; // מעבירה את השגיאה הלאה
   }
-}
+} 
 
-async function get_by_id_user_airline(id) {
+async function get_by_id_airline(id) {
 
   const user_id = await dal_3.get_by_id(id);
   return user_id
 
 }
 
-async function update_user_airline(id, update_airline) {
+async function update_airline(id, update_airline) {
 
   const user_id = await dal_3.get_by_id(id);
 
@@ -164,8 +164,7 @@ async function delete_flight(id) {
 }
 
 
-
 module.exports = {
-  create_user_airlines, get_by_id_user, update_user, create_user_airline, get_by_id_user_airline, update_user_airline,
-  get_all_flights, get_by_id_flights, create_new_flights, update_flight, delete_flight
+  create_user_airlines, get_by_id_user, update_user, create_airline,get_by_id_airline,
+  update_airline,get_all_flights, get_by_id_flights, create_new_flights, update_flight, delete_flight
 }
