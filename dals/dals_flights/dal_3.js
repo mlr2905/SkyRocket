@@ -1,5 +1,5 @@
 const knex = require('knex')
-const db = require('../../a_db/db`')
+const db = require('../../a_db/db')
 const connectedKnex = db.connect()
 // ---------------User airline functions only and admin---------------
 
