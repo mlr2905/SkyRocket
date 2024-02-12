@@ -2,7 +2,17 @@ const express = require('express')
 const router = express.Router()
 const bl = require('../../bl/bl_role_users')
 
-//filghts_users/users
+//role_users/users
+
+router.get('/', async (request, response) => {
+    try {
+    const messages = await dal.Welcome()
+    response.json(messages)
+    }
+    catch (e) {
+        response.status(200).json({'error': JSON.stringify(e)})
+    }
+})
 
 // GET by ID
 router.get('/users/:id', async (request, response) => {
@@ -10,7 +20,7 @@ router.get('/users/:id', async (request, response) => {
     try {
         const user = await bl.get_by_id_user(user_id)
         if (user) {
-            response.json(user)
+            response.status(200).json(user)
         }
         else {
             throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
@@ -81,7 +91,7 @@ router.delete('/users/:id', async (request, response) => {
     }
 })
 
-//filghts_users/customers
+//role_users/customers
 
 // GET by ID
 router.get('/customers/:id', async (request, response) => {
@@ -116,7 +126,7 @@ router.put('/customers/:id', async (request, response) => {
 
 })
 
-//filghts_users/flights
+//role_users/flights
 
 router.get('/flights', async (request, response) => {
     try {
@@ -139,7 +149,7 @@ router.get('/flights/:id', async (request, response) => {
     }
 })
 
-//filghts_users/tickets
+//role_users/tickets
 
 // POST
 router.post('/tickets', async (request, response) => {
@@ -148,7 +158,7 @@ router.post('/tickets', async (request, response) => {
     response.status(201).json(result)
 })
 
-//filghts_users/passengers
+//role_users/passengers
 
 // POST
 router.post('/passengers', async (request, response) => {
