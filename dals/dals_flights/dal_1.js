@@ -5,7 +5,7 @@ const connectedKnex = db.connect()
 // ---------------User functions only and admin---------------
 
 function Welcome(){
-    const Welcome = {'Welcome to role user the desired path must be specified'}
+    const Welcome = {'message':'Welcome to role user the desired path must be specified'}
 
     return Welcome
 }
