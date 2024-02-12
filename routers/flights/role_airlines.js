@@ -15,7 +15,7 @@ router.get('/', async ( response) => {
 })
 router.get('/:id', async ( response) => {
     try {
-    const messages = {'message':'Enter the following path https://cloud-memory.onrender.com/role_users/{neme ?}/1'}
+    const messages = {'message':'Enter the following path https://cloud-memory.onrender.com/role_airlines/{neme ?}/1'}
     response.status(200).json(messages)
     }
     catch (error) {
