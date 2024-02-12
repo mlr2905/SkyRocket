@@ -53,7 +53,7 @@ async function get_all() {
         .leftJoin('chairs_taken', 'chairs_taken.id', 'tickets.chair_id')
         .select('tickets.*', 'airlines.name as airline_name', 'countries.country_name as flight_destination',
             'passengers.first_name as passanger_first_name', 'passengers.last_name as passanger_last_name',
-            'customers.first_name', 'customers.last_name', 'seats.name as seat');
+            'customers.first_name', 'customers.last_name', 'chairs_taken.name as seat');
     const h = await connectedKnex('passengers').select('*')
     //    const g = await connectedKnex('chairs')
     //    .leftJoin('chair_3', 'chair_3.id', 'chairs.char_id')
