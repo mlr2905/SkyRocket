@@ -1,5 +1,5 @@
 const assert = require('assert')
-const dal = require('../dals/dals_flights/dal_0')
+const dal = require('../dalsdal_0')
 
 describe('Testing functionallity of the DAL', () => {
 

@@ -1,8 +1,8 @@
 const assert = require('assert')
 const bl = require('../bl/bl_role_users')
-const dal_1 = require('../dals/dals_flights/dal_1')
-const dal_6 = require('../dals/dals_flights/dal_6')
-const dal_7 = require('../dals/dals_flights/dal_7')
+const dal_1 = require('../dals/dal_1')
+const dal_6 = require('../dals/dal_6')
+const dal_7 = require('../dals/dal_7')
 
 
 describe('Testing functionallity of the bl', () => {

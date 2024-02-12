@@ -1,6 +1,6 @@
-const dal_1 = require('../dals/dals_flights/dal_1')
-const dal_3 = require('../dals/dals_flights/dal_3')
-const dal_5 = require('../dals/dals_flights/dal_5')
+const dal_1 = require('../dals/dal_1')
+const dal_3 = require('../dals/dal_3')
+const dal_5 = require('../dals/dal_5')
 
 //func users 
 async function create_user(uesr) {
