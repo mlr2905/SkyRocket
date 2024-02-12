@@ -6,6 +6,7 @@ const dal_7 = require('../dals/dal_7')
 
 //func users
 async function create_user(uesr) {
+  
   // בודק אם קיבלה סיסמה
   if (uesr.password !== '') {
     // מפעילה את הפרוצדורה sp_i_users
