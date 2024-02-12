@@ -4,7 +4,7 @@ const bl = require('../../bl/bl_role_users')
 
 //role_users/users
 
-router.get('/users', async (request, response) => {
+router.get('/', async (request, response) => {
     try {
     const messages = await dal.Welcome()
     response.json(messages)
