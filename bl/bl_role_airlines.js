@@ -5,7 +5,7 @@ const dal_5 = require('../dals/dals_flights/dal_5')
 
 
 //func users 
-async function create_user_airlines(uesr) {
+async function create_user(uesr) {
   const user_name = await dal_1.get_by_name(uesr.username);
   if (user_name === undefined) {
     try {
@@ -67,7 +67,7 @@ async function create_airline(username) {
     console.error('Error passing users:', error);
     throw error; // מעבירה את השגיאה הלאה
   }
-} 
+}
 
 async function get_by_id_airline(id) {
 
@@ -93,19 +93,6 @@ async function update_airline(id, update_airline) {
 
 // flights
 
-async function get_all_flights() {
-  try {
-    const get_all = await dal_5.get_all();
-
-    return get_all
-
-
-  } catch (error) {
-    console.error('Error checking id  or fetching flight:', error);
-    throw error; // מעבירה את השגיאה הלאה
-  }
-}
-
 async function get_by_id_flights(id) {
   try {
     const get_by_id = await dal_5.get_by_id(id);
@@ -121,9 +108,24 @@ async function get_by_id_flights(id) {
     throw error; // מעבירה את השגיאה הלאה
   }
 }
+async function get_by_id_name(id) {
+  try {
+    const get_by_id = await dal_5.get_by_id_name(id);
+
+    if (get_by_id) {
+      return get_by_id
+
+    } else {
+      return console.error('The hand does not exist in Bella'); // מחזירה null אם הטבלה לא קיימת
+    }
+  } catch (error) {
+    console.error('Error checking id  or fetching flight:', error);
+    throw error; // מעבירה את השגיאה הלאה
+  }
+}
 
 
-async function create_new_flights(flights) {
+async function create_new_flight(flights) {
   try {
 
     // מפעילה את הפרוצדורה sp_i_users
@@ -163,8 +165,8 @@ async function delete_flight(id) {
   }
 }
 
-
 module.exports = {
-  create_user_airlines, get_by_id_user, update_user, create_airline,get_by_id_airline,
-  update_airline,get_all_flights, get_by_id_flights, create_new_flights, update_flight, delete_flight
+  create_user, get_by_id_user, update_user, create_airline, get_by_id_airline,
+  update_airline, get_by_id_name, get_by_id_flights, create_new_flight,
+  update_flight, delete_flight
 }
