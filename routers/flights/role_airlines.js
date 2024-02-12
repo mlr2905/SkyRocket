@@ -7,7 +7,7 @@ const bl = require('../../bl/bl_role_users')
 router.get('/', async ( request,response) => {
     try {
     const messages = {'message':'Welcome to role airlines the desired path must be specified,Enter the following path https://cloud-memory.onrender.com/role_users/{neme ?}/1'}
-    response.status(200).json(messages)
+    response.status(400).json(messages)
     }
     catch (error) {
         throw response.status(503).json({ 'error': 'The request failed, try again later' ,error })
@@ -16,7 +16,7 @@ router.get('/', async ( request,response) => {
 router.get('/:id', async (request, response) => {
     try {
     const messages = {'message':'Enter the following path https://cloud-memory.onrender.com/role_airlines/{neme ?}/1'}
-    response.status(200).json(messages)
+    response.status(400).json(messages)
     }
     catch (error) {
         throw response.status(503).json({ 'error': 'The request failed, try again later' ,error })
