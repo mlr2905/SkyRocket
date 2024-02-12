@@ -91,17 +91,17 @@ function activation(n) { //The function is responsible for displaying storage of
     else {
         Swal.fire('You must enter a name!! Without a name you cannot enter the room', '', 'success')
     }
-}
 
-function add_img() {  //A function saves the user's image
-    frame.src = URL.createObjectURL(event.target.files[0]);
-    mainPage.img_user = frame.src
-}
+    function add_img(event) {  //A function saves the user's image
+        frame.src = URL.createObjectURL(event.target.files[0]);
+        mainPage.img_user = frame.src
+    }
 
-function handleEnter(enter) { //Makes the enter button work like a send button
-    const text = document.getElementById("text").value;
-    if (enter.keyCode === 13 && text !== "") {
-        enter.preventDefault();
-        post_data(text);
+    function handleEnter(enter) { //Makes the enter button work like a send button
+        const text = document.getElementById("text").value;
+        if (enter.keyCode === 13 && text !== "") {
+            enter.preventDefault();
+            post_data(text);
+        }
     }
 }

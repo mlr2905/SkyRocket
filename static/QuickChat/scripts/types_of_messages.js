@@ -37,7 +37,7 @@ function image_Message(i, id) {
         </div>
         `
     mainPage.message_list.appendChild(mainPage.son)
-    addCellClick(`message-${id}`, id)
+    addCellClick(`img-${id}`, id)
     addCellClick2(`img-${id}`, id)     
 }
 

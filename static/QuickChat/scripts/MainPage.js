@@ -18,7 +18,6 @@ class MainPage {
         this.type_id = type_id
         this.time_date = time_date
         this.date = date
-
         this.margin_bottom = margin_bottom
         this.chat_n = chat_n
         this.json_id = json_id
