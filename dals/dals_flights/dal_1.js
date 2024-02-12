@@ -4,11 +4,6 @@ const connectedKnex = db.connect()
 
 // ---------------User functions only and admin---------------
 
-function Welcome(){
-    const Welcome = {'message':'Welcome to role user the desired path must be specified'}
-
-    return Welcome
-}
 async function get_by_name(name) {
     // db.run('select * from users where id=?')
 
@@ -133,7 +128,7 @@ async function set_id_user(id) {
 // }
 
 module.exports = {
-    Welcome, get_by_name, get_all, get_by_id, update_user, delete_user,
+     get_by_name, get_all, get_by_id, update_user, delete_user,
     delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, get_next_user_id, set_id_user
     // ,create_table_if_not_exist
 }

@@ -6,11 +6,11 @@ const bl = require('../../bl/bl_role_users')
 
 router.get('/', async (request, response) => {
     try {
-    const messages = await bl.Welcome()
+    const messages = {'message':'Welcome to role user the desired path must be specified'}
     response.json(messages)
     }
     catch (e) {
-        response.status(200).json({'error': JSON.stringify(e)})
+        response.status(404).json({'message':'Welcome to role user the desired path must be specified'})
     }
 })
 

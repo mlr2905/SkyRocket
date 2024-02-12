@@ -5,10 +5,6 @@ const dal_5 = require('../dals/dals_flights/dal_5')
 const dal_6 = require('../dals/dals_flights/dal_6')
 const dal_7 = require('../dals/dals_flights/dal_7')
 
-function Welcome(){
-  const Welcome =  dal_1.Welcome(id);
-  return Welcome
-}
 
 //func users
 async function create_user(uesr) {
