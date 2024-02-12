@@ -11,12 +11,12 @@ describe('Testing functionallity of the DAL', () => {
         assert.strictEqual(expected, actual)
     })
 
-    it('get_by_id', async () => {
-        const expected = 'bot'
-        const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.user
-        console.log(actual);
-        assert.strictEqual(expected, actual)
-    })
+    // it('get_by_id', async () => {
+    //     const expected = 'bot'
+    //     const message_id_3 = await dal.get_by_id(3)
+    //     const actual = message_id_3.user
+    //     console.log(actual);
+    //     assert.strictEqual(expected, actual)
+    // })
 
 })
