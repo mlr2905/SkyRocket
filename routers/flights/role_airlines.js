@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const bl = require('../../bl/bl_role_users')
 
-//filghts_users/users
+//role_airlines/users
 
 // GET by ID
 router.get('/users/:id', async (request, response) => {
@@ -14,7 +14,6 @@ router.get('/users/:id', async (request, response) => {
         }
         else {
             throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-
         }
 
     } catch (error) {
@@ -33,7 +32,6 @@ router.post('/users', async (request, response) => {
         throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
         ; // מעבירה את השגיאה הלאה
     }
-
 })
 
 // PUT 
@@ -55,16 +53,13 @@ router.put('/users/:id', async (request, response) => {
     }
     else {
         throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-
     }
-
 })
 
-
-//filghts_users/airline
+//role_airlines/airline
 
 // GET by ID
-router.get('/airline/:id', async (request, response) => {
+router.get('/airlines/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {
         const user = await bl.get_by_id_airline(user_id)
@@ -73,7 +68,6 @@ router.get('/airline/:id', async (request, response) => {
         }
         else {
             throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-
         }
 
     } catch (error) {
@@ -82,7 +76,7 @@ router.get('/airline/:id', async (request, response) => {
 })
 
 // POST
-router.post('/airline', async (request, response) => {
+router.post('/airlines', async (request, response) => {
     const new_user = request.body
     try {
         const result = await bl.create_airline(new_user)
@@ -96,7 +90,7 @@ router.post('/airline', async (request, response) => {
 })
 
 // PUT 
-router.put('/airline/:id', async (request, response) => {
+router.put('/airlines/:id', async (request, response) => {
 
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_user(user_id)
@@ -118,7 +112,7 @@ router.put('/airline/:id', async (request, response) => {
     }
 
 })
-//filghts_users/flights
+//role_airlines/flights
 
 router.get('/flights', async (request, response) => {
     try {
@@ -156,7 +150,6 @@ router.post('/flights', async (request, response) => {
 })
 // PUT 
 
-// לתקן את הפונקציה הזו
 router.put('/flights/:id', async (request, response) => {
 
     const update_flight = parseInt(request.params.id)
@@ -181,13 +174,13 @@ router.put('/flights/:id', async (request, response) => {
 })
 
 // DELETE
-router.delete('/users/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_user(user_id)
+router.delete('/flights/:id', async (request, response) => {
+    const by_id = parseInt(request.params.id)
+    const flight = await bl.get_by_id_flights(by_id)
 
-    if (user) {
+    if (flight) {
         try {
-            const result = await bl.delete_flight(user_id)
+            const result = await bl.delete_flight(by_id)
             response.status(204).json({ result })
         }
         catch (error) {
