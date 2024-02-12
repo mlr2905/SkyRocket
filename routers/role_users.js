@@ -1,25 +1,23 @@
 const express = require('express')
 const router = express.Router()
-const bl = require('../../bl/bl_role_users')
+const bl = require('../bl/bl_role_users')
 
-//role_admins/users
-
+//role_users/users
 
 router.get('/', async (request, response) => {
     try {
         const messages = {
             'message': `Welcome to role admins the desired path must be specified,
-    Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
+        Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
         response.status(400).json(messages)
     }
     catch (error) {
         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
     }
 })
-
 router.get('/:id', async (request, response) => {
     try {
-        const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1' }
+        const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_users/{neme ?}/1' }
         response.status(400).json(messages)
     }
     catch (error) {
@@ -33,7 +31,7 @@ router.get('/users/:id', async (request, response) => {
     try {
         const user = await bl.get_by_id_user(user_id)
         if (user) {
-            response.json(user)
+            response.status(200).json(user)
         }
         else {
             throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
@@ -104,7 +102,7 @@ router.delete('/users/:id', async (request, response) => {
     }
 })
 
-//role_admins/customers
+//role_users/customers
 
 // GET by ID
 router.get('/customers/:id', async (request, response) => {
@@ -140,7 +138,7 @@ router.put('/customers/:id', async (request, response) => {
 
 })
 
-//role_admins/flights
+//role_users/flights
 
 router.get('/flights', async (request, response) => {
     try {
@@ -163,7 +161,7 @@ router.get('/flights/:id', async (request, response) => {
     }
 })
 
-//role_admins/tickets
+//role_users/tickets
 
 // POST
 router.post('/tickets', async (request, response) => {
@@ -172,7 +170,7 @@ router.post('/tickets', async (request, response) => {
     response.status(201).json(result)
 })
 
-//role_admins/passengers
+//role_users/passengers
 
 // POST
 router.post('/passengers', async (request, response) => {
