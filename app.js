@@ -5,10 +5,10 @@ const express = require('express')
 const cors = require('cors');
 
 const body_parser = require('body-parser')
-const all_tables_router = require('./routers/flights/all_tables_router')
-const role_users = require('./routers/flights/role_users')
-const role_airlines = require('./routers/flights/role_airlines')
-const role_admins = require('./routers/flights/role_admins')
+const all_tables_router = require('./routers/all_tables_router')
+const role_users = require('./routers/role_users')
+const role_airlines = require('./routers/role_airlines')
+const role_admins = require('./routers/role_admins')
 
 
 logger.info('==== System start =======')
