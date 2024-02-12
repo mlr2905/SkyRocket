@@ -1,11 +1,9 @@
-
 const dal_1 = require('../dals/dals_flights/dal_1')
 const dal_2 = require('../dals/dals_flights/dal_2')
 const dal_3 = require('../dals/dals_flights/dal_3')
 const dal_4 = require('../dals/dals_flights/dal_4')
 const dal_5 = require('../dals/dals_flights/dal_5')
 const dal_6 = require('../dals/dals_flights/dal_6')
-
 
 //func users
 async function create_user(username, email, password) {
@@ -27,56 +25,36 @@ async function create_user(username, email, password) {
 }
 
 async function get_by_id_user(id) {
-
   const user_id = await dal_1.get_by_id(id);
   return user_id
-
 }
 
 async function update_user(id, email, password) {
-
   const user_id = await dal_1.get_by_id(id);
-
   if (user_id) {
-
     const update_user = await dal_1.update_user(id, email, password);
     return `${user_id.username}${update_user}`
   }
   else {
     return console.error('The ID you specified does not exist:', error);
-
   }
 }
 
 async function delete_account(id) {
   const user_id = await dal_1.get_by_id(id);
-
   if (user_id) {
     const delete_user = await dal_1.delete_user(id);
     return delete_user
-   
   }
-
   else {
-
     return console.error('The ID you specified does not exist:', error);
-
   }
 }
-
-// async function update_user(id, updated_user) {
-
-//   const user_id = await dal_1.update_user(id, updated_user);
-
-// }
-
-
 
 async function get_all_flights() {
   try {
     // בודקת אם הטבלה קיימת (בהנחה שיש פונקציית tableExists ב-DAL)
     const tableExists = await dal_5.Checks_if_a_table_exists('flights');
-
     if (tableExists) {
       // אם הטבלה קיימת, מפעילה את הפונקציה get_all מה-DAL
       const flights = await dal_5.get_all('flights');
@@ -107,7 +85,6 @@ async function purchase_ticket(flight_id, customer_id, passenger_id) {
   catch (e) {
     // check error
   }
-
 }
 
 async function delete_flight(id) {

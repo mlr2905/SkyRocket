@@ -5,23 +5,25 @@ const bl = require('../../bl/bl_role_users')
 //role_admins/users
 
 
-router.get('/', async ( request,response) => {
+router.get('/', async (request, response) => {
     try {
-    const messages = {'message':'Welcome to role admins the desired path must be specified,Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1'}
-    response.status(400).json(messages)
+        const messages = {
+            'message': `Welcome to role admins the desired path must be specified,
+    Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
+        response.status(400).json(messages)
     }
     catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later' ,error })
+        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
     }
 })
 
 router.get('/:id', async (request, response) => {
     try {
-    const messages = {'message':'Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1'}
-    response.status(400).json(messages)
+        const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1' }
+        response.status(400).json(messages)
     }
     catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later' ,error })
+        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
     }
 })
 
@@ -125,7 +127,8 @@ router.post('/customers', async (request, response) => {
     }
     else {
         response.status(409).json({ "error": `There is a customer with the details I mentioned` })
-    }})
+    }
+})
 
 // PUT /PATCH
 router.put('/customers/:id', async (request, response) => {

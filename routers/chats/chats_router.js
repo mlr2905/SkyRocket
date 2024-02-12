@@ -5,11 +5,11 @@ const dal = require('../../dals/dals_chats/dal_0')
 // GET 
 router.get('/', async (request, response) => {
     try {
-    const messages = await dal.get_all()
-    response.json(messages)
+        const messages = await dal.get_all()
+        response.json(messages)
     }
     catch (e) {
-        response.json({'error': JSON.stringify(e)})
+        response.json({ 'error': JSON.stringify(e) })
     }
 })
 // GET by ID

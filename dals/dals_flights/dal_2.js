@@ -15,10 +15,10 @@ async function new_countrie(new_mes) {
 async function get_by_id(id) {
     // db.run('select * from countries where id=?')
     const countrie = await connectedKnex('countries')
-    .select('countries.*', 'continents.*')
-    .leftJoin('continents', 'continents.id', '=', 'countries.continent_id')
-    .where('countries.id', id)
-    .first();
+        .select('countries.*', 'continents.*')
+        .leftJoin('continents', 'continents.id', '=', 'countries.continent_id')
+        .where('countries.id', id)
+        .first();
     return countrie
 }
 
@@ -37,9 +37,9 @@ async function delete_countrie(id) {
 async function get_all() {
     // db.run('select * from countries')
     const countries = await connectedKnex('countries')
-    .select('countries.*', 'continents.continent')
-    .from('countries')
-    .join('continents', 'countries.continent_id', 'continents.id');
+        .select('countries.*', 'continents.continent')
+        .from('countries')
+        .join('continents', 'countries.continent_id', 'continents.id');
     return countries
 }
 

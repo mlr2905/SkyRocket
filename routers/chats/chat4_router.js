@@ -5,18 +5,18 @@ const dal = require('../../dals/dals_chats/dal_4')
 // '/api/message'
 // GET 
 router.get('/hello', async (request, response) => {
-    response.json({'status': 'success'})
+    response.json({ 'status': 'success' })
 })
 
 // '/api/message'
 // GET 
 router.get('/', async (request, response) => {
     try {
-    const messages = await dal.get_all()
-    response.json(messages)
+        const messages = await dal.get_all()
+        response.json(messages)
     }
     catch (e) {
-        response.json({'error': JSON.stringify(e)})
+        response.json({ 'error': JSON.stringify(e) })
     }
 })
 // GET by ID

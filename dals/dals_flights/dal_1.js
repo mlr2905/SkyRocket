@@ -25,7 +25,7 @@ async function sp_pass_users_airlines(uesr) {
 }
 
 async function sp_i_users(uesr) {
-   
+
     const new_user = await connectedKnex.raw(`CALL sp_i_users('${uesr.username}','${uesr.email}','${uesr.password}');`)
     return new_user
 }
@@ -128,7 +128,7 @@ async function set_id_user(id) {
 // }
 
 module.exports = {
-     get_by_name, get_all, get_by_id, update_user, delete_user,
+    get_by_name, get_all, get_by_id, update_user, delete_user,
     delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, get_next_user_id, set_id_user
     // ,create_table_if_not_exist
 }

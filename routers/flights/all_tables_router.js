@@ -6,11 +6,11 @@ const dal = require('../../dals/dals_flights/dal_0')
 // GET 
 router.get('/', async (request, response) => {
     try {
-    const all_tables = await dal.get_all()
-    response.json(all_tables)
+        const all_tables = await dal.get_all()
+        response.json(all_tables)
     }
     catch (e) {
-        response.json({'error': JSON.stringify(e)})
+        response.json({ 'error': JSON.stringify(e) })
     }
 })
 // GET by ID

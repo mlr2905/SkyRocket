@@ -78,7 +78,7 @@ async function update_flight(id, updated_flight) {
 async function delete_flight(id) {
     // db.run('update flights ....')
     const result = await connectedKnex.raw(`CALL delete_flight(${id})`);
-    
+
     return result
 }
 
@@ -111,7 +111,7 @@ async function delete_all() {
 // }
 
 module.exports = {
-    get_all, get_by_id,get_by_id_name, new_flight, update_flight, update_remaining_tickets, delete_flight,
+    get_all, get_by_id, get_by_id_name, new_flight, update_flight, update_remaining_tickets, delete_flight,
     delete_all
     // , create_table_if_not_exist
 }

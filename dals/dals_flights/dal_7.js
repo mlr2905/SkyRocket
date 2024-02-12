@@ -53,7 +53,7 @@ async function delete_all() {
 
 // ---------------Test functions only---------------
 
-async function  get_next_passenger_id() {
+async function get_next_passenger_id() {
     try {
         let result = await connectedKnex.raw(`SELECT last_value FROM passengers_id_seq;`);
         return result
@@ -88,6 +88,6 @@ async function set_id_passenger(id) {
 
 module.exports = {
     get_all, get_by_id, new_passenger, update_passenger, delete_passenger,
-    delete_all,get_by_id_passenger,get_next_passenger_id,set_id_passenger
+    delete_all, get_by_id_passenger, get_next_passenger_id, set_id_passenger
     // , create_table_if_not_exist
 }

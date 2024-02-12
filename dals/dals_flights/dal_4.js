@@ -4,7 +4,7 @@ const connectedKnex = db.connect()
 // ---------------User functions only and admin---------------
 
 async function new_customer(new_cus) {
- 
+
     const new_customer = await connectedKnex.raw(`SELECT create_new_customer(
         '${new_cus.first_name}','${new_cus.last_name}','${new_cus.address}'
         ,'${new_cus.phone_no}','${new_cus.credit_card_no}','${new_cus.user_id}');`)
