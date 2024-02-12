@@ -4,6 +4,15 @@ const bl = require('../../bl/bl_role_users')
 
 //role_airlines/users
 
+router.get('/', async (request, response) => {
+    try {
+    const messages = {'message':'Welcome to role airlines the desired path must be specified'}
+    response.status(200).json(messages)
+    }
+    catch (error) {
+        throw response.status(503).json({ "error": `The request failed, try again later ${error}` })
+    }
+})
 // GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
