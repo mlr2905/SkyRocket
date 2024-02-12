@@ -44,16 +44,16 @@ async function get_all() {
         .leftJoin('planes', 'planes.id', 'flights.plane_id')
         .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name', 'planes.seat as Total_tickets')
 
-    const f = await connectedKnex('tickets')
-        .leftJoin('countries', 'countries.id', 'tickets.flight_id')
-        .leftJoin('customers', 'customers.id', 'tickets.customer_id')
-        .leftJoin('passengers', 'passengers.id', 'tickets.passenger_id')
-        .leftJoin('flights', 'flights.id', 'tickets.passenger_id')
-        .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
-        .leftJoin('seats', 'seats.id', 'tickets.seat_id')
-        .select('tickets.*', 'airlines.name as airline_name', 'countries.country_name as flight_destination',
-            'passengers.first_name as passanger_first_name', 'passengers.last_name as passanger_last_name',
-            'customers.first_name', 'customers.last_name', 'seats.name as seat');
+    // const f = await connectedKnex('tickets')
+    //     .leftJoin('countries', 'countries.id', 'tickets.flight_id')
+    //     .leftJoin('customers', 'customers.id', 'tickets.customer_id')
+    //     .leftJoin('passengers', 'passengers.id', 'tickets.passenger_id')
+    //     .leftJoin('flights', 'flights.id', 'tickets.passenger_id')
+    //     .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
+    //     .leftJoin('seats', 'seats.id', 'tickets.seat_id')
+    //     .select('tickets.*', 'airlines.name as airline_name', 'countries.country_name as flight_destination',
+    //         'passengers.first_name as passanger_first_name', 'passengers.last_name as passanger_last_name',
+    //         'customers.first_name', 'customers.last_name', 'seats.name as seat');
     const h = await connectedKnex('passengers').select('*')
     //    const g = await connectedKnex('chairs')
     //    .leftJoin('chair_3', 'chair_3.id', 'chairs.char_id')
