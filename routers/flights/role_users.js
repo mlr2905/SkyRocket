@@ -6,7 +6,7 @@ const bl = require('../../bl/bl_role_users')
 
 router.get('/', async (request, response) => {
     try {
-    const messages = await dal.Welcome()
+    const messages = await bl.Welcome()
     response.json(messages)
     }
     catch (e) {
