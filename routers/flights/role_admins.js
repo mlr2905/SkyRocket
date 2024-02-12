@@ -2,7 +2,28 @@ const express = require('express')
 const router = express.Router()
 const bl = require('../../bl/bl_role_users')
 
-//filghts_users/users
+//role_admins/users
+
+
+router.get('/', async ( request,response) => {
+    try {
+    const messages = {'message':'Welcome to role admins the desired path must be specified,Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1'}
+    response.status(400).json(messages)
+    }
+    catch (error) {
+        throw response.status(503).json({ 'error': 'The request failed, try again later' ,error })
+    }
+})
+
+router.get('/:id', async (request, response) => {
+    try {
+    const messages = {'message':'Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1'}
+    response.status(400).json(messages)
+    }
+    catch (error) {
+        throw response.status(503).json({ 'error': 'The request failed, try again later' ,error })
+    }
+})
 
 // GET by ID
 router.get('/users/:id', async (request, response) => {
@@ -81,7 +102,7 @@ router.delete('/users/:id', async (request, response) => {
     }
 })
 
-//filghts_users/customers
+//role_admins/customers
 
 // GET by ID
 router.get('/customers/:id', async (request, response) => {
@@ -116,7 +137,7 @@ router.put('/customers/:id', async (request, response) => {
 
 })
 
-//filghts_users/flights
+//role_admins/flights
 
 router.get('/flights', async (request, response) => {
     try {
@@ -139,7 +160,7 @@ router.get('/flights/:id', async (request, response) => {
     }
 })
 
-//filghts_users/tickets
+//role_admins/tickets
 
 // POST
 router.post('/tickets', async (request, response) => {
@@ -148,7 +169,7 @@ router.post('/tickets', async (request, response) => {
     response.status(201).json(result)
 })
 
-//filghts_users/passengers
+//role_admins/passengers
 
 // POST
 router.post('/passengers', async (request, response) => {
