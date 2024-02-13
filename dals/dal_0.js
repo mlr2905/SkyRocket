@@ -1,5 +1,5 @@
 const knex = require('knex')
-const db = require('../a_db/db')
+const db = require('../connect_db/default')
 const connectedKnex = db.connect()
 
 // async function delete_all() {
