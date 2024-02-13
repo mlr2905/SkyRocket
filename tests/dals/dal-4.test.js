@@ -1,5 +1,5 @@
 const assert = require('assert')
-const dal = require('../dals/dal_4')
+const dal = require('../../dals/dal_4')
 
 describe('Testing functionallity of the DAL', () => {
     beforeEach(async () => {
