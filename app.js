@@ -5,7 +5,7 @@ const express = require('express')
 const cors = require('cors');
 
 const body_parser = require('body-parser')
-const all_tables_router = require('./routers/all_tables_router')
+const all_tables_router = require('./routers/all_tables')
 const role_users = require('./routers/role_users')
 const role_airlines = require('./routers/role_airlines')
 const role_admins = require('./routers/role_admins')
@@ -24,7 +24,7 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 });
 app.use(cors());
-app.use('/api/all_tables', all_tables_router)
+app.use('/all_tables', all_tables_router)
 app.use('/role_admins', role_admins)
 app.use('/role_airlines', role_airlines)
 app.use('/role_users', role_users)
