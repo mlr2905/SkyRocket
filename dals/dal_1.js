@@ -12,37 +12,37 @@ async function get_by_name(name) {
     return user
 }
 //new_user
-async function sp_i_users_airlines(uesr) {
+async function sp_i_users_airlines(user) {
 
-    const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${uesr.username}','${uesr.email}','${uesr.password}');`)
+    const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`)
     return new_user
 }
 
 //new_user (Automatically generates a password)
-async function sp_pass_users_airlines(uesr) {
-    const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${uesr.username}','${uesr.email}','');`)
+async function sp_pass_users_airlines(user) {
+    const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${user.username}','${user.email}','');`)
     return new_user
 }
 
-async function sp_i_users(uesr) {
-
-    const new_user = await connectedKnex.raw(`CALL sp_i_users('${uesr.username}','${uesr.email}','${uesr.password}');`)
+async function sp_i_users(user) {
+    const new_user = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`)
     return new_user
 }
 //new_user (Automatically generates a password)
-async function sp_pass_users(uesr) {
-    const new_user = await connectedKnex.raw(`CALL sp_pass_users('${uesr.username}','${uesr.email}','');`)
+async function sp_pass_users(user) {
+    const new_user = await connectedKnex.raw(`CALL sp_pass_users('${user.username}','${user.email}','');`)
     return new_user
 }
 
-async function update_user(id, emall, password) {
+async function update_user(id,user) {
     try {
-        if (emall === null) {
-            const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${emall}, '${password}');`)
+       
+        if (user.email === null) {
+            const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`)
             return update
         }
-        if (password === null) {
-            const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${emall}', ${password});`)
+        if (user.password === null) {
+            const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
             return update
         }
     }
