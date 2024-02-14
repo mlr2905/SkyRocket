@@ -1,58 +1,51 @@
 const assert = require('assert')
 const dal = require('../../dals/dal_2')
+const { log } = require('console')
 
 describe('Testing functionallity of the DAL', () => {
-    beforeEach(async () => {
-        await dal.create_table_if_not_exist()
-        await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'countr_name': 'Japan','continent_id':2}) // id: 1
-        await dal.new_message({ 'id': 2, 'countr_name': 'Canada','continent_id':4}) // id: 2
-        await dal.new_message({ 'id': 3, 'countr_name': 'Italy','continent_id':3}) // Id: 3
-        await dal.new_message({ 'id': 4, 'countr_name': 'South Africa','continent_id':1}) // Id: 4
-        await dal.new_message({ 'id': 5, 'countr_name': 'Australia','continent_id':5}) // Id: 5
-    })
 
     it('get_all', async () => {
-        const expected = 5
-        const messages = await dal.get_all()
-        const actual = messages.length
-        console.log(actual);
+        const next_id = await dal.registered_countries()
+        let id = next_id.rows[0].registered_countries
+        const expected = id 
+        const countrys = await dal.get_all()
+        const actual = countrys.length
         assert.strictEqual(expected, actual)
     })
 
     it('get_by_id', async () => {
-        const expected = 'Italy'
-        const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.countr_name
-        console.log(actual);
+        const expected = 'israel'
+        const country_id = await dal.get_by_id(74)
+        const actual = country_id.country_name
         assert.strictEqual(expected, actual)
     })
 
-    it('update_message', async () => {
-        await dal.update_message(3, { 'countr_name': 'cyprus'})
-        const expected = 'cyprus'
-        const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.countr_name
-        console.log(actual);
-        assert.strictEqual(expected, actual)
+    it('new_country', async () => {
+        const next_id = await dal.next_id()
+        const id =next_id.rows[0].countries_next_id -1
+        await dal.new_countrie({ 'country_name': 'test', 'continent_id': 3 })
+        const expected = 'test'
+        const actual = await dal.get_by_id(id)
+        assert.strictEqual(expected, actual.country_name)
     })
 
-    it('delete_message', async () => {
-        await dal.delete_message(5)
+    it('update_country', async () => {
+        const by_name = await dal.get_by_name('test')
+        let id = by_name.id
+        await dal.update_countrie(id, { 'country_name': 'test', 'continent_id': 2 })
+        const expected = 2
+        const actual = await dal.get_by_id(id)
+        assert.strictEqual(expected, actual.continent_id)
+    })
+
+    it('delete_country', async () => {
+        const next_id = await dal.next_id()
+        let id = next_id.rows[0].countries_next_id -1
+        await dal.delete_countrie(id)
         const expected = undefined
-        const message_id_5 = await dal.get_by_id(5)
-        assert.strictEqual(expected, message_id_5)
+        const country_id_5 = await dal.get_by_id(id)
+        const set_id_country = await dal.set_id_country(id)
+        assert.strictEqual(expected, country_id_5)
     })
-
-    it('new_message', async () => {
-        await dal.new_message({ 'id': 6, 'countr_name': 'israel','continent_id':2 }) // Id: 6
-        const expected = 'michael'
-        const message_id_6 = await dal.get_by_id(6)
-        assert.strictEqual(expected, message_id_6.countr_name)
-    })
-
-    it('Confirm_one_line',async () => {
-        await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'countr_name': 'israel','continent_id':2}) // id: 1
-    })
+  
 })
