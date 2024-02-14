@@ -52,5 +52,4 @@ describe('Testing functionallity of the DAL', () => {
         assert.strictEqual(expected, user_id)
     })
  
-
 })
