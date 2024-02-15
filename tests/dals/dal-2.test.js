@@ -1,13 +1,14 @@
 const assert = require('assert')
 const dal = require('../../dals/dal_2')
+const dal_0 = require('../../dals/dal_0')
+
 const { log } = require('console')
 
 describe('Testing functionallity of the DAL', () => {
 
     it('get_all', async () => {
-        const next_id = await dal.registered_countries()
-        let id = next_id.rows[0].registered_countries
-        const expected = id 
+        const next_id = await dal_0.registered_Tables()
+        const expected = next_id.rows[0].registered_tables.countries
         const countrys = await dal.get_all()
         const actual = countrys.length
         assert.strictEqual(expected, actual)
@@ -21,31 +22,27 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_country', async () => {
-        const next_id = await dal.next_id()
-        const id =next_id.rows[0].countries_next_id -1
-        await dal.new_countrie({ 'country_name': 'test', 'continent_id': 3 })
+        const new_countrie = await dal.new_countrie({ 'country_name': 'countrie_test', 'continent_id': 3 })
         const expected = 'test'
-        const actual = await dal.get_by_id(id)
+        const actual = await dal.get_by_id(new_countrie.id)
         assert.strictEqual(expected, actual.country_name)
     })
 
     it('update_country', async () => {
-        const by_name = await dal.get_by_name('test')
-        let id = by_name.id
-        await dal.update_countrie(id, { 'country_name': 'test', 'continent_id': 2 })
+        const by_name = await dal.get_by_name('countrie_test')
+        await dal.update_countrie(by_name.id, { 'country_name': 'countrie_test', 'continent_id': 2 })
         const expected = 2
-        const actual = await dal.get_by_id(id)
+        const actual = await dal.get_by_id(by_name.id)
         assert.strictEqual(expected, actual.continent_id)
     })
 
     it('delete_country', async () => {
-        const next_id = await dal.next_id()
-        let id = next_id.rows[0].countries_next_id -1
-        await dal.delete_countrie(id)
+        const by_name = await dal.get_by_name('countrie_test')
+        await dal.delete_countrie(by_name.id)
         const expected = undefined
-        const country_id_5 = await dal.get_by_id(id)
-        const set_id_country = await dal.set_id_country(id)
-        assert.strictEqual(expected, country_id_5)
+        const country_id = await dal.get_by_id(by_name.id)
+        const set_id_country = await dal.set_id(by_name.id)
+        assert.strictEqual(expected, country_id)
     })
   
 })

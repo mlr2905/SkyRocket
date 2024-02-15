@@ -93,24 +93,24 @@ async function delete_all() {
 
 // ---------------Test functions only---------------
 
-async function get_next_user_id() {
+async function next_id() {
     try {
-        let result = await connectedKnex.raw(`SELECT last_value FROM users_id_seq;`);
-        return result
+        const result = await connectedKnex.raw(`SELECT nextval('users_id_seq')`);
+        return result;
 
     } catch (e) {
-        throw console.error('Error fetching next user ID:', e);
+        throw console.error( e);
 
     }
 }
 
-async function set_id_user(id) {
+async function set_id(id) {
     try {
-        const result = await connectedKnex.raw(`CALL reset_id_user(${id})`);
+        const result = await connectedKnex.raw(`ALTER SEQUENCE users_id_seq RESTART WITH ${id}`);
         return result;
 
     } catch (e) {
-        throw console.error('Error fetching next user ID:', e);
+        throw console.error(e);
 
     }
 }
@@ -129,6 +129,6 @@ async function set_id_user(id) {
 
 module.exports = {
     get_by_name, get_all, get_by_id, update_user, delete_user,
-    delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, get_next_user_id, set_id_user
+    delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, next_id, set_id
     // ,create_table_if_not_exist
 }

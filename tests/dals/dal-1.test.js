@@ -1,19 +1,14 @@
 const assert = require('assert')
 const dal = require('../../dals/dal_1')
-describe('Testing functionallity of the DAL', () => {
-   
-    it('get_all', async () => {
-        const next_id = await dal.get_next_user_id()
-        const expected = next_id.rows[0].last_value -1
-        const users = await dal.get_all()
-        const actual = users.length
-        assert.strictEqual(expected, actual)
-    })
+const dal_0 = require('../../dals/dal_0')
 
-    it('get_by_name', async () => {
-        const expected = 'Michael29@gmail.com'
-        const user_id = await dal.get_by_name("Michael29")
-        const actual = user_id.email
+describe('Testing functionallity of the DAL', () => {
+
+    it('get_all', async () => {
+        const next_id = await dal_0.registered_Tables()
+        const expected = next_id.rows[0].registered_tables.users
+        const countrys = await dal.get_all()
+        const actual = countrys.length
         assert.strictEqual(expected, actual)
     })
 
@@ -25,7 +20,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_user', async () => {
-        const next_id = await dal.get_next_user_id()
+        const next_id = await dal.next_id()
         let id = next_id.rows[0].last_value
         await dal.sp_i_users({ 'username': 'michael_test', 'password': 'test', 'email': 'michael_test@gmail.com' }) 
         const expected = 'michael_test'
@@ -34,7 +29,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
    it('update_user', async () => {
-        const next_id = await dal.get_next_user_id()
+        const next_id = await dal.next_id()
         let id = next_id.rows[0].last_value
         await dal.update_user(id, { 'username': 'michael_test', 'password': 'test_12345', 'email': null})
         const expected = 'test_12345'
@@ -43,12 +38,12 @@ describe('Testing functionallity of the DAL', () => {
     }) 
 
     it('delete_user', async () => {
-        const next_id = await dal.get_next_user_id()
+        const next_id = await dal.next_id()
         let id = next_id.rows[0].last_value
         await dal.delete_user(id)
         const expected = undefined
         const user_id = await dal.get_by_id(id)
-        const set_id_user = await dal.set_id_user(id)
+        const set_id_user = await dal.set_id(id)
         assert.strictEqual(expected, user_id)
     })
  

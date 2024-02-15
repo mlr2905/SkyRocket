@@ -8,8 +8,9 @@ async function new_countrie(new_mes) {
     // db.run('insert into countries ....')
     // result[0] will be the new ID given by the SQL
     // Insert into countries values(....)
-    const result = await connectedKnex('countries').insert(new_mes)
-    return { ...new_mes, id: result[0] }
+    const result = await connectedKnex('countries').insert(new_mes).returning('id');
+    // החזרת אובייקט עם המידע החדש, כולל ה-id
+    return { ...new_mes, id: result[0].id };
 }
 
 async function get_by_id(id) {
@@ -59,20 +60,11 @@ async function delete_all() {
 
 // ---------------Test functions only---------------
 
-async function registered_countries() {
-    try {
-        let result = await connectedKnex.raw(` SELECT registered_countries();`);
-        return result
 
-    } catch (e) {
-        throw console.error(e);
-
-    }
-}
 
 async function next_id() {
     try {
-        const result = await connectedKnex.raw(`SELECT countries_next_id()`);
+        const result = await connectedKnex.raw(`SELECT nextval('countries_id_seq')`);
         return result;
 
     } catch (e) {
@@ -81,9 +73,9 @@ async function next_id() {
     }
 }
 
-async function set_id_country(id) {
+async function set_id(id) {
     try {
-        const result = await connectedKnex.raw(`CALL reset_id_country(${id})`);
+        const result = await connectedKnex.raw(`ALTER SEQUENCE countries_id_seq RESTART WITH ${id}`);
         return result;
 
     } catch (e) {
@@ -106,7 +98,7 @@ async function set_id_country(id) {
 // }
 
 module.exports = {
-    get_all, get_by_id,get_by_name, new_countrie, update_countrie, delete_countrie,registered_countries,
-    delete_all,next_id,set_id_country
+    get_all, get_by_id,get_by_name, new_countrie, update_countrie, delete_countrie,
+    delete_all,next_id,set_id
     // , create_table_if_not_exist
 }

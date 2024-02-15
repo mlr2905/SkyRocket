@@ -7,9 +7,11 @@ async function new_airline(new_mes) {
     // db.run('insert into airlines ....')
     // result[0] will be the new ID given by the SQL
     // Insert into airlines values(....)
-    const result = await connectedKnex('airlines').insert(new_mes)
-    return { ...new_mes, id: result[0] }
-}
+    const result = await connectedKnex('airlines').insert(new_mes).returning('id');
+    // החזרת אובייקט עם המידע החדש, כולל ה-id
+    return { ...new_mes, id: result[0].id };
+  }
+  
 
 async function get_by_id(id) {
     // db.run('select * from airlines where id=?')
@@ -52,6 +54,37 @@ async function delete_all() {
     await connectedKnex.raw('ALTER SEQUENCE "airlines_id_seq" RESTART WITH 1');
     return result
 }
+// ---------------Test functions only---------------
+
+
+
+async function next_id() {
+    try {
+        const result = await connectedKnex.raw(`SELECT nextval('airlines_id_seq')`);
+        return result;
+
+    } catch (e) {
+        throw console.error( e);
+
+    }
+}
+
+async function set_id(id) {
+    try {
+        const result = await connectedKnex.raw(`ALTER SEQUENCE airlines_id_seq RESTART WITH ${id}`);
+        return result;
+
+    } catch (e) {
+        throw console.error(e);
+
+    }
+}
+async function get_by_name(name) {
+
+    const airline_name = await connectedKnex('airlines').select('*').where('name', name).first()
+
+    return airline_name
+}
 
 // async function create_table_if_not_exist() {
 //     const tableExists = await connectedKnex.schema.hasTable('airlines');
@@ -68,7 +101,7 @@ async function delete_all() {
 // }
 
 module.exports = {
-    get_all, get_by_id, new_airline, update_airline, delete_airline,
+    get_all, get_by_id, new_airline, update_airline, delete_airline,next_id,set_id,get_by_name,
     delete_all
     // , create_table_if_not_exist
 }

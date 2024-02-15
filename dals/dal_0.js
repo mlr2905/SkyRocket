@@ -80,9 +80,22 @@ async function get_by_id(id) {
     return arr
 }
 
+// ---------------Test functions only---------------
+
+async function registered_Tables() {
+    try {
+        let result = await connectedKnex.raw(` SELECT registered_Tables();`);
+        return result
+
+    } catch (e) {
+        throw console.error(e);
+
+    }
+}
+
 
 
 
 module.exports = {
-    get_all, get_by_id
+    get_all, get_by_id,registered_Tables
 }
