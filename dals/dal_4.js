@@ -44,9 +44,7 @@ async function delete_all() {
 
 async function get_all() {
     // db.run('select * from customers')
-    const customers = await connectedKnex('customers')
-        .join('users', 'users.id', 'customers.user_id')
-        .select('customers.*', 'users.username as user_name');
+    const customers = await connectedKnex.raw(`SELECT get_all_customers();`)
 
     return customers
 }

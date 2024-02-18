@@ -6,13 +6,7 @@ const connectedKnex = db.connect()
 
 async function get_all() {
     // db.run('select * from flights')
-    const flights = await connectedKnex('flights')
-        .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
-        .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
-        .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
-        .leftJoin('planes', 'planes.id', 'flights.plane_id')
-        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name', 'planes.seat as Total tickets')
-
+    const flights = await connectedKnex.raw(`SELECT get_all_flights();`)
 
     return flights
 }

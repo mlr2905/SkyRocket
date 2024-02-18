@@ -44,11 +44,8 @@ async function delete_countrie(id) {
 
 async function get_all() {
     // db.run('select * from countries')
-    const countries = await connectedKnex('countries')
-        .select('countries.*', 'continents.continent')
-        .from('countries')
-        .join('continents', 'countries.continent_id', 'continents.id');
-    return countries
+    const countries = await connectedKnex.raw(`SELECT get_all_countries();`)
+   return countries
 }
 
 async function delete_all() {

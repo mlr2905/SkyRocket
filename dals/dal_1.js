@@ -77,11 +77,7 @@ async function delete_user(id) {
 // ---------------Admin permission only---------------
 async function get_all() {
     // db.run('select * from users')
-    const users = await connectedKnex('users')
-        .select('users.*', 'roles.role_name')
-        .from('users')
-        .join('roles', 'users.role_id', 'roles.id');
-
+    const users = await connectedKnex.raw(`SELECT get_all_users();`)
     return users
 }
 async function delete_all() {

@@ -41,10 +41,7 @@ async function delete_airline(id) {
 
 async function get_all() {
     // db.run('select * from airlines')
-    const airlines = await connectedKnex('airlines')
-        .leftJoin('users', 'users.id', '=', 'airlines.user_id')
-        .leftJoin('countries', 'countries.id', '=', 'airlines.country_id')
-        .select('airlines.*', 'countries.country_name', 'users.username as user_name');
+    const airlines = await connectedKnex.raw(`SELECT get_all_airlines();`)
 
     return airlines
 }

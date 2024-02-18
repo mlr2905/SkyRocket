@@ -33,7 +33,7 @@ async function delete_passenger(id) {
 
 async function get_all() {
     // db.run('select * from passengers')
-    const passengers = await connectedKnex('passengers').select('*')
+    const passengers = await connectedKnex.raw(`SELECT get_all_passengers();`)
 
     return passengers
 }
