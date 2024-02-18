@@ -1,27 +1,17 @@
 const assert = require('assert')
 const dal = require('../../dals/dal_4')
+const dal_0 = require('../../dals/dal_0')
 
 describe('Testing functionallity of the DAL', () => {
-    beforeEach(async () => {
-        await dal.create_table_if_not_exist()
-        await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'first_name': 'idit', 'last_name': 'rozental', 'address': 'israel', 'phone_no': '+972503424253', 'credit_card_no': '2255', 'user_id': 1 }) // id: 1
-        await dal.new_message({ 'id': 1, 'first_name': 'meital', 'last_name': 'rozental', 'address': 'israel', 'phone_no': '+972507462964', 'credit_card_no': '4422', 'user_id': 2 }) // id: 2
-        await dal.new_message({ 'id': 3, 'first_name': 'yosef', 'last_name': 'rozental', 'address': 'israel', 'phone_no': '+972506372833', 'credit_card_no': '6586', 'user_id': 3 }) // id: 3
-        await dal.new_message({ 'id': 1, 'first_name': 'Atlas', 'last_name': 'Air', 'address': 'American', 'phone_no': '+141523581961', 'credit_card_no': '3932', 'user_id': 4 }) // id: 4
-        await dal.new_message({ 'id': 1, 'first_name': 'American', 'last_name': 'Airlines', 'address': 'American', 'phone_no': '+14152358132', 'credit_card_no': '5234', 'user_id': 5 }) // id: 5
 
-    })
-
-    
-
-        it('get_all', async () => {
-            const expected = 5
-            const messages = await dal.get_all()
-            const actual = messages.length
-            console.log(actual);
-            assert.strictEqual(expected, actual)
-        })
+    it('get_all', async () => {
+        const next_id = await dal_0.registered_Tables()
+        let id = next_id.rows[0].registered_tables.customers
+        const expected = id 
+        const countrys = await dal.get_all()
+        const actual = countrys.length
+        assert.strictEqual(expected, actual)
+    }) 
 
     it('get_by_id', async () => {
         const expected = 'yosef'

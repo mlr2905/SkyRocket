@@ -1,24 +1,17 @@
 const assert = require('assert')
 const dal = require('../../dals/dal_6')
+const dal_0 = require('../../dals/dal_0')
 
 describe('Testing functionallity of the DAL', () => {
-    beforeEach(async () => {
-        await dal.create_table_if_not_exist()
-        await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'flight_id': '1', 'customer_id': '1','passenger_id':1}) // id: 1
-        await dal.new_message({ 'id': 2, 'flight_id': '2', 'customer_id': '1','passenger_id':2}) // id: 2
-        await dal.new_message({ 'id': 3, 'flight_id': '3', 'customer_id': '1','passenger_id':3}) // Id: 3
-        await dal.new_message({ 'id': 4, 'flight_id': '4', 'customer_id': '1','passenger_id':4}) // Id: 4
-        await dal.new_message({ 'id': 5, 'flight_id': '5', 'customer_id': '1','passenger_id':5}) // Id: 5
-    })
-   
+
     it('get_all', async () => {
-        const expected = 5
-        const messages = await dal.get_all()
-        const actual = messages.length
-        console.log(actual);
+        const next_id = await dal_0.registered_Tables()
+        let id = next_id.rows[0].registered_tables.tickets
+        const expected = id 
+        const countrys = await dal.get_all()
+        const actual = countrys.length
         assert.strictEqual(expected, actual)
-    })
+    }) 
 
     it('get_by_id', async () => {
         const expected = '3'
