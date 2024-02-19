@@ -9,8 +9,8 @@ describe('Testing functionallity of the DAL', () => {
     it('get_all', async () => {
         const next_id = await dal_0.registered_Tables()
         const expected = next_id.rows[0].registered_tables.countries
-        const countrys = await dal.get_all()
-        const actual = countrys.length
+        const countries = await dal.get_all()
+        const actual = countries.length
         assert.strictEqual(expected, actual)
     })
 

@@ -78,7 +78,7 @@ async function delete_user(id) {
 async function get_all() {
     // db.run('select * from users')
     const users = await connectedKnex.raw(`SELECT get_all_users();`)
-    return users
+    return users.rows
 }
 async function delete_all() {
     // db.run('update users ....')

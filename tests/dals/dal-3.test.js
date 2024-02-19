@@ -8,8 +8,8 @@ describe('Testing functionallity of the DAL', () => {
         const next_id = await dal_0.registered_Tables()
         let id = next_id.rows[0].registered_tables.airlines
         const expected = id 
-        const countrys = await dal.get_all()
-        const actual = countrys.length
+        const airlines = await dal.get_all()
+        const actual = airlines.length
         assert.strictEqual(expected, actual)
     }) 
 

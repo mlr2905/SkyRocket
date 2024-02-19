@@ -20,7 +20,7 @@ async function get_by_id(id) {
         .leftJoin('continents', 'continents.id', '=', 'countries.continent_id')
         .where('countries.id', id)
         .first();
-    return countrie
+    return countrie.rows
 }
 
 async function get_by_name(name) {

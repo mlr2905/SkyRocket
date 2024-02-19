@@ -8,7 +8,7 @@ async function get_all() {
     // db.run('select * from flights')
     const flights = await connectedKnex.raw(`SELECT get_all_flights();`)
 
-    return flights
+    return flights.rows
 }
 
 

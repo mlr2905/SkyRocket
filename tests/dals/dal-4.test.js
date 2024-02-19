@@ -8,46 +8,41 @@ describe('Testing functionallity of the DAL', () => {
         const next_id = await dal_0.registered_Tables()
         let id = next_id.rows[0].registered_tables.customers
         const expected = id 
-        const countrys = await dal.get_all()
-        const actual = countrys.length
+        const customers = await dal.get_all()
+        const actual = customers.length
         assert.strictEqual(expected, actual)
     }) 
 
     it('get_by_id', async () => {
-        const expected = 'yosef'
-        const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.first_name
-        console.log(actual);
+        const expected = 'michael rozental'
+        const customer_id = await dal.get_by_id(4)
+        const actual = customer_id.last_name
         assert.strictEqual(expected, actual)
     })
 
-    it('update_message', async () => {
-        await dal.update_message(3, { 'first_name': 'American', 'last_name': 'Airlines', 'address': 'American', 'phone_no': '+14152358652', 'credit_card_no': '5234', 'user_id': 5 })
-        const expected = '+14152358652'
-        const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.phone_no
-        console.log(actual);
-        assert.strictEqual(expected, actual)
+    it('new_customer', async () => {
+        const new_customer = await dal.new_customer({'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '5555-5432-1098-7337', 'user_id': 36  }) 
+        const expected = 'Michael29'
+        const actual = await dal.get_by_name('Michael29')
+        assert.strictEqual(expected, actual.last_name)
     })
 
-    it('delete_message', async () => {
-        await dal.delete_message(5)
+    it('update_customer', async () => {
+        const by_name = await dal.get_by_name('Michael29')
+        await dal.update_customer(by_name.id, {'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '4444-5432-1098-7654','user_id': 36 })
+        const expected = '4444-5432-1098-7654'
+        const actual = await dal.get_by_id(by_name.id)
+        assert.strictEqual(expected, actual.credit_card_no)
+    })
+
+
+    it('delete_customer', async () => {
+        const by_name = await dal.get_by_name('Michael29')
+        await dal.delete_customer(by_name.id)
         const expected = undefined
-        const message_id_5 = await dal.get_by_id(5)
-        assert.strictEqual(expected, message_id_5)
+        const country_id = await dal.get_by_id(by_name.id)
+        const set_id_country = await dal.set_id(by_name.id)
+        assert.strictEqual(expected, country_id)
     })
-
-    it('new_message', async () => {
-        await dal.new_message({ 'id': 6,'first_name': 'Egypt', 'last_name': 'Air', 'address': 'Egypt', 'phone_no': '+2022597325', 'credit_card_no': '6362', 'user_id': 6  }) // Id: 6
-        const expected = 'Egypt'
-        const message_id_6 = await dal.get_by_id(6)
-        assert.strictEqual(expected, message_id_6.first_name)
-    })
-
-    it('Confirm_one_line', async () => {
-        await dal.delete_all()
-        await dal.new_message({ 'id': 1, 'first_name': 'idit', 'last_name': 'rozental', 'address': 'israel', 'phone_no': '+972503424253', 'credit_card_no': '2255', 'user_id': 1 }) // id: 1
-    })
-
 
 })
