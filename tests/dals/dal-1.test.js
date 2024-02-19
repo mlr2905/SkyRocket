@@ -1,6 +1,6 @@
 const assert = require('assert')
-const dal = require('../../dals/dal_1')
-const dal_0 = require('../../dals/dal_0')
+const dal = require('../../dals/dal_table_users')
+const dal_0 = require('../../dals/dal_all_tables')
 
 describe('Testing functionallity of the DAL', () => {
 

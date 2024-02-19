@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const dal = require('../dals/dal_0')
+const dal = require('../dals/dal_all_tables')
 
 // '/api/all_tables'
 // GET 

@@ -1,9 +1,11 @@
-const dal_1 = require('../dals/dal_1')
-const dal_2 = require('../dals/dal_2')
-const dal_3 = require('../dals/dal_3')
-const dal_4 = require('../dals/dal_4')
-const dal_5 = require('../dals/dal_5')
-const dal_6 = require('../dals/dal_6')
+const dal_1 = require('../dals/dal_table_users')
+const dal_2 = require('../dals/dal_table_countries')
+const dal_3 = require('../dals/dal_table_airlines')
+const dal_4 = require('../dals/dal_table_customers')
+const dal_5 = require('../dals/dal_table_flights')
+const dal_6 = require('../dals/dal_table_tickets')
+const dal_7 = require('../dals/dal_table_passengers')
+
 
 //func users
 async function create_user(username, email, password) {

@@ -1,6 +1,6 @@
 const assert = require('assert')
-const dal = require('../../dals/dal_2')
-const dal_0 = require('../../dals/dal_0')
+const dal = require('../../dals/dal_table_countries')
+const dal_0 = require('../../dals/dal_all_tables')
 
 const { log } = require('console')
 

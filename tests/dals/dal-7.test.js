@@ -1,5 +1,5 @@
 const assert = require('assert')
-const dal = require('../../dals/dal_table_tickets')
+const dal = require('../../dals/dal_table_passengers')
 const dal_0 = require('../../dals/dal_all_tables')
 
 describe('Testing functionallity of the DAL', () => {
