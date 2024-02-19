@@ -1,8 +1,21 @@
 const assert = require('assert')
 const dal = require('../../dals/dal_table_customers')
 const dal_0 = require('../../dals/dal_all_tables')
+const { log } = require('console')
 
 describe('Testing functionallity of the DAL', () => {
+    
+    it('Credit_check', async () => {
+        const expected = true
+        const actual = await dal.credit_check('4580980102346346')
+        assert.strictEqual(expected, actual)
+    })
+
+    it('Credit_check', async () => {
+        const expected = false
+        const actual = await dal.credit_check('4580980102346666')
+        assert.strictEqual(expected, actual)
+    })
 
     it('get_all', async () => {
         const next_id = await dal_0.registered_Tables()
@@ -34,7 +47,6 @@ describe('Testing functionallity of the DAL', () => {
         const actual = await dal.get_by_id(by_name.id)
         assert.strictEqual(expected, actual.credit_card_no)
     })
-
 
     it('delete_customer', async () => {
         const by_name = await dal.get_by_name('Michael29')

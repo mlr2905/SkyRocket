@@ -49,10 +49,19 @@ async function delete_account(id) {
 // func customers
 
 async function new_customer(new_cus) {
-  const new_customer = await dal_4.new_customer(new_cus);
-  if (new_customer) {
-    return new_cus
+  const Credit_check = await dal_4.credit_check(new_cus.credit_card_no)
+
+  if(Credit_check){
+    const new_customer = await dal_4.new_customer(new_cus);
+    if (new_customer) {
+      return new_cus
+    }
   }
+  else {
+    return  `Invalid credit card number ${new_cus.credit_card_no} `;
+
+  }
+ 
 }
 
 async function get_by_id_customer(id) {

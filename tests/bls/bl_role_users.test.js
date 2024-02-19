@@ -43,6 +43,9 @@ describe('Testing functionallity of the bl', () => {
         const set_id_user = await dal_1.set_id_user(id)
         assert.strictEqual(expected, new_user.username)
     })
+
+    //new_customer
+    //update_customer
  
     it('get_by_id_flights', async () => {
         const expected = 74

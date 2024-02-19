@@ -2,6 +2,12 @@ const knex = require('knex')
 const db = require('../connect_db/default')
 const connectedKnex = db.connect()
 // ---------------User functions only and admin---------------
+async function credit_check (card){
+    const credit_check = await connectedKnex.raw(`SELECT checkcreditcardvalidity('${card}')`)
+
+    return credit_check.rows[0].checkcreditcardvalidity
+
+}
 
 async function new_customer(new_cus) {
 
@@ -84,7 +90,7 @@ async function set_id(id) {
 }
 
 module.exports = {
-    get_all, get_by_id, new_customer, update_customer, delete_customer,get_by_name,next_id,set_id,
+    get_all, get_by_id, new_customer, update_customer, delete_customer,get_by_name,next_id,set_id,credit_check,
     delete_all
     // , create_table_if_not_exist
 }
