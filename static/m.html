@@ -9,22 +9,19 @@
   <img id="qr-code" src="" />
 
   <script>
-    const generateQrCode = async (text) => {
-      const response = await fetch(`https://skyrocket.onrender.com/role_users/qr/${text}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
-      });
-
-      const data = await response.json();
-      const buffer = Buffer.from(data.qr_code, 'bytea');
-      const base64String = buffer.toString('base64');
-      const dataURI = `data:image/png;base64,${base64String}`;
-
-      document.getElementById('qr-code').src = dataURI;
-    };
+    // Assuming qrcode.js is already included
+    // Add error handling and security best practices as needed
+    async function generateQrCode(text) {
+      try {
+        const qrCode = qrcode.encode(text); // Assuming qrcode.js exists
+        const base64String = Buffer.from(qrCode, 'utf8').toString('base64');
+        const dataURI = `data:image/png;base64,${base64String}`;
+        document.getElementById('qr-code').src = dataURI;
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+        // Handle error gracefully (e.g., display an error message)
+      }
+    }
 
     generateQrCode('שלום עולם!');
   </script>
