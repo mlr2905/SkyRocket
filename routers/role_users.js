@@ -19,13 +19,15 @@ router.get('/', async (request, response) => {
 })
 
 
-router.get('/qr', (req, res) => {
-  const text = req.query.text;
-  const qr = qrcode.toDataURL(text);
-
-  res.send(qr);
-});
-
+router.get('/users/qr', (req, res) => {
+    const text = req.query.text;
+    if (!text) {
+      return res.status(400).send('Missing "text" parameter');
+    }
+    const qr = qrcode.toDataURL(text);
+    res.setHeader('Content-Type', 'image/png');
+    res.send(qr);
+  });
 
 router.get('/:id', async (request, response) => {
     try {
