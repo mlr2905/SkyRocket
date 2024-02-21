@@ -24,6 +24,11 @@ async function get_by_id_user(id) {
   return user_id
 }
 
+async function get_qr(id) {
+  const user_id = await dal_1.get_qr(id);
+  return user_id
+}
+
 async function update_user(id, email, password) {
   const user_id = await dal_1.get_by_id(id);
   if (user_id) {
@@ -162,6 +167,6 @@ async function get_by_id_passenger(id) {
 
 module.exports = {
   purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
-  , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger
+  , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger,get_qr
 
 }
