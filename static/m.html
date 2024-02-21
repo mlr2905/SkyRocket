@@ -1,74 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Image</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<style>
+  #qrcode {
+    width: 200px;
+    height: 200px;
+    margin: 20px;
+  }
+</style>
 </head>
 <body>
-  <!-- תגית img להצגת התמונה -->
-  <img id="qrCodeImage" src="" alt="QR Code Image">
+<h1>QR Code Generator</h1>
+<label for="input">Enter text:</label>
+<input type="text" id="input">
+<button onclick="generateQR()">Generate QR Code</button>
+<div id="qrcode"></div>
 
-  <script>
-    // נתוני הBuffer שקיבלת
-    const bufferData = {
-      "type": "Buffer",
-      "data": [
-        80,
-        71,
-        85,
-        73,
-        81,
-        106,
-        84,
-        114,
-        67,
-        54,
-        115,
-        49,
-        54,
-        43,
-        110,
-        113,
-        69,
-        113,
-        106,
-        109,
-        89,
-        49,
-        48,
-        47,
-        107,
-        87,
-        54,
-        114,
-        112,
-        67,
-        112,
-        105,
-        51,
-        110,
-        83,
-        115,
-        67,
-        51,
-        99,
-        82,
-        110,
-        97,
-        81,
-        61
-      ]
-    };
-
-    // המרת Buffer למחרוזת
-    const imageData = Buffer.from(bufferData.data);
-
-    // המרת המחרוזת לData URL
-    const imageUrl = 'data:image/png;base64,' + imageData.toString('base64');
-
-    // מציב את ה-URL בתצוגה של תמונת ה-HTML
-    document.getElementById('qrCodeImage').src = imageUrl;
-  </script>
+<script>
+  function generateQR() {
+    var qrDiv = document.getElementById('qrcode');
+    var qrText = document.getElementById('input').value;
+    qrDiv.innerHTML = ''; // Clear previous QR code if exists
+    var qr = new QRious({
+      element: qrDiv,
+      value: qrText,
+      size: 200
+    });
+  }
+</script>
 </body>
 </html>
