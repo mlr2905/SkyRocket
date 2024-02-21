@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const qrcode = require('i');
+const qrcode = require('qrcode');
 
 const bl = require('../bl/bl_role_users')
 
