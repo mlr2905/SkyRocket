@@ -37,9 +37,15 @@ async function registered_Tables() {
     }
 }
 
+async function get_qr(code) {
+    // db.run('select * from flights')
+    const flights = await connectedKnex.raw(`SELECT get_all_flights('${code}');`)
+
+    return flights.rows
+}
 
 
 
 module.exports = {
-    get_all, get_by_id,registered_Tables
+    get_all, get_by_id,registered_Tables,get_qr
 }

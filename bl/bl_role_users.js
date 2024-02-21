@@ -1,8 +1,10 @@
+const dal_0 = require('../dals/dal_all_tables')
 const dal_1 = require('../dals/dal_table_users')
 const dal_4 = require('../dals/dal_table_customers')
 const dal_5 = require('../dals/dal_table_flights')
 const dal_6 = require('../dals/dal_table_tickets')
 const dal_7 = require('../dals/dal_table_passengers')
+
 
 //func users
 async function create_user(uesr) {
@@ -25,7 +27,7 @@ async function get_by_id_user(id) {
 }
 
 async function get_qr(id) {
-  const user_id = await dal_5.get_qr(id);
+  const user_id = await dal_0.get_qr(id);
   return user_id
 }
 

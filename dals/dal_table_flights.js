@@ -11,12 +11,7 @@ async function get_all() {
     return flights.rows
 }
 
-async function get_qr(code) {
-    // db.run('select * from flights')
-    const flights = await connectedKnex.raw(`SELECT get_all_flights(${code});`)
 
-    return flights.rows
-}
 
 
 
@@ -117,6 +112,6 @@ async function get_by_flight_code(code) {
 
 module.exports = {
     get_all, get_by_id, get_by_id_name, new_flight, update_flight, update_remaining_tickets, delete_flight,
-    delete_all,get_by_flight_code,set_id,get_qr
+    delete_all,get_by_flight_code,set_id
     // , create_table_if_not_exist
 }
