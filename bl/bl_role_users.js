@@ -25,7 +25,7 @@ async function get_by_id_user(id) {
 }
 
 async function get_qr(id) {
-  const user_id = await dal_1.get_qr(id);
+  const user_id = await dal_5.get_qr(id);
   return user_id
 }
 
