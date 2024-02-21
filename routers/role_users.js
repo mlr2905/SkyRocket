@@ -19,7 +19,7 @@ router.get('/', async (request, response) => {
 })
 
 
-router.get('/qr', (req, res) => {
+express.get('/qr', (req, res) => {
   const text = req.query.text;
   const qr = qrcode.toDataURL(text);
 
