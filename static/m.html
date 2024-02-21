@@ -3,27 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>הצגת תמונת QR</title>
+  <title>QR Code</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.15.1/qrcode.min.js"></script>
 </head>
 <body>
-    <img id="qr-code" src="" style="width: 200px; height: 200px;">
-
+  <img id="qrcode">
   <script>
-    // Assuming qrcode.js is already included
-    // Add error handling and security best practices as needed
-    async function generateQrCode(text) {
-      try {
-        const qrCode = qrcode.encode(text); // Assuming qrcode.js exists
-        const base64String = Buffer.from(qrCode, 'utf8').toString('base64');
-        const dataURI = `data:image/png;base64,${base64String}`;
-        document.getElementById('qr-code').src = dataURI;
-      } catch (error) {
-        console.error('Error generating QR code:', error);
-        // Handle error gracefully (e.g., display an error message)
-      }
-    }
-
-    generateQrCode('שלום עולם!');
+    const bufferData = [80, 71, 85, 73, 81, 106, 84, 114, 67, 54, 115, 49, 54, 43, 110, 113, 69, 113, 106, 109, 89, 49, 48, 47, 107, 87, 54, 114, 112, 67, 112, 105, 51, 110, 83, 115, 67, 51, 99, 82, 110, 97, 81, 61];
+    const base64String = Buffer.from(bufferData).toString('base64');
+    const qrcode = new QRCode('qrcode');
+    qrcode.makeCode(base64String);
   </script>
 </body>
 </html>
