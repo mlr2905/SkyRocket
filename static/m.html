@@ -4,15 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.15.1/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.1.1/jsQR.min.js"></script>
 </head>
 <body>
-  <img id="qrcode">
+  <img id="qrcode-img">
   <script>
     const bufferData = [80, 71, 85, 73, 81, 106, 84, 114, 67, 54, 115, 49, 54, 43, 110, 113, 69, 113, 106, 109, 89, 49, 48, 47, 107, 87, 54, 114, 112, 67, 112, 105, 51, 110, 83, 115, 67, 51, 99, 82, 110, 97, 81, 61];
-    const base64String = Buffer.from(bufferData).toString('base64');
-    const qrcode = new QRCode('qrcode');
-    qrcode.makeCode(base64String);
+    const base64String = window.btoa(String.fromCharCode.apply(null, bufferData));
+    const img = document.getElementById('qrcode-img');
+    jsQR(img, function(code) {
+      if (code) {
+        console.log("Decoded QR code:", code);
+      } else {
+        console.log("No QR code found.");
+      }
+    });
   </script>
 </body>
 </html>
