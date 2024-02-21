@@ -40,6 +40,7 @@ async function registered_Tables() {
 async function get_qr(code) {
     // db.run('select * from flights')
     const flights = await connectedKnex.raw(`SELECT generate_qr_code('${code}');`)
+    console.log(flights.rows[0].generate_qr_code);
 
     return flights.rows[0].generate_qr_code
 }

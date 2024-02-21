@@ -21,7 +21,7 @@ describe('Testing functionallity of the DAL', () => {
     it('get_by_id', async () => {
         const expected = 7
         const get_by_id = await dal.get_qr('jcdjjsbsfjebde')
-        
+
         const actual = 
         assert.strictEqual(expected, actual)
     })

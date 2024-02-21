@@ -28,7 +28,7 @@ router.get('/:id', async (request, response) => {
         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
     }
 })
-router.post('/qr/:id', async (request, response) => {
+router.get('/qr/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {
         const user = await bl.get_qr(user_id)
