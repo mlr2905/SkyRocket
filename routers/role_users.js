@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const qrcode = require('qrcode');
+
 const bl = require('../bl/bl_role_users')
 
 //role_users/users
@@ -15,6 +17,16 @@ router.get('/', async (request, response) => {
         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
     }
 })
+
+
+router.get('/qr', (req, res) => {
+  const text = req.query.text;
+  const qr = qrcode.toDataURL(text);
+
+  res.send(qr);
+});
+
+
 router.get('/:id', async (request, response) => {
     try {
         const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_users/{neme ?}/1' }

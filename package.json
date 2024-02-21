@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha tests/dals/dal_table_customers.test.js --timeout 50000ms"
+    "test": "mocha tests/dals/dal_table_flights.test.js --timeout 50000ms"
   },
   "keywords": [],
   "author": "",

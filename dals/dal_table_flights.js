@@ -30,12 +30,12 @@ async function update_remaining_tickets(id) {
 
 // ---------------airline_User functions only and admin---------------
 
-async function new_flight(new_mes) {
+async function new_flight(new_flight) {
     // db.run('insert into flights ....')
     // result[0] will be the new ID given by the SQL
     // Insert into flights values(....)
-    const result = await connectedKnex('flights').insert(new_mes)
-    return { ...new_mes, id: result[0] }
+    const result = await connectedKnex('flights').insert(new_flight).returning('*');
+    return  result[0] 
 }
 
 async function get_by_id(id) {
@@ -85,27 +85,31 @@ async function delete_all() {
     return result
 }
 
-// async function create_table_if_not_exist() {
-//     const tableExists = await connectedKnex.schema.hasTable('flights');
 
-//     if (!tableExists) {
-//         await connectedKnex.schema.createTable('flights', (table) => {
-//             table.increments('id').primary(); // This creates a SERIAL column
-//             table.bigInteger('airline_id').unsigned().notNullable(); // Unsigned for FK
-//             table.foreign('airline_id').references('airlines').on('id');
-//             table.integer('origin_country_id').unsigned().notNullable(); // Unsigned for FK
-//             table.foreign('origin_country_id').references('countries').on('id');
-//             table.integer('destination_country_id').unsigned().notNullable(); // Unsigned for FK
-//             table.foreign('destination_country_id').references('countries').on('id');
-//             table.timestamp('departure_time').notNullable(); // Corrected typo
-//             table.timestamp('landing_time').notNullable();
-//             table.integer('remaining_tickets').notNullable();
-//         });
-//     }
-// }
+// ---------------Test functions only---------------
+
+
+
+async function set_id(id) {
+    try {
+        const result = await connectedKnex.raw(`ALTER SEQUENCE flights_id_seq RESTART WITH ${id}`);
+        return result;
+
+    } catch (e) {
+        throw console.error(e);
+
+    }
+}
+async function get_by_flight_code(code) {
+
+    const get_by_flight_code = await connectedKnex('flights').select('*').where('flight_code', code).first()
+
+    return get_by_flight_code
+}
+
 
 module.exports = {
     get_all, get_by_id, get_by_id_name, new_flight, update_flight, update_remaining_tickets, delete_flight,
-    delete_all
+    delete_all,get_by_flight_code,set_id
     // , create_table_if_not_exist
 }
