@@ -4,33 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QR Code Generator</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-<style>
-  #qrcode {
-    width: 200px;
-    height: 200px;
-    margin: 20px;
-  }
-</style>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
 </head>
 <body>
 <h1>QR Code Generator</h1>
-<label for="input">Enter text:</label>
-<input type="text" id="input">
-<button onclick="generateQR()">Generate QR Code</button>
 <div id="qrcode"></div>
 
 <script>
-  function generateQR() {
-    var qrDiv = document.getElementById('qrcode');
-    var qrText = document.getElementById('input').value;
-    qrDiv.innerHTML = ''; // Clear previous QR code if exists
-    var qr = new QRious({
-      element: qrDiv,
-      value: qrText,
-      size: 200
-    });
-  }
+function generateQRCode(text, typeNumber, errorCorrectionLevel, mode, size) {
+    const qr = qrcode(typeNumber || 4, errorCorrectionLevel || 'M');
+    qr.addData(text, mode || 'Byte');
+    qr.make();
+
+    const cellSize = size || 10;
+    const margin = 4;
+    const qrCodeTable = qr.createTableTag(cellSize, margin);
+    return qrCodeTable;
+}
+
+const text = "https://www.example.com";
+const qrCodeHtml = generateQRCode(text);
+document.getElementById('qrcode').innerHTML = qrCodeHtml;
 </script>
 </body>
 </html>
