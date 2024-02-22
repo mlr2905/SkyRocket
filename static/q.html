@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search</title>
+    </head>
+<body>
+    <h1>Flight Search</h1>
+    <label for="airline-id">Airline ID:</label>
+    <input type="text" id="airline-id">
+    <br>
+    <label for="origin-country">Origin Country:</label>
+    <input type="text" id="origin-country">
+    <br>
+    <label for="destination-country">Destination Country:</label>
+    <input type="text" id="destination-country">
+    <br>
+    <label for="departure-time">Departure Time:</label>
+    <input type="text" id="departure-time">
+    <br>
+    <button onclick="searchFlight()">Search Flight</button>
+    <br>
+    <div id="flight-code"></div>
+
+    <script>
+        function searchFlight() {
+            // Retrieve user input
+            const airlineId = document.getElementById("airline-id").value;
+            const originCountry = document.getElementById("origin-country").value;
+            const destinationCountry = document.getElementById("destination-country").value;
+            const departureTime = document.getElementById("departure-time").value;
+
+            // Call your find_flight_code function
+            const flightCode = find_flight_code(airlineId, originCountry, destinationCountry, departureTime);
+
+            // Display the result
+            document.getElementById("flight-code").innerHTML = "Flight Code: " + flightCode;
+        }
+    </script>
+</body>
+</html>
