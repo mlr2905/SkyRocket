@@ -18,6 +18,7 @@ async function get_by_id_passenger(id) {
 }
 
 
+
 // ---------------Admin permission only---------------
 
 async function update_passenger(id, updated_passenger) {

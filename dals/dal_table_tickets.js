@@ -49,18 +49,18 @@ async function delete_all() {
 
 async function get_next_ticket_id() {
     try {
-        let result = await connectedKnex.raw(`SELECT last_value FROM tickets_id_seq;`);
-        return result
+        const result = await connectedKnex.raw(`SELECT nextval('tickets_id_seq')`);
+        return result;
 
     } catch (e) {
-        throw console.error('Error fetching next user ID:', e);
+        throw console.error( e);
 
     }
 }
 
 async function set_id_ticket(id) {
     try {
-        const result = await connectedKnex.raw(`CALL reset_id_ticket(${id})`);
+        const result = await connectedKnex.raw(`CALL reset_id_tickets(${id})`);
         return result;
 
     } catch (e) {
