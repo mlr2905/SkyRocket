@@ -11,6 +11,7 @@ const role_airlines = require('./routers/role_airlines')
 const role_admins = require('./routers/role_admins')
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
+logger.info('==== System start =======')
 
 const options = {
     definition: {
@@ -31,18 +32,17 @@ const options = {
 
 const specs = swaggerJsdoc(options);
 
+
+
+
+
+const app = express()
+const port = 3000
 app.use(
     "/api-docs",
     swaggerUi.serve,
     swaggerUi.setup(specs)
 );
-
-logger.info('==== System start =======')
-
-
-const app = express()
-const port = 3000
-
 app.use(cors());
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/')))
