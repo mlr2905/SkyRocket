@@ -11,7 +11,6 @@ const role_airlines = require('./routers/role_airlines')
 const role_admins = require('./routers/role_admins')
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
-logger.info('==== System start =======')
 
 const options = {
     definition: {
@@ -38,6 +37,7 @@ app.use(
     swaggerUi.setup(specs)
 );
 
+logger.info('==== System start =======')
 
 
 const app = express()
