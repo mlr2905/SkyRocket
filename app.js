@@ -15,6 +15,7 @@ logger.info('==== System start =======')
 
 const app = express()
 const port = 3000
+const swaggerUi = require('swagger-ui-express');
 
 app.use(cors());
 app.use(body_parser.json())
