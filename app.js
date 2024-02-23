@@ -21,7 +21,7 @@ const options = {
         },
         servers: [
             {
-                url: "https://skyrocket.onrender.com/",
+                url: "https://skyrocket.onrender.com/swagger",
             },
         ],
     },
