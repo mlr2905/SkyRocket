@@ -23,7 +23,7 @@ const options = {
         },
         servers: [
             {
-                url: "https://skyrocket.onrender.com/swagger",
+                url: "https://skyrocket.onrender.com/",
             },
         ],
     },
@@ -39,7 +39,7 @@ const specs = swaggerJsdoc(options);
 const app = express()
 const port = 3000
 app.use(
-    "/api-docs",
+    "/swagger",
     swaggerUi.serve,
     swaggerUi.setup(specs)
 );
