@@ -5,6 +5,42 @@ const qrcode = require('qrcode');
 const bl = require('../bl/bl_role_users')
 //role_users/users
 
+/**
+*  @swagger
+*  components:
+*     schemas:
+*       Employee:
+*         type: object
+*         required:
+*           - id
+*           - name
+*           - age
+*           - address
+*           - salary
+*         properties:
+*           id:
+*             type: number
+*             description: The auto-generated id of the employee.
+*           name:
+*             type: string
+*             description: The name of the employee.
+*           age:
+*             type: number
+*             description: age of the employee
+*           address:
+*             type: string
+*             description: The address of the employee.
+*           salary:
+*             type: number
+*             description: salary of the employee
+*         example:
+*           name: Kim
+*           age: 22
+*           address: South-Hall
+*           salary: 45000
+*/
+
+
 router.get('/', async (request, response) => {
     try {
         const messages = {
@@ -27,6 +63,9 @@ router.get('/:id', async (request, response) => {
         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
     }
 })
+
+
+
 router.get('/qr/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {
@@ -62,6 +101,37 @@ router.get('/users/:id', async (request, response) => {
         throw response.status(503).json({ "error": `The request failed, try again later ` })
     }
 })
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Get an employee by ID
+ *     description: Retrieve employee details based on the provided ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the employee to retrieve.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successful response with the employee details.
+ *         content:
+ *           application/json:
+ *             example:
+ *               ID: 1
+ *               NAME: John Doe
+ *               AGE: 30
+ *               ADDRESS: Example Street
+ *               SALARY: 50000.00
+ *       404:
+ *         description: Employee not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: cannot find employee with id {id}
+ */
 
 // POST
 router.post('/users', async (request, response) => {
@@ -76,6 +146,54 @@ router.post('/users', async (request, response) => {
     }
 
 })
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     summary: Create a new employee
+ *     description: Create a new employee record with the provided details.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               NAME:
+ *                 type: string
+ *                 description: The name of the employee.
+ *               AGE:
+ *                 type: number
+ *                 description: The age of the employee.
+ *               ADDRESS:
+ *                 type: string
+ *                 description: The address of the employee.
+ *               SALARY:
+ *                 type: number
+ *                 description: The salary of the employee.
+ *             example:
+ *               name: John Doe
+ *               age: 30
+ *               address: Example Street
+ *               salary: 50000.00
+ *     responses:
+ *       201:
+ *         description: Employee created successfully.
+ *         content:
+ *           application/json:
+ *             example:
+ *               ID: 1
+ *               NAME: John Doe
+ *               AGE: 30
+ *               ADDRESS: Example Street
+ *               SALARY: 50000.00
+ *       400:
+ *         description: Bad request. Ensure all required fields are provided.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Bad request. Missing required fields.
+ */
 
 // PUT 
 router.put('/users/:id', async (request, response) => {
@@ -121,6 +239,29 @@ router.delete('/users/:id', async (request, response) => {
 
     }
 })
+/**
+ * @swagger
+ * /users/{id}:
+ *   delete:
+ *     summary: Delete an employee by ID
+ *     description: Delete the employee record with the specified ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the employee to delete.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Employee deleted successfully.
+ *       404:
+ *         description: Employee not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: cannot find employee with id {id}
+ */
 
 //role_users/customers
 

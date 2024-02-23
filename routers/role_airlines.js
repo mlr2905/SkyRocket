@@ -4,6 +4,7 @@ const bl = require('../bl/bl_role_users')
 
 //role_airlines/users
 
+
 router.get('/', async (request, response) => {
     try {
         const messages = {
