@@ -88,7 +88,7 @@ router.get('/qr/:id', async (request, response) => {
 
 /**
  * @swagger
- * /users/{id}:
+ * /role_users/users/{id}:
  *   get:
  *     summary: Get an employee by ID
  *     description: Retrieve employee details based on the provided ID.
