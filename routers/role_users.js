@@ -13,31 +13,32 @@ const bl = require('../bl/bl_role_users')
 *         type: object
 *         required:
 *           - id
-*           - name
-*           - age
-*           - address
-*           - salary
+*           - username
+*           - password
+*           - email
+*           - role_id
 *         properties:
 *           id:
 *             type: number
 *             description: The auto-generated id of the user.
-*           name:
+*           username:
 *             type: string
 *             description: The name of the user.
-*           age:
-*             type: number
-*             description: age of the user
-*           address:
+*           password:
 *             type: string
-*             description: The address of the user.
-*           salary:
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*           role_id:
 *             type: number
-*             description: salary of the user
+*             description: role_id of the user
 *         example:
-*           name: Kim
-*           age: 22
-*           address: South-Hall
-*           salary: 45000
+*          id: 1
+*          username: Idit Rozental
+ *         password: jsad439
+ *         email: idit@gmail.com
+ *         role_id: 1
 */
 
 
@@ -150,7 +151,7 @@ router.post('/users', async (request, response) => {
 })
 /**
  * @swagger
- * /users:
+ * /role_users/users:
  *   post:
  *     summary: Create a new user
  *     description: Create a new user record with the provided details.
@@ -221,29 +222,10 @@ router.put('/users/:id', async (request, response) => {
 
 })
 
-// DELETE
-router.delete('/users/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_user(user_id)
 
-    if (user) {
-        try {
-            const result = await bl.delete_account(user_id)
-            response.status(204).json({ result })
-        }
-        catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later  ` })
-            ; // מעבירה את השגיאה הלאה
-        }
-    }
-    else {
-        throw response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
-
-    }
-})
 /**
  * @swagger
- * /users/{id}:
+ * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
  *     description: Delete the user record with the specified ID.
@@ -264,6 +246,27 @@ router.delete('/users/:id', async (request, response) => {
  *             example:
  *               error: cannot find user with id {id}
  */
+
+// DELETE
+router.delete('/users/:id', async (request, response) => {
+    const user_id = parseInt(request.params.id)
+    const user = await bl.get_by_id_user(user_id)
+
+    if (user) {
+        try {
+            const result = await bl.delete_account(user_id)
+            response.status(204).json({ result })
+        }
+        catch (error) {
+            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+            ; // מעבירה את השגיאה הלאה
+        }
+    }
+    else {
+        throw response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
+
+    }
+})
 
 //role_users/customers
 
