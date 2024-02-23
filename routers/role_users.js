@@ -106,11 +106,11 @@ router.get('/qr/:id', async (request, response) => {
  *           application/json:
  *             example:
  *               ID: 1
- *               username: Idit Rozental
- *               password: jsad439
- *               email: idit@gmail.com
- *               role_id : 1
- *               role_id: user
+ *               USERNAME username: Idit Rozental
+ *               password password: jsad439
+ *               EMAIL: idit@gmail.com
+ *               ROLE_ID role_id : 1
+ *               ROLE_NAME: user
  *       404:
  *         description: Employee not found with the specified ID.
  *         content:
