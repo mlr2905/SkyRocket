@@ -85,22 +85,7 @@ router.get('/qr/:id', async (request, response) => {
 
 
 // GET by ID
-router.get('/users/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    try {
-        const user = await bl.get_by_id_user(user_id)
-        if (user) {
-            response.status(200).json(user)
-        }
-        else {
-            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
 
-        }
-
-    } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ` })
-    }
-})
 /**
  * @swagger
  * /users/{id}:
@@ -132,6 +117,22 @@ router.get('/users/:id', async (request, response) => {
  *             example:
  *               error: cannot find employee with id {id}
  */
+router.get('/users/:id', async (request, response) => {
+    const user_id = parseInt(request.params.id)
+    try {
+        const user = await bl.get_by_id_user(user_id)
+        if (user) {
+            response.status(200).json(user)
+        }
+        else {
+            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+
+        }
+
+    } catch (error) {
+        throw response.status(503).json({ "error": `The request failed, try again later ` })
+    }
+})
 
 // POST
 router.post('/users', async (request, response) => {
