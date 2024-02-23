@@ -9,6 +9,32 @@ const all_tables_router = require('./routers/all_tables')
 const role_users = require('./routers/role_users')
 const role_airlines = require('./routers/role_airlines')
 const role_admins = require('./routers/role_admins')
+const swaggerJsdoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Library API",
+            version: "1.0.0",
+            description: "My REST API skyrocket",
+        },
+        servers: [
+            {
+                url: "https://skyrocket.onrender.com/",
+            },
+        ],
+    },
+    apis: ["./routers/*.js"],
+};
+
+const specs = swaggerJsdoc(options);
+
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(specs)
+);
 
 
 logger.info('==== System start =======')
