@@ -9,7 +9,7 @@ const bl = require('../bl/bl_role_users')
 *  @swagger
 *  components:
 *     schemas:
-*       Employee:
+*       user:
 *         type: object
 *         required:
 *           - id
@@ -20,19 +20,19 @@ const bl = require('../bl/bl_role_users')
 *         properties:
 *           id:
 *             type: number
-*             description: The auto-generated id of the employee.
+*             description: The auto-generated id of the user.
 *           name:
 *             type: string
-*             description: The name of the employee.
+*             description: The name of the user.
 *           age:
 *             type: number
-*             description: age of the employee
+*             description: age of the user
 *           address:
 *             type: string
-*             description: The address of the employee.
+*             description: The address of the user.
 *           salary:
 *             type: number
-*             description: salary of the employee
+*             description: salary of the user
 *         example:
 *           name: Kim
 *           age: 22
@@ -90,18 +90,18 @@ router.get('/qr/:id', async (request, response) => {
  * @swagger
  * /role_users/users/{id}:
  *   get:
- *     summary: Get an employee by ID
- *     description: Retrieve employee details based on the provided ID.
+ *     summary: Get an user by ID
+ *     description: Retrieve user details based on the provided ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: The ID of the employee to retrieve.
+ *         description: The ID of the user to retrieve.
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Successful response with the employee details.
+ *         description: Successful response with the user details.
  *         content:
  *           application/json:
  *             example:
@@ -112,11 +112,11 @@ router.get('/qr/:id', async (request, response) => {
  *               ROLE_ID: 1
  *               ROLE_NAME: user
  *       404:
- *         description: Employee not found with the specified ID.
+ *         description: user not found with the specified ID.
  *         content:
  *           application/json:
  *             example:
- *               error: cannot find employee with id {id}
+ *               error: cannot find user with id {id}
  */
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
@@ -152,8 +152,8 @@ router.post('/users', async (request, response) => {
  * @swagger
  * /users:
  *   post:
- *     summary: Create a new employee
- *     description: Create a new employee record with the provided details.
+ *     summary: Create a new user
+ *     description: Create a new user record with the provided details.
  *     requestBody:
  *       required: true
  *       content:
@@ -163,16 +163,16 @@ router.post('/users', async (request, response) => {
  *             properties:
  *               NAME:
  *                 type: string
- *                 description: The name of the employee.
+ *                 description: The name of the user.
  *               AGE:
  *                 type: number
- *                 description: The age of the employee.
+ *                 description: The age of the user.
  *               ADDRESS:
  *                 type: string
- *                 description: The address of the employee.
+ *                 description: The address of the user.
  *               SALARY:
  *                 type: number
- *                 description: The salary of the employee.
+ *                 description: The salary of the user.
  *             example:
  *               name: John Doe
  *               age: 30
@@ -180,7 +180,7 @@ router.post('/users', async (request, response) => {
  *               salary: 50000.00
  *     responses:
  *       201:
- *         description: Employee created successfully.
+ *         description: user created successfully.
  *         content:
  *           application/json:
  *             example:
@@ -245,24 +245,24 @@ router.delete('/users/:id', async (request, response) => {
  * @swagger
  * /users/{id}:
  *   delete:
- *     summary: Delete an employee by ID
- *     description: Delete the employee record with the specified ID.
+ *     summary: Delete an user by ID
+ *     description: Delete the user record with the specified ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: The ID of the employee to delete.
+ *         description: The ID of the user to delete.
  *         schema:
  *           type: integer
  *     responses:
  *       204:
- *         description: Employee deleted successfully.
+ *         description: user deleted successfully.
  *       404:
- *         description: Employee not found with the specified ID.
+ *         description: user not found with the specified ID.
  *         content:
  *           application/json:
  *             example:
- *               error: cannot find employee with id {id}
+ *               error: cannot find user with id {id}
  */
 
 //role_users/customers
