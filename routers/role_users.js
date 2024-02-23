@@ -3,29 +3,6 @@ const router = express.Router()
 const qrcode = require('qrcode');
 
 const bl = require('../bl/bl_role_users')
-
-const swaggerUi = require('swagger-ui-express');
-const swaggerJSDoc =require('swagger-jsdoc')
-
-const options ={
-    definiton :{
-        openapi :'3.0.0',
-        info :{
-            title:'node js api project',
-            version: '1.0.0'
-        },
-        Services:[
-            {
-               url: 'http://localhot:8080/'
-            }
-        ]
-    },
-    apis:['./routers/role_users.js']
-}
-const swaggerSpec= swaggerJSDoc(options)
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-
 //role_users/users
 
 router.get('/', async (request, response) => {
