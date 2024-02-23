@@ -106,10 +106,11 @@ router.get('/qr/:id', async (request, response) => {
  *           application/json:
  *             example:
  *               ID: 1
- *               NAME: John Doe
- *               AGE: 30
- *               ADDRESS: Example Street
- *               SALARY: 50000.00
+ *               username: Idit Rozental
+ *               password: jsad439
+ *               email: idit@gmail.com
+ *               role_id : 1
+ *               role_id: user
  *       404:
  *         description: Employee not found with the specified ID.
  *         content:
