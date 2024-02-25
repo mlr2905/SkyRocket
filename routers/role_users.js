@@ -108,35 +108,52 @@ router.get('/users/:id', async (request, response) => {
  * @swagger
  * /role_users/users/{id}:
  *   get:
- *     summary: Get an user by ID
+ *     summary: Get a user by ID
  *     tags: [users]
  *     description: Retrieve user details based on the provided ID.
  *     parameters:
  *       - in: path
- *         id: id
+ *         name: id
  *         required: true
- *         description: The ID of the employee to retrieve.
+ *         description: The ID of the user to retrieve.
  *         schema:
  *           type: integer
  *     responses:
- *       200:
- *         description: Successful response with the employee details.
+ *       '200':
+ *         description: Successful response with the user details.
  *         content:
  *           application/json:
- *             user:
- *               ID: 1
- *               USERNAME: Idit Rozental
- *               PASSWORD: jsad439
- *               ENAIL: idit@gmail.com
- *               ROLE_ID: 1
- * 
- *       404:
- *         description: Employee not found with the specified ID.
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                     password:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role_id:
+ *                       type: number
+ *       '404':
+ *         description: User not found with the specified ID.
  *         content:
  *           application/json:
- *              user:
- *               error: cannot find employee with id {id}
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ *         example:
+ *           user:
+ *             error: Cannot find user with ID {id}.
  */
+
 
 
 
