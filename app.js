@@ -17,7 +17,7 @@ const options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "skyrocket API",
+            title: "SkyRocket API",
             version: "1.0.1",
             description: "My REST API skyrocket",
         },
