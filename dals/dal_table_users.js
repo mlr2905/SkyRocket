@@ -37,18 +37,15 @@ async function sp_pass_users(user) {
 async function update_user(id, user) {
     try {
 
-        if (user.email === null) {
+        if (user.email === undefined) {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`)
             return update
         }
-        else if (user.password === null) {
+        else if (user.password === undefined) {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
             return update
         }
-        else {
-            const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', '${user.password}');`)
-            return update
-        }
+       
     }
     catch (e) {
         throw console.error('Not carried out:', e);
