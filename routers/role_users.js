@@ -459,10 +459,9 @@ router.get('/passengers/:id', async (request, response) => {
 *             type: number
 *             description: The role_id of the user.
 *         example:
-*           username: Idit Rozental
-*           password: jsad439
-*           email: idit@gmail.com
-*           role_id: 1
+*           username: test tsets
+*           password: test_1
+*           email: test_tsets@gmail.com
 */
 
 module.exports = router
