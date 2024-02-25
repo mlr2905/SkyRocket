@@ -5,11 +5,6 @@ const qrcode = require('qrcode');
 const bl = require('../bl/bl_role_users')
 //role_users/users
 /**
- * @swagger
- * tags:
- *   name: users
- *   description: The users managing API
-/**
 *  @swagger
 *  components:
 *     schemas:
@@ -87,7 +82,7 @@ router.get('/qr/:id', async (request, response) => {
 
 /**
  * @swagger
- * tags:
+ *  * tags:
  *   name: users
  *   description: The users managing API
  * /role_users/users/{id}:
