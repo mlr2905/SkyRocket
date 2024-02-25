@@ -1,10 +1,46 @@
 const express = require('express')
 const router = express.Router()
 const qrcode = require('qrcode');
-
 const bl = require('../bl/bl_role_users')
 
+//role_users/users
+/**
+ * @swagger
+ * tags:
+ *   name: users
+ *   description: The users managing API
+ */
 
+/**
+*  @swagger
+*  components:
+*     schemas:
+*       user:
+*         type: object
+*         required:
+*           - username
+*           - password
+*           - email
+*           - role_id
+*         properties:
+*           username:
+*             type: string
+*             description: The username of the user.
+*           password:
+*             type: string
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*           role_id:
+*             type: number
+*             description: The role_id of the user.
+*       example:
+*         username: Idit Rozental
+*         password: jsad439
+*         email: idit@gmail.com
+*         role_id: 1
+*/
 router.get('/', async (request, response) => {
     try {
         const messages = {
@@ -50,6 +86,39 @@ router.get('/qr/:id', async (request, response) => {
 
 // GET by ID
 
+/**
+ * @swagger
+ * /role_users/users/{id}:
+ *   get:
+ *     summary: Get an user by ID
+ *     tags: [users]
+ *     description: Retrieve user details based on the provided ID.
+ *     parameters:
+ *       - in: path
+ *         id: id
+ *         required: true
+ *         description: The ID of the employee to retrieve.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successful response with the employee details.
+ *         content:
+ *           application/json:
+ *             user:
+ *               ID: 1
+ *               USERNAME: Idit Rozental
+ *               PASSWORD: jsad439
+ *               ENAIL: idit@gmail.com
+ *               ROLE_ID: 1
+ * 
+ *       404:
+ *         description: Employee not found with the specified ID.
+ *         content:
+ *           application/json:
+ *              user:
+ *               error: cannot find employee with id {id}
+ */
 
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
@@ -86,6 +155,37 @@ router.post('/users', async (request, response) => {
 })
 
 // PUT 
+/**
+ * @swagger
+ * /role_users/users/{id}:
+*   put:
+*    summary: Update the user by the id
+*    tags: [users]
+*    parameters:
+*      - in: path
+*        name: id
+*        schema:
+*          type: string
+*        required: true
+*        description: The user id
+*    requestBody:
+*      required: true
+*      content:
+*        application/json:
+*          schema:
+*            $ref: '#/components/schemas/user'
+*    responses:
+*      200:
+*        description: The user was updated
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/schemas/user'
+*      404:
+*        description: The user was not found
+*      500:
+*        description: Some error happened
+*/
 router.put('/users/:id', async (request, response) => {
 
     const user_id = parseInt(request.params.id)
@@ -112,6 +212,31 @@ router.put('/users/:id', async (request, response) => {
 
 
 // DELETE
+/**
+ * @swagger
+ * /role_users/users/{id}:
+ *   delete:
+ *     summary: Delete an user by ID
+ *     tags: [users]
+ *     description: Delete the user record with the specified ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to delete.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: user deleted successfully.
+ *       404:
+ *         description: user not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             user:
+ *               error: cannot find user with id {id}
+ */
+
 router.delete('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_user(user_id)
@@ -221,6 +346,37 @@ router.get('/passengers/:id', async (request, response) => {
     }
 })
 
+
+/**
+*  @swagger
+*  components:
+*     schemas:
+*       user:
+*         type: object
+*         required:
+*           - username
+*           - password
+*           - email
+*           - role_id
+*         properties:
+*           username:
+*             type: string
+*             description: The username of the user.
+*           password:
+*             type: string
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*           role_id:
+*             type: number
+*             description: The role_id of the user.
+*         example:
+*           username: Idit Rozental
+*           password: jsad439
+*           email: idit@gmail.com
+*           role_id: 1
+*/
 
 module.exports = router
 
