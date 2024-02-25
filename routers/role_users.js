@@ -202,7 +202,7 @@ router.post('/users', async (request, response) => {
 })
 /**
  * @swagger
- * /role_users/users:
+ * /role_users/users/{id}:
 *   put:
 *    summary: Update the user by the id
 *    tags: [users]
@@ -262,7 +262,7 @@ router.put('/users/:id', async (request, response) => {
  * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
- *    tags: [users]
+ *     tags: [users]
  *     description: Delete the user record with the specified ID.
  *     parameters:
  *       - in: path
