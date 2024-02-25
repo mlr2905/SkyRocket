@@ -31,10 +31,10 @@ async function get_qr(id) {
   return user_id
 }
 
-async function update_user(id, email, password) {
+async function update_user(id, user) {
   const user_id = await dal_1.get_by_id(id);
   if (user_id) {
-    const update_user = await dal_1.update_user(id, email, password);
+    const update_user = await dal_1.update_user(id,user);
     return `${user_id.username}${update_user}`
   }
   else {
@@ -76,7 +76,7 @@ async function get_by_id_customer(id) {
   return user_id
 }
 
-async function update_customer(update) {
+async function update_customer(id,update) {
   const get_by_id = await dal_1.get_by_id(id);
   if (get_by_id) {
     const update_customer = await dal_4.update_customer(update);

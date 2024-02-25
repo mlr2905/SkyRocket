@@ -10,6 +10,12 @@ const bl = require('../bl/bl_role_users')
  *   name: users
  *   description: The users managing API
  */
+/**
+ * @swagger
+ * tags:
+ *   name: customers
+ *   description: The customers managing API
+ */
 
 /**
 *  @swagger
