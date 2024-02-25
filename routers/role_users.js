@@ -36,6 +36,11 @@ const bl = require('../bl/bl_role_users')
  *               role_id:
  *                 type: number
  *                 description: The role_id of the user.
+ *             user:
+ *               username: John Doe
+ *               password: h32j3h
+ *               email: John_Doe@gmail.com
+ *               role_id: 1
  *     responses:
  *       201:
  *         description: user created successfully.
@@ -45,7 +50,7 @@ const bl = require('../bl/bl_role_users')
  *               ID: 1
  *               USERNAME: Idit Rozental
  *               PASSWORD: jsad439
- *               EMAIL: idit@gmail.com
+ *               ENAIL: idit@gmail.com
  *               ROLE_ID: 1
  *       400:
  *         description: Bad request. Ensure all required fields are provided.
@@ -53,41 +58,40 @@ const bl = require('../bl/bl_role_users')
  *           application/json:
  *             user:
  *               error: Bad request. Missing required fields.
-
+ */
 /**
  * @swagger
  * /role_users/users/{id}:
  *   get:
- *     summary: Get a user by ID
+ *     summary: Get an user by ID
  *     tags: [users]
  *     description: Retrieve user details based on the provided ID.
- *     parameters:
+  *     parameters:
  *       - in: path
- *         name: id
+ *         id: id
  *         required: true
- *         description: The ID of the user to retrieve.
+ *         description: The ID of the employee to retrieve.
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Successful response with the user details.
+ *         description: Successful response with the employee details.
  *         content:
  *           application/json:
  *             user:
  *               ID: 1
  *               USERNAME: Idit Rozental
  *               PASSWORD: jsad439
- *               EMAIL: idit@gmail.com
+ *               ENAIL: idit@gmail.com
  *               ROLE_ID: 1
  * 
  *       404:
- *         description: User not found with the specified ID.
+ *         description: Employee not found with the specified ID.
  *         content:
  *           application/json:
- *             user:
- *               error: cannot find user with id {id}
+ *              uesr:
+ *               error: cannot find employee with id {id}
  */
-
 
 /**
  * @swagger
@@ -120,11 +124,13 @@ const bl = require('../bl/bl_role_users')
 *      500:
 *        description: Some error happened
 */
+
+
 /**
  * @swagger
  * /role_users/users/{id}:
  *   delete:
- *     summary: Delete a user by ID
+ *     summary: Delete an user by ID
  *     tags: [users]
  *     description: Delete the user record with the specified ID.
  *     parameters:
@@ -133,17 +139,17 @@ const bl = require('../bl/bl_role_users')
  *         required: true
  *         description: The ID of the user to delete.
  *         schema:
- *           type: string
+ *           type: integer
  *     responses:
  *       204:
- *         description: User deleted successfully.
+ *         description: user deleted successfully.
  *       404:
- *         description: User not found with the specified ID.
+ *         description: user not found with the specified ID.
  *         content:
  *           application/json:
- *             error: Cannot find user with id {id}
+ *             user:
+ *               error: cannot find user with id {id}
  */
-
 
 /**
 *  @swagger
@@ -169,26 +175,12 @@ const bl = require('../bl/bl_role_users')
 *           role_id:
 *             type: number
 *             description: role_id of the user
-*
-*       user:
-*         type: object
-*         properties:
-*           username:
-*             type: string
-*           password:
-*             type: string
-*           email:
-*             type: string
-*           role_id:
-*             type: number
-*
-*   user:
-*     username: Idit Rozental
-*     password: jsad439
-*     email: idit@gmail.com
-*     role_id: 1
+*       uesr:
+*         username: Idit Rozental
+*         password: jsad439
+*         email: idit@gmail.com
+*         role_id: 1
 */
-
 
 router.get('/', async (request, response) => {
     try {
