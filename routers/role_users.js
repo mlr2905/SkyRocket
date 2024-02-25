@@ -11,133 +11,6 @@ const bl = require('../bl/bl_role_users')
  *   description: The users managing API
  */
 /**
-*  @swagger
-*  components:
-*     schemas:
-*       user:
-*         type: object
-*         required:
-*           - username
-*           - password
-*           - email
-*           - role_id
-*         properties:
-*           username:
-*             type: string
-*             description: The username of the user.
-*           password:
-*             type: string
-*             description: The password of the user.
-*           email:
-*             type: string
-*             description: The email of the user.
-*           role_id:
-*             type: number
-*             description: role_id of the user
-*          uesr:
-*            username: Idit Rozental
-*            password: jsad439
-*            email: idit@gmail.com
-*            role_id: 1
-*/
-
-router.get('/', async (request, response) => {
-    try {
-        const messages = {
-            'message': `Welcome to role admins the desired path must be specified,
-        Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
-        response.status(400).json(messages)
-    }
-    catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
-    }
-})
-
-
-router.get('/:id', async (request, response) => {
-    try {
-        const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_users/{neme ?}/1' }
-        response.status(400).json(messages)
-    }
-    catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
-    }
-})
-
-
-
-router.get('/qr/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    try {
-        const user = await bl.get_qr(user_id)
-        if (user) {
-            response.status(200).json(user)
-        }
-        else {
-            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-
-        }
-
-    } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ` })
-    }
-})
-
-
-// GET by ID
-
-/**
- * @swagger
- * /role_users/users/{id}:
- *   get:
- *     summary: Get an user by ID
- *     tags: [users]
- *     description: Retrieve user details based on the provided ID.
-  *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The ID of the employee to retrieve.
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Successful response with the employee details.
- *         content:
- *           application/json:
- *             user:
- *               ID: 1
- *               USERNAME: Idit Rozental
- *               PASSWORD: jsad439
- *               ENAIL: idit@gmail.com
- *               ROLE_ID: 1
- * 
- *       404:
- *         description: Employee not found with the specified ID.
- *         content:
- *           application/json:
- *             example:
- *               error: cannot find employee with id {id}
- */
-router.get('/users/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    try {
-        const user = await bl.get_by_id_user(user_id)
-        if (user) {
-            response.status(200).json(user)
-        }
-        else {
-            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-
-        }
-
-    } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ` })
-    }
-})
-
-
-/**
  * @swagger
  * /role_users/users:
  *   post:
@@ -186,20 +59,40 @@ router.get('/users/:id', async (request, response) => {
  *             user:
  *               error: Bad request. Missing required fields.
  */
+/**
+ * @swagger
+ * /role_users/users/{id}:
+ *   get:
+ *     summary: Get an user by ID
+ *     tags: [users]
+ *     description: Retrieve user details based on the provided ID.
+  *     parameters:
+ *       - in: path
+ *         id: id
+ *         required: true
+ *         description: The ID of the employee to retrieve.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successful response with the employee details.
+ *         content:
+ *           application/json:
+ *             user:
+ *               ID: 1
+ *               USERNAME: Idit Rozental
+ *               PASSWORD: jsad439
+ *               ENAIL: idit@gmail.com
+ *               ROLE_ID: 1
+ * 
+ *       404:
+ *         description: Employee not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: cannot find employee with id {id}
+ */
 
-// POST
-router.post('/users', async (request, response) => {
-    const new_user = request.body
-    try {
-        const result = await bl.create_user(new_user)
-        response.status(201).json(result)
-
-    } catch (error) {
-        throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
-        ; // מעבירה את השגיאה הלאה
-    }
-
-})
 /**
  * @swagger
  * /role_users/users/{id}:
@@ -231,6 +124,141 @@ router.post('/users', async (request, response) => {
 *      500:
 *        description: Some error happened
 */
+/**
+ * @swagger
+ * /role_users/users/{id}:
+ *   delete:
+ *     summary: Delete an user by ID
+ *     tags: [users]
+ *     description: Delete the user record with the specified ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to delete.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: user deleted successfully.
+ *       404:
+ *         description: user not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             user:
+ *               error: cannot find user with id {id}
+ */
+
+/**
+*  @swagger
+*  components:
+*     schemas:
+*       user:
+*         type: object
+*         required:
+*           - username
+*           - password
+*           - email
+*           - role_id
+*         properties:
+*           username:
+*             type: string
+*             description: The username of the user.
+*           password:
+*             type: string
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*           role_id:
+*             type: number
+*             description: role_id of the user
+*       uesr:
+*         username: Idit Rozental
+*         password: jsad439
+*         email: idit@gmail.com
+*         role_id: 1
+*/
+
+router.get('/', async (request, response) => {
+    try {
+        const messages = {
+            'message': `Welcome to role admins the desired path must be specified,
+        Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
+        response.status(400).json(messages)
+    }
+    catch (error) {
+        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+    }
+})
+
+
+router.get('/:id', async (request, response) => {
+    try {
+        const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_users/{neme ?}/1' }
+        response.status(400).json(messages)
+    }
+    catch (error) {
+        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+    }
+})
+
+
+
+router.get('/qr/:id', async (request, response) => {
+    const user_id = parseInt(request.params.id)
+    try {
+        const user = await bl.get_qr(user_id)
+        if (user) {
+            response.status(200).json(user)
+        }
+        else {
+            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+
+        }
+
+    } catch (error) {
+        throw response.status(503).json({ "error": `The request failed, try again later ` })
+    }
+})
+
+
+// GET by ID
+
+
+router.get('/users/:id', async (request, response) => {
+    const user_id = parseInt(request.params.id)
+    try {
+        const user = await bl.get_by_id_user(user_id)
+        if (user) {
+            response.status(200).json(user)
+        }
+        else {
+            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+
+        }
+
+    } catch (error) {
+        throw response.status(503).json({ "error": `The request failed, try again later ` })
+    }
+})
+
+
+
+
+// POST
+router.post('/users', async (request, response) => {
+    const new_user = request.body
+    try {
+        const result = await bl.create_user(new_user)
+        response.status(201).json(result)
+
+    } catch (error) {
+        throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
+        ; // מעבירה את השגיאה הלאה
+    }
+
+})
 
 // PUT 
 router.put('/users/:id', async (request, response) => {
@@ -257,30 +285,6 @@ router.put('/users/:id', async (request, response) => {
 })
 
 
-/**
- * @swagger
- * /role_users/users/{id}:
- *   delete:
- *     summary: Delete an user by ID
- *     tags: [users]
- *     description: Delete the user record with the specified ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The ID of the user to delete.
- *         schema:
- *           type: integer
- *     responses:
- *       204:
- *         description: user deleted successfully.
- *       404:
- *         description: user not found with the specified ID.
- *         content:
- *           application/json:
- *             user:
- *               error: cannot find user with id {id}
- */
 
 // DELETE
 router.delete('/users/:id', async (request, response) => {
