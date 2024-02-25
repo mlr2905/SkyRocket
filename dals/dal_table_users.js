@@ -37,11 +37,11 @@ async function sp_pass_users(user) {
 async function update_user(id, user) {
     try {
 
-        if (user.email === null) {
+        if (user.email === null || user.email === "null"  ) {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`)
             return update
         }
-        else if (user.password === null) {
+        else if (user.password === null || user.password === "null") {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
             return update
         }
