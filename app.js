@@ -58,27 +58,27 @@ app.use('/swagger', basicAuth({
     }
 }));
 
-;
-const users = {
-    'michael': 'Miki260623' // שם המשתמש והסיסמה
-};
 
-const checkPassword = (username, password) => {
-    // בדיקת סיסמה נכונה
-    return users[username] === password;
-};
+// const users = {
+//     'michael': 'Miki260623' // שם המשתמש והסיסמה
+// };
 
-app.use(basicAuth({
-    users: users,
-    challenge: true,
-    unauthorizedResponse: (req) => {
-        return 'Unauthorized';
-    },
-    authorizer: (username, password) => {
-        // בדיקת אימות סיסמה
-        return checkPassword(username, password);
-    }
-}));
+// const checkPassword = (username, password) => {
+//     // בדיקת סיסמה נכונה
+//     return users[username] === password;
+// };
+
+// app.use(basicAuth({
+//     users: users,
+//     challenge: true,
+//     unauthorizedResponse: (req) => {
+//         return 'Unauthorized';
+//     },
+//     authorizer: (username, password) => {
+//         // בדיקת אימות סיסמה
+//         return checkPassword(username, password);
+//     }
+// }));
 // app.use(
 //     "/swagger",
 //     swaggerUi.serve,
