@@ -3,6 +3,8 @@ const logger = require('./logger/my_logger')
 const path = require('path')
 const express = require('express')
 const cors = require('cors');
+const basicAuth = require('express-basic-auth');
+
 
 const body_parser = require('body-parser')
 const all_tables_router = require('./routers/all_tables')
@@ -34,14 +36,25 @@ const specs = swaggerJsdoc(options);
 
 const app = express()
 const port = 3000
+
 const users = {
-    'admin': '12334' // שם המשתמש והסיסמה
+    'admin': '123456' // שם המשתמש והסיסמה
+};
+
+const checkPassword = (username, password) => {
+    // בדיקת סיסמה נכונה
+    return users[username] === password;
 };
 
 app.use(basicAuth({
     users: users,
+    challenge: true,
     unauthorizedResponse: (req) => {
         return 'Unauthorized';
+    },
+    authorizer: (username, password) => {
+        // בדיקת אימות סיסמה
+        return checkPassword(username, password);
     }
 }));
 app.use(
