@@ -15,73 +15,74 @@
 
 //role_users/users
 /**
-* /role_users/users:
-*   post:
-*     summary: Create a new user
-*     tags: [users]
-*     description: Create a new user record with the provided details.
-*     security:
-*       - CustomAuth: []
-*     requestBody:
-*       required: true
-*       content:
-*         application/json:
-*           schema:
-*             type: object
-*             properties:
-*               username:
-*                 type: string
-*                 description: The username of the user.
-*               password:
-*                 type: string
-*                 description: The password of the user.
-*               email:
-*                 type: string
-*                 description: The email of the user.
-*               role_id:
-*                 type: number
-*                 description: The role_id of the user.
-*     responses:
-*       '201':
-*         description: User created successfully.
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 user:
-*                   type: object
-*                   properties:
-*                     ID:
-*                       type: number
-*                     USERNAME:
-*                       type: string
-*                     PASSWORD:
-*                       type: string
-*                     EMAIL:
-*                       type: string
-*                     ROLE_ID:
-*                       type: number
-*       '400':
-*         description: Bad request. Ensure all required fields are provided.
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 user:
-*                   type: object
-*                   properties:
-*                     error:
-*                       type: string
-* components:
-*   securitySchemes:
-*     CustomAuth:
-*       type: http
-*       scheme: basic
-*       x-customAuth: true
-*       description: Enter username as "admin" and password as "123456"
-
+ * @swagger
+ * /role_users/users:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [users]
+ *     description: Create a new user record with the provided details. Requires authentication.
+ *     security:
+ *       - CustomAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the user.
+ *               password:
+ *                 type: string
+ *                 description: The password of the user.
+ *               email:
+ *                 type: string
+ *                 description: The email of the user.
+ *               role_id:
+ *                 type: number
+ *                 description: The role_id of the user.
+ *     responses:
+ *       '201':
+ *         description: User created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     ID:
+ *                       type: number
+ *                     USERNAME:
+ *                       type: string
+ *                     PASSWORD:
+ *                       type: string
+ *                     EMAIL:
+ *                       type: string
+ *                     ROLE_ID:
+ *                       type: number
+ *       '400':
+ *         description: Bad request. Ensure all required fields are provided.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: http
+ *       scheme: basic
+ *       x-customAuth: true
+ *       description: Enter username as "admin" and password as "123456"
+ */
 
 
 
