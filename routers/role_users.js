@@ -163,11 +163,11 @@ router.get('/users/:id', async (request, response) => {
  *               role_id:
  *                 type: number
  *                 description: The role_id of the user.
- *             user:
- *               username: John Doe
- *               password: h32j3h
- *               email: John_Doe@gmail.com
- *               role_id: 1
+ *           user:
+ *             username: John Doe
+ *             password: h32j3h
+ *             email: John_Doe@gmail.com
+ *             role_id: 1
  *     responses:
  *       201:
  *         description: user created successfully.
