@@ -21,6 +21,8 @@
 *     summary: Create a new user
 *     tags: [users]
 *     description: Create a new user record with the provided details.
+*     security:
+*       - CustomAuth: []
 *     requestBody:
 *       required: true
 *       content:
@@ -73,14 +75,13 @@
 *                   properties:
 *                     error:
 *                       type: string
-* security:
-*   - CustomAuth: []
-* securitySchemes:
-*   CustomAuth:
-*     type: http
-*     scheme: basic
-*     x-customAuth: true
-*     description: Enter username as "admin" and password as "123456"
+* components:
+*   securitySchemes:
+*     CustomAuth:
+*       type: http
+*       scheme: basic
+*       x-customAuth: true
+*       description: Enter username as "admin" and password as "123456"
 */
 
 
