@@ -36,11 +36,6 @@ const bl = require('../bl/bl_role_users')
  *               role_id:
  *                 type: number
  *                 description: The role_id of the user.
- *             user:
- *               username: John Doe
- *               password: h32j3h
- *               email: John_Doe@gmail.com
- *               role_id: 1
  *     responses:
  *       201:
  *         description: user created successfully.
@@ -50,7 +45,7 @@ const bl = require('../bl/bl_role_users')
  *               ID: 1
  *               USERNAME: Idit Rozental
  *               PASSWORD: jsad439
- *               ENAIL: idit@gmail.com
+ *               EMAIL: idit@gmail.com
  *               ROLE_ID: 1
  *       400:
  *         description: Bad request. Ensure all required fields are provided.
@@ -58,40 +53,41 @@ const bl = require('../bl/bl_role_users')
  *           application/json:
  *             user:
  *               error: Bad request. Missing required fields.
- */
+
 /**
  * @swagger
  * /role_users/users/{id}:
  *   get:
- *     summary: Get an user by ID
+ *     summary: Get a user by ID
  *     tags: [users]
  *     description: Retrieve user details based on the provided ID.
-  *     parameters:
+ *     parameters:
  *       - in: path
- *         id: id
+ *         name: id
  *         required: true
- *         description: The ID of the employee to retrieve.
+ *         description: The ID of the user to retrieve.
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Successful response with the employee details.
+ *         description: Successful response with the user details.
  *         content:
  *           application/json:
  *             user:
  *               ID: 1
  *               USERNAME: Idit Rozental
  *               PASSWORD: jsad439
- *               ENAIL: idit@gmail.com
+ *               EMAIL: idit@gmail.com
  *               ROLE_ID: 1
  * 
  *       404:
- *         description: Employee not found with the specified ID.
+ *         description: User not found with the specified ID.
  *         content:
  *           application/json:
  *             example:
- *               error: cannot find employee with id {id}
+ *               error: cannot find user with id {id}
  */
+
 
 /**
  * @swagger
@@ -128,7 +124,7 @@ const bl = require('../bl/bl_role_users')
  * @swagger
  * /role_users/users/{id}:
  *   delete:
- *     summary: Delete an user by ID
+ *     summary: Delete a user by ID
  *     tags: [users]
  *     description: Delete the user record with the specified ID.
  *     parameters:
@@ -137,17 +133,17 @@ const bl = require('../bl/bl_role_users')
  *         required: true
  *         description: The ID of the user to delete.
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       204:
- *         description: user deleted successfully.
+ *         description: User deleted successfully.
  *       404:
- *         description: user not found with the specified ID.
+ *         description: User not found with the specified ID.
  *         content:
  *           application/json:
- *             user:
- *               error: cannot find user with id {id}
+ *             error: Cannot find user with id {id}
  */
+
 
 /**
 *  @swagger
@@ -173,12 +169,27 @@ const bl = require('../bl/bl_role_users')
 *           role_id:
 *             type: number
 *             description: role_id of the user
-*       uesr:
-*         username: Idit Rozental
-*         password: jsad439
-*         email: idit@gmail.com
-*         role_id: 1
+*
+*       user:
+*         type: object
+*         properties:
+*           username:
+*             type: string
+*           password:
+*             type: string
+*           email:
+*             type: string
+*           role_id:
+*             type: number
+*
+*   example:
+*     user:
+*       username: Idit Rozental
+*       password: jsad439
+*       email: idit@gmail.com
+*       role_id: 1
 */
+
 
 router.get('/', async (request, response) => {
     try {
