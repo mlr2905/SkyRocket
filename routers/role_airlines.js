@@ -61,38 +61,7 @@ router.get('/:id', async (request, response) => {
     }
 })
 
-/**
- * @swagger
- * /role_airlines/users/{id}:
- *   get:
- *     summary: Get an user by ID
- *     description: Retrieve user details based on the provided ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The ID of the user to retrieve.
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Successful response with the user details.
- *         content:
- *           application/json:
- *             example:
- *               ID: 1
- *               USERNAME: Idit Rozental
- *               password: jsad439
- *               EMAI: idit@gmail.com
- *               ROLE_ID: 1
- *               ROLE_NAME: user
- *       404:
- *         description: user not found with the specified ID.
- *         content:
- *           application/json:
- *             example:
- *               error: cannot find user with id {id}
- */
+
 // GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)

@@ -59,7 +59,7 @@ const bl = require('../bl/bl_role_users')
  *           application/json:
  *             example:
  *               error: cannot find user with id {id}
- *  * /role_users/users:
+ * /role_users/users:
  *   post:
  *     summary: Create a new user
  *     tags: [users]
