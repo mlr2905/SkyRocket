@@ -23,6 +23,11 @@ const options = {
             version: "1.0.1",
             description: "My REST API skyrocket",
         },
+        securityDefinitions: {
+            BasicAuth: {
+                type: 'basic'
+            }
+        },
         servers: [
             {
                 url: "https://skyrocket.onrender.com/",
