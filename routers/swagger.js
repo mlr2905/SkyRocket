@@ -19,14 +19,15 @@
 *  BasicAuth:
 *    type: http
 *    scheme: basic
-*/
-/**
+*//**
 * @swagger
 * /role_users/users:
 *   post:
 *     summary: Create a new user
 *     tags: [users]
 *     description: Create a new user record with the provided details.
+*     security:
+*       - BasicAuth: []
 *     requestBody:
 *       required: true
 *       content:
