@@ -19,7 +19,8 @@
 *  BasicAuth:
 *    type: http
 *    scheme: basic
-*//**
+*/
+/**
 * @swagger
 * /role_users/users:
 *   post:
@@ -27,7 +28,7 @@
 *     tags: [users]
 *     description: Create a new user record with the provided details.
 *     security:
-*       - BasicAuth: []
+*       - CustomAuth: []
 *     requestBody:
 *       required: true
 *       content:
@@ -80,7 +81,15 @@
 *                   properties:
 *                     error:
 *                       type: string
+* components:
+*   securitySchemes:
+*     CustomAuth:
+*       type: http
+*       scheme: basic
+*       x-customAuth: true
+*       description: Enter username as "admin" and password as "123456"
 */
+
 
 
 /**
