@@ -84,12 +84,6 @@
  *       description: Enter username as "admin" and password as "123456"
  */
 
-
-
-
-
-
-
 /**
  * @swagger
  * /role_users/users/{id}:
