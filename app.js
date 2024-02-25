@@ -23,11 +23,6 @@ const options = {
             version: "1.0.1",
             description: "My REST API skyrocket",
         },
-        securityDefinitions: {
-            BasicAuth: {
-                type: 'basic'
-            }
-        },
         servers: [
             {
                 url: "https://skyrocket.onrender.com/",
@@ -41,52 +36,52 @@ const specs = swaggerJsdoc(options);
 
 const app = express()
 const port = 3000
-// אימות בסיסי
-const users = {
-    'admin': '123456'
-};
-
-const checkPassword = (username, password) => {
-    return users[username] === password;
-};
-
-// הוספת אימות בסיסי לכל הנתיבים של Swagger UI
-app.use('/swagger', basicAuth({
-    users: users,
-    challenge: true,
-    unauthorizedResponse: (req) => {
-        return 'Unauthorized';
-    },
-    authorizer: (username, password) => {
-        return checkPassword(username, password);
-    }
-}));
-
+// // אימות בסיסי
 // const users = {
-//     'michael': 'Miki260623' // שם המשתמש והסיסמה
+//     'admin': '123456'
 // };
 
 // const checkPassword = (username, password) => {
-//     // בדיקת סיסמה נכונה
 //     return users[username] === password;
 // };
 
-// app.use(basicAuth({
+// // הוספת אימות בסיסי לכל הנתיבים של Swagger UI
+// app.use('/swagger', basicAuth({
 //     users: users,
 //     challenge: true,
 //     unauthorizedResponse: (req) => {
 //         return 'Unauthorized';
 //     },
 //     authorizer: (username, password) => {
-//         // בדיקת אימות סיסמה
 //         return checkPassword(username, password);
 //     }
 // }));
-// app.use(
-//     "/swagger",
-//     swaggerUi.serve,
-//     swaggerUi.setup(specs)
-// );
+
+const users = {
+    'michael': 'Miki260623' // שם המשתמש והסיסמה
+};
+
+const checkPassword = (username, password) => {
+    // בדיקת סיסמה נכונה
+    return users[username] === password;
+};
+
+app.use(basicAuth({
+    users: users,
+    challenge: true,
+    unauthorizedResponse: (req) => {
+        return 'Unauthorized';
+    },
+    authorizer: (username, password) => {
+        // בדיקת אימות סיסמה
+        return checkPassword(username, password);
+    }
+}));
+app.use(
+    "/swagger",
+    swaggerUi.serve,
+    swaggerUi.setup(specs)
+);
 app.use(cors());
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/')))
