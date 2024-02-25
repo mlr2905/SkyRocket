@@ -50,9 +50,9 @@ async function update_user(id, user) {
                 const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
                 return update
             }
-            else {
-                return { error: 'The fields are not registered well' }
-            }
+
+            return { error: 'The fields are not registered well' }
+
         }
 
 
