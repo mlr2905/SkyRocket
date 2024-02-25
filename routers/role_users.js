@@ -9,27 +9,6 @@ const bl = require('../bl/bl_role_users')
  * tags:
  *   name: users
  *   description: The users managing API
- * /users:
- *   post:
- *     summary: Create a new book
- *     tags: [users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Book'
- *     responses:
- *       200:
- *         description: The created book.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Book'
- *       500:
- *         description: Some server error
- *
- */
 /**
 *  @swagger
 *  components:
@@ -108,9 +87,12 @@ router.get('/qr/:id', async (request, response) => {
 
 /**
  * @swagger
+ * tags:
+ *   name: users
+ *   description: The users managing API
  * /role_users/users/{id}:
  *   get:
- * summary: Update the book by the id
+ * summary: Update the user by the id
 *    tags: [users]
  *     summary: Get an user by ID
  *     description: Retrieve user details based on the provided ID.
@@ -224,7 +206,7 @@ router.post('/users', async (request, response) => {
  * @swagger
  * /role_users/users:
 *   put:
-*    summary: Update the book by the id
+*    summary: Update the user by the id
 *    tags: [users]
 *    parameters:
 *      - in: path
@@ -232,22 +214,22 @@ router.post('/users', async (request, response) => {
 *        schema:
 *          type: string
 *        required: true
-*        description: The book id
+*        description: The user id
 *    requestBody:
 *      required: true
 *      content:
 *        application/json:
 *          schema:
-*            $ref: '#/components/schemas/Book'
+*            $ref: '#/components/schemas/user'
 *    responses:
 *      200:
-*        description: The book was updated
+*        description: The user was updated
 *        content:
 *          application/json:
 *            schema:
-*              $ref: '#/components/schemas/Book'
+*              $ref: '#/components/schemas/user'
 *      404:
-*        description: The book was not found
+*        description: The user was not found
 *      500:
 *        description: Some error happened
 // PUT 
