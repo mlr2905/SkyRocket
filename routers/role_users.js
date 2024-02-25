@@ -31,6 +31,7 @@ const bl = require('../bl/bl_role_users')
 *             type: number
 *             description: role_id of the user
 *        user:
+
 *          username: Idit Rozental
 *          password: jsad439
 *          email: idit@gmail.com
