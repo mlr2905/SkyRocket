@@ -81,8 +81,9 @@
 *     type: apiKey
 *     in: header
 *     name: Authorization
-*     description: Enter your credentials as "admin:123456" or "user:83283hh"
+*     description: Enter username as "admin" and password as "123456"
 */
+
 
 
 
