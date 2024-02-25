@@ -22,7 +22,7 @@
 *     tags: [users]
 *     description: Create a new user record with the provided details.
 *     security:
-*       - ApiKeyAuth: []
+*       - CustomAuth: []
 *     requestBody:
 *       required: true
 *       content:
@@ -75,15 +75,15 @@
 *                   properties:
 *                     error:
 *                       type: string
-* security:
-*   - ApiKeyAuth: []
-* securitySchemes:
-*   ApiKeyAuth:
-*     type: apiKey
-*     in: header
-*     name: Authorization
-*     description: Enter username as "admin" and password as "123456"
+* components:
+*   securitySchemes:
+*     CustomAuth:
+*       type: http
+*       scheme: basic
+*       x-customAuth: true
+*       description: Enter username as "admin" and password as "123456"
 */
+
 
 
 
