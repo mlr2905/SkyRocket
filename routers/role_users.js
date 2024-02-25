@@ -5,6 +5,32 @@ const qrcode = require('qrcode');
 const bl = require('../bl/bl_role_users')
 //role_users/users
 /**
+ * @swagger
+ * tags:
+ *   name: users
+ *   description: The users managing API
+ * /users:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/user'
+ *     responses:
+ *       200:
+ *         description: The created user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/user'
+ *       500:
+ *         description: Some server error
+ *
+ */
+/**
 *  @swagger
 *  components:
 *     schemas:
@@ -33,6 +59,102 @@ const bl = require('../bl/bl_role_users')
 *           password: jsad439
 *           email: idit@gmail.com
 *           role_id: 1
+* /role_users/users/{id}:
+ *   get:
+ * summary: Update the user by the id
+*    tags: [users]
+ *     summary: Get an user by ID
+ *     description: Retrieve user details based on the provided ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to retrieve.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successful response with the user details.
+ *         content:
+ *           application/json:
+ *             example:
+ *               ID: 1
+ *               USERNAME: Idit Rozental
+ *               password: jsad439
+ *               EMAI: idit@gmail.com
+ *               ROLE_ID: 1
+ *               ROLE_NAME: user
+ *       404:
+ *         description: user not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: cannot find user with id {id}
+ *  * /role_users/users:
+ *   post:
+ *     summary: Create a new user
+ *     description: Create a new user record with the provided details.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               NAME:
+ *                 type: string
+ *                 description: The name of the user.
+ *               AGE:
+ *                 type: number
+ *                 description: The age of the user.
+ *               ADDRESS:
+ *                 type: string
+ *                 description: The address of the user.
+ *               SALARY:
+ *                 type: number
+ *                 description: The salary of the user.
+ *             example:
+ *               name: John Doe
+ *               age: 30
+ *               address: Example Street
+ *               salary: 50000.00
+ *     responses:
+ *       201:
+ *         description: user created successfully.
+ *         content:
+ *           application/json:
+ *             example:
+ *               ID: 1
+ *               NAME: John Doe
+ *               AGE: 30
+ *               ADDRESS: Example Street
+ *               SALARY: 50000.00
+ *       400:
+ *         description: Bad request. Ensure all required fields are provided.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Bad request. Missing required fields.
+ * * /role_users/users/{id}:
+ *   delete:
+ *     summary: Delete an user by ID
+ *     description: Delete the user record with the specified ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to delete.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: user deleted successfully.
+ *       404:
+ *         description: user not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: cannot find user with id {id}
 */
 
 router.get('/', async (request, response) => {
@@ -79,44 +201,6 @@ router.get('/qr/:id', async (request, response) => {
 
 
 // GET by ID
-
-/**
- * @swagger
- *  * tags:
- *   name: users
- *   description: The users managing API
- * /role_users/users/{id}:
- *   get:
- * summary: Update the user by the id
-*    tags: [users]
- *     summary: Get an user by ID
- *     description: Retrieve user details based on the provided ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The ID of the user to retrieve.
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Successful response with the user details.
- *         content:
- *           application/json:
- *             example:
- *               ID: 1
- *               USERNAME: Idit Rozental
- *               password: jsad439
- *               EMAI: idit@gmail.com
- *               ROLE_ID: 1
- *               ROLE_NAME: user
- *       404:
- *         description: user not found with the specified ID.
- *         content:
- *           application/json:
- *             example:
- *               error: cannot find user with id {id}
- */
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {
@@ -135,54 +219,7 @@ router.get('/users/:id', async (request, response) => {
 })
 
 
-/**
- * @swagger
- * /role_users/users:
- *   post:
- *     summary: Create a new user
- *     description: Create a new user record with the provided details.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               NAME:
- *                 type: string
- *                 description: The name of the user.
- *               AGE:
- *                 type: number
- *                 description: The age of the user.
- *               ADDRESS:
- *                 type: string
- *                 description: The address of the user.
- *               SALARY:
- *                 type: number
- *                 description: The salary of the user.
- *             example:
- *               name: John Doe
- *               age: 30
- *               address: Example Street
- *               salary: 50000.00
- *     responses:
- *       201:
- *         description: user created successfully.
- *         content:
- *           application/json:
- *             example:
- *               ID: 1
- *               NAME: John Doe
- *               AGE: 30
- *               ADDRESS: Example Street
- *               SALARY: 50000.00
- *       400:
- *         description: Bad request. Ensure all required fields are provided.
- *         content:
- *           application/json:
- *             example:
- *               error: Bad request. Missing required fields.
- */
+
 
 // POST
 router.post('/users', async (request, response) => {
@@ -197,36 +234,7 @@ router.post('/users', async (request, response) => {
     }
 
 })
-/**
- * @swagger
- * /role_users/users:
-*   put:
-*    summary: Update the user by the id
-*    tags: [users]
-*    parameters:
-*      - in: path
-*        name: id
-*        schema:
-*          type: string
-*        required: true
-*        description: The user id
-*    requestBody:
-*      required: true
-*      content:
-*        application/json:
-*          schema:
-*            $ref: '#/components/schemas/user'
-*    responses:
-*      200:
-*        description: The user was updated
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/schemas/user'
-*      404:
-*        description: The user was not found
-*      500:
-*        description: Some error happened
+
 // PUT 
 router.put('/users/:id', async (request, response) => {
 
@@ -251,30 +259,6 @@ router.put('/users/:id', async (request, response) => {
 
 })
 
-
-/**
- * @swagger
- * /role_users/users/{id}:
- *   delete:
- *     summary: Delete an user by ID
- *     description: Delete the user record with the specified ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The ID of the user to delete.
- *         schema:
- *           type: integer
- *     responses:
- *       204:
- *         description: user deleted successfully.
- *       404:
- *         description: user not found with the specified ID.
- *         content:
- *           application/json:
- *             example:
- *               error: cannot find user with id {id}
- */
 
 // DELETE
 router.delete('/users/:id', async (request, response) => {
