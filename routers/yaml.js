@@ -182,9 +182,9 @@
 *           role_id:
 *             type: number
 *             description: The role_id of the user.
-*       example:
-*         username: Idit Rozental
-*         password: jsad439
-*         email: idit@gmail.com
-*         role_id: 1
+*         example:
+*           username: Idit Rozental
+*           password: jsad439
+*           email: idit@gmail.com
+*           role_id: 1
 */
