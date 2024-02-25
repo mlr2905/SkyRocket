@@ -14,12 +14,6 @@
  */
 
 //role_users/users
-/** @swagger
-*securitySchemes:
-*  BasicAuth:
-*    type: apiKey
-*    scheme: basic
-*/
 /**
 * @swagger
 * /role_users/users:
@@ -27,8 +21,6 @@
 *     summary: Create a new user
 *     tags: [users]
 *     description: Create a new user record with the provided details.
-*     security:
-*       - ApiKeyAuth: []
 *     requestBody:
 *       required: true
 *       content:
@@ -81,6 +73,8 @@
 *                   properties:
 *                     error:
 *                       type: string
+* security:
+*   - ApiKeyAuth: []
 * securitySchemes:
 *   ApiKeyAuth:
 *     type: apiKey
@@ -88,6 +82,7 @@
 *     name: Authorization
 *     description: Enter username as "admin" and password as "123456"
 */
+
 
 
 
