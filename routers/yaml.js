@@ -8,52 +8,63 @@
 /**
  * @swagger
  * /role_users/users:
- *   post:
- *     summary: Create a new user
- *     tags: [users]
- *     description: Create a new user record with the provided details.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *                 description: The username of the user.
- *               password:
- *                 type: string
- *                 description: The password of the user.
- *               email:
- *                 type: string
- *                 description: The email of the user.
- *               role_id:
- *                 type: number
- *                 description: The role_id of the user.
- *             user:
- *               username: John Doe
- *               password: h32j3h
- *               email: John_Doe@gmail.com
- *               role_id: 1
- *     responses:
- *       201:
- *         description: user created successfully.
- *         content:
- *           application/json:
- *             user:
- *               ID: 1
- *               USERNAME: Idit Rozental
- *               PASSWORD: jsad439
- *               ENAIL: idit@gmail.com
- *               ROLE_ID: 1
- *       400:
- *         description: Bad request. Ensure all required fields are provided.
- *         content:
- *           application/json:
- *             user:
- *               error: Bad request. Missing required fields.
- */
+ post:
+  summary: Create a new user
+  tags: [users]
+  description: Create a new user record with the provided details.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              description: The username of the user.
+            password:
+              type: string
+              description: The password of the user.
+            email:
+              type: string
+              description: The email of the user.
+            role_id:
+              type: number
+              description: The role_id of the user.
+  responses:
+    '201':
+      description: User created successfully.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  ID:
+                    type: number
+                  USERNAME:
+                    type: string
+                  PASSWORD:
+                    type: string
+                  EMAIL:
+                    type: string
+                  ROLE_ID:
+                    type: number
+    '400':
+      description: Bad request. Ensure all required fields are provided.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  error:
+                    type: string
+
 /**
  * @swagger
  * /role_users/users/{id}:
@@ -61,7 +72,7 @@
  *     summary: Get an user by ID
  *     tags: [users]
  *     description: Retrieve user details based on the provided ID.
-  *     parameters:
+ *     parameters:
  *       - in: path
  *         id: id
  *         required: true
@@ -147,6 +158,7 @@
  */
 
 /**
+/**
 *  @swagger
 *  components:
 *     schemas:
@@ -169,10 +181,10 @@
 *             description: The email of the user.
 *           role_id:
 *             type: number
-*             description: role_id of the user
-*          user:
-*            username: Idit Rozental
-*            password: jsad439
-*            email: idit@gmail.com
-*            role_id: 1
+*             description: The role_id of the user.
+*       example:
+*         username: Idit Rozental
+*         password: jsad439
+*         email: idit@gmail.com
+*         role_id: 1
 */
