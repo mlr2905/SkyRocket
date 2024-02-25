@@ -6,64 +6,35 @@
  *   description: The users managing API
  */
 /**
- * @swagger
- * /role_users/users:
- post:
-  summary: Create a new user
-  tags: [users]
-  description: Create a new user record with the provided details.
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            username:
-              type: string
-              description: The username of the user.
-            password:
-              type: string
-              description: The password of the user.
-            email:
-              type: string
-              description: The email of the user.
-            role_id:
-              type: number
-              description: The role_id of the user.
-  responses:
-    '201':
-      description: User created successfully.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              user:
-                type: object
-                properties:
-                  ID:
-                    type: number
-                  USERNAME:
-                    type: string
-                  PASSWORD:
-                    type: string
-                  EMAIL:
-                    type: string
-                  ROLE_ID:
-                    type: number
-    '400':
-      description: Bad request. Ensure all required fields are provided.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              user:
-                type: object
-                properties:
-                  error:
-                    type: string
+*  @swagger
+*  components:
+*     schemas:
+*       user:
+*         type: object
+*         required:
+*           - username
+*           - password
+*           - email
+*           - role_id
+*         properties:
+*           username:
+*             type: string
+*             description: The username of the user.
+*           password:
+*             type: string
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*           role_id:
+*             type: number
+*             description: The role_id of the user.
+*       example:
+*         username: Idit Rozental
+*         password: jsad439
+*         email: idit@gmail.com
+*         role_id: 1
+*/
 
 /**
  * @swagger
