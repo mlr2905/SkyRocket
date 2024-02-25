@@ -91,7 +91,7 @@ router.get('/qr/:id', async (request, response) => {
  * /role_users/users/{id}:
  *   get:
  *     summary: Get an user by ID
- *      tags: [users]
+ *     tags: [users]
  *     description: Retrieve user details based on the provided ID.
  *     parameters:
  *       - in: path
@@ -142,7 +142,7 @@ router.get('/users/:id', async (request, response) => {
  * /role_users/users:
  *   post:
  *     summary: Create a new user
- *      tags: [users]
+ *     tags: [users]
  *     description: Create a new user record with the provided details.
  *     requestBody:
  *       required: true
