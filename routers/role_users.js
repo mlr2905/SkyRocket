@@ -24,7 +24,7 @@ const bl = require('../bl/bl_role_users')
 *         properties:
 *           username:
 *             type: string
-*             description: The name of the user.
+*             description: The username of the user.
 *           password:
 *             type: string
 *             description: The password of the user.
@@ -34,11 +34,11 @@ const bl = require('../bl/bl_role_users')
 *           role_id:
 *             type: number
 *             description: role_id of the user
-*         uesr:
-*           username: Idit Rozental
-*           password: jsad439
-*           email: idit@gmail.com
-*           role_id: 1
+*       uesr:
+*         username: Idit Rozental
+*         password: jsad439
+*         email: idit@gmail.com
+*         role_id: 1
 */
 
 router.get('/', async (request, response) => {
@@ -93,31 +93,31 @@ router.get('/qr/:id', async (request, response) => {
  *     summary: Get an user by ID
  *     tags: [users]
  *     description: Retrieve user details based on the provided ID.
- *     parameters:
+  *     parameters:
  *       - in: path
- *         name: id
+ *         id: id
  *         required: true
- *         description: The ID of the user to retrieve.
+ *         description: The ID of the employee to retrieve.
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Successful response with the user details.
+ *         description: Successful response with the employee details.
  *         content:
  *           application/json:
  *             user:
  *               ID: 1
  *               USERNAME: Idit Rozental
- *               password: jsad439
- *               EMAI: idit@gmail.com
+ *               PASSWORD: jsad439
+ *               ENAIL: idit@gmail.com
  *               ROLE_ID: 1
- *               ROLE_NAME: user
+ * 
  *       404:
- *         description: user not found with the specified ID.
+ *         description: Employee not found with the specified ID.
  *         content:
  *           application/json:
- *             user:
- *               error: cannot find user with id {id}
+ *             example:
+ *               error: cannot find employee with id {id}
  */
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
