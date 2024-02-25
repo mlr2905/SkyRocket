@@ -162,7 +162,7 @@ router.get('/users/:id', async (request, response) => {
  *                 description: The email of the user.
  *               role_id:
  *                 type: number
- *                 description: The salary of the user.
+ *                 description: The role_id of the user.
  *             user:
  *               username: John Doe
  *               password: h32j3h
