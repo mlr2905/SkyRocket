@@ -15,6 +15,7 @@
 
 //role_users/users
 /**
+/**
  * @swagger
  * /role_users/users:
  *   post:
@@ -23,6 +24,7 @@
  *     description: Create a new user record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
+ *     deprecated: true
  *     requestBody:
  *       required: true
  *       content:
