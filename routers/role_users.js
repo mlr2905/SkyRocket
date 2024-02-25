@@ -11,35 +11,35 @@ const bl = require('../bl/bl_role_users')
  *   description: The users managing API
  */
 /**
- *  @swagger
- *  components:
- *     schemas:
- *       user:
- *         type: object
- *         required:
- *           - username
- *           - password
- *           - email
- *           - role_id
- *         properties:
- *           username:
- *             type: string
- *             description: The username of the user.
- *           password:
- *             type: string
- *             description: The password of the user.
- *           email:
- *             type: string
- *             description: The email of the user.
- *           role_id:
- *             type: number
- *             description: role_id of the user
- *          uesr:
- *            username: Idit Rozental
- *            password: jsad439
- *            email: idit@gmail.com
- *            role_id: 1
- */
+*  @swagger
+*  components:
+*     schemas:
+*       user:
+*         type: object
+*         required:
+*           - username
+*           - password
+*           - email
+*           - role_id
+*         properties:
+*           username:
+*             type: string
+*             description: The username of the user.
+*           password:
+*             type: string
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*           role_id:
+*             type: number
+*             description: role_id of the user
+*          uesr:
+*            username: Idit Rozental
+*            password: jsad439
+*            email: idit@gmail.com
+*            role_id: 1
+*/
 
 router.get('/', async (request, response) => {
     try {
@@ -93,7 +93,7 @@ router.get('/qr/:id', async (request, response) => {
  *     summary: Get an user by ID
  *     tags: [users]
  *     description: Retrieve user details based on the provided ID.
- *     parameters:
+  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
@@ -203,34 +203,34 @@ router.post('/users', async (request, response) => {
 /**
  * @swagger
  * /role_users/users/{id}:
- *   put:
- *    summary: Update the user by the id
- *    tags: [users]
- *    parameters:
- *      - in: path
- *        name: id
- *        schema:
- *          type: string
- *        required: true
- *        description: The user id
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/user'
- *    responses:
- *      200:
- *        description: The user was updated
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/user'
- *      404:
- *        description: The user was not found
- *      500:
- *        description: Some error happened
- */
+*   put:
+*    summary: Update the user by the id
+*    tags: [users]
+*    parameters:
+*      - in: path
+*        name: id
+*        schema:
+*          type: string
+*        required: true
+*        description: The user id
+*    requestBody:
+*      required: true
+*      content:
+*        application/json:
+*          schema:
+*            $ref: '#/components/schemas/user'
+*    responses:
+*      200:
+*        description: The user was updated
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/schemas/user'
+*      404:
+*        description: The user was not found
+*      500:
+*        description: Some error happened
+*/
 
 // PUT 
 router.put('/users/:id', async (request, response) => {
