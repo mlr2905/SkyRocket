@@ -105,12 +105,13 @@ router.get('/qr/:id', async (request, response) => {
  *         description: Successful response with the user details.
  *         content:
  *           application/json:
- *             uesr:
- *               username: Idit Rozental
+ *             user:
+ *               ID: 1
+ *               USERNAME: Idit Rozental
  *               password: jsad439
- *               password: idit@gmail.com
- *               email: idit@gmail.com
- *               role_id: 1
+ *               EMAI: idit@gmail.com
+ *               ROLE_ID: 1
+ *               ROLE_NAME: user
  *       404:
  *         description: user not found with the specified ID.
  *         content:
@@ -150,33 +151,34 @@ router.get('/users/:id', async (request, response) => {
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               NAME:
  *                 type: string
  *                 description: The name of the user.
- *               password:
- *                 type: string
+ *               AGE:
+ *                 type: number
  *                 description: The age of the user.
- *               email:
+ *               ADDRESS:
  *                 type: string
  *                 description: The address of the user.
- *               role_id:
+ *               SALARY:
  *                 type: number
  *                 description: The salary of the user.
- *             uesr:
- *               username: Idit Rozental
- *               password: jsad439
- *               email: idit@gmail.com
- *               role_id: 1
+ *             user:
+ *               name: John Doe
+ *               age: 30
+ *               address: user Street
+ *               salary: 50000.00
  *     responses:
  *       201:
  *         description: user created successfully.
  *         content:
  *           application/json:
- *             uesr:
- *               username: Idit Rozental
- *               password: jsad439
- *               email: idit@gmail.com
- *               role_id: 1
+ *             user:
+ *               ID: 1
+ *               NAME: John Doe
+ *               AGE: 30
+ *               ADDRESS: user Street
+ *               SALARY: 50000.00
  *       400:
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
