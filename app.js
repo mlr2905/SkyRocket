@@ -45,7 +45,6 @@ const checkPassword = (username, password) => {
     return users[username] === password;
 };
 
-
 // הוספת אימות בסיסי לכל הנתיבים של Swagger UI
 app.use('/swagger', basicAuth({
     users: users,
@@ -56,7 +55,7 @@ app.use('/swagger', basicAuth({
     authorizer: (username, password) => {
         return checkPassword(username, password);
     }
-}));;
+}));
 
 // const users = {
 //     'michael': 'Miki260623' // שם המשתמש והסיסמה
