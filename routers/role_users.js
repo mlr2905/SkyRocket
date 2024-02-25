@@ -262,6 +262,7 @@ router.put('/users/:id', async (request, response) => {
  * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
+ *    tags: [users]
  *     description: Delete the user record with the specified ID.
  *     parameters:
  *       - in: path
