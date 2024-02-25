@@ -29,13 +29,12 @@ const bl = require('../bl/bl_role_users')
 *           role_id:
 *             type: number
 *             description: role_id of the user
-*        user:
-*          username: Idit Rozental
-*          password: jsad439
-*          email: idit@gmail.com
-*          role_id: 1
+*         example:
+*           username: Idit Rozental
+*           password: jsad439
+*           email: idit@gmail.com
+*           role_id: 1
 */
-
 
 router.get('/', async (request, response) => {
     try {
@@ -84,13 +83,6 @@ router.get('/qr/:id', async (request, response) => {
 
 /**
  * @swagger
- * get:
- * tags:
- *  - Admin Operations
- * parameters: []
-
- * tags:
- * - name: Admin Functions
  * /role_users/users/{id}:
  *   get:
  *     summary: Get an user by ID
