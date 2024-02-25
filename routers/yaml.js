@@ -84,7 +84,7 @@
  *         description: Employee not found with the specified ID.
  *         content:
  *           application/json:
- *              uesr:
+ *              user:
  *               error: cannot find employee with id {id}
  */
 
