@@ -34,11 +34,11 @@ const bl = require('../bl/bl_role_users')
 *           role_id:
 *             type: number
 *             description: role_id of the user
-*       uesr:
-*         username: Idit Rozental
-*         password: jsad439
-*         email: idit@gmail.com
-*         role_id: 1
+*          uesr:
+*            username: Idit Rozental
+*            password: jsad439
+*            email: idit@gmail.com
+*            role_id: 1
 */
 
 router.get('/', async (request, response) => {
