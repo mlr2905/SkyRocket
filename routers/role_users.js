@@ -105,18 +105,17 @@ router.get('/qr/:id', async (request, response) => {
  *         description: Successful response with the user details.
  *         content:
  *           application/json:
- *             example:
- *               ID: 1
- *               USERNAME: Idit Rozental
+ *             uesr:
+ *               username: Idit Rozental
  *               password: jsad439
- *               EMAI: idit@gmail.com
- *               ROLE_ID: 1
- *               ROLE_NAME: user
+ *               password: idit@gmail.com
+ *               email: idit@gmail.com
+ *               role_id: 1
  *       404:
  *         description: user not found with the specified ID.
  *         content:
  *           application/json:
- *             example:
+ *             user:
  *               error: cannot find user with id {id}
  */
 router.get('/users/:id', async (request, response) => {
@@ -151,39 +150,38 @@ router.get('/users/:id', async (request, response) => {
  *           schema:
  *             type: object
  *             properties:
- *               NAME:
+ *               username:
  *                 type: string
  *                 description: The name of the user.
- *               AGE:
- *                 type: number
+ *               password:
+ *                 type: string
  *                 description: The age of the user.
- *               ADDRESS:
+ *               email:
  *                 type: string
  *                 description: The address of the user.
- *               SALARY:
+ *               role_id:
  *                 type: number
  *                 description: The salary of the user.
- *             example:
- *               name: John Doe
- *               age: 30
- *               address: Example Street
- *               salary: 50000.00
+ *             uesr:
+ *               username: Idit Rozental
+ *               password: jsad439
+ *               email: idit@gmail.com
+ *               role_id: 1
  *     responses:
  *       201:
  *         description: user created successfully.
  *         content:
  *           application/json:
- *             example:
- *               ID: 1
- *               NAME: John Doe
- *               AGE: 30
- *               ADDRESS: Example Street
- *               SALARY: 50000.00
+ *             uesr:
+ *               username: Idit Rozental
+ *               password: jsad439
+ *               email: idit@gmail.com
+ *               role_id: 1
  *       400:
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
  *           application/json:
- *             example:
+ *             user:
  *               error: Bad request. Missing required fields.
  */
 
@@ -278,7 +276,7 @@ router.put('/users/:id', async (request, response) => {
  *         description: user not found with the specified ID.
  *         content:
  *           application/json:
- *             example:
+ *             user:
  *               error: cannot find user with id {id}
  */
 
