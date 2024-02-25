@@ -86,6 +86,24 @@ router.get('/qr/:id', async (request, response) => {
 
 // GET by ID
 
+
+
+router.get('/users/:id', async (request, response) => {
+    const user_id = parseInt(request.params.id)
+    try {
+        const user = await bl.get_by_id_user(user_id)
+        if (user) {
+            response.status(200).json(user)
+        }
+        else {
+            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+
+        }
+
+    } catch (error) {
+        throw response.status(503).json({ "error": `The request failed, try again later ` })
+    }
+})
 /**
  * @swagger
  * /role_users/users/{id}:
@@ -120,23 +138,6 @@ router.get('/qr/:id', async (request, response) => {
  *               error: cannot find employee with id {id}
  */
 
-router.get('/users/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    try {
-        const user = await bl.get_by_id_user(user_id)
-        if (user) {
-            response.status(200).json(user)
-        }
-        else {
-            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-
-        }
-
-    } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ` })
-    }
-})
-
 
 
 
@@ -150,6 +151,90 @@ router.post('/users', async (request, response) => {
     } catch (error) {
         throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
         ; // מעבירה את השגיאה הלאה
+    }
+
+})
+/**
+* @swagger
+* /role_users/users:
+*   post:
+*     summary: Create a new user
+*     tags: [users]
+*     description: Create a new user record with the provided details.
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               username:
+*                 type: string
+*                 description: The username of the user.
+*               password:
+*                 type: string
+*                 description: The password of the user.
+*               email:
+*                 type: string
+*                 description: The email of the user.
+*               role_id:
+*                 type: number
+*                 description: The role_id of the user.
+*     responses:
+*       '201':
+*         description: User created successfully.
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 user:
+*                   type: object
+*                   properties:
+*                     ID:
+*                       type: number
+*                     USERNAME:
+*                       type: string
+*                     PASSWORD:
+*                       type: string
+*                     EMAIL:
+*                       type: string
+*                     ROLE_ID:
+*                       type: number
+*       '400':
+*         description: Bad request. Ensure all required fields are provided.
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 user:
+*                   type: object
+*                   properties:
+*                     error:
+*                       type: string
+*/
+
+
+router.put('/users/:id', async (request, response) => {
+
+    const user_id = parseInt(request.params.id)
+    const user = await bl.get_by_id_user(user_id)
+
+    if (user) {
+        try {
+            const updated_user_req = request.body
+            const result = await bl.update_user(user_id, updated_user_req)
+            response.json(updated_user_req)
+        }
+        catch (error) {
+            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+            ; // מעבירה את השגיאה הלאה
+        }
+    }
+    else {
+        throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+
     }
 
 })
@@ -186,16 +271,18 @@ router.post('/users', async (request, response) => {
 *      500:
 *        description: Some error happened
 */
-router.put('/users/:id', async (request, response) => {
 
+
+
+
+router.delete('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_user(user_id)
 
     if (user) {
         try {
-            const updated_user_req = request.body
-            const result = await bl.update_user(user_id, updated_user_req)
-            response.json(updated_user_req)
+            const result = await bl.delete_account(user_id)
+            response.status(204).json({ result })
         }
         catch (error) {
             throw response.status(503).json({ "error": `The request failed, try again later  ` })
@@ -203,13 +290,10 @@ router.put('/users/:id', async (request, response) => {
         }
     }
     else {
-        throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+        throw response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
 
     }
-
 })
-
-
 
 // DELETE
 /**
@@ -236,26 +320,6 @@ router.put('/users/:id', async (request, response) => {
  *             user:
  *               error: cannot find user with id {id}
  */
-
-router.delete('/users/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_user(user_id)
-
-    if (user) {
-        try {
-            const result = await bl.delete_account(user_id)
-            response.status(204).json({ result })
-        }
-        catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later  ` })
-            ; // מעבירה את השגיאה הלאה
-        }
-    }
-    else {
-        throw response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
-
-    }
-})
 
 //role_users/customers
 
