@@ -34,6 +34,16 @@ const specs = swaggerJsdoc(options);
 
 const app = express()
 const port = 3000
+const users = {
+    'admin': '12334' // שם המשתמש והסיסמה
+};
+
+app.use(basicAuth({
+    users: users,
+    unauthorizedResponse: (req) => {
+        return 'Unauthorized';
+    }
+}));
 app.use(
     "/swagger",
     swaggerUi.serve,

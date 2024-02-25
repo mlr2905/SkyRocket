@@ -15,7 +15,6 @@
 
 //role_users/users
 /**
-* @swagger
 * /role_users/users:
 *   post:
 *     summary: Create a new user
@@ -82,7 +81,7 @@
 *       scheme: basic
 *       x-customAuth: true
 *       description: Enter username as "admin" and password as "123456"
-*/
+
 
 
 
