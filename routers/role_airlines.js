@@ -3,7 +3,36 @@ const router = express.Router()
 const bl = require('../bl/bl_role_users')
 
 //role_airlines/users
-
+/**
+*  @swagger
+*  components:
+*     schemas:
+*       user:
+*         type: object
+*         required:
+*           - username
+*           - password
+*           - email
+*           - role_id
+*         properties:
+*           username:
+*             type: string
+*             description: The name of the user.
+*           password:
+*             type: string
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*           role_id:
+*             type: number
+*             description: role_id of the user
+*        user:
+*          username: Idit Rozental
+*          password: jsad439
+*          email: idit@gmail.com
+*          role_id: 1
+*/
 
 router.get('/', async (request, response) => {
     try {
@@ -17,6 +46,11 @@ router.get('/', async (request, response) => {
     }
 })
 
+
+// GET by ID
+
+
+
 router.get('/:id', async (request, response) => {
     try {
         const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_airlines/{neme ?}/1' }
@@ -27,6 +61,38 @@ router.get('/:id', async (request, response) => {
     }
 })
 
+/**
+ * @swagger
+ * /role_airlines/users/{id}:
+ *   get:
+ *     summary: Get an user by ID
+ *     description: Retrieve user details based on the provided ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to retrieve.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successful response with the user details.
+ *         content:
+ *           application/json:
+ *             example:
+ *               ID: 1
+ *               USERNAME: Idit Rozental
+ *               password: jsad439
+ *               EMAI: idit@gmail.com
+ *               ROLE_ID: 1
+ *               ROLE_NAME: user
+ *       404:
+ *         description: user not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: cannot find user with id {id}
+ */
 // GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
