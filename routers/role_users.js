@@ -7,12 +7,12 @@ const bl = require('../bl/bl_role_users')
 /**
  * @swagger
  * tags:
- *   name: Books
- *   description: The books managing API
- * /books:
+ *   name: users
+ *   description: The users managing API
+ * /users:
  *   post:
  *     summary: Create a new book
- *     tags: [Books]
+ *     tags: [users]
  *     requestBody:
  *       required: true
  *       content:
@@ -110,6 +110,8 @@ router.get('/qr/:id', async (request, response) => {
  * @swagger
  * /role_users/users/{id}:
  *   get:
+ * summary: Update the book by the id
+*    tags: [users]
  *     summary: Get an user by ID
  *     description: Retrieve user details based on the provided ID.
  *     parameters:
@@ -155,19 +157,7 @@ router.get('/users/:id', async (request, response) => {
     }
 })
 
-// POST
-router.post('/users', async (request, response) => {
-    const new_user = request.body
-    try {
-        const result = await bl.create_user(new_user)
-        response.status(201).json(result)
 
-    } catch (error) {
-        throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
-        ; // מעבירה את השגיאה הלאה
-    }
-
-})
 /**
  * @swagger
  * /role_users/users:
@@ -217,6 +207,49 @@ router.post('/users', async (request, response) => {
  *               error: Bad request. Missing required fields.
  */
 
+// POST
+router.post('/users', async (request, response) => {
+    const new_user = request.body
+    try {
+        const result = await bl.create_user(new_user)
+        response.status(201).json(result)
+
+    } catch (error) {
+        throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
+        ; // מעבירה את השגיאה הלאה
+    }
+
+})
+/**
+ * @swagger
+ * /role_users/users:
+*   put:
+*    summary: Update the book by the id
+*    tags: [users]
+*    parameters:
+*      - in: path
+*        name: id
+*        schema:
+*          type: string
+*        required: true
+*        description: The book id
+*    requestBody:
+*      required: true
+*      content:
+*        application/json:
+*          schema:
+*            $ref: '#/components/schemas/Book'
+*    responses:
+*      200:
+*        description: The book was updated
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/schemas/Book'
+*      404:
+*        description: The book was not found
+*      500:
+*        description: Some error happened
 // PUT 
 router.put('/users/:id', async (request, response) => {
 
