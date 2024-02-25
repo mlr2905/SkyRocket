@@ -151,34 +151,33 @@ router.get('/users/:id', async (request, response) => {
  *           schema:
  *             type: object
  *             properties:
- *               NAME:
+ *               username:
  *                 type: string
- *                 description: The name of the user.
- *               AGE:
- *                 type: number
- *                 description: The age of the user.
- *               ADDRESS:
+ *                 description: The username of the user.
+ *               password:
  *                 type: string
- *                 description: The address of the user.
- *               SALARY:
+ *                 description: The password of the user.
+ *               email:
+ *                 type: string
+ *                 description: The email of the user.
+ *               role_id:
  *                 type: number
  *                 description: The salary of the user.
  *             user:
- *               name: John Doe
- *               age: 30
- *               address: user Street
- *               salary: 50000.00
+ *               username: John Doe
+ *               password: h32j3h
+ *               email: John_Doe@gmail.com
+ *               role_id: 1
  *     responses:
  *       201:
  *         description: user created successfully.
  *         content:
  *           application/json:
  *             user:
- *               ID: 1
- *               NAME: John Doe
- *               AGE: 30
- *               ADDRESS: user Street
- *               SALARY: 50000.00
+ *               username: John Doe
+ *               password: h32j3h
+ *               email: John_Doe@gmail.com
+ *               role_id: 1
  *       400:
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
