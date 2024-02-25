@@ -84,7 +84,7 @@ const bl = require('../bl/bl_role_users')
  *         description: User not found with the specified ID.
  *         content:
  *           application/json:
- *             example:
+ *             user:
  *               error: cannot find user with id {id}
  */
 
@@ -182,12 +182,11 @@ const bl = require('../bl/bl_role_users')
 *           role_id:
 *             type: number
 *
-*   example:
-*     user:
-*       username: Idit Rozental
-*       password: jsad439
-*       email: idit@gmail.com
-*       role_id: 1
+*   user:
+*     username: Idit Rozental
+*     password: jsad439
+*     email: idit@gmail.com
+*     role_id: 1
 */
 
 
