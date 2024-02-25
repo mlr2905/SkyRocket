@@ -95,7 +95,7 @@ router.get('/qr/:id', async (request, response) => {
  *     description: Retrieve user details based on the provided ID.
   *     parameters:
  *       - in: path
- *         id: id
+ *         name: id
  *         required: true
  *         description: The ID of the employee to retrieve.
  *         schema:
@@ -174,10 +174,11 @@ router.get('/users/:id', async (request, response) => {
  *         content:
  *           application/json:
  *             user:
- *               username: John Doe
- *               password: h32j3h
- *               email: John_Doe@gmail.com
- *               role_id: 1
+ *               ID: 1
+ *               USERNAME: Idit Rozental
+ *               PASSWORD: jsad439
+ *               ENAIL: idit@gmail.com
+ *               ROLE_ID: 1
  *       400:
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
