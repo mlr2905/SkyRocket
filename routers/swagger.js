@@ -24,7 +24,7 @@
  *     description: Create a new user record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
- *     deprecated: true
+ *     deprecated: false
  *     requestBody:
  *       required: true
  *       content:
