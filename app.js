@@ -37,28 +37,28 @@ const specs = swaggerJsdoc(options);
 const app = express()
 const port = 3000
 // אימות בסיסי
-const users_swagger = {
+const users = {
     'admin': '123456'
 };
 
-const checkPassword_swagger = (username, password) => {
-    return users_swagger[username] === password;
+const checkPassword = (username, password) => {
+    return users[username] === password;
 };
 
 
 // הוספת אימות בסיסי לכל הנתיבים של Swagger UI
 app.use('/swagger', basicAuth({
-    users: users_swagger,
+    users: users,
     challenge: true,
     unauthorizedResponse: (req) => {
         return 'Unauthorized';
     },
     authorizer: (username, password) => {
-        return checkPassword_swagger(username, password);
+        return checkPassword(username, password);
     }
 }));
 
-
+;
 // const users = {
 //     'michael': 'Miki260623' // שם המשתמש והסיסמה
 // };
