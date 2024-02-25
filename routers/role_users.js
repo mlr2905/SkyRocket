@@ -84,6 +84,13 @@ router.get('/qr/:id', async (request, response) => {
 
 /**
  * @swagger
+ * get:
+ * tags:
+ *  - Admin Operations
+ * parameters: []
+
+ * tags:
+ * - name: Admin Functions
  * /role_users/users/{id}:
  *   get:
  *     summary: Get an user by ID
