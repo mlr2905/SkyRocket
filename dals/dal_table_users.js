@@ -34,15 +34,19 @@ async function sp_pass_users(user) {
     return new_user
 }
 
-async function update_user(id,user) {
+async function update_user(id, user) {
     try {
-       
+
         if (user.email === null) {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`)
             return update
         }
-        if (user.password === null) {
+        else if (user.password === null) {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
+            return update
+        }
+        else {
+            const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', '${user.password}');`)
             return update
         }
     }
@@ -95,7 +99,7 @@ async function next_id() {
         return result;
 
     } catch (e) {
-        throw console.error( e);
+        throw console.error(e);
 
     }
 }
