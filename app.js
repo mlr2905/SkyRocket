@@ -56,9 +56,8 @@ app.use('/swagger', basicAuth({
     authorizer: (username, password) => {
         return checkPassword(username, password);
     }
-}));
+}));;
 
-;
 // const users = {
 //     'michael': 'Miki260623' // שם המשתמש והסיסמה
 // };
@@ -79,11 +78,11 @@ app.use('/swagger', basicAuth({
 //         return checkPassword(username, password);
 //     }
 // }));
-app.use(
-    "/swagger",
-    swaggerUi.serve,
-    swaggerUi.setup(specs)
-);
+// app.use(
+//     "/swagger",
+//     swaggerUi.serve,
+//     swaggerUi.setup(specs)
+// );
 app.use(cors());
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/')))
