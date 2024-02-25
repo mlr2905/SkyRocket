@@ -62,6 +62,7 @@ const bl = require('../bl/bl_role_users')
  *  * /role_users/users:
  *   post:
  *     summary: Create a new user
+ *     tags: [users]
  *     description: Create a new user record with the provided details.
  *     requestBody:
  *       required: true
@@ -107,6 +108,7 @@ const bl = require('../bl/bl_role_users')
  * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
+ *     tags: [users]
  *     description: Delete the user record with the specified ID.
  *     parameters:
  *       - in: path
