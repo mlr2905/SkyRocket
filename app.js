@@ -38,7 +38,7 @@ const app = express()
 const port = 3000
 
 const users = {
-    'admin': '123456' // שם המשתמש והסיסמה
+    'michael': 'Miki260623' // שם המשתמש והסיסמה
 };
 
 const checkPassword = (username, password) => {
