@@ -28,41 +28,10 @@ const bl = require('../bl/bl_role_users')
  *               $ref: '#/components/schemas/user'
  *       500:
  *         description: Some server error
- *
- */
-/**
-*  @swagger
-*  components:
-*     schemas:
-*       user:
-*         type: object
-*         required:
-*           - username
-*           - password
-*           - email
-*           - role_id
-*         properties:
-*           username:
-*             type: string
-*             description: The name of the user.
-*           password:
-*             type: string
-*             description: The password of the user.
-*           email:
-*             type: string
-*             description: The email of the user.
-*           role_id:
-*             type: number
-*             description: role_id of the user
-*         uesr:
-*           username: Idit Rozental
-*           password: jsad439
-*           email: idit@gmail.com
-*           role_id: 1
-* /role_users/users/{id}:
+ * /role_users/users/{id}:
  *   get:
  * summary: Update the user by the id
-*    tags: [users]
+ *    tags: [users]
  *     summary: Get an user by ID
  *     description: Retrieve user details based on the provided ID.
  *     parameters:
@@ -135,7 +104,7 @@ const bl = require('../bl/bl_role_users')
  *           application/json:
  *             example:
  *               error: Bad request. Missing required fields.
- * * /role_users/users/{id}:
+ * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
  *     description: Delete the user record with the specified ID.
@@ -155,6 +124,36 @@ const bl = require('../bl/bl_role_users')
  *           application/json:
  *             example:
  *               error: cannot find user with id {id}
+ */
+/**
+*  @swagger
+*  components:
+*     schemas:
+*       user:
+*         type: object
+*         required:
+*           - username
+*           - password
+*           - email
+*           - role_id
+*         properties:
+*           username:
+*             type: string
+*             description: The name of the user.
+*           password:
+*             type: string
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*           role_id:
+*             type: number
+*             description: role_id of the user
+*         uesr:
+*           username: Idit Rozental
+*           password: jsad439
+*           email: idit@gmail.com
+*           role_id: 1
 */
 
 router.get('/', async (request, response) => {
