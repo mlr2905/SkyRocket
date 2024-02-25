@@ -14,7 +14,12 @@
  */
 
 //role_users/users
-
+/** @swagger
+*securitySchemes:
+*  BasicAuth:
+*    type: apiKey
+*    scheme: basic
+*/
 /**
 * @swagger
 * /role_users/users:
@@ -83,7 +88,6 @@
 *     name: Authorization
 *     description: Enter username as "admin" and password as "123456"
 */
-
 
 
 
