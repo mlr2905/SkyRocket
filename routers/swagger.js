@@ -14,7 +14,12 @@
  */
 
 //role_users/users
-
+/** @swagger
+*securitySchemes:
+*  BasicAuth:
+*    type: http
+*    scheme: basic
+*/
 /**
 * @swagger
 * /role_users/users:
