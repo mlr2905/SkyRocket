@@ -12,15 +12,12 @@ const bl = require('../bl/bl_role_users')
 *       user:
 *         type: object
 *         required:
-*           - id
 *           - username
 *           - password
 *           - email
 *           - role_id
 *         properties:
-*           id:
-*             type: number
-*             description: The auto-generated id of the user.
+*        
 *           username:
 *             type: string
 *             description: The name of the user.
@@ -34,7 +31,6 @@ const bl = require('../bl/bl_role_users')
 *             type: number
 *             description: role_id of the user
 *         user:
-*            id: 1
 *            username: Idit Rozental
 *            password: jsad439
 *            email: idit@gmail.com
