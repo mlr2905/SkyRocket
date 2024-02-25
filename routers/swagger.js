@@ -21,6 +21,8 @@
 *     summary: Create a new user
 *     tags: [users]
 *     description: Create a new user record with the provided details.
+*     security:
+*       - ApiKeyAuth: []
 *     requestBody:
 *       required: true
 *       content:
@@ -82,6 +84,7 @@
 *     name: Authorization
 *     description: Enter username as "admin" and password as "123456"
 */
+
 
 
 
