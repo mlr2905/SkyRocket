@@ -233,37 +233,24 @@ router.get('/passengers/:id', async (request, response) => {
 *                example: test tsets
 *              password:
 *                type: string
-*                description: The password of the user.
 *                example: test_1
 *              email:
 *                type: string
-*                format: email
-*                description: The email address of the user.
 *                example: test_tsets@gmail.com
 *          customers:
-*               items:
-*                 type: object
-*                 properties:
-*                  first_name:
-*                   type: string
-*                   description: The first name of the customer.
-*                   example: meital
-*                  last_name:
-*                   type: string
-*                   description: The last name of the customer.
-*                   example: rozental
-*                   address:
-*                   type: string
-*                   description: The address of the customer.
-*                   example: israel
-*                  phone_no:
-*                   type: string
-*                   description: The phone number of the customer.
-*                   example: 0507462964
-*                  credit_card_no:
-*                   type: string
-*                   description: The credit card number of the customer.
-*                   example: ************7654
+*            type: array
+*            description: An array of customer objects.
+*            items:
+*              type: object
+*              properties:
+*                name:
+*                  type: string
+*                  description: The name of the customer.
+*                  example: John Doe
+*                age:
+*                  type: integer
+*                  description: The age of the customer.
+*                  example: 30
 *          flights:
 *            type: array
 *            description: An array of flight objects.
@@ -283,6 +270,7 @@ router.get('/passengers/:id', async (request, response) => {
 *                  description: The arrival location.
 *                  example: LAX
 */
+
 
 
 
