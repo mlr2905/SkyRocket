@@ -16,6 +16,23 @@
 //role_users/users
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: http
+ *       scheme: basic
+ *       x-customAuth: true
+ *       description: Enter username as "admin" and password as "123456"
+ * 
+ * x-security:
+ *   - CustomAuth:
+ *       - username: admin
+ *         password: admin_password
+ *       - username: user1
+ *         password: user1_password
+ *       - username: user2
+ *         password: user2_password
+ * 
  * /role_users/users:
  *   post:
  *     summary: Create a new user
@@ -76,22 +93,8 @@
  *                   properties:
  *                     error:
  *                       type: string
- * components:
- *   securitySchemes:
- *     CustomAuth:
- *       type: http
- *       scheme: basic
- *       x-customAuth: true
- *       description: Enter username as "admin" and password as "123456"
- *  * x-security:
- *   - CustomAuth:
- *       - username: admin
- *         password: admin_password
- *       - username: user1
- *         password: user1_password
- *       - username: user2
- *         password: user2_password
  */
+
 
 /**
  * @swagger
