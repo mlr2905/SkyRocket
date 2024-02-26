@@ -3,19 +3,20 @@
 /**
  * @swagger
  * tags:
- *   - name: role_users
- *     description: The role_users managing API
- *     tags:
- *       - name: users
- *         description: The users managing API
- *       - name: customers
- *         description: The customers managing API
- *       - name: flights
- *         description: The flights managing API
- *       - name: tickets
- *         description: The tickets managing API
- *       - name: passengers
- *         description: The passengers managing API
+ *   name: role_users
+ *   description: The role_users managing API
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: role_airlines
+ *   description: The users managing API
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: role_admins
+ *   description: The customers managing API
  */
 
 
@@ -33,7 +34,7 @@
  * /role_users/users:
  *   post:
  *     summary: Create a new user
- *     tags: [users]
+ *     tags: [role_users]
  *     description: Create a new user record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -107,7 +108,7 @@
  * /role_users/users/{id}:
  *   get:
  *     summary: Get a user by ID
- *     tags: [users]
+ *     tags: [role_users]
  *     description: Retrieve user details based on the provided ID. Requires authentication.
  *     parameters:
  *       - in: path
@@ -166,7 +167,7 @@
  * /role_users/users/{id}:
  *   put:
  *     summary: Update the user by the ID
- *     tags: [users]
+ *     tags: [role_users]
  *     parameters:
  *       - in: path
  *         name: id
@@ -208,7 +209,7 @@
  * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
- *     tags: [users]
+ *     tags: [role_users]
  *     description: Delete the user record with the specified ID. Requires authentication.
  *     parameters:
  *       - in: path
@@ -246,7 +247,7 @@
  * /role_users/customers:
  *   post:
  *     summary: Create a new customer
- *     tags: [customers]
+ *     tags: [role_users]
  *     description: Create a new customer record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -335,7 +336,7 @@
  * /role_users/customers/{id}:
  *   get:
  *     summary: Get a customer by ID
- *     tags: [customers]
+ *     tags: [role_users]
  *     description: Retrieve customer details based on the provided ID. Requires authentication.
  *     parameters:
  *       - in: path
@@ -396,7 +397,7 @@
  * /role_users/customers/{id}:
  *   put:
  *     summary: Update the customer by the ID
- *     tags: [customers]
+ *     tags: [role_users]
  *     parameters:
  *       - in: path
  *         name: id
@@ -478,7 +479,7 @@
  * /role_users/customers/{id}:
  *   put:
  *     summary: Update the customer by the ID
- *     tags: [customers]
+ *     tags: [role_users]
  *     parameters:
  *       - in: path
  *         name: id
@@ -550,7 +551,7 @@
  * /role_users/flights:
  *   get:
  *     summary: Get all flights
- *     tags: [flights]
+ *     tags: [role_users]
  *     description: Retrieve details for all flights. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -616,7 +617,7 @@
  * /role_users/flights/{id}:
  *   get:
  *     summary: Get a flight by ID
- *     tags: [flights]
+ *     tags: [role_users]
  *     description: Retrieve user details based on the provided ID. Requires authentication.
  *     parameters:
  *       - in: path
@@ -696,7 +697,7 @@
  * /role_users/tickets:
  *   post:
  *     summary: Create a new ticket
- *     tags: [tickets]
+ *     tags: [role_users]
  *     description: Create a new ticket record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -774,7 +775,7 @@
  * /role_users/passengers:
  *   post:
  *     summary: Create a new passenger
- *     tags: [passengers]
+ *     tags: [role_users]
  *     description: Create a new passenger record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -851,6 +852,14 @@
 *  @swagger
 *  components:
 *    schemas:
+*      schema:
+*        type: object
+*        required:
+*          - users
+*          - customers
+*          - flights
+*          - tickets
+*          - passengers
 *        properties:
 *          users:
 *            type: object
@@ -869,7 +878,6 @@
 *              email:
 *                type: string
 *                example: test_tsets@gmail.com
-*            xml:
 *          customers:
 *            type: object
 *            required:
@@ -894,7 +902,6 @@
 *              credit_card_no:
 *                type: string
 *                example: 1234-1234-1234-7654
-*            xml:
 *          flights:
 *            type: object
 *            required:
@@ -929,7 +936,6 @@
 *              remaining_tickets:
 *                type: integer
 *                example: 195
-*            xml:
 *          tickets:
 *            type: object
 *            required:
@@ -954,7 +960,6 @@
 *              chair_id:
 *                type: integer
 *                example: 60
-*            xml:
 *          passengers:
 *            type: object
 *            required:
