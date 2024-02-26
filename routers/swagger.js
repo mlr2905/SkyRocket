@@ -41,13 +41,13 @@
  *             type: object
  *             properties:
  *               username:
- *                 type: string
+ *                 type: test_2
  *                 description: The username of the user.
  *               password:
- *                 type: string
+ *                 type: 73272gn
  *                 description: The password of the user.
  *               email:
- *                 type: string
+ *                 type: test_2@gmail.com
  *                 description: The email of the user.
  *     responses:
  *       '201':
@@ -57,7 +57,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 example:
  *                   type: object
  *                   properties:
  *                     ID:
@@ -68,6 +68,8 @@
  *                       type: string
  *                     EMAIL:
  *                       type: string
+ *                     ROLE_ID:
+ *                       type: number
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
@@ -214,7 +216,7 @@
  *         description: user not found with the specified ID.
  *         contentי:
  *           application/json:
- *             user:
+ *             example:
  *               error: cannot find user with id {id}
  */
 
