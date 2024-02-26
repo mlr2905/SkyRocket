@@ -3,17 +3,17 @@ const router = express.Router()
 const qrcode = require('qrcode');
 const bl = require('../bl/bl_role_users')
 
-router.get('/', async (request, response) => {
-    try {
-        const messages = {
-            'message': `Welcome to role admins the desired path must be specified,
-        Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
-        response.status(400).json(messages)
-    }
-    catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
-    }
-})
+// router.get('/', async (request, response) => {
+//     try {
+//         const messages = {
+//             'message': `Welcome to role admins the desired path must be specified,
+//         Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
+//         response.status(400).json(messages)
+//     }
+//     catch (error) {
+//         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+//     }
+// })
 
 
 router.get('/:id', async (request, response) => {
