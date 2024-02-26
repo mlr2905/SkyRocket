@@ -41,13 +41,13 @@
  *             type: object
  *             properties:
  *               username:
- *                 type: string test_2
+ *                 type: string
  *                 description: The username of the user.
  *               password:
- *                 type: string 73272gn
+ *                 type: string
  *                 description: The password of the user.
  *               email:
- *                 type: string test_2@gmail.com
+ *                 type: string
  *                 description: The email of the user.
  *     responses:
  *       '201':
