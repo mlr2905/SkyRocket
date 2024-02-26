@@ -10,13 +10,13 @@
  * @swagger
  * tags:
  *   name: role_airlines
- *   description: The users managing API
+ *   description: The role_airlines managing API
  */
 /**
  * @swagger
  * tags:
  *   name: role_admins
- *   description: The customers managing API
+ *   description: The role_admins managing API
  */
 
 
