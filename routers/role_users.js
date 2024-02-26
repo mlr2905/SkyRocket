@@ -139,7 +139,7 @@ router.post('/customers', async (request, response) => {
     const new_user = request.body
     const result = await bl.new_customer(new_user)
     if (user) {
-        responsestatus(201).json(user)
+        response.status(201).json(user)
     }
     else {
         response.status(409).json({ "error": `There is a customer with the details I mentioned` })
