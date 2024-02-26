@@ -57,7 +57,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 example:
+ *                 user:
  *                   type: object
  *                   properties:
  *                     ID:
@@ -68,8 +68,6 @@
  *                       type: string
  *                     EMAIL:
  *                       type: string
- *                     ROLE_ID:
- *                       type: number
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
@@ -77,7 +75,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 example:
+ *                 user:
  *                   type: object
  *                   properties:
  *                     error:
@@ -216,7 +214,7 @@
  *         description: user not found with the specified ID.
  *         contentי:
  *           application/json:
- *             example:
+ *             user:
  *               error: cannot find user with id {id}
  */
 
