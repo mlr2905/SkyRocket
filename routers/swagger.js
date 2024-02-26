@@ -459,5 +459,74 @@
  *         description: Some error happened
  */
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/customers/{id}:
+ *   put:
+ *     summary: Update the customer by the ID
+ *     tags: [customers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The customer id
+ *     security:
+ *       - CustomAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 description: The first name of the customer.
+ *               last_name:
+ *                 type: string
+ *                 description: The last name of the customer.
+ *               address:
+ *                 type: string
+ *                 description: The address of the customer.
+ *               phone_no:
+ *                 type: string
+ *                 description: The phone number of the customer.
+ *               credit_card_no:
+ *                 type: string
+ *                 description: The credit card number of the customer.
+ *     responses:
+ *       200:
+ *         description: The user was updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 first_name:
+ *                   type: string
+ *                 last_name:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 phone_no:
+ *                   type: string
+ *                 credit_card_no:
+ *                   type: string
+ *                   description: The credit card number of the user with only the last four digits revealed, preceded by 12 asterisks.
+ *       404:
+ *         description: The customer was not found
+ *       500:
+ *         description: Some error happened
+ */
 
 
