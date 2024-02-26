@@ -16,18 +16,20 @@ async function new_customer(new_cus) {
         ,'${new_cus.phone_no}','${new_cus.credit_card_no}','${new_cus.user_id}');`)   
     return new_customer
 }
+
 async function get_by_id(id) {
     const customer = await connectedKnex('customers')
         .select(
             'customers.*', 
             'users.username as user_name',
-            connectedKnex.raw("RIGHT(customers.credit_card_no, 4)")
+            connectedKnex.raw("CONCAT('************', RIGHT(customers.credit_card_no, 4)) AS credit_card_no")
         )
         .leftJoin('users', 'users.id', '=', 'customers.user_id')
         .where('customers.id', id)
         .first();
     return customer;
 }
+
 
 
 
