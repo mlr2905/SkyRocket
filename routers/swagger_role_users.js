@@ -3,7 +3,7 @@
 /**
  * @swagger
  * tags:
- *   - name: rle_users
+ *   - name: role_users
  *     description: The role_users managing API
  *     tags:
  *       - name: users
@@ -18,6 +18,16 @@
  *         description: The passengers managing API
  */
 
+/**
+ * @swagger
+ * tags:
+ *   - name: parent_tag
+ *     description: The parent tag
+ *   - name: child_tag
+ *     description: The child tag
+ *     externalDocs:
+ *       url: "#/tags/parent_tag"
+ */
 
 
 //role_users/users
