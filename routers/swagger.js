@@ -16,7 +16,6 @@
 //role_users/users
 /**
 /**
-/**
  * @swagger
  * /role_users/users:
  *   post:
@@ -78,12 +77,14 @@
  *                   properties:
  *                     error:
  *                       type: string
- * securitySchemes:
- *   CustomAuth:
- *     type: http
- *     scheme: basic
- *     description: Enter username as "admin" and password as "123456"
- * x-security:
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: http
+ *       scheme: basic
+ *       x-customAuth: true
+ *       description: Enter username as "admin" and password as "123456"
+ *  * x-security:
  *   - CustomAuth:
  *       - username: admin
  *         password: admin_password
@@ -92,8 +93,6 @@
  *       - username: user2
  *         password: user2_password
  */
-
-
 
 /**
  * @swagger
