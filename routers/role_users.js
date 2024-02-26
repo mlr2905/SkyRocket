@@ -247,7 +247,7 @@ router.get('/passengers/:id', async (request, response) => {
 *              first_name:
 *                type: string
 *                example: test
-*              first_name:
+*              last_name:
 *                type: string
 *                example: tests
 *              address:
