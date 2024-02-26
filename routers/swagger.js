@@ -212,6 +212,11 @@
  *         description: The ID of the user to delete.
  *         schema:
  *           type: integer
+ *       - in: header
+ *         name: Authorization
+ *         type: string
+ *         required: true
+ *         description: Enter your API key. Format: "Bearer <API_KEY>"
  *     security:
  *       - CustomAuth: []
  *     responses:
@@ -224,6 +229,7 @@
  *             user:
  *               error: cannot find user with id {id}
  */
+
 
 
 /**
