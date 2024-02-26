@@ -223,10 +223,10 @@ router.get('/passengers/:id', async (request, response) => {
 *           username:
 *             type: string
 *             description: The username of the user.
-*              example:
-*              username: test tsets
-*              password: test_1
-*              email: test_tsets@gmail.com
+*             example:
+*             username: test tsets
+*             password: test_1
+*             email: test_tsets@gmail.com
 *           password:
 *             type: string
 *             description: The password of the user.
