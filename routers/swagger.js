@@ -49,6 +49,9 @@
  *               email:
  *                 type: string
  *                 description: The email of the user.
+ *               role_id:
+ *                 type: number
+ *                 description: The role_id of the user.
  *     responses:
  *       '201':
  *         description: User created successfully.
@@ -68,6 +71,8 @@
  *                       type: string
  *                     EMAIL:
  *                       type: string
+ *                     ROLE_ID:
+ *                       type: number
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
@@ -124,6 +129,8 @@
  *                       type: string
  *                     email:
  *                       type: string
+ *                     role_id:
+ *                       type: number
  *       '404':
  *         description: User not found with the specified ID.
  *         content:
@@ -229,6 +236,7 @@
 *           - username
 *           - password
 *           - email
+*           - role_id
 *         properties:
 *           username:
 *             type: string
