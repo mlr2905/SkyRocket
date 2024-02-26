@@ -147,7 +147,6 @@
  *             error: Cannot find user with ID {id}.
  */
 
-
 /**
  * @swagger
  * components:
@@ -160,7 +159,7 @@
  * 
  * /role_users/users/{id}:
  *   put:
- *     summary: Update the user by the id
+ *     summary: Update the user by the ID
  *     tags: [users]
  *     parameters:
  *       - in: path

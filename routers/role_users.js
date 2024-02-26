@@ -47,9 +47,6 @@ router.get('/qr/:id', async (request, response) => {
 
 
 // GET by ID
-
-
-
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {
@@ -67,11 +64,6 @@ router.get('/users/:id', async (request, response) => {
     }
 })
 
-
-
-
-
-
 // POST
 router.post('/users', async (request, response) => {
     const new_user = request.body
@@ -86,6 +78,7 @@ router.post('/users', async (request, response) => {
 
 })
 
+// PUT 
 router.put('/users/:id', async (request, response) => {
 
     const user_id = parseInt(request.params.id)
@@ -104,15 +97,10 @@ router.put('/users/:id', async (request, response) => {
     }
     else {
         throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-
     }
-
 })
 
-// PUT 
-
-
-
+// DELETE
 router.delete('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_user(user_id)
@@ -133,8 +121,65 @@ router.delete('/users/:id', async (request, response) => {
     }
 })
 
-// DELETE
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/customers/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     tags: [customers]
+ *     description: Retrieve user details based on the provided ID. Requires authentication.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to retrieve.
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - CustomAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response with the user details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                     password:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role_id:
+ *                       type: number
+ *       '404':
+ *         description: User not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ *         example:
+ *             error: Cannot find user with ID {id}.
+ */
 //role_users/customers
 
 // GET by ID
@@ -224,7 +269,6 @@ router.get('/passengers/:id', async (request, response) => {
     }
 })
 
-
 /**
 *  @swagger
 *  components:
@@ -250,6 +294,7 @@ router.get('/passengers/:id', async (request, response) => {
 *           password: test_1
 *           email: test_tsets@gmail.com
 */
+
 
 module.exports = router
 
