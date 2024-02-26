@@ -559,65 +559,62 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/flights
+ * /role_users/flights:
  *   get:
  *     summary: Get all flights
  *     tags: [flights]
- *     description: Retrieve flights details.
+ *     description: Retrieve details for all flights. Requires authentication.
  *     security:
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: Successful response with the user details.
+ *         description: Successful response with details for all flights.
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: number
- *                     airline_id:
- *                       type: number
- *                     origin_country_id:
- *                       type: number
- *                     destination_country_id:
- *                       type: number
- *                     departure_time:
- *                       type: string
- *                     landing_time:
- *                       type: string
- *                     plane_id:
- *                       type: number
- *                     remaining_tickets:
- *                       type: number
- *                     flight_code:
- *                       type: string
- *                     airline_name:
- *                       type: string
- *                     origin_country_name:
- *                       type: string
- *                     destination_country_name:
- *                       type: string
- *                     Total_tickets:
- *                       type: number
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: number
+ *                   airline_id:
+ *                     type: number
+ *                   origin_country_id:
+ *                     type: number
+ *                   destination_country_id:
+ *                     type: number
+ *                   departure_time:
+ *                     type: string
+ *                   landing_time:
+ *                     type: string
+ *                   plane_id:
+ *                     type: number
+ *                   remaining_tickets:
+ *                     type: number
+ *                   flight_code:
+ *                     type: string
+ *                   airline_name:
+ *                     type: string
+ *                   origin_country_name:
+ *                     type: string
+ *                   destination_country_name:
+ *                     type: string
+ *                   Total_tickets:
+ *                     type: number
  *       '404':
- *         description: User not found with the specified ID.
+ *         description: Error response if no flights are found.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
- *         example:
- *             error: Cannot find user with ID {id}.
+ *                 error:
+ *                   type: string
+ *             example:
+ *               error: No flights found.
  */
+
 
 
 /**
