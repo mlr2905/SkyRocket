@@ -213,7 +213,7 @@ router.get('/passengers/:id', async (request, response) => {
 *  @swagger
 *  components:
 *    schemas:
-*      examples:
+*      users:
 *        type: object
 *        required:
 *          - user
@@ -233,39 +233,26 @@ router.get('/passengers/:id', async (request, response) => {
 *                example: test tsets
 *              password:
 *                type: string
+*                description: The password of the user.
 *                example: test_1
 *              email:
 *                type: string
+*                format: email
+*                description: The email address of the user.
 *                example: test_tsets@gmail.com
 *          customers:
-*            type: array
-*            description: An array of customer objects.
 *            items:
 *              type: object
 *              properties:
-*                first_name:
+*                name:
 *                  type: string
-*                  description: The first_name of the customer.
-*                  example: meital
-*                last_name:
-*                  type: string
-*                  description: The last_name of the customer.
-*                  example: rozental
-*                address:
-*                  type: string
-*                  description: The address of the customer.
-*                  example: israel
-*                phone_no:
+*                  description: The name of the customer.
+*                  example: John Doe
+*                age:
 *                  type: integer
 *                  description: The age of the customer.
-*                  example: 0507462964
-*                credit_card_no:
-*                  type: integer
-*                  description: The age of the customer.
-*                  example: ************7654
+*                  example: 30
 *          flights:
-*            type: array
-*            description: An array of flight objects.
 *            items:
 *              type: object
 *              properties:
@@ -282,6 +269,7 @@ router.get('/passengers/:id', async (request, response) => {
 *                  description: The arrival location.
 *                  example: LAX
 */
+
 
 
 
