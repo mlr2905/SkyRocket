@@ -17,18 +17,18 @@ async function new_customer(new_cus) {
     return new_customer
 }
 async function get_by_id(id) {
-    // db.run('select * from customers where id=?')
     const customer = await connectedKnex('customers')
         .select(
             'customers.*', 
             'users.username as user_name',
-            connectedKnex.raw("SUBSTRING(customers.credit_card_no, -4) AS last_four_digits")
+            connectedKnex.raw("RIGHT(customers.credit_card_no, 4) AS last_four_digits")
         )
         .leftJoin('users', 'users.id', '=', 'customers.user_id')
         .where('customers.id', id)
         .first();
     return customer;
 }
+
 
 
 async function update_customer(id, updated_customer) {
