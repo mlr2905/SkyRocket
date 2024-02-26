@@ -106,7 +106,8 @@
  * /role_users/users/{id}:
  *   get:
  *     summary: Get a user by ID
- *     tags: [users]
+ *     tags:
+ *       - users
  *     description: Retrieve user details based on the provided ID. Requires authentication.
  *     parameters:
  *       - in: path
