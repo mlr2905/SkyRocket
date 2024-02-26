@@ -208,7 +208,6 @@ router.get('/passengers/:id', async (request, response) => {
         response.status(404).json({ "error": `cannot find user with id ${user_id}` })
     }
 })
-
 /**
 *  @swagger
 *  components:
@@ -233,11 +232,6 @@ router.get('/passengers/:id', async (request, response) => {
 *           username: test tsets
 *           password: test_1
 *           email: test_tsets@gmail.com
-*/
-/**
-*  @swagger
-*  components:
-*     schemas:
 *       customers:
 *         type: object
 *         required:
@@ -268,8 +262,11 @@ router.get('/passengers/:id', async (request, response) => {
 *           address: israel
 *           phone_no: 0507462964
 *           credit_card_no: ************7654
+*       UserAndCustomer:
+*         allOf:
+*           - $ref: '#/components/schemas/users'
+*           - $ref: '#/components/schemas/customers'
 */
-
 
 module.exports = router
 
