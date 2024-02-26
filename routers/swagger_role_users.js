@@ -2,6 +2,37 @@
 //categories
 /**
  * @swagger
+ * components:
+ *   tags:
+ *     role_users:
+ *       name: role_users
+ *       description: APIs related to user roles
+ *       children:
+ *         - $ref: '#/components/tags/users'
+ *         - $ref: '#/components/tags/customers'
+ *         - $ref: '#/components/tags/flights'
+ *         - $ref: '#/components/tags/tickets'
+ *         - $ref: '#/components/tags/passengers'
+ *     users:
+ *       name: users
+ *       description: The users managing API
+ *     customers:
+ *       name: customers
+ *       description: The customers managing API
+ *     flights:
+ *       name: flights
+ *       description: The flights managing API
+ *     tickets:
+ *       name: tickets
+ *       description: The tickets managing API
+ *     passengers:
+ *       name: passengers
+ *       description: The passengers managing API
+ */
+
+
+/**
+ * @swagger
  * tags:
  *   name: role_users
  *   description: APIs related to user roles
@@ -32,7 +63,7 @@
  * /role_users/users:
  *   post:
  *     summary: Create a new user
- *     tags: [users]
+ *     tags: []
  *     description: Create a new user record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
