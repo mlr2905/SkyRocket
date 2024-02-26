@@ -243,14 +243,26 @@ router.get('/passengers/:id', async (request, response) => {
 *            items:
 *              type: object
 *              properties:
-*                name:
+*                first_name:
 *                  type: string
-*                  description: The name of the customer.
-*                  example: John Doe
-*                age:
+*                  description: The first_name of the customer.
+*                  example: meital
+*                last_name:
+*                  type: string
+*                  description: The last_name of the customer.
+*                  example: rozental
+*                address:
+*                  type: string
+*                  description: The address of the customer.
+*                  example: israel
+*                phone_no:
 *                  type: integer
 *                  description: The age of the customer.
-*                  example: 30
+*                  example: 0507462964
+*                credit_card_no:
+*                  type: integer
+*                  description: The age of the customer.
+*                  example: ************7654
 *          flights:
 *            type: array
 *            description: An array of flight objects.
