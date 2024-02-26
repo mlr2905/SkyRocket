@@ -21,7 +21,7 @@ const options = {
         info: {
             title: "SkyRocket API",
             version: "1.0.1",
-            description: "My REST API skyrocket",
+            description: "My REST API SkyRocket",
         },
         servers: [
             {
