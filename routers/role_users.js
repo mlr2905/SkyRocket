@@ -209,6 +209,62 @@ router.get('/passengers/:id', async (request, response) => {
     }
 })
 
+/**
+*  @swagger
+*  components:
+*     schemas:
+*       users:
+*         type: object
+*         required:
+*           - username
+*           - password
+*           - email
+*         properties:
+*           username:
+*             type: string
+*             description: The username of the user.
+*           password:
+*             type: string
+*             description: The password of the user.
+*           email:
+*             type: string
+*             description: The email of the user.
+*         example:
+*           username: test tsets
+*           password: test_1
+*           email: test_tsets@gmail.com
+*       customers:
+*         type: object
+*         required:
+*           - first_name
+*           - last_name
+*           - address
+*           - phone_no
+*           - credit_card_no
+*         properties:
+*           first_name:
+*             type: string
+*             description: The first name of the customer.
+*           last_name:
+*             type: string
+*             description: The last name of the customer.
+*           address:
+*             type: string
+*             description: The address of the customer.
+*           phone_no:
+*             type: string
+*             description: The phone number of the customer.
+*           credit_card_no:
+*             type: string
+*             description: The credit card number of the customer.
+*         example:
+*           first_name: test
+*           last_name: tests
+*           address: israel
+*           phone_no: 0507462964
+*           credit_card_no: ************7654
+*/
+
 
 module.exports = router
 
