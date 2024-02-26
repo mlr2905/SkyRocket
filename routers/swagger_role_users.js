@@ -3,38 +3,36 @@
 /**
  * @swagger
  * tags:
- *   name: rle_users
- *   description: The rle_users managing API
+ *   name: rolr_user
+ *   description: APIs managed by rolr_user
  */
+
 /**
  * @swagger
  * tags:
- *   name: users
- *   description: The users managing API
+ *   name: rolr_user
+ *   description: The role_users managing API
  */
+
 /**
  * @swagger
  * tags:
- *   name: customers
- *   description: The customers managing API
+ *   name: rolr_user
+ *   description: APIs managed by rolr_user
  */
+
 /**
  * @swagger
  * tags:
- *   name: flights
- *   description: The flights managing API
+ *   name: rolr_user
+ *   description: APIs managed by rolr_user
  */
+
 /**
  * @swagger
  * tags:
- *   name: tickets
- *   description: The tickets managing API
- */
-/**
- * @swagger
- * tags:
- *   name: passengers
- *   description: The passengers managing API
+ *   name: rolr_user
+ *   description: APIs managed by rolr_user
  */
 
 //role_users/users
