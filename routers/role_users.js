@@ -218,6 +218,7 @@ router.get('/passengers/:id', async (request, response) => {
 *        required:
 *          - users
 *          - customers
+*          - flights
 *        properties:
 *         users:
 *            type: object
@@ -228,6 +229,7 @@ router.get('/passengers/:id', async (request, response) => {
 *            properties:
 *              username:
 *                type: string
+*                description: The username of the user.
 *                example: test tsets
 *              password:
 *                type: string
@@ -238,28 +240,41 @@ router.get('/passengers/:id', async (request, response) => {
 *         customers:
 *            type: object
 *            required:
-*              - first_name
-*              - last_name
-*              - address
-*              - phone_no
-*              - credit_card_no
+*              - name
+*              - password
+*              - email
 *            properties:
-*              first_name:
+*              name:
 *                type: string
-*                example: test
-*              last_name:
+*                description: The name of the user.
+*                example: test tsets
+*              password:
 *                type: string
-*                example: tests
-*              address:
+*                example: test_1
+*              email:
 *                type: string
-*                example: israel
-*              phone_no:
+*                example: test_tsets@gmail.com*         users:
+*            type: object
+*            required:
+*              - username
+*              - password
+*              - email
+*            properties:
+*              username:
 *                type: string
-*                example: 0507462964
-*              credit_card_no:
+*                description: The username of the user.
+*                example: test tsets
+*              password:
 *                type: string
-*                example: ************7654
+*                example: test_1
+*              email:
+*                type: string
+*                example: test_tsets@gmail.com
 */
+
+
+
+
 
 
 module.exports = router
