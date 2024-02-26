@@ -547,4 +547,154 @@
  *         description: Some error happened
  */
 
+///
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/flights
+ *   get:
+ *     summary: Get a flights all
+ *     tags: [flights]
+ *     description: Retrieve flights details.
+ *     security:
+ *       - CustomAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response with the user details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     airline_id:
+ *                       type: number
+ *                     origin_country_id:
+ *                       type: number
+ *                     destination_country_id:
+ *                       type: number
+ *                     departure_time:
+ *                       type: string
+ *                     landing_time:
+ *                       type: string
+ *                     plane_id:
+ *                       type: number
+ *                     remaining_tickets:
+ *                       type: number
+ *                     flight_code:
+ *                       type: string
+ *                     airline_name:
+ *                       type: string
+ *                     origin_country_name:
+ *                       type: string
+ *                     destination_country_name:
+ *                       type: string
+ *                     Total_tickets:
+ *                       type: number
+ *       '404':
+ *         description: User not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ *         example:
+ *             error: Cannot find user with ID {id}.
+ */
+
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/flights/{id}:
+ *   get:
+ *     summary: Get a flight by ID
+ *     tags: [flights]
+ *     description: Retrieve user details based on the provided ID. Requires authentication.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to retrieve.
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - CustomAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response with the user details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     airline_id:
+ *                       type: number
+ *                     origin_country_id:
+ *                       type: number
+ *                     destination_country_id:
+ *                       type: number
+ *                     departure_time:
+ *                       type: string
+ *                     landing_time:
+ *                       type: string
+ *                     plane_id:
+ *                       type: number
+ *                     remaining_tickets:
+ *                       type: number
+ *                     flight_code:
+ *                       type: string
+ *                     airline_name:
+ *                       type: string
+ *                     origin_country_name:
+ *                       type: string
+ *                     destination_country_name:
+ *                       type: string
+ *                     Total_tickets:
+ *                       type: number
+ *       '404':
+ *         description: User not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ *         example:
+ *             error: Cannot find user with ID {id}.
+ */
+
 
