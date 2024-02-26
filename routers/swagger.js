@@ -224,4 +224,69 @@
  *               error: cannot find user with id {id}
  */
 
+//role_users/customers
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/customers/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     tags: [customers]
+ *     description: Retrieve user details based on the provided ID. Requires authentication.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to retrieve.
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - CustomAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response with the user details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: number
+ *                 first_name:
+ *                   type: string
+ *                 last_name:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 phone_no:
+ *                   type: string
+ *                 credit_card_no:
+ *                   type: string
+ *                   description: The credit card number of the user with only the last four digits revealed, preceded by 12 asterisks.
+ *                 user_id:
+ *                   type: number
+ *                 user_name:
+ *                   type: string
+ *       '404':
+ *         description: User not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *             example:
+ *               error: Cannot find user with ID {id}.
+ */
+
+
 
