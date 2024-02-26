@@ -213,7 +213,7 @@ router.get('/passengers/:id', async (request, response) => {
 *  @swagger
 *  components:
 *     schemas:
-*       user:
+*       users:
 *         type: object
 *         required:
 *           - username
@@ -238,7 +238,7 @@ router.get('/passengers/:id', async (request, response) => {
 *  @swagger
 *  components:
 *     schemas:
-*       user:
+*       customers:
 *         type: object
 *         required:
 *           - first_name
@@ -249,19 +249,19 @@ router.get('/passengers/:id', async (request, response) => {
 *         properties:
 *           first_name:
 *             type: string
-*             description: The first name of the user.
+*             description: The first name of the customer.
 *           last_name:
 *             type: string
-*             description: The last name of the user.
+*             description: The last name of the customer.
 *           address:
 *             type: string
-*             description: The address of the user.
+*             description: The address of the customer.
 *           phone_no:
 *             type: string
-*             description: The phone number of the user.
+*             description: The phone number of the customer.
 *           credit_card_no:
 *             type: string
-*             description: The credit card number of the user with only the last four digits revealed, preceded by 12 asterisks.
+*             description: The credit card number of the customer.
 *         example:
 *           first_name: test
 *           last_name: tests
