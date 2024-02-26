@@ -77,11 +77,9 @@ app.use(basicAuth({
         return checkPassword(username, password);
     }
 }));
-app.use(
-    "/swagger",
-    swaggerUi.serve,
-    swaggerUi.setup(specs)
-);
+
+app.use("/swagger",swaggerUi.serve,swaggerUi.setup(specs));
+
 app.use(cors());
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/')))
