@@ -237,6 +237,10 @@ router.get('/passengers/:id', async (request, response) => {
 *              email:
 *                type: string
 *                example: test_tsets@gmail.com
+*              example:
+*              username: test tsets
+*              password: test_1
+*              email: test_tsets@gmail.com
 *          customers:
 *            type: array
 *            description: An array of customer objects.
