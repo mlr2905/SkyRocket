@@ -547,7 +547,7 @@
  *         description: Some error happened
  */
 
-///
+//role_users/flights
 
 /**
  * @swagger
@@ -614,8 +614,6 @@
  *             example:
  *               error: No flights found.
  */
-
-
 
 /**
  * @swagger
@@ -694,4 +692,169 @@
  *             error: Cannot find user with ID {id}.
  */
 
+//role_users/tickets
 
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/tickets:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [tickets]
+ *     description: Create a new user record with the provided details. Requires authentication.
+ *     security:
+ *       - CustomAuth: []
+ *     deprecated: false
+ *     readOnly: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               flight_id:
+ *                 type: number
+ *                 description: The ID of the flight.
+ *               customer_id:
+ *                 type: number
+ *                 description: The ID of the customer.
+ *               passenger_id:
+ *                 type: number
+ *                 description: The ID of the passenger.
+ *               user_id:
+ *                 type: number
+ *                 description: The ID of the user.
+ *               chair_id:
+ *                 type: number
+ *                 description: The ID of the chair.
+ *     responses:
+ *       '201':
+ *         description: User created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     ID:
+ *                       type: number
+ *                     flight_id:
+ *                       type: number
+ *                     customer_id:
+ *                       type: number
+ *                     passenger_id:
+ *                       type: number
+ *                     user_id:
+ *                       type: number
+ *                     chair_id:
+ *                       type: number
+ * 
+ *       '400':
+ *         description: Bad request. Ensure all required fields are provided.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ */
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/passengers:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [passengers]
+ *     description: Create a new user record with the provided details. Requires authentication.
+ *     security:
+ *       - CustomAuth: []
+ *     deprecated: false
+ *     readOnly: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 description: The first name of the passenger.
+ *               last_name:
+ *                 type: string
+ *                 description: The last name of the passenger.
+ *               date_of_birth:
+ *                 type: string
+ *                 format: date
+ *                 description: The date of birth of the passenger (YYYY-MM-DD).
+ *               passport_number:
+ *                 type: string
+ *                 description: The passport number of the passenger.
+ *               user_id:
+ *                 type: number
+ *                 description: The ID of the user.
+ *               flight_id:
+ *                 type: number
+ *                 description: The ID of the flight.
+ *     responses:
+ *       '201':
+ *         description: User created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     ID:
+ *                       type: number
+ *                     first_name:
+ *                       type: string
+ *                     last_name:
+ *                       type: string
+ *                     date_of_birth:
+ *                       type: string
+ *                       format: date
+ *                     passport_number:
+ *                       type: string
+ *                     user_id:
+ *                       type: number
+ *                     flight_id:
+ *                       type: number
+ * 
+ *       '400':
+ *         description: Bad request. Ensure all required fields are provided.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ */ 
