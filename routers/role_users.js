@@ -240,20 +240,27 @@ router.get('/passengers/:id', async (request, response) => {
 *         customers:
 *            type: object
 *            required:
-*              - name
-*              - password
-*              - email
+*              - first_name
+*              - last_name
+*              - address
+*              - phone_no
+*              - credit_card_no
 *            properties:
-*              name:
+*              first_name:
 *                type: string
-*                description: The name of the user.
-*                example: test tsets
-*              password:
+*                example: test
+*              last_name:
 *                type: string
-*                example: test_1
-*              email:
+*                example: tests
+*              address:
 *                type: string
-*                example: test_tsets@gmail.com
+*                example: israel
+*              phone_no:
+*                type: string
+*                example: 0507462964
+*              credit_card_no:
+*                type: string
+*                example: 1234-1234-1234-7654
 *         flights:
 *            type: object
 *            required:
