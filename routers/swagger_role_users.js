@@ -3,6 +3,12 @@
 /**
  * @swagger
  * tags:
+ *   name: rle_users
+ *   description: The rle_users managing API
+ */
+/**
+ * @swagger
+ * tags:
  *   name: users
  *   description: The users managing API
  */
