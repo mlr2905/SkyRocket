@@ -851,14 +851,6 @@
 *  @swagger
 *  components:
 *    schemas:
-*      schema:
-*        type: object
-*        required:
-*          - users
-*          - customers
-*          - flights
-*          - tickets
-*          - passengers
 *        properties:
 *          users:
 *            type: object
@@ -877,6 +869,7 @@
 *              email:
 *                type: string
 *                example: test_tsets@gmail.com
+*            xml:
 *          customers:
 *            type: object
 *            required:
@@ -901,6 +894,7 @@
 *              credit_card_no:
 *                type: string
 *                example: 1234-1234-1234-7654
+*            xml:
 *          flights:
 *            type: object
 *            required:
@@ -935,6 +929,7 @@
 *              remaining_tickets:
 *                type: integer
 *                example: 195
+*            xml:
 *          tickets:
 *            type: object
 *            required:
@@ -959,6 +954,7 @@
 *              chair_id:
 *                type: integer
 *                example: 60
+*            xml:
 *          passengers:
 *            type: object
 *            required:
