@@ -2,37 +2,7 @@ const express = require('express')
 const router = express.Router()
 const bl = require('../bl/bl_role_users')
 
-//role_airlines/users
-/**
-*  @swagger
-*  components:
-*     schemas:
-*       user:
-*         type: object
-*         required:
-*           - username
-*           - password
-*           - email
-*           - role_id
-*         properties:
-*           username:
-*             type: string
-*             description: The name of the user.
-*           password:
-*             type: string
-*             description: The password of the user.
-*           email:
-*             type: string
-*             description: The email of the user.
-*           role_id:
-*             type: number
-*             description: role_id of the user
-*        user:
-*          username: Idit Rozental
-*          password: jsad439
-*          email: idit@gmail.com
-*          role_id: 1
-*/
+
 
 router.get('/', async (request, response) => {
     try {
