@@ -21,7 +21,7 @@ async function get_by_id(id) {
         .select(
             'customers.*', 
             'users.username as user_name',
-            connectedKnex.raw("RIGHT(customers.credit_card_no, 4) AS last_four_digits")
+            connectedKnex.raw("RIGHT(customers.credit_card_no, 4)")
         )
         .leftJoin('users', 'users.id', '=', 'customers.user_id')
         .where('customers.id', id)
