@@ -37,6 +37,7 @@
  *     security:
  *       - CustomAuth: []
  *     deprecated: false
+ *     readOnly: true
  *     requestBody:
  *       required: true
  *       content:
