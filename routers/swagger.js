@@ -150,43 +150,61 @@
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
  * /role_users/users/{id}:
-*   put:
-*    summary: Update the user by the id
-*    tags: [users]
-*    parameters:
-*      - in: path
-*        name: id
-*        schema:
-*          type: string
-*        required: true
-*        description: The user id
-*    requestBody:
-*      required: true
-*      content:
-*        application/json:
-*          schema:
-*            $ref: '#/components/schemas/user'
-*    responses:
-*      200:
-*        description: The user was updated
-*        content:
-*          application/json:
-*            schema:
-*              $ref: '#/components/schemas/user'
-*      404:
-*        description: The user was not found
-*      500:
-*        description: Some error happened
-*/
+ *   put:
+ *     summary: Update the user by the id
+ *     tags: [users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user id
+ *     security:
+ *       - CustomAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/user'
+ *     responses:
+ *       200:
+ *         description: The user was updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/user'
+ *       404:
+ *         description: The user was not found
+ *       500:
+ *         description: Some error happened
+ */
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
  * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
  *     tags: [users]
- *     description: Delete the user record with the specified ID.
+ *     description: Delete the user record with the specified ID. Requires authentication.
  *     parameters:
  *       - in: path
  *         name: id
@@ -194,6 +212,8 @@
  *         description: The ID of the user to delete.
  *         schema:
  *           type: integer
+ *     security:
+ *       - CustomAuth: []
  *     responses:
  *       204:
  *         description: user deleted successfully.
@@ -201,9 +221,11 @@
  *         description: user not found with the specified ID.
  *         content:
  *           application/json:
- *             user:
+ *             example:
  *               error: cannot find user with id {id}
  */
+
+
 
 /**
 *  @swagger
