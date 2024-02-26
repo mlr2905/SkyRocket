@@ -233,10 +233,7 @@ router.get('/passengers/:id', async (request, response) => {
 *           username: test tsets
 *           password: test_1
 *           email: test_tsets@gmail.com
-*  @swagger
-*  components:
-*     schemas
-*   customers:
+*       customers:
 *         type: object
 *         required:
 *           - first_name
@@ -267,6 +264,7 @@ router.get('/passengers/:id', async (request, response) => {
 *           phone_no: 0507462964
 *           credit_card_no: ************7654
 */
+
 
 
 module.exports = router
