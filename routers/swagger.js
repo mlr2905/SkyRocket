@@ -77,7 +77,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 example:
  *                   type: object
  *                   properties:
  *                     error:
