@@ -234,6 +234,41 @@ router.get('/passengers/:id', async (request, response) => {
 *           password: test_1
 *           email: test_tsets@gmail.com
 */
+/**
+*  @swagger
+*  components:
+*     schemas:
+*       user:
+*         type: object
+*         required:
+*           - first_name
+*           - last_name
+*           - address
+*           - phone_no
+*           - credit_card_no
+*         properties:
+*           first_name:
+*             type: string
+*             description: The first name of the user.
+*           last_name:
+*             type: string
+*             description: The last name of the user.
+*           address:
+*             type: string
+*             description: The address of the user.
+*           phone_no:
+*             type: string
+*             description: The phone number of the user.
+*           credit_card_no:
+*             type: string
+*             description: The credit card number of the user with only the last four digits revealed, preceded by 12 asterisks.
+*         example:
+*           first_name: test
+*           last_name: tests
+*           address: israel
+*           phone_no: 0507462964
+*           credit_card_no: ************7654
+*/
 
 
 module.exports = router
