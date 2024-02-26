@@ -226,34 +226,3 @@
  */
 
 
-
-/**
-*  @swagger
-*  components:
-*     schemas:
-*       example:
-*         type: object
-*         required:
-*           - username
-*           - password
-*           - email
-*           - role_id
-*         properties:
-*           username:
-*             type: string
-*             description: The username of the user.
-*           password:
-*             type: string
-*             description: The password of the user.
-*           email:
-*             type: string
-*             description: The email of the user.
-*           role_id:
-*             type: number
-*             description: The role_id of the user.
-*       example:
-*         username: Idit Rozental
-*         password: jsad439
-*         email: idit@gmail.com
-*         role_id: 1
-*/
