@@ -241,18 +241,34 @@ router.get('/passengers/:id', async (request, response) => {
 *                description: The email address of the user.
 *                example: test_tsets@gmail.com
 *          customers:
+*            type: array
+*            description: An array of customer objects.
 *            items:
 *              type: object
 *              properties:
-*                name:
+*                first_name:
 *                  type: string
-*                  description: The name of the customer.
-*                  example: John Doe
-*                age:
-*                  type: integer
-*                  description: The age of the customer.
-*                  example: 30
+*                  description: The first name of the customer.
+*                  example: meital
+*                last_name:
+*                  type: string
+*                  description: The last name of the customer.
+*                  example: rozental
+*                address:
+*                  type: string
+*                  description: The address of the customer.
+*                  example: israel
+*                phone_no:
+*                  type: string
+*                  description: The phone number of the customer.
+*                  example: 0507462964
+*                credit_card_no:
+*                  type: string
+*                  description: The credit card number of the customer.
+*                  example: ************7654
 *          flights:
+*            type: array
+*            description: An array of flight objects.
 *            items:
 *              type: object
 *              properties:
@@ -269,6 +285,7 @@ router.get('/passengers/:id', async (request, response) => {
 *                  description: The arrival location.
 *                  example: LAX
 */
+
 
 
 
