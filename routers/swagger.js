@@ -198,7 +198,7 @@
  *       type: apiKey
  *       in: header
  *       name: Authorization
- *       description: Enter API key as "Bearer <API_KEY>"
+ *       description: Enter API key as "Bearer <7773jdjdj>"
  * 
  * /role_users/users/{id}:
  *   delete:
