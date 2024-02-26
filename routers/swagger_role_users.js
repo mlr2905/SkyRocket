@@ -850,8 +850,8 @@
 /**
 *  @swagger
 *  components:
-*    Models:
-*      Models:
+*    schemas:
+*      schema:
 *        type: object
 *        required:
 *          - users
