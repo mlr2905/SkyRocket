@@ -237,7 +237,7 @@ router.get('/passengers/:id', async (request, response) => {
 *              email:
 *                type: string
 *                example: test_tsets@gmail.com
-*          customers:
+*     customers:
 *            type: array
 *            description: An array of customer objects.
 *            items:
@@ -263,7 +263,7 @@ router.get('/passengers/:id', async (request, response) => {
 *                  type: integer
 *                  description: The age of the customer.
 *                  example: ************7654
-*          flights:
+*       flights:
 *            type: array
 *            description: An array of flight objects.
 *            items:
