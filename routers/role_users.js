@@ -213,48 +213,53 @@ router.get('/passengers/:id', async (request, response) => {
 *  @swagger
 *  components:
 *    schemas:
-*      userSchema:
+*      schema:
 *        type: object
 *        required:
-*          - username
-*          - password
-*          - email
+*          - users
+*          - customers
 *        properties:
-*          username:
-*            type: string
-*            example: test tsets
-*          password:
-*            type: string
-*            example: test_1
-*          email:
-*            type: string
-*            example: test_tsets@gmail.com
-*      customerSchema:
-*        type: object
-*        required:
-*          - first_name
-*          - last_name
-*          - address
-*          - phone_no
-*          - credit_card_no
-*        properties:
-*          first_name:
-*            type: string
-*            example: test
-*          last_name:
-*            type: string
-*            example: tests
-*          address:
-*            type: string
-*            example: israel
-*          phone_no:
-*            type: string
-*            example: 0507462964
-*          credit_card_no:
-*            type: string
-*            example: ************7654
+*         users:
+*            type: object
+*            required:
+*              - username
+*              - password
+*              - email
+*            properties:
+*              username:
+*                type: string
+*                example: test tsets
+*              password:
+*                type: string
+*                example: test_1
+*              email:
+*                type: string
+*                example: test_tsets@gmail.com
+*         customers:
+*            type: object
+*            required:
+*              - first_name
+*              - last_name
+*              - address
+*              - phone_no
+*              - credit_card_no
+*            properties:
+*              first_name:
+*                type: string
+*                example: test
+*              first_name:
+*                type: string
+*                example: tests
+*              address:
+*                type: string
+*                example: israel
+*              phone_no:
+*                type: string
+*                example: 0507462964
+*              credit_card_no:
+*                type: string
+*                example: ************7654
 */
-
 
 
 module.exports = router
