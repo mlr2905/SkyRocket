@@ -218,7 +218,6 @@ router.get('/passengers/:id', async (request, response) => {
 *        required:
 *          - user
 *          - customers
-*          - flights
 *        properties:
 *         users:
 *            type: object
