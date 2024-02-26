@@ -12,6 +12,14 @@
  *   name: customers
  *   description: The customers managing API
  */
+/**
+ * @swagger
+ * tags:
+ *   name: flights
+ *   description: The customers managing API
+ */
+
+
 
 //role_users/users
 /**
