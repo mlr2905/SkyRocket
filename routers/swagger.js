@@ -16,10 +16,20 @@
  * @swagger
  * tags:
  *   name: flights
- *   description: The customers managing API
+ *   description: The flights managing API
  */
-
-
+/**
+ * @swagger
+ * tags:
+ *   name: tickets
+ *   description: The tickets managing API
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: passengers
+ *   description: The passengers managing API
+ */
 
 //role_users/users
 /**
