@@ -220,7 +220,7 @@ router.get('/passengers/:id', async (request, response) => {
 *          - customers
 *          - flights
 *        properties:
-*         users:
+*          users:
 *            type: object
 *            required:
 *              - username
@@ -237,7 +237,7 @@ router.get('/passengers/:id', async (request, response) => {
 *              email:
 *                type: string
 *                example: test_tsets@gmail.com
-*         customers:
+*          customers:
 *            type: object
 *            required:
 *              - first_name
@@ -261,42 +261,43 @@ router.get('/passengers/:id', async (request, response) => {
 *              credit_card_no:
 *                type: string
 *                example: 1234-1234-1234-7654
-flights:
-  type: object
-  required:
-    - airline_id
-    - origin_country_id
-    - destination_country_id
-    - departure_time
-    - landing_time
-    - plane_id
-    - remaining_tickets
-  properties:
-    airline_id:
-      type: integer
-      example: 10
-    origin_country_id:
-      type: integer
-      example: 74
-    destination_country_id:
-      type: integer
-      example: 21
-    departure_time:
-      type: string
-      format: date-time
-      example: "2024-01-30T05:00:00.000Z"
-    landing_time:
-      type: string
-      format: date-time
-      example: "2024-01-30T16:00:00.000Z"
-    plane_id:
-      type: integer
-      example: 2
-    remaining_tickets:
-      type: integer
-      example: 195
-
+*          flights:
+*            type: object
+*            required:
+*              - airline_id
+*              - origin_country_id
+*              - destination_country_id
+*              - departure_time
+*              - landing_time
+*              - plane_id
+*              - remaining_tickets
+*            properties:
+*              airline_id:
+*                type: integer
+*                example: 10
+*              origin_country_id:
+*                type: integer
+*                example: 74
+*              destination_country_id:
+*                type: integer
+*                example: 21
+*              departure_time:
+*                type: string
+*                format: date-time
+*                example: "2024-01-30T05:00:00.000Z"
+*              landing_time:
+*                type: string
+*                format: date-time
+*                example: "2024-01-30T16:00:00.000Z"
+*              plane_id:
+*                type: integer
+*                example: 2
+*              remaining_tickets:
+*                type: integer
+*                example: 195
 */
+
+
 
 
 
