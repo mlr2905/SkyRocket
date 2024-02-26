@@ -190,21 +190,14 @@
  *         description: Some error happened
  */
 
+
 /**
  * @swagger
- * components:
- *   securitySchemes:
- *     CustomAuth:
- *       type: apiKey
- *       in: header
- *       name: Authorization
- *       description: Enter API key as "Bearer <7773jdjdj>"
- * 
  * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
  *     tags: [users]
- *     description: Delete the user record with the specified ID. Requires authentication.
+ *     description: Delete the user record with the specified ID.
  *     parameters:
  *       - in: path
  *         name: id
@@ -212,13 +205,6 @@
  *         description: The ID of the user to delete.
  *         schema:
  *           type: integer
- *       - in: header
- *         name: Authorization
- *         type: string
- *         required: true
- *         description: Enter your API key. Format: "Bearer <API_KEY>"
- *     security:
- *       - CustomAuth: []
  *     responses:
  *       204:
  *         description: user deleted successfully.
@@ -229,8 +215,6 @@
  *             user:
  *               error: cannot find user with id {id}
  */
-
-
 
 /**
 *  @swagger
