@@ -707,9 +707,9 @@
  * 
  * /role_users/tickets:
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new ticket
  *     tags: [tickets]
- *     description: Create a new user record with the provided details. Requires authentication.
+ *     description: Create a new ticket record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
  *     deprecated: false
@@ -738,13 +738,13 @@
  *                 description: The ID of the chair.
  *     responses:
  *       '201':
- *         description: User created successfully.
+ *         description: ticket created successfully.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 ticket:
  *                   type: object
  *                   properties:
  *                     ID:
@@ -785,9 +785,9 @@
  * 
  * /role_users/passengers:
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new passenger
  *     tags: [passengers]
- *     description: Create a new user record with the provided details. Requires authentication.
+ *     description: Create a new passenger record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
  *     deprecated: false
@@ -820,13 +820,13 @@
  *                 description: The ID of the flight.
  *     responses:
  *       '201':
- *         description: User created successfully.
+ *         description: passenger created successfully.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 passenger:
  *                   type: object
  *                   properties:
  *                     ID:
@@ -852,7 +852,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 passenger:
  *                   type: object
  *                   properties:
  *                     error:
