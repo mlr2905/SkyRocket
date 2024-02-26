@@ -226,6 +226,96 @@
 
 //role_users/customers
 
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/customers:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [customers]
+ *     description: Create a new user record with the provided details. Requires authentication.
+ *     security:
+ *       - CustomAuth: []
+ *     deprecated: false
+ *     readOnly: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 description: The first name of the user.
+ *               last_name:
+ *                 type: string
+ *                 description: The last name of the user.
+ *               address:
+ *                 type: string
+ *                 description: The address of the user.
+ *               phone_no:
+ *                 type: string
+ *                 description: The phone number of the user.
+ *               credit_card_no:
+ *                 type: string
+ *                 description: The credit card number of the user with only the last four digits revealed, preceded by 12 asterisks.
+ *               user_id:
+ *                 type: number
+ *                 description: The user ID.
+ *               user_name:
+ *                 type: string
+ *                 description: The username of the user.
+ *     responses:
+ *       '201':
+ *         description: User created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     first_name:
+ *                       type: string
+ *                     last_name:
+ *                       type: string
+ *                     address:
+ *                       type: string
+ *                     phone_no:
+ *                       type: string
+ *                     credit_card_no:
+ *                       type: string
+ *                     user_id:
+ *                       type: number
+ *                     user_name:
+ *                       type: string
+ *       '400':
+ *         description: Bad request. Ensure all required fields are provided.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ */
+
+
 /**
  * @swagger
  * components:
@@ -286,6 +376,87 @@
  *                   type: string
  *             example:
  *               error: Cannot find user with ID {id}.
+ */
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ * 
+ * /role_users/customers/{id}:
+ *   put:
+ *     summary: Update the user by the ID
+ *     tags: [customers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user id
+ *     security:
+ *       - CustomAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 description: The first name of the user.
+ *               last_name:
+ *                 type: string
+ *                 description: The last name of the user.
+ *               address:
+ *                 type: string
+ *                 description: The address of the user.
+ *               phone_no:
+ *                 type: string
+ *                 description: The phone number of the user.
+ *               credit_card_no:
+ *                 type: string
+ *                 description: The credit card number of the user.
+ *               user_id:
+ *                 type: number
+ *                 description: The user ID.
+ *               user_name:
+ *                 type: string
+ *                 description: The username of the user.
+ *     responses:
+ *       200:
+ *         description: The user was updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: number
+ *                 first_name:
+ *                   type: string
+ *                 last_name:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 phone_no:
+ *                   type: string
+ *                 credit_card_no:
+ *                   type: string
+ *                   description: The credit card number of the user with only the last four digits revealed, preceded by 12 asterisks.
+ *                 user_id:
+ *                   type: number
+ *                 user_name:
+ *                   type: string
+ *       404:
+ *         description: The user was not found
+ *       500:
+ *         description: Some error happened
  */
 
 
