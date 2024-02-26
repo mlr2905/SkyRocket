@@ -18,17 +18,6 @@
  *         description: The passengers managing API
  */
 
-/**
- * @swagger
- * tags:
- *   - name: parent_tag
- *     description: The parent tag
- *   - name: child_tag
- *     description: The child tag
- *     externalDocs:
- *       url: "#/tags/parent_tag"
- */
-
 
 //role_users/users
 /**
@@ -861,8 +850,8 @@
 /**
 *  @swagger
 *  components:
-*    schemas:
-*      schema:
+*    Models:
+*      Models:
 *        type: object
 *        required:
 *          - users
