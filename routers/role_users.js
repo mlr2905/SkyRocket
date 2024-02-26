@@ -253,7 +253,8 @@ router.get('/passengers/:id', async (request, response) => {
 *                example: test_1
 *              email:
 *                type: string
-*                example: test_tsets@gmail.com*         users:
+*                example: test_tsets@gmail.com
+*         users:
 *            type: object
 *            required:
 *              - username
