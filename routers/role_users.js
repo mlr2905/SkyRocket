@@ -127,7 +127,7 @@ router.get('/customers/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_customer(user_id)
     if (user) {
-        responsestatus(200).json(user)
+        response.status(200).json(user)
     }
     else {
         response.status(404).json({ "error": `cannot find user with id ${user_id}` })
