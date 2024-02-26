@@ -852,7 +852,7 @@
 *  @swagger
 *  components:
 *    schemas:
-*      schema:
+*      role_users:
 *        type: object
 *        required:
 *          - users
