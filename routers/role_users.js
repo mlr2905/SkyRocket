@@ -16,15 +16,15 @@ const bl = require('../bl/bl_role_users')
 // })
 
 
-router.get('/:id', async (request, response) => {
-    try {
-        const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_users/{neme ?}/1' }
-        response.status(400).json(messages)
-    }
-    catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
-    }
-})
+// router.get('/:id', async (request, response) => {
+//     try {
+//         const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_users/{neme ?}/1' }
+//         response.status(400).json(messages)
+//     }
+//     catch (error) {
+//         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+//     }
+// })
 
 
 
