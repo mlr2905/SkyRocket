@@ -24,11 +24,6 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * x-security:
- *   - CustomAuth:
- *       - username: user3
- *         password: user3_password
- * 
  * /role_users/users:
  *   post:
  *     summary: Create a new user
