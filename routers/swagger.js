@@ -561,7 +561,7 @@
  * 
  * /role_users/flights
  *   get:
- *     summary: Get a flights all
+ *     summary: Get all flights
  *     tags: [flights]
  *     description: Retrieve flights details.
  *     security:
