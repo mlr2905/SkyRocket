@@ -239,9 +239,9 @@
  * 
  * /role_users/customers:
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new customer
  *     tags: [customers]
- *     description: Create a new user record with the provided details. Requires authentication.
+ *     description: Create a new customer record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
  *     deprecated: false
@@ -255,16 +255,16 @@
  *             properties:
  *               first_name:
  *                 type: string
- *                 description: The first name of the user.
+ *                 description: The first name of the customer.
  *               last_name:
  *                 type: string
- *                 description: The last name of the user.
+ *                 description: The last name of the customer.
  *               address:
  *                 type: string
- *                 description: The address of the user.
+ *                 description: The address of the customer.
  *               phone_no:
  *                 type: string
- *                 description: The phone number of the user.
+ *                 description: The phone number of the customer.
  *               credit_card_no:
  *                 type: string
  *                 description: The credit card number of the user with only the last four digits revealed, preceded by 12 asterisks.
@@ -276,13 +276,13 @@
  *                 description: The username of the user.
  *     responses:
  *       '201':
- *         description: User created successfully.
+ *         description: customer created successfully.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 customer:
  *                   type: object
  *                   properties:
  *                     id:
@@ -308,7 +308,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 customer:
  *                   type: object
  *                   properties:
  *                     error:
@@ -328,14 +328,14 @@
  * 
  * /role_users/customers/{id}:
  *   get:
- *     summary: Get a user by ID
+ *     summary: Get a customer by ID
  *     tags: [customers]
- *     description: Retrieve user details based on the provided ID. Requires authentication.
+ *     description: Retrieve customer details based on the provided ID. Requires authentication.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: The ID of the user to retrieve.
+ *         description: The ID of the customer to retrieve.
  *         schema:
  *           type: integer
  *     security:
@@ -375,7 +375,7 @@
  *                 error:
  *                   type: string
  *             example:
- *               error: Cannot find user with ID {id}.
+ *               error: Cannot find customer with ID {id}.
  */
 /**
  * @swagger
@@ -389,7 +389,7 @@
  * 
  * /role_users/customers/{id}:
  *   put:
- *     summary: Update the user by the ID
+ *     summary: Update the customer by the ID
  *     tags: [customers]
  *     parameters:
  *       - in: path
