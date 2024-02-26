@@ -219,11 +219,12 @@
  *         description: user deleted successfully.
  *       404:
  *         description: user not found with the specified ID.
- *         contentי:
+ *         content:
  *           application/json:
- *             user:
+ *             example:
  *               error: cannot find user with id {id}
  */
+
 
 
 /**
@@ -247,8 +248,12 @@
 *           email:
 *             type: string
 *             description: The email of the user.
+*           role_id:
+*             type: number
+*             description: The role_id of the user.
 *       example:
-*         username: test tsets
-*         password: test_1
-*         email: test_tsets@gmail.com
+*         username: Idit Rozental
+*         password: jsad439
+*         email: idit@gmail.com
+*         role_id: 1
 */
