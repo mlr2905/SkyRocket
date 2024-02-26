@@ -3,45 +3,21 @@
 /**
  * @swagger
  * tags:
- *   name: rle_users
- *   description: The role_users managing API
- *   children:
- *     - $ref: '#/tags/users'
- *     - $ref: '#/tags/customers'
- *     - $ref: '#/tags/flights'
- *     - $ref: '#/tags/tickets'
- *     - $ref: '#/tags/passengers'
+ *   - name: rle_users
+ *     description: The role_users managing API
+ *     tags:
+ *       - name: users
+ *         description: The users managing API
+ *       - name: customers
+ *         description: The customers managing API
+ *       - name: flights
+ *         description: The flights managing API
+ *       - name: tickets
+ *         description: The tickets managing API
+ *       - name: passengers
+ *         description: The passengers managing API
  */
-/**
- * @swagger
- * tags:
- *   name: users
- *   description: The users managing API
- */
-/**
- * @swagger
- * tags:
- *   name: customers
- *   description: The customers managing API
- */
-/**
- * @swagger
- * tags:
- *   name: flights
- *   description: The flights managing API
- */
-/**
- * @swagger
- * tags:
- *   name: tickets
- *   description: The tickets managing API
- */
-/**
- * @swagger
- * tags:
- *   name: passengers
- *   description: The passengers managing API
- */
+
 
 
 //role_users/users
