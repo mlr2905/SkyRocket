@@ -225,35 +225,7 @@ router.get('/passengers/:id', async (request, response) => {
 })
 
 
-/**
-*  @swagger
-*  components:
-*     schemas:
-*       user:
-*         type: object
-*         required:
-*           - username
-*           - password
-*           - email
-*           - role_id
-*         properties:
-*           username:
-*             type: string
-*             description: The username of the user.
-*           password:
-*             type: string
-*             description: The password of the user.
-*           email:
-*             type: string
-*             description: The email of the user.
-*           role_id:
-*             type: number
-*             description: The role_id of the user.
-*         example:
-*           username: test tsets
-*           password: test_1
-*           email: test_tsets@gmail.com
-*/
+
 
 module.exports = router
 

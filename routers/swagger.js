@@ -49,9 +49,6 @@
  *               email:
  *                 type: string
  *                 description: The email of the user.
- *               role_id:
- *                 type: number
- *                 description: The role_id of the user.
  *     responses:
  *       '201':
  *         description: User created successfully.
@@ -71,8 +68,6 @@
  *                       type: string
  *                     EMAIL:
  *                       type: string
- *                     ROLE_ID:
- *                       type: number
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
@@ -129,8 +124,6 @@
  *                       type: string
  *                     email:
  *                       type: string
- *                     role_id:
- *                       type: number
  *       '404':
  *         description: User not found with the specified ID.
  *         content:
@@ -219,12 +212,11 @@
  *         description: user deleted successfully.
  *       404:
  *         description: user not found with the specified ID.
- *         content:
+ *         contentי:
  *           application/json:
  *             user:
  *               error: cannot find user with id {id}
  */
-
 
 
 /**
@@ -237,7 +229,6 @@
 *           - username
 *           - password
 *           - email
-*           - role_id
 *         properties:
 *           username:
 *             type: string
@@ -248,12 +239,8 @@
 *           email:
 *             type: string
 *             description: The email of the user.
-*           role_id:
-*             type: number
-*             description: The role_id of the user.
 *       example:
-*         username: Idit Rozental
-*         password: jsad439
-*         email: idit@gmail.com
-*         role_id: 1
+*         username: test tsets
+*         password: test_1
+*         email: test_tsets@gmail.com
 */
