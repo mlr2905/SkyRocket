@@ -3,36 +3,19 @@
 /**
  * @swagger
  * tags:
- *   name: rolr_user
- *   description: APIs managed by rolr_user
- */
-
-/**
- * @swagger
- * tags:
- *   name: rolr_user
- *   description: The role_users managing API
- */
-
-/**
- * @swagger
- * tags:
- *   name: rolr_user
- *   description: APIs managed by rolr_user
- */
-
-/**
- * @swagger
- * tags:
- *   name: rolr_user
- *   description: APIs managed by rolr_user
- */
-
-/**
- * @swagger
- * tags:
- *   name: rolr_user
- *   description: APIs managed by rolr_user
+ *   name: role_users
+ *   description: APIs related to user roles
+ *   children:
+ *     - name: users
+ *       description: The users managing API
+ *     - name: customers
+ *       description: The customers managing API
+ *     - name: flights
+ *       description: The flights managing API
+ *     - name: tickets
+ *       description: The tickets managing API
+ *     - name: passengers
+ *       description: The passengers managing API
  */
 
 //role_users/users
