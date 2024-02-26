@@ -257,27 +257,45 @@ router.get('/passengers/:id', async (request, response) => {
 *                example: israel
 *              phone_no:
 *                type: string
-*                example: 0507462964
+*                example: 00507462964
 *              credit_card_no:
 *                type: string
 *                example: 1234-1234-1234-7654
-*         flights:
-*            type: object
-*            required:
-*              - username
-*              - password
-*              - email
-*            properties:
-*              username:
-*                type: string
-*                description: The username of the user.
-*                example: test tsets
-*              password:
-*                type: string
-*                example: test_1
-*              email:
-*                type: string
-*                example: test_tsets@gmail.com
+flights:
+  type: object
+  required:
+    - airline_id
+    - origin_country_id
+    - destination_country_id
+    - departure_time
+    - landing_time
+    - plane_id
+    - remaining_tickets
+  properties:
+    airline_id:
+      type: integer
+      example: 10
+    origin_country_id:
+      type: integer
+      example: 74
+    destination_country_id:
+      type: integer
+      example: 21
+    departure_time:
+      type: string
+      format: date-time
+      example: "2024-01-30T05:00:00.000Z"
+    landing_time:
+      type: string
+      format: date-time
+      example: "2024-01-30T16:00:00.000Z"
+    plane_id:
+      type: integer
+      example: 2
+    remaining_tickets:
+      type: integer
+      example: 195
+
 */
 
 
