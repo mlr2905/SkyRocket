@@ -54,10 +54,10 @@
 *                type: string
 *                example: airtest
 *              country_id:
-*                type: string
+*                type: integer
 *                example: 20
 *              user_id:
-*                type: string
+*                type: integer
 *                example: 10
 *          flights:
 *            type: object
