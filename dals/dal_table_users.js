@@ -4,6 +4,31 @@ const connectedKnex = db.connect()
 
 // ---------------User functions only and admin---------------
 
+
+const sqlite3 = require('sqlite3');
+
+async function connection(username) {
+  try {
+    const db = await new sqlite3.Database('mydb.sqlite');
+    const result = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+
+    if (result) {
+      return {
+        username: result.username,
+        password: result.password // **Avoid storing plain passwords**
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    throw new Error('Failed to retrieve user'); // **Handle errors gracefully**
+  } finally {
+    // **Close database connection (if applicable and not handled elsewhere)**
+    db.close();
+  }
+}
+
 async function get_by_name(name) {
     // db.run('select * from users where id=?')
 
@@ -136,7 +161,7 @@ async function set_id(id) {
 // }
 
 module.exports = {
-    get_by_name, get_all, get_by_id, update_user, delete_user,
+    get_by_name, get_all, get_by_id, update_user, delete_user,connection,
     delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, next_id, set_id
     // ,create_table_if_not_exist
 }
