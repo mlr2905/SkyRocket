@@ -64,17 +64,15 @@ const checkPassword = (username, password) => {
 };
 
 app.use(basicAuth({
-    users: users,
     challenge: true,
     unauthorizedResponse: (req) => {
         return 'Unauthorized';
     },
-    authorizer: (username, password) => {
-        // בדיקת אימות סיסמה
-        return checkPassword(username, password);
+    authorizer: async (username, password) => {
+        // בודק אימות על ידי הDAL
+        return await checkPassword(username, password);
     }
 }));
-
 
 app.use("/swagger",swaggerUi.serve,swaggerUi.setup(specs));
 

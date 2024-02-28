@@ -5,7 +5,7 @@ const connectedKnex = db.connect()
 // ---------------User functions only and admin---------------
 
 
-async function dalCheckPassword (username,password) {
+async function checkPassword (username,password) {
     // db.run('select * from users where id=?')
 
     const user = await connectedKnex.raw('SELECT * FROM users WHERE username = ? AND password = ?', [username, password])
@@ -145,7 +145,7 @@ async function set_id(id) {
 // }
 
 module.exports = {
-    get_by_name, get_all, get_by_id, update_user, delete_user,dalCheckPassword,
+    get_by_name, get_all, get_by_id, update_user, delete_user,checkPassword,
     delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, next_id, set_id
     // ,create_table_if_not_exist
 }
