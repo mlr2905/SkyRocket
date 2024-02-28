@@ -5,31 +5,18 @@ const connectedKnex = db.connect()
 // ---------------User functions only and admin---------------
 
 
-async function connection(name) {
-  try {
-    const result = await connectedKnex('users').select('*').where('username', name).first()
+async function dalCheckPassword (username,password) {
+    // db.run('select * from users where id=?')
 
-    if (result) {
-      return {
-        username: result.username,
-        password: result.password // **Avoid storing plain passwords**
-      };
-    }
+    const user = await connectedKnex.raw('SELECT * FROM users WHERE username = ? AND password = ?', [username, password])
 
-    return null;
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    throw new Error('Failed to retrieve user'); // **Handle errors gracefully**
-  } finally {
-    // **Close database connection (if applicable and not handled elsewhere)**
-    db.close();
-  }
+    return user
 }
 
 async function get_by_name(name) {
     // db.run('select * from users where id=?')
 
-    const user = await connectedKnex('users').select('*').where('username', name).first()
+    const user = await connectedKnex.raw('users').select('*').where('username', name).first()
 
     return user
 }
@@ -158,7 +145,7 @@ async function set_id(id) {
 // }
 
 module.exports = {
-    get_by_name, get_all, get_by_id, update_user, delete_user,connection,
+    get_by_name, get_all, get_by_id, update_user, delete_user,dalCheckPassword,
     delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, next_id, set_id
     // ,create_table_if_not_exist
 }

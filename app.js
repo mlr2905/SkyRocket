@@ -59,7 +59,22 @@ const port = 3000
 
 const connection = require('./dals/dal_table_users').getUser; // נתיב לקובץ dal.js
 
+const checkPassword = (username, password) => {
+    // בדיקת סיסמה נכונה
+    return users[username] === password;
+};
 
+app.use(basicAuth({
+    users: users,
+    challenge: true,
+    unauthorizedResponse: (req) => {
+        return 'Unauthorized';
+    },
+    authorizer: (username, password) => {
+        // בדיקת אימות סיסמה
+        return checkPassword(username, password);
+    }
+}));
 
 
 app.use("/swagger",swaggerUi.serve,swaggerUi.setup(specs));
