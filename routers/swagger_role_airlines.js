@@ -10,7 +10,7 @@
 
 
 
-//role_users/airlines
+//role_airlines/airlines
 
 
 
@@ -19,7 +19,7 @@
 *  @swagger
 *  components:
 *    schemas:
-*      role_users:
+*      role_airlines:
 *        type: object
 *        required:
 *          - users
