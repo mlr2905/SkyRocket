@@ -57,7 +57,6 @@ const port = 3000
 //     }
 // }));
 
-const connection = require('./dals/dal_table_users').getUser; // נתיב לקובץ dal.js
 
 const checkPassword = (username, password) => {
     // בדיקת סיסמה נכונה
