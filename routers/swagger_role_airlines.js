@@ -18,7 +18,7 @@
 /**
 *  @swagger
 *  components:
-*    schemas_role_airlines:
+*    schemas:
 *      role_airlines:
 *        type: object
 *        required:

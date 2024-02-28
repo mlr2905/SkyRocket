@@ -17,7 +17,7 @@
 /**
 *  @swagger
 *  components:
-*    schemas_role_admins:
+*    schemas:
 *      role_admins:
 *        type: object
 *        required:
