@@ -4,34 +4,34 @@ const bl = require('../bl/bl_role_users')
 
 
 
-router.get('/', async (request, response) => {
-    try {
-        const messages = {
-            'message': `Welcome to role admins the desired path must be specified,
-        Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
-        response.status(400).json(messages)
-    }
-    catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
-    }
-})
+// router.get('/', async (request, response) => {
+//     try {
+//         const messages = {
+//             'message': `Welcome to role admins the desired path must be specified,
+//         Enter the following path https://cloud-memory.onrender.com/role_admins/{neme ?}/1`}
+//         response.status(400).json(messages)
+//     }
+//     catch (error) {
+//         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+//     }
+// })
 
 
-// GET by ID
+// // GET by ID
 
 
 
-router.get('/:id', async (request, response) => {
-    try {
-        const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_airlines/{neme ?}/1' }
-        response.status(400).json(messages)
-    }
-    catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
-    }
-})
+// router.get('/:id', async (request, response) => {
+//     try {
+//         const messages = { 'message': 'Enter the following path https://cloud-memory.onrender.com/role_airlines/{neme ?}/1' }
+//         response.status(400).json(messages)
+//     }
+//     catch (error) {
+//         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+//     }
+// })
 
-
+//role_airlines/users
 // GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
@@ -140,6 +140,7 @@ router.put('/airlines/:id', async (request, response) => {
     }
 
 })
+
 //role_airlines/flights
 
 router.get('/flights', async (request, response) => {
