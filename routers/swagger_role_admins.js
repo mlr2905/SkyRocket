@@ -22,6 +22,7 @@
 *        type: object
 *        required:
 *          - users
+*          - airlines
 *          - customers
 *          - flights
 *          - tickets
@@ -44,6 +45,22 @@
 *              email:
 *                type: string
 *                example: test_tsets@gmail.com
+*          airlines:
+*            type: object
+*            required:
+*              - name
+*              - country_id
+*              - user_id
+*            properties:
+*              name:
+*                type: string
+*                example: airtest
+*              country_id:
+*                type: integer
+*                example: 20
+*              user_id:
+*                type: integer
+*                example: 10
 *          customers:
 *            type: object
 *            required:
