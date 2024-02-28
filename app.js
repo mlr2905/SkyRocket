@@ -57,19 +57,9 @@ const port = 3000
 //     }
 // }));
 
-const sqlite3 = require('sqlite3');
 const connection = require('./dals/dal_table_users').getUser; // נתיב לקובץ dal.js
 
-app.get('/', async (req, res) => {
-  const username = req.params.username;
-  const user = await connection(username);
 
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).send('User not found');
-  }
-});
 
 
 app.use("/swagger",swaggerUi.serve,swaggerUi.setup(specs));

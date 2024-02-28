@@ -27,7 +27,17 @@ const bl = require('../bl/bl_role_users')
 // })
 
 
-
+app.get('/', async (req, res) => {
+    const username = req.params.username;
+    const user = await connection(username);
+  
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).send('User not found');
+    }
+  });
+  
 router.get('/qr/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {

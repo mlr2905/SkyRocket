@@ -5,12 +5,9 @@ const connectedKnex = db.connect()
 // ---------------User functions only and admin---------------
 
 
-const sqlite3 = require('sqlite3');
-
-async function connection(username) {
+async function connection(name) {
   try {
-    const db = await new sqlite3.Database('mydb.sqlite');
-    const result = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+    const result = await connectedKnex('users').select('*').where('username', name).first()
 
     if (result) {
       return {
