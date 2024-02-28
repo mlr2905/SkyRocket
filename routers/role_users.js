@@ -26,33 +26,6 @@ const bl = require('../bl/bl_role_users')
 //     }
 // })
 
-app.get('/login', async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-  
-    // **בדיקת שם משתמש וסיסמה**
-    const validCredentials = await connection(username,password);
-  
-    if (validCredentials) {
-      // **התחברות והחזרת נתוני משתמש**
-      // ...
-    } else {
-      res.status(401).send('Invalid credentials');
-    }
-  });
-  
-app.get('/', async (req, res) => {
-    const username = req.params.username;
-    const user = await connection(username);
-  
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).send('User not found');
-    }
-  });
-
-
 router.get('/qr/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {
