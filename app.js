@@ -57,6 +57,9 @@ const port = 3000
 //     }
 // }));
 
+const users = {
+    'michael': 'Miki260623' // שם המשתמש והסיסמה
+};
 
 const checkPassword = (username, password) => {
     // בדיקת סיסמה נכונה
@@ -64,13 +67,14 @@ const checkPassword = (username, password) => {
 };
 
 app.use(basicAuth({
+    users: users,
     challenge: true,
-    unauthorizedResponse: (req) => {
+    unauthorizedResponse: (req) => {  
         return 'Unauthorized';
     },
-    authorizer: async (username, password) => {
-        // בודק אימות על ידי הDAL
-        return await checkPassword(username, password);
+    authorizer: (username, password) => {
+        // בדיקת אימות סיסמה
+        return checkPassword(username, password);
     }
 }));
 
