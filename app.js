@@ -65,7 +65,6 @@ const checkPassword = (username, password) => {
     // בדיקת סיסמה נכונה
     return users[username] === password;
 };
-app.use(express.static('public'));
 
 app.use(basicAuth({
     users: users,
