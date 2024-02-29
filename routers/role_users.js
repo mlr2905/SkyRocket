@@ -54,7 +54,7 @@ router.get('/users/search', async (request, response) => {
     const password = query.password
     const id = query.id
    let search = email ? email : username  ? username : password  ? password : id;
-   let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : null;
+   let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
     
 
     try {
