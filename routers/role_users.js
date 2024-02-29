@@ -57,16 +57,16 @@ router.get('/users/search', async (request, response) => {
     let type = null
 
     if (email !== null) {
-        search = email, type = email
+        search = email, type = "email"
     }
     else if (username !== null) {
-        search = username, type = username
+        search = username, type = "username"
     }
     else if (password !== null) {
-        search = password, type = password
+        search = password, type = "password"
     }
     else if(id !== null){
-        search = id, type = id
+        search = id, type = "id"
 
     }
 
