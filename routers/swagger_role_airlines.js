@@ -93,4 +93,6 @@
 *              remaining_tickets:
 *                type: integer
 *                example: 195
+*            xml:
+*              name: role_airlines
 */

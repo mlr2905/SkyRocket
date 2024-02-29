@@ -988,4 +988,6 @@
 *              flight_id:
 *                type: integer
 *                example: 1
+*            xml:
+*              name: role_users
 */
