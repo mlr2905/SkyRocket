@@ -57,12 +57,12 @@ router.get('/users/search', async (request, response) => {
     if (email !== null) {
         id = email, type = email
     }
-    // else if (username !== null) {
-    //     id = username, type = username
-    // }
-    // else if (password !== password) {
-    //     id = password, type = password
-    // }
+    else if (username !== null) {
+        id = username, type = username
+    }
+    else if (password !== password) {
+        id = password, type = password
+    }
 
     try {
         const user = await bl.get_by_id_user(type,id)
