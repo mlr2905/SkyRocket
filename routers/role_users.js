@@ -49,10 +49,6 @@ router.get('/qr/:id', async (request, response) => {
 router.get('/users/search', async (request, response) => {
     // const user_id = parseInt(request.params.id)
     const query = request.query
-    console.log(query);
-   response.status(200).json(query)
-
-
     const email = query.email
     const username = query.username
     const password = query.password
