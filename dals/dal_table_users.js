@@ -73,12 +73,12 @@ async function update_user(id, user) {
     }
 }
 
-async function get_by_id(name,id) {
+async function get_by_id(type,id) {
     // db.run('select * from users where id=?')
     const user = await connectedKnex('users')
         .select('users.*', 'roles.role_name')
         .join('roles', 'users.role_id', 'roles.id')
-        .where('users.name', id)
+        .where(`users.${type}`, id)
         .first();
 
     return user
