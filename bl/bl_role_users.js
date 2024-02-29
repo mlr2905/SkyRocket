@@ -71,8 +71,8 @@ async function new_customer(new_cus) {
  
 }
 
-async function get_by_id_customer(id) {
-  const user_id = await dal_4.get_by_id(id);
+async function get_by_id_customer(type,id) {
+  const user_id = await dal_4.get_by_id(type,id);
   return user_id
 }
 

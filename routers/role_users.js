@@ -45,10 +45,27 @@ router.get('/qr/:id', async (request, response) => {
 
 
 // GET by ID
-router.get('/users/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
+router.get('/users/search', async (request, response) => {
+    // const user_id = parseInt(request.params.id)
+    const query = request.query
+    const email = query.email
+    const username = query.username
+    const password = query.password
+    let id = null
+    let type = null
+
+    if (email !== null) {
+        id = email, type = email
+    }
+    else if (username !== null) {
+        id = username, type = username
+    }
+    else if (password !== password) {
+        id = password, type = password
+    }
+
     try {
-        const user = await bl.get_by_id_user(user_id)
+        const user = await bl.get_by_id_user(type,id)
         if (user) {
             response.status(200).json(user)
         }
