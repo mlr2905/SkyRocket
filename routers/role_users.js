@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const qrcode = require('qrcode');
-const bl = require('../bl/bl_role_users')
+const bl = require('../bl/bl_role_users');
+const { log } = require('winston');
 
 // router.get('/', async (request, response) => {
 //     try {
@@ -45,27 +46,36 @@ router.get('/qr/:id', async (request, response) => {
 
 
 // GET by ID
-router.get('/users/search,...', async (request, response) => {
+router.get('/users/search', async (request, response) => {
     // const user_id = parseInt(request.params.id)
     const query = request.query
+    console.log(query);
+   response.status(200).json(query)
+
+
     const email = query.email
     const username = query.username
     const password = query.password
-    let id = null
+    const id = query.id
+    let search = null
     let type = null
 
     if (email !== null) {
-        id = email, type = email
+        search = email, type = email
     }
     else if (username !== null) {
-        id = username, type = username
+        search = username, type = username
     }
     else if (password !== null) {
-        id = password, type = password
+        search = password, type = password
+    }
+    else if(id !== null){
+        search = id, type = id
+
     }
 
     try {
-        const user = await bl.get_by_id_user(type,id)
+        const user = await bl.get_by_id_user(type,search)
         if (user) {
             response.status(200).json(user)
         }
