@@ -134,13 +134,12 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
  *                 properties:
  *                   username:
  *                     type: string
  *                   email:
+ *                     type: string
+ *                   password:
  *                     type: string
  *                   id:
  *                     type: number
