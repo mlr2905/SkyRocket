@@ -111,10 +111,6 @@
  *     description: Search for users based on provided criteria. Requires authentication.
  *     parameters:
  *       - in: query
- *         name: role
- *         description: (Optional) Filter users by assigned role name.
- *         type: string
- *       - in: query
  *         name: id
  *         description: (Optional) Filter users by ID.
  *         type: string
@@ -146,7 +142,7 @@
  *                     type: string
  *                   email:
  *                     type: string
- *                   role_id:
+ *                   id:
  *                     type: number
  *                   # Exclude password from response
  *       '404':
