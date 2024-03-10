@@ -17,10 +17,10 @@ logger.info('==== System start =======')
 
 const options = {
     definition: {
-        openapi: "3.0.0",
+        openapi: "3.0",
         info: {
             title: "SkyRocket API",
-            version: "1.0.1",
+            version: "1.0.11",
             description: "My REST API SkyRocket",
         },
         servers: [
@@ -29,7 +29,7 @@ const options = {
             },
         ],
     },
-    apis: ["./routers/*.js"],
+    apis: ["./swagger/*.js"],
 };
 
 const specs = swaggerJsdoc(options);
