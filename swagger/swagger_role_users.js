@@ -131,7 +131,7 @@
  *                     type: string
  *                   email:
  *                     type: string
- *                   role_id:  # Assuming user object has a role_id property
+ *                   id:  # Assuming user object has a role_id property
  *                     type: number
  *                   # Exclude password from response
  *       '404':
