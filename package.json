@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha tests/dals/dal-all_tables.test.js --timeut 50000ms"
+    "test": "mocha tests/dals/table_users.test.js --timeut 50000ms"
   },
   "keywords": [],
   "author": "",
@@ -16,13 +16,11 @@
     "config": "^3.3.9",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "express-basic-auth": "^1.2.1",
     "knex": "^3.0.1",
     "mocha": "^10.2.0",
     "pg": "^8.11.3",
     "qrcode": "^1.5.3",
     "should": "^13.2.3",
-    "sqlite3": "^5.1.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
     "winston": "^3.11.0"

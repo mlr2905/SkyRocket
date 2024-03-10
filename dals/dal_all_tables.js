@@ -6,7 +6,7 @@ const connectedKnex = db.connect()
 async function get_all() {
     // db.run('select * from chat1')
       const arr = await connectedKnex.raw(`SELECT get_all_data();`)
-  return arr
+  return arr.rows[0].get_all_data
 }
 
 async function get_by_id(id) {
