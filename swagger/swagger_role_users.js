@@ -3,8 +3,8 @@
 /**
  * @swagger
  * tags:
- *   name: role_users
- *   description: The role_users managing API
+ *   name: routers/role_users/
+ *   description: The routers/role_users/ managing API
  */
 /**
  * @swagger
@@ -20,7 +20,7 @@
  */
 
 
-//role_users/users
+//routers/role_users//users
 /**
  * @swagger
  * components:
@@ -31,10 +31,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/users:
+ * /routers/role_users//users:
  *   post:
  *     summary: Create a new user
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Create a new user record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -105,10 +105,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/users/{id}:
+ * /routers/role_users//users/{id}:
  *   get:
  *     summary: Get a user by ID
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Retrieve user details based on the provided ID. Requires authentication.
  *     parameters:
  *       - in: path
@@ -164,10 +164,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/users/{id}:
+ * /routers/role_users//users/{id}:
  *   put:
  *     summary: Update the user by the ID
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     parameters:
  *       - in: path
  *         name: id
@@ -206,10 +206,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/users/{id}:
+ * /routers/role_users//users/{id}:
  *   delete:
  *     summary: Delete an user by ID
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Delete the user record with the specified ID. Requires authentication.
  *     parameters:
  *       - in: path
@@ -231,7 +231,7 @@
  *               error: cannot find user with id {id}
  */
 
-//role_users/customers
+//routers/role_users//customers
 
 
 /**
@@ -244,10 +244,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/customers:
+ * /routers/role_users//customers:
  *   post:
  *     summary: Create a new customer
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Create a new customer record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -333,10 +333,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/customers/{id}:
+ * /routers/role_users//customers/{id}:
  *   get:
  *     summary: Get a customer by ID
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Retrieve customer details based on the provided ID. Requires authentication.
  *     parameters:
  *       - in: path
@@ -394,10 +394,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/customers/{id}:
+ * /routers/role_users//customers/{id}:
  *   put:
  *     summary: Update the customer by the ID
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     parameters:
  *       - in: path
  *         name: id
@@ -476,10 +476,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/customers/{id}:
+ * /routers/role_users//customers/{id}:
  *   put:
  *     summary: Update the customer by the ID
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     parameters:
  *       - in: path
  *         name: id
@@ -536,7 +536,7 @@
  *         description: Some error happened
  */
 
-//role_users/flights
+//routers/role_users//flights
 
 /**
  * @swagger
@@ -548,10 +548,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/flights:
+ * /routers/role_users//flights:
  *   get:
  *     summary: Get all flights
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Retrieve details for all flights. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -614,10 +614,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/flights/{id}:
+ * /routers/role_users//flights/{id}:
  *   get:
  *     summary: Get a flight by ID
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Retrieve user details based on the provided ID. Requires authentication.
  *     parameters:
  *       - in: path
@@ -681,7 +681,7 @@
  *             error: Cannot find user with ID {id}.
  */
 
-//role_users/tickets
+//routers/role_users//tickets
 
 
 /**
@@ -694,10 +694,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/tickets:
+ * /routers/role_users//tickets:
  *   post:
  *     summary: Create a new ticket
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Create a new ticket record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -772,10 +772,10 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/passengers:
+ * /routers/role_users//passengers:
  *   post:
  *     summary: Create a new passenger
- *     tags: [role_users]
+ *     tags: [routers/role_users/]
  *     description: Create a new passenger record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
@@ -852,7 +852,7 @@
 *  @swagger
 *  components:
 *    schemas:
-*      role_users:
+*      routers/role_users/:
 *        type: object
 *        required:
 *          - users
@@ -989,5 +989,5 @@
 *                type: integer
 *                example: 1
 *            xml:
-*              name: role_users
+*              name: routers/role_users/
 */
