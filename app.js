@@ -20,7 +20,7 @@ const options = {
         openapi: "3.0.0",
         info: {
             title: "SkyRocket API",
-            version: "1.0.11",
+            version: "1.0.1",
             description: "My REST API SkyRocket",
         },
         servers: [
@@ -29,7 +29,7 @@ const options = {
             },
         ],
     },
-    apis: ["./swagger/*.js",],
+    apis: ["./routers/*.js"],
 };
 
 const specs = swaggerJsdoc(options);
