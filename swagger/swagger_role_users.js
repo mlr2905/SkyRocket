@@ -106,7 +106,7 @@
  * 
  * /role_users/users/search:
  *   get:
- *     summary: Search users by role, ID, username, email, or password
+ *     summary: Search users by ID, username, email, or password
  *     tags: [role_users]
  *     description: Search for users based on provided criteria. Requires authentication.
  *     parameters:
