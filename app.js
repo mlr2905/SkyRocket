@@ -16,7 +16,7 @@ const swaggerUi = require('swagger-ui-express')
 logger.info('==== System start =======')
 
 const options = {
-    swaggerOptions: {
+    definition: {
         openapi: "3.0.0",
         info: {
             title: "SkyRocket API",
@@ -30,8 +30,6 @@ const options = {
         ],
     },
     apis: ["./swagger/*.js"],
-    search: true,
-
 };
 
 const specs = swaggerJsdoc(options);
