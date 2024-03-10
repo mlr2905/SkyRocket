@@ -135,14 +135,17 @@
  *           application/json:
  *             schema:
  *                 properties:
+ *                   id:
+ *                     type: number
  *                   username:
  *                     type: string
  *                   email:
  *                     type: string
  *                   password:
  *                     type: string
- *                   id:
+ *                   role_id:
  *                     type: number
+ *                   
  *                   # Exclude password from response
  *       '404':
  *         description: No users found matching the criteria.
