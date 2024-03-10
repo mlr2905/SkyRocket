@@ -22,7 +22,7 @@ console.log(all_tables);
     it('get_by_id', async () => {
         const expected = 7
         const get_by_id = await dal.get_qr('jcdjjsbsfjebde')
-
+console.log(get_by_id);
         const actual = 
         assert.strictEqual(expected, actual)
     })
