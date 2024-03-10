@@ -116,7 +116,7 @@
  *         required: true
  *         description: The ID of the user to retrieve.
  *         schema:
- *           type: integer
+ *           type: string
  *     security:
  *       - CustomAuth: []
  *     responses:
