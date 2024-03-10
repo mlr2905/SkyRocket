@@ -105,7 +105,7 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/users/{id}:
+ * /role_users/users/search:
  *   get:
  *     summary: Get a user by ID
  *     tags: [role_users]
