@@ -8,6 +8,7 @@ function connect() {
         version: '15',
         connection: {
             host: config.db_cloud.host,
+            port: 5432,
             user: config.db_cloud.user,
             password: config.db_cloud.password,
             database: config.db_cloud.database,
