@@ -22,13 +22,14 @@ const options = {
             title: "SkyRocket API",
             version: "1.0.1",
             description: "My REST API SkyRocket",
+            search: true,
         },
         servers: [
             {
                 url: "https://skyrocket.onrender.com/",
             },
         ],
-        search: true,
+       
 
     },
     apis: ["./swagger/*.js"],
