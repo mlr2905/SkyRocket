@@ -94,7 +94,6 @@
  *                       type: string
  */
 
-
 /**
  * @swagger
  * components:
@@ -105,53 +104,47 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/users/search:
+ * /role_users/users/search:  # This endpoint is likely for searching users
  *   get:
- *     summary: Get a user by ID
+ *     summary: Search users by role or other criteria
  *     tags: [role_users]
- *     description: Retrieve user details based on the provided ID. Requires authentication.
+ *     description: Search for users based on provided criteria. Requires authentication.
  *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The ID of the user to retrieve.
- *         schema:
- *           type: string
+ *       - in: query  # Search parameters likely go in query string, not path
+ *         name: role  # Add optional role filter parameter (example)
+ *         description: (Optional) Filter users by assigned role name.
+ *         type: string
+ *       # You can add other search parameters here
  *     security:
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: Successful response with the user details.
+ *         description: Successful response with matching user details.
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                     username:
- *                       type: string
- *                     password:
- *                       type: string
- *                     email:
- *                       type: string
- *                     role_id:
- *                       type: number
+ *               type: array  # Response returns an array of users
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   username:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   role_id:  # Assuming user object has a role_id property
+ *                     type: number
+ *                   # Exclude password from response
  *       '404':
- *         description: User not found with the specified ID.
+ *         description: No users found matching the criteria.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
- *         example:
- *             error: Cannot find user with ID {id}.
+ *                 error:
+ *                   type: string
+ *             example:
+ *               error: No users found matching the search criteria.
  */
 
 /**
