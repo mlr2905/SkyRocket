@@ -57,7 +57,7 @@ router.get('/qr/:id', async (request, response) => {
             <title>QR Code</title>
         </head>
         <body>
-            <img src="data:image/png;base64,${user.data}" alt="QR Code">
+            <img src="data:image/png;base64,${user}" alt="QR Code">
         </body>
         </html>
         `;
