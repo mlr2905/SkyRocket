@@ -104,17 +104,32 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  * 
- * /role_users/users/search:  # This endpoint is likely for searching users
+ * /role_users/users/search:
  *   get:
- *     summary: Search users by role or other criteria
+ *     summary: Search users by role, ID, username, email, or password
  *     tags: [role_users]
  *     description: Search for users based on provided criteria. Requires authentication.
  *     parameters:
- *       - in: query  # Search parameters likely go in query string, not path
- *         name: id/username/email/password  # Add optional role filter parameter (example)
+ *       - in: query
+ *         name: role
  *         description: (Optional) Filter users by assigned role name.
  *         type: string
- *       # You can add other search parameters here
+ *       - in: query
+ *         name: id
+ *         description: (Optional) Filter users by ID.
+ *         type: string
+ *       - in: query
+ *         name: username
+ *         description: (Optional) Filter users by username.
+ *         type: string
+ *       - in: query
+ *         name: email
+ *         description: (Optional) Filter users by email address.
+ *         type: string
+ *       - in: query
+ *         name: password
+ *         description: (Optional) Filter users by password.
+ *         type: string
  *     security:
  *       - CustomAuth: []
  *     responses:
@@ -123,7 +138,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: array  # Response returns an array of users
+ *               type: array
  *               items:
  *                 type: object
  *                 properties:
@@ -131,7 +146,7 @@
  *                     type: string
  *                   email:
  *                     type: string
- *                   id:  # Assuming user object has a id property
+ *                   role_id:
  *                     type: number
  *                   # Exclude password from response
  *       '404':
@@ -146,6 +161,7 @@
  *             example:
  *               error: No users found matching the search criteria.
  */
+
 
 /**
  * @swagger
