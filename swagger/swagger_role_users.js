@@ -111,7 +111,7 @@
  *     description: Search for users based on provided criteria. Requires authentication.
  *     parameters:
  *       - in: query  # Search parameters likely go in query string, not path
- *         name: role  # Add optional role filter parameter (example)
+ *         name: id/username/email/password  # Add optional role filter parameter (example)
  *         description: (Optional) Filter users by assigned role name.
  *         type: string
  *       # You can add other search parameters here
@@ -131,7 +131,7 @@
  *                     type: string
  *                   email:
  *                     type: string
- *                   id:  # Assuming user object has a role_id property
+ *                   id:  # Assuming user object has a id property
  *                     type: number
  *                   # Exclude password from response
  *       '404':
