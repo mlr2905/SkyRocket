@@ -10,8 +10,9 @@
 <h1>QR Code Generator</h1>
 <div>
     <label for="text-input">Enter Text:</label>
-    <input type="text" id="text-input">
-    <button onclick="generateQRCode()">Generate QR Code</button>
+    <input type="text" id="text-input" oninput="generateQRCode()">
+    <!-- <input type="text" id="text-input"> -->
+    <!-- <button onclick="generateQRCode()">Generate QR Code</button> -->
 </div>
 <div id="qrcode"></div>
 
@@ -27,6 +28,7 @@ function generateQRCode() {
     const qrCodeTable = qr.createTableTag(cellSize, margin);
     document.getElementById('qrcode').innerHTML = qrCodeTable;
 }
+generateQRCode()
 </script>
 </body>
 </html>
