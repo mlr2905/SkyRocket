@@ -28,6 +28,8 @@ const options = {
                 url: "https://skyrocket.onrender.com/",
             },
         ],
+        search: true,
+
     },
     apis: ["./swagger/*.js"],
 };
