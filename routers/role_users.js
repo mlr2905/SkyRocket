@@ -45,7 +45,7 @@ router.get('/qr/:id', async (request, response) => {
 })
 
 
-// GET by ID
+// GET by search
 router.get('/users/search', async (request, response) => {
     // const user_id = parseInt(request.params.id)
     const query = request.query
