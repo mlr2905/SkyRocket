@@ -29,7 +29,7 @@ async function get_by_id(id) {
 async function registered_Tables() {
     try {
         let result = await connectedKnex.raw(` SELECT registered_Tables();`);
-        return result
+        return result.rows[0].registered_tables
 
     } catch (e) {
         throw console.error(e);

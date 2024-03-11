@@ -42,8 +42,7 @@ async function delete_airline(id) {
 async function get_all() {
     // db.run('select * from airlines')
     const airlines = await connectedKnex.raw(`SELECT get_all_airlines();`)
-
-    return airlines
+    return airlines.rows[0].get_all_airlines
 }
 async function delete_all() {
     // db.run('update airlines ....')
