@@ -66,7 +66,7 @@ async function get_all() {
     // db.run('select * from customers')
     const customers = await connectedKnex.raw(`SELECT get_all_customers();`)
 
-    return customers.rows
+    return customers.rows[0].get_all_customers
 }
 
 // ---------------Test functions only---------------

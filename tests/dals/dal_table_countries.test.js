@@ -4,15 +4,15 @@ const dal_0 = require('../../dals/dal_all_tables')
 
 const { log } = require('console')
 
+
 describe('Testing functionallity of the DAL', () => {
 
+   
     it('get_all', async () => {
-        const next_id = await dal_0.registered_Tables()
-        const expected = next_id.rows[0].registered_tables.countries
-        const countries = await dal.get_all()
-        const actual = countries.length
-        assert.strictEqual(expected, actual)
-    })
+        const expected = await dal_0.registered_Tables()
+        const actual = await dal.get_all()
+        assert.strictEqual(expected.countries, actual.length)
+    }) 
 
     it('get_by_id', async () => {
         const expected = 'israel'
@@ -23,7 +23,7 @@ describe('Testing functionallity of the DAL', () => {
 
     it('new_country', async () => {
         const new_countrie = await dal.new_countrie({ 'country_name': 'countrie_test', 'continent_id': 3 })
-        const expected = 'test'
+        const expected = 'countrie_test'
         const actual = await dal.get_by_id(new_countrie.id)
         assert.strictEqual(expected, actual.country_name)
     })

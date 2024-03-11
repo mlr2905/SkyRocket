@@ -35,7 +35,7 @@ async function update_ticket(id, updated_ticket) {
 async function get_all() {
     // db.run('select * from tickets')
     const tickets = await connectedKnex.raw(`SELECT get_all_tickets();`)
-    return tickets.rows
+    return tickets.rows[0].get_all_tickets
 }
 
 async function delete_all() {

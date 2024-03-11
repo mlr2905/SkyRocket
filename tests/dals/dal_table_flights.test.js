@@ -5,13 +5,10 @@ const dal_0 = require('../../dals/dal_all_tables')
 describe('Testing functionallity of the DAL', () => {
 
     it('get_all', async () => {
-        const next_id = await dal_0.registered_Tables()
-        let id = next_id.rows[0].registered_tables.flights
-        const expected = id 
-        const flights = await dal.get_all()
-        const actual = flights.length
-        assert.strictEqual(expected, actual)
-    }) 
+        const expected = await dal_0.registered_Tables()
+        const actual = await dal.get_all()
+        assert.strictEqual(expected.flights, actual.length)
+    })  
 
     it('get_by_id', async () => {
         const expected = '8861a00d-421c-49b3-98e8-642d6cd42d22'

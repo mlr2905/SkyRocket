@@ -4,13 +4,12 @@ const dal_0 = require('../../dals/dal_all_tables')
 
 describe('Testing functionallity of the DAL', () => {
 
+    
     it('get_all', async () => {
-        const next_id = await dal_0.registered_Tables()
-        const expected = next_id.users
-        const users = await dal.get_all()
-        const actual = users.length
-        assert.strictEqual(expected, actual)
-    })
+        const expected = await dal_0.registered_Tables()
+        const actual = await dal.get_all()
+        assert.strictEqual(expected.users, actual.length)
+    })  
 
     it('get_by_id', async () => {
         const expected = 'Michael29'

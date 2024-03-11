@@ -36,7 +36,7 @@ async function get_all() {
     // db.run('select * from passengers')
     const passengers = await connectedKnex.raw(`SELECT get_all_passengers();`)
 
-    return passengers.rows
+    return passengers.rows[0].get_all_passengers
 }
 
 async function get_by_id(id) {

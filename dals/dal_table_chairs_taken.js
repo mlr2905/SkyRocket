@@ -36,7 +36,7 @@ async function update_chair(id, updated_chair) {
 async function get_all() {
     // db.run('select * from chairs_taken')
     const chairs_taken = await connectedKnex.raw(`SELECT get_all_chairs_taken();`)
-    return chairs_taken.rows
+    return chairs_taken.rows[0].get_all_chairs_taken
 }
 
 async function delete_all() {

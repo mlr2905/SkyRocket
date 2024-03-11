@@ -20,7 +20,7 @@ async function get_by_id(id) {
         .leftJoin('continents', 'continents.id', '=', 'countries.continent_id')
         .where('countries.id', id)
         .first();
-    return countrie.rows
+    return countrie
 }
 
 async function get_by_name(name) {
@@ -45,7 +45,7 @@ async function delete_countrie(id) {
 async function get_all() {
     // db.run('select * from countries')
     const countries = await connectedKnex.raw(`SELECT get_all_countries();`)
-   return countries
+   return countries.rows[0].get_all_countries
 }
 
 async function delete_all() {

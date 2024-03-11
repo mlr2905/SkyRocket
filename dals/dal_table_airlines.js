@@ -21,7 +21,7 @@ async function get_by_id(id) {
         .leftJoin('countries', 'countries.id', '=', 'airlines.country_id')
         .where('airlines.id', id)
         .first();
-    return airline.rows
+    return airline
 }
 
 async function update_airline(id, updated_airline) {
