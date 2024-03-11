@@ -59,17 +59,6 @@ async function delete_all() {
 
 
 
-async function next_id() {
-    try {
-        const result = await connectedKnex.raw(`SELECT nextval('countries_id_seq')`);
-        return result;
-
-    } catch (e) {
-        throw console.error( e);
-
-    }
-}
-
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE countries_id_seq RESTART WITH ${id}`);
@@ -81,21 +70,9 @@ async function set_id(id) {
     }
 }
 
-// async function create_table_if_not_exist() {
-//     const tableExists = await connectedKnex.schema.hasTable('countries');
-
-//     if (!tableExists) {
-//         await connectedKnex.schema.createTable('countries', (table) => {
-//             table.increments('id').primary(); // This creates a SERIAL column
-//             table.string('name_continent').notNullable();
-//             table.integer('country_name').notNullable();
-//             table.foreign('continent_id').references('continents').on('id');
-//         });
-//     }
-// }
 
 module.exports = {
     get_all, get_by_id,get_by_name, new_countrie, update_countrie, delete_countrie,
-    delete_all,next_id,set_id
+    delete_all,set_id
     // , create_table_if_not_exist
 }

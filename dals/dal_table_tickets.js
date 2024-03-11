@@ -47,16 +47,6 @@ async function delete_all() {
 
 // ---------------Test functions only---------------
 
-async function get_next_ticket_id() {
-    try {
-        const result = await connectedKnex.raw(`SELECT nextval('tickets_id_seq')`);
-        return result;
-
-    } catch (e) {
-        throw console.error( e);
-
-    }
-}
 
 async function set_id_ticket(id) {
     try {
@@ -69,20 +59,8 @@ async function set_id_ticket(id) {
     }
 }
 
-// async function create_table_if_not_exist() {
-//     const tableExists = await connectedKnex.schema.hasTable('tickets');
-
-//     if (!tableExists) {
-//         await connectedKnex.schema.createTable('tickets', (table) => {
-//             table.increments('id').primary();
-//             table.integer('flight_id').notNullable().references('flights.id');
-//             table.integer('customer_id').unique().notNullable().references('customers.id');
-//             table.integer('passenger_id').unique().notNullable().references('passengers.id');
-//                 });
-//     }
-// }
 
 module.exports = {
-    get_all, get_by_id, new_ticket, update_ticket, delete_ticket, get_next_ticket_id, set_id_ticket, delete_all
+    get_all, get_by_id, new_ticket, update_ticket, delete_ticket, set_id_ticket, delete_all
     // , create_table_if_not_exist
 }

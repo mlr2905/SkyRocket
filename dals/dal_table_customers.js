@@ -72,18 +72,6 @@ async function get_all() {
 // ---------------Test functions only---------------
 
 
-
-async function next_id() {
-    try {
-        const result = await connectedKnex.raw(`SELECT nextval('customers_id_seq')`);
-        return result;
-
-    } catch (e) {
-        throw console.error( e);
-
-    }
-}
-
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE customers_id_seq RESTART WITH ${id}`);
@@ -96,7 +84,7 @@ async function set_id(id) {
 }
 
 module.exports = {
-    get_all, get_by_id, new_customer, update_customer, delete_customer,get_by_name,next_id,set_id,credit_check,
+    get_all, get_by_id, new_customer, update_customer, delete_customer,get_by_name,set_id,credit_check,
     delete_all
     // , create_table_if_not_exist
 }

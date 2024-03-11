@@ -48,18 +48,6 @@ async function delete_all() {
 
 // ---------------Test functions only---------------
 
-async function next_id() {
-    try {
-        const result = await connectedKnex.raw(`SELECT nextval('chairs_id_seq')`);
-        return result;
-
-    } catch (e) {
-        throw console.error( e);
-
-    }
-}
-
-
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE chairs_id_seq RESTART WITH ${id}`);
@@ -74,6 +62,6 @@ async function set_id(id) {
 
 
 module.exports = {
-    get_all, get_by_id, new_chair, update_chair, delete_chair, next_id, set_id, delete_all
+    get_all, get_by_id, new_chair, update_chair, delete_chair, set_id, delete_all
     // , create_table_if_not_exist
 }

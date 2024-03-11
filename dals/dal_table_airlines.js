@@ -52,19 +52,6 @@ async function delete_all() {
 }
 // ---------------Test functions only---------------
 
-
-
-async function next_id() {
-    try {
-        const result = await connectedKnex.raw(`SELECT nextval('airlines_id_seq')`);
-        return result;
-
-    } catch (e) {
-        throw console.error( e);
-
-    }
-}
-
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE airlines_id_seq RESTART WITH ${id}`);
@@ -82,22 +69,8 @@ async function get_by_name(name) {
     return airline_name
 }
 
-// async function create_table_if_not_exist() {
-//     const tableExists = await connectedKnex.schema.hasTable('airlines');
-
-//     if (!tableExists) {
-//         await connectedKnex.schema.createTable('airlines', (table) => {
-//             table.increments('id').primary(); // This creates a SERIAL column
-//             table.integer('country_id').notNullable();
-//             table.integer('user_id').notNullable();
-//             table.foreign('country_id').references('countries').on('id');
-//             table.foreign('user_id').references('users').on('id');
-//         });
-//     }
-// }
-
 module.exports = {
-    get_all, get_by_id, new_airline, update_airline, delete_airline,next_id,set_id,get_by_name,
+    get_all, get_by_id, new_airline, update_airline, delete_airline,set_id,get_by_name,
     delete_all
     // , create_table_if_not_exist
 }
