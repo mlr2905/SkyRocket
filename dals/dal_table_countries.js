@@ -8,9 +8,9 @@ async function new_countrie(new_mes) {
     // db.run('insert into countries ....')
     // result[0] will be the new ID given by the SQL
     // Insert into countries values(....)
-    const result = await connectedKnex('countries').insert(new_mes).returning('id');
+    const result = await connectedKnex('countries').insert(new_mes).returning('*')
     // החזרת אובייקט עם המידע החדש, כולל ה-id
-    return { ...new_mes, id: result[0].id };
+    return result[0];
 }
 
 async function get_by_id(id) {

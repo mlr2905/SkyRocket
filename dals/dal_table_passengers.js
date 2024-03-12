@@ -7,8 +7,8 @@ async function new_passenger(new_passenger) {
     // db.run('insert into passengers ....')
     // result[0] will be the new ID given by the SQL
     // Insert into passengers values(....)
-    const result = await connectedKnex('passengers').insert(new_passenger)
-    return { ...new_passenger, id: result[0] }
+    const result = await connectedKnex('passengers').insert(new_passenger).returning('*');
+   return  result[0] 
 }
 
 async function get_by_id_passenger(id) {
@@ -16,8 +16,6 @@ async function get_by_id_passenger(id) {
     const passenger = await connectedKnex('passengers').select('*').where('user_id', id).first()
     return passenger
 }
-
-
 
 // ---------------Admin permission only---------------
 
@@ -54,9 +52,9 @@ async function delete_all() {
 
 // ---------------Test functions only---------------
 
-async function set_id_passenger(id) {
+async function set_id(id) {
     try {
-        const result = await connectedKnex.raw(`CALL reset_id_passenger(${id})`);
+        const result = await connectedKnex.raw(`ALTER SEQUENCE passengers_id_seq RESTART WITH ${id}`);
         return result;
 
     } catch (e) {
@@ -65,9 +63,15 @@ async function set_id_passenger(id) {
     }
 }
 
+async function get_by_passport_number(id) {
+
+    const airline_name = await connectedKnex('passengers').select('*').where('passport_number', id).first()
+
+    return airline_name
+}
 
 module.exports = {
     get_all, get_by_id, new_passenger, update_passenger, delete_passenger,
-    delete_all, get_by_id_passenger, set_id_passenger
+    delete_all, get_by_id_passenger, set_id,get_by_passport_number
     // , create_table_if_not_exist
 }

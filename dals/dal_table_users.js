@@ -101,17 +101,6 @@ async function delete_all() {
 
 // ---------------Test functions only---------------
 
-// async function next_id() {
-//     try {
-//         const result = await connectedKnex.raw(`SELECT nextval('users_id_seq')`);
-//         return result;
-
-//     } catch (e) {
-//         throw console.error(e);
-
-//     }
-// }
-
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE users_id_seq RESTART WITH ${id}`);
@@ -122,18 +111,6 @@ async function set_id(id) {
 
     }
 }
-// async function create_table_if_not_exist() {
-//     const tableExists = await connectedKnex.schema.hasTable('users');
-
-//     if (!tableExists) {
-//         await connectedKnex.schema.createTable('users', (table) => {
-//             table.increments('id').primary(); // This creates a SERIAL column
-//             table.string('username').notNullable();
-//             table.string('password').notNullable();
-//             table.string('email').notNullable();
-//         });
-//     }
-// }
 
 module.exports = {
     get_by_name, get_all, get_by_id, update_user, delete_user,checkPassword,

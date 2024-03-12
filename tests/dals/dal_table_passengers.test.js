@@ -4,47 +4,41 @@ const dal_0 = require('../../dals/dal_all_tables')
 
 describe('Testing functionallity of the DAL', () => {
 
+    let passenger = null
+
+    it('new_passenger', async () => {
+        await dal.new_passenger({ 'first_name': 'test', 'last_name': 'passenger', 'date_of_birth': '1993-05-29', 'passport_number': '73234076', 'user_id': 27, 'flight_id': 1 }) // Id: 6
+        const expected = 'passenger'
+        passenger = await dal.get_by_passport_number('73234076')
+        const actual = passenger
+        assert.strictEqual(expected, actual.last_name)
+    })
+
     it('get_all', async () => {
         const expected = await dal_0.registered_Tables()
         const actual = await dal.get_all()
         assert.strictEqual(expected.passengers, actual.length)
-    })  
-
+    })
 
     it('get_by_id', async () => {
-        const expected = '3'
-        const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.flight_id
-        console.log(actual);
-        assert.strictEqual(expected, actual)
+        const expected = '73234076'
+        const actual = await dal.get_by_id(passenger.id)
+        assert.strictEqual(expected, actual.passport_number)
     })
 
-    it('update_message', async () => {
-        await dal.update_message(3, {  'flight_id': '3', 'customer_id': '2','passenger_id':5})
-        const expected = '2'
-        const message_id_3 = await dal.get_by_id(3)
-        const actual = message_id_3.customer_id
-        console.log(actual);
-        assert.strictEqual(expected, actual)
+    it('update_passenger', async () => {
+        await dal.update_passenger(passenger.id, { 'first_name': 'test-2', 'last_name': 'passenger', 'date_of_birth': '1993-05-29', 'passport_number': '73234076', 'user_id': 27, 'flight_id': 1 })
+        const expected = 'test-2'
+        const actual = await dal.get_by_id(passenger.id)
+        assert.strictEqual(expected, actual.first_name)
     })
 
-    it('delete_message', async () => {
-        await dal.delete_message(5)
+    it('delete_passenger', async () => {
+        await dal.delete_passenger(passenger.id)
         const expected = undefined
-        const message_id_5 = await dal.get_by_id(5)
-        assert.strictEqual(expected, message_id_5)
-    })
-
-    it('new_message', async () => {
-        await dal.new_message({ 'id': 6, 'flight_id': '6', 'customer_id': '2','passenger_id':6 }) // Id: 6
-        const expected = '2'
-        const message_id_6 = await dal.get_by_id(6)
-        assert.strictEqual(expected, message_id_6.customer_id)
-    })
-
-    it('Confirm_one_line',async () => {
-        await dal.delete_all()
-        await dal.new_message({ 'id': 1,'flight_id': '1', 'customer_id': '1','passenger_id':1}) // id: 1
+        const actual = await dal.get_by_id(passenger.id)
+         await dal.set_id(passenger.id)
+        assert.strictEqual(expected, actual)
     })
 
 })

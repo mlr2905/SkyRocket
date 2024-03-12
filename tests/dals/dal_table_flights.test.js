@@ -39,9 +39,9 @@ describe('Testing functionallity of the DAL', () => {
     it('delete_flight', async () => {
         await dal.delete_flight(flight_code.id)
         const expected = undefined
-        const delete_flight = await dal.get_by_id(flight_code.id)
+        const actual = await dal.get_by_id(flight_code.id)
          await dal.set_id(flight_code.id)
-        assert.strictEqual(expected, delete_flight)
+        assert.strictEqual(expected, actual)
     })
 
 })

@@ -8,8 +8,8 @@ async function new_chair(new_t) {
     // db.run('insert into chairs_taken ....')
     // result[0] will be the new ID given by the SQL
     // Insert into chairs_taken values(....)
-    const result = await connectedKnex('chairs_taken').insert(new_t)
-    return { ...new_t, id: result[0] }
+    const result = await connectedKnex('chairs_taken').insert(new_t).returning('*');
+    return result[0]
 
 }
 

@@ -11,10 +11,10 @@ async function credit_check (card){
 
 async function new_customer(new_cus) {
 
-    const new_customer = await connectedKnex.raw(`SELECT create_new_customer(
+    const result = await connectedKnex.raw(`SELECT create_new_customer(
         '${new_cus.first_name}','${new_cus.last_name}','${new_cus.address}'
-        ,'${new_cus.phone_no}','${new_cus.credit_card_no}','${new_cus.user_id}');`)   
-    return new_customer
+        ,'${new_cus.phone_no}','${new_cus.credit_card_no}','${new_cus.user_id}');`).returning('*');   
+    return result[0]
 }
 
 async function get_by_id(id) {
