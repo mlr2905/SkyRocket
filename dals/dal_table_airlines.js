@@ -7,9 +7,9 @@ async function new_airline(new_mes) {
     // db.run('insert into airlines ....')
     // result[0] will be the new ID given by the SQL
     // Insert into airlines values(....)
-    const result = await connectedKnex('airlines').insert(new_mes).returning('id');
+    const result = await connectedKnex('airlines').insert(new_mes).returning('*');
     // החזרת אובייקט עם המידע החדש, כולל ה-id
-    return { ...new_mes, id: result[0].id };
+    return  result[0]
   }
   
 

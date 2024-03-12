@@ -1,8 +1,8 @@
 const assert = require('assert')
 const bl = require('../../bl/bl_role_airlines')
-const dal_1 = require('../../dals/dal_1')
-const dal_3 = require('../../dals/dal_3')
-const dal_5 = require('../../dals/dal_5')
+const dal_1 = require('../../dals/dal_table_users')
+const dal_3 = require('../../dals/dal_table_airlines')
+const dal_5 = require('../../dals/dal_table_flights')
 
 
 describe('Testing functionallity of the bl', () => {
@@ -43,6 +43,10 @@ describe('Testing functionallity of the bl', () => {
         assert.strictEqual(expected, new_user.password)
     })
 
+    ///................airlines....................
+    // new_airline
+    // get_by_id
+    // update_airline
 
 })
 
