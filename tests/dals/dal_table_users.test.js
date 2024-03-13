@@ -4,7 +4,6 @@ const dal_0 = require('../../dals/dal_all_tables')
 
 describe('Testing functionallity of the DAL', () => {
 
-    
     it('get_all', async () => {
         const expected = await dal_0.registered_Tables()
         const actual = await dal.get_all()

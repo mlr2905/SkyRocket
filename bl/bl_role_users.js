@@ -8,7 +8,7 @@ const dal_7 = require('../dals/dal_table_passengers')
 
 //func users
 async function create_user(uesr) {
-  
+
   // בודק אם קיבלה סיסמה
   if (uesr.password !== '') {
     // מפעילה את הפרוצדורה sp_i_users
@@ -21,8 +21,8 @@ async function create_user(uesr) {
   }
 }
 
-async function get_by_id_user(type,id) {
-  const user_id = await dal_1.get_by_id(type,id);
+async function get_by_id_user(type, id) {
+  const user_id = await dal_1.get_by_id(type, id);
   return user_id
 }
 
@@ -34,7 +34,7 @@ async function get_qr(id) {
 async function update_user(id, user) {
   const user_id = await dal_1.get_by_id(id);
   if (user_id) {
-    const update_user = await dal_1.update_user(id,user);
+    const update_user = await dal_1.update_user(id, user);
     return `${user_id.username}${update_user}`
   }
   else {
@@ -58,17 +58,17 @@ async function delete_account(id) {
 async function new_customer(new_cus) {
   const Credit_check = await dal_4.credit_check(new_cus.credit_card_no)
 
-  if(Credit_check){
+  if (Credit_check) {
     const new_customer = await dal_4.new_customer(new_cus);
     if (new_customer) {
       return new_cus
     }
   }
   else {
-    return  `Invalid credit card number ${new_cus.credit_card_no} `;
+    return `Invalid credit card number ${new_cus.credit_card_no} `;
 
   }
- 
+
 }
 
 async function get_by_id_customer(id) {
@@ -76,7 +76,7 @@ async function get_by_id_customer(id) {
   return user_id
 }
 
-async function update_customer(id,update) {
+async function update_customer(id, update) {
   const get_by_id = await dal_1.get_by_id(id);
   if (get_by_id) {
     const update_customer = await dal_4.update_customer(update);
@@ -169,6 +169,6 @@ async function get_by_id_passenger(id) {
 
 module.exports = {
   purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
-  , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger,get_qr
+  , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }
