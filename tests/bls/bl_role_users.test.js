@@ -5,6 +5,7 @@ const dal_1 = require('../../dals/dal_table_users')
 const dal_4 = require('../../dals/dal_table_customers')
 const dal_6 = require('../../dals/dal_table_tickets')
 const dal_7 = require('../../dals/dal_table_passengers')
+const { log } = require('console')
 
 
 describe('Testing functionallity of the bl', () => {
@@ -12,42 +13,40 @@ describe('Testing functionallity of the bl', () => {
 
     it('new_user and delete and get_by_id', async () => {
         await bl.create_user({ 'username': 'michael_test', 'password': 'test', 'email': 'michael_test@gmail.com' })
-        const expected = "michael_1tset"
+        const expected = "michael_test"
         const actual = await bl.get_by_id_user('email', 'michael_test@gmail.com')
-        console.log('2',actual.id);
         const delete_account = await bl.delete_account(actual.id)
-        console.log('3',delete_account);
-
-        const set_id_user = await dal_1.set_id_user(actual.id)
+        const set_id_user = await dal_1.set_id(actual.id)
         assert.strictEqual(expected, actual.username)
     })
 
 
 
-    // it('update_user', async () => {
-    //     await bl.update_user(36, 'test34@gmail.com', null)
-    //     const expected = 'test34@gmail.com'
-    //     const actual = await bl.get_by_id_user(36)
-    //     assert.strictEqual(expected, actual.email)
-    // })
+    it('update_user', async () => {
+        await bl.update_user(36,{ email:'test34@gmail.com', password: 'null'})
+        const expected = 'test34@gmail.com'
+        const actual = await bl.get_by_id_user('id',36)
+        await bl.update_user(36,{ email:'Michael29@gmail.com', password: 'null'})
+        assert.strictEqual(expected, actual.email)
+    })
+    
+    it('update_user', async () => {
+        await bl.update_user(36, { email:'null', password: 'test_us'})
+        const expected = 'test_us'
+        const actual = await bl.get_by_id_user('id',36)
+        await bl.update_user(36,{ email:'null', password: 'test_1234'})
+        assert.strictEqual(expected, actual.password)
+    })
 
-    // it('update_user', async () => {
-    //     await bl.update_user(36, null, 'test_us')
-    //     const expected = 'test_us'
-    //     const actual = await bl.get_by_id_user(36)
-    //     assert.strictEqual(expected, actual.password)
-    // })
-
-    // it('new_user and delete and get_by_id ', async () => {
-    //     const next_id = await dal_1.get_next_user_id()
-    //     let id = parseInt(next_id.rows[0].last_value)
-    //     await bl.create_user({ 'username': 'michael_2tset', 'email': 'michael_2test@gmail.com', 'password': '2test' })
-    //     const expected = 'test_2test'
-    //     const actual = await bl.get_by_id_user(id)
-    //     const delete_account = await bl.delete_account(id)
-    //     const set_id_user = await dal_1.set_id_user(id)
-    //     assert.strictEqual(expected, actual.username)
-    // })
+    it('new_user and delete and get_by_id ', async () => {
+        const new_user = await bl.create_user({ 'username': 'michael_test2', 'password': '', 'email': 'michael_test2@gmail.com' })
+        const id =  await bl.get_by_id_user('username','michael_test2')
+        const expected = id.password
+        const actual = await bl.get_by_id_user('email', 'michael_test2@gmail.com')
+        const delete_account = await bl.delete_account(actual.id)
+        const set_id_user = await dal_1.set_id(actual.id)
+        assert.strictEqual(expected, actual.password)
+    })
  
     // //new_customer
     // //update_customer

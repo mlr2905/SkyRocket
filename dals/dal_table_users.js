@@ -39,8 +39,8 @@ async function sp_i_users(user) {
 }
 //new_user (Automatically generates a password)
 async function sp_pass_users(user) {
-    const new_user = await connectedKnex.raw(`CALL sp_pass_users('${user.username}','${user.email}','');`)
-    return new_user
+    const Result = await connectedKnex.raw(`CALL sp_pass_users('${user.username}','${user.email}','');`)
+    return Result.rows[0]._generated_password
 }
 
 async function update_user(id, user) {

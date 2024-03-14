@@ -13,11 +13,12 @@ async function create_user(uesr) {
   if (uesr.password !== '') {
     // מפעילה את הפרוצדורה sp_i_users
     const new_user = await dal_1.sp_i_users(uesr);
+    console.log('bl',new_user);
     return `User '${uesr.username}' successfully created`
   } else {
     // מפעילה את הפרוצדורה sp_pass_users
-    const new_user = await dal_1.sp_pass_users(uesr);
-    return `User '${uesr.username}' successfully created`
+    const Result = await dal_1.sp_pass_users(uesr);
+    return `User '${uesr.username}' successfully created,This is the generated password,'${Result}'`
   }
 }
 
@@ -32,7 +33,7 @@ async function get_qr(id) {
 }
 
 async function update_user(id, user) {
-  const user_id = await dal_1.get_by_id(id);
+  const user_id = await dal_1.get_by_id('id',id);
   if (user_id) {
     const update_user = await dal_1.update_user(id, user);
     return `${user_id.username}${update_user}`
@@ -43,7 +44,7 @@ async function update_user(id, user) {
 }
 
 async function delete_account(id) {
-  const user_id = await dal_1.get_by_id(id);
+  const user_id = await dal_1.get_by_id('id',id);
   if (user_id) {
     const delete_user = await dal_1.delete_user(id);
     return `User '${user_id.username}' deleted successfully `
