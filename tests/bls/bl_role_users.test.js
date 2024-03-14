@@ -53,39 +53,39 @@ describe('Testing functionallity of the bl', () => {
     //     assert.strictEqual(expected, actual.last_name)
     // })
 
-    it('update_customer', async () => {
-        const by_name = await dal_4.get_by_name('Michael29')
-        await bl.update_customer(by_name.id, {'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '4444-5432-1098-7654','user_id': 36 })
-        const expected = '************7654'
-        const actual = await dal_4.get_by_id(by_name.id)
-        assert.strictEqual(expected, actual.credit_card_no)
-    })
+    // it('update_customer', async () => {
+    //     const by_name = await dal_4.get_by_name('Michael29')
+    //     await bl.update_customer(by_name.id, {'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '4444-5432-1098-7654','user_id': 36 })
+    //     const expected = '************7654'
+    //     const actual = await dal_4.get_by_id(by_name.id)
+    //     assert.strictEqual(expected, actual.credit_card_no)
+    // })
 
     // it('get_by_id_flights', async () => {
     //     const expected = 74
     //     const actual = await bl.get_by_id_flights(2)
     //     assert.strictEqual(expected, actual.origin_country_id)
-    // })n
+    // })
 
     // it('get_all_flights', async () => {
 
     //     const expected = await dal_0.registered_Tables()
     //     const actual = await bl.get_all_flights()
-    //     assert.strictEqual(expected.flights, actual)
+    //     assert.strictEqual(expected.flights, actual.length)
     // })
 
 
 
-    // it('purchase_ticket', async () => {
-    //     const next_id = await dal_6.get_next_ticket_id()
-    //     const id = parseInt(next_id.rows[0].last_value)
-    //     await bl.purchase_ticket({ 'flight_id': 2, 'customer_id': 1, 'passenger_id': 4, 'user_id': 1, 'seat_id': 251 }, 'test')
-    //     const expected = 251
-    //     const actual = await dal_6.get_by_id(id)
-    //     const delete_account = await dal_6.delete_ticket(id)
-    //     const set_id_user = await dal_6.set_id_ticket(id)
-    //     assert.strictEqual(expected, actual.seat_id)
-    // })
+    it('purchase_ticket', async () => {
+        const next_id = await dal_6.get_next_ticket_id()
+        const id = parseInt(next_id.rows[0].last_value)
+        await bl.purchase_ticket({ 'flight_id': 2, 'customer_id': 1, 'passenger_id': 4, 'user_id': 1, 'seat_id': 251 }, 'test')
+        const expected = 251
+        const actual = await dal_6.get_by_id(id)
+        const delete_account = await dal_6.delete_ticket(id)
+        const set_id_user = await dal_6.set_id_ticket(id)
+        assert.strictEqual(expected, actual.seat_id)
+    })
 
     // it('get_by_id_passenger', async () => {
     //     const expected = 'Mary'
