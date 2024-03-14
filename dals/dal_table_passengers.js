@@ -13,7 +13,7 @@ async function new_passenger(new_passenger) {
 
 async function get_by_id_passenger(id) {
     // db.run('select * from passengers where user_id=?')
-    const passenger = await connectedKnex('passengers').select('*').where('user_id', id).first()
+    const passenger = await connectedKnex('passengers').select('*').where('id', id).first()
     return passenger
 }
 

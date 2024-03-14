@@ -124,10 +124,11 @@ async function purchase_ticket(new_ticket, test) {
       if (flight.remaining_tickets > 0) {
         const id = parseInt(flight.id);
         if (test === undefined) {
+
           await dal_5.update_remaining_tickets(id);
         }
-        await dal_6.new_ticket(new_ticket);
-        return new_ticket
+        const result = await dal_6.new_ticket(new_ticket);
+        return result
       }
       else {
         return Error('no tickets left')
