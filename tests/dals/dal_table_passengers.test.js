@@ -37,7 +37,7 @@ describe('Testing functionallity of the DAL', () => {
         await dal.delete_passenger(passenger.id)
         const expected = undefined
         const actual = await dal.get_by_id(passenger.id)
-         await dal.set_id(passenger.id)
+        await dal.set_id(passenger.id)
         assert.strictEqual(expected, actual)
     })
 

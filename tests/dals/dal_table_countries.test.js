@@ -7,12 +7,11 @@ const { log } = require('console')
 
 describe('Testing functionallity of the DAL', () => {
 
-   
     it('get_all', async () => {
         const expected = await dal_0.registered_Tables()
         const actual = await dal.get_all()
         assert.strictEqual(expected.countries, actual.length)
-    }) 
+    })
 
     it('get_by_id', async () => {
         const expected = 'israel'
@@ -44,5 +43,5 @@ describe('Testing functionallity of the DAL', () => {
         const set_id_country = await dal.set_id(by_name.id)
         assert.strictEqual(expected, country_id)
     })
-  
+
 })

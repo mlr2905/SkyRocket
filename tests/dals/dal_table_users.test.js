@@ -8,11 +8,11 @@ describe('Testing functionallity of the DAL', () => {
         const expected = await dal_0.registered_Tables()
         const actual = await dal.get_all()
         assert.strictEqual(expected.users, actual.length)
-    })  
+    })
 
     it('get_by_id', async () => {
         const expected = 'Michael29'
-        const user_id = await dal.get_by_id('id',36)
+        const user_id = await dal.get_by_id('id', 36)
         const actual = user_id.username
         assert.strictEqual(expected, actual)
     })

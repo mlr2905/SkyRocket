@@ -4,7 +4,7 @@ const dal_0 = require('../../dals/dal_all_tables')
 const { log } = require('console')
 
 describe('Testing functionallity of the DAL', () => {
-    
+
     it('Credit_check', async () => {
         const expected = true
         const actual = await dal.credit_check('4580980102346346')
@@ -21,7 +21,7 @@ describe('Testing functionallity of the DAL', () => {
         const expected = await dal_0.registered_Tables()
         const actual = await dal.get_all()
         assert.strictEqual(expected.customers, actual.length)
-    }) 
+    })
 
     it('get_by_id', async () => {
         const expected = 'michael rozental'
@@ -31,7 +31,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_customer', async () => {
-        const new_customer = await dal.new_customer({'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '5555-5432-1098-7337', 'user_id': 36  }) 
+        const new_customer = await dal.new_customer({ 'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '5555-5432-1098-7337', 'user_id': 36 })
         const expected = 'Michael29'
         const actual = await dal.get_by_name('Michael29')
         assert.strictEqual(expected, actual.last_name)
@@ -39,7 +39,7 @@ describe('Testing functionallity of the DAL', () => {
 
     it('update_customer', async () => {
         const by_name = await dal.get_by_name('Michael29')
-        await dal.update_customer(by_name.id, {'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '4444-5432-1098-7654','user_id': 36 })
+        await dal.update_customer(by_name.id, { 'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '4444-5432-1098-7654', 'user_id': 36 })
         const expected = '************7654'
         const actual = await dal.get_by_id(by_name.id)
         assert.strictEqual(expected, actual.credit_card_no)
