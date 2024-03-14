@@ -84,13 +84,11 @@ describe('Testing functionallity of the bl', () => {
         assert.strictEqual(expected, actual.first_name)
     })
 
-
     it('get_by_id_passenger', async () => {
         const expected = 'passenger'
         const actual = await bl.get_by_id_passenger(id.id)
         assert.strictEqual(expected, actual.last_name)
     })
-
 
     it('new_ticket', async () => {
         const new_chair = await dal_5.new_chair({'flight_id': 2, 'char_id': 55,'passenger_id':id.id,'user_id': 27}) // Id: 6
