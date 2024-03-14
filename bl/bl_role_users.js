@@ -170,6 +170,38 @@ async function get_by_id_passenger(id) {
 
 }
 
+//tickets
+async function purchase_ticket(new_ticket, test) {
+  try {
+    const flight = await dal_5.get_by_id(new_ticket.flight_id)
+    if (flight) {
+      if (flight.remaining_tickets > 0) {
+        const id = parseInt(flight.id);
+        if (test === undefined) {
+
+          await dal_5.update_remaining_tickets(id);
+        }
+        const result = await dal_6.new_ticket(new_ticket);
+        return result
+      }
+      else {
+        return Error('no tickets left')
+      }
+    }
+    else {
+      throw Error('flight does not exist')
+    }
+  }
+  catch (e) {
+    // check error
+  }
+}
+
+async function get_by_id_ticket(id) {
+  const user_id = await dal_6.get_by_id(id);
+  return user_id
+}
+
 
 module.exports = {
   purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer

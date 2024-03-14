@@ -101,10 +101,18 @@ describe('Testing functionallity of the bl', () => {
         assert.strictEqual(expected, actual.passenger_id)
     })
 
-    it('delete_ticket', async () => {
+    it('delete_ticket ', async () => {
+        await dal_6.delete_ticket(id.id)
+        const expected = 4
+        const actual = await bl.get_by_id_ticket(id.id)
+        assert.strictEqual(expected, actual.customer_id)
+    })
+    //.................delete and reset...........
+
+    it('delete_ticket ', async () => {
         await dal_6.delete_ticket(id.id)
         const expected = undefined
-        const actual = await dal_6.get_by_id(id.id)
+        const actual = await dal_6.get_by_id_ticket(id.id)
          await dal_6.set_id(id.id)
          await dal_7.delete_passenger(id.passenger_id)
          await dal_7.set_id(id.passenger_id)
