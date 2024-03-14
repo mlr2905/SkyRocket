@@ -8,12 +8,7 @@
  *   description: The role_airlines managing API
  */
 
-
-
 //role_airlines/airlines
-
-
-
 
 /**
 *  @swagger

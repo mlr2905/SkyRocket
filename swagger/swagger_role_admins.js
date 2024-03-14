@@ -1,7 +1,6 @@
 
 //categories
 
-
 /**
  * @swagger
  * tags:
@@ -9,10 +8,7 @@
  *   description: The role_admins managing API
  */
 
-
 //role_admins/admins
-
-
 
 /**
 *  @swagger

@@ -19,7 +19,6 @@
  *   description: The role_admins managing API
  */
 
-
 //role_users/users
 /**
  * @swagger
@@ -152,6 +151,7 @@
  *         example:
  *             error: Cannot find user with ID {id}.
  */
+
 /**
  * @swagger
  * components:
@@ -217,7 +217,6 @@
  *             example:
  *               error: No users found matching the search criteria.
  */
-
 
 /**
  * @swagger
@@ -297,7 +296,6 @@
  */
 
 //role_users/customers
-
 
 /**
  * @swagger
@@ -387,7 +385,6 @@
  *                       type: string
  */
 
-
 /**
  * @swagger
  * components:
@@ -449,6 +446,7 @@
  *             example:
  *               error: Cannot find customer with ID {id}.
  */
+
 /**
  * @swagger
  * components:
@@ -748,7 +746,6 @@
 
 //role_users/tickets
 
-
 /**
  * @swagger
  * components:
@@ -827,6 +824,7 @@
  *                     error:
  *                       type: string
  */
+
 /**
  * @swagger
  * components:
