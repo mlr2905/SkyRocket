@@ -38,7 +38,6 @@ async function get_by_id(id) { //getAirlineById
     }
 }
 
-
 /**
  * Updating airline details in the database according to the given ID.
  * @param {number} id - the ID of the company to be updated.
@@ -56,7 +55,6 @@ async function update_airline(id, updatedAirline) { //updateAirline
         throw new Error(`Failed to update airline: ${error.message}`);
     }
 }
-
 
 // ---------------Admin permission only---------------
 
