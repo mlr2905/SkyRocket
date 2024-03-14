@@ -57,9 +57,10 @@ async function delete_account(id) {
 // func customers
 
 async function new_customer(new_cus) {
+  console.log('bl',new_cus);
   const Credit_check = await dal_4.credit_check(new_cus.credit_card_no)
-
-  if (Credit_check) {
+  if (!Credit_check) {
+    console.log('Credit_check',Credit_check);
     const new_customer = await dal_4.new_customer(new_cus);
     if (new_customer) {
       return new_cus
@@ -78,9 +79,10 @@ async function get_by_id_customer(id) {
 }
 
 async function update_customer(id, update) {
-  const get_by_id = await dal_1.get_by_id(id);
+  const get_by_id = await dal_4.get_by_id(id);
   if (get_by_id) {
-    const update_customer = await dal_4.update_customer(update);
+    console.log('ok');
+    const update_customer = await dal_4.update_customer(id,update);
     return `${get_by_id.id}${update_customer}`
   }
   else {
