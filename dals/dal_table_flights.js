@@ -17,11 +17,7 @@ async function update_remaining_tickets(id) {
     // db.run('update flights ....')
     const result = await connectedKnex.raw(`CALL update_remaining_tickets(${id})`)
     if (result.error) {
-
-        console.log(result.error);
-
     } else {
-
         return result
     }
 }
@@ -33,7 +29,7 @@ async function new_flight(new_flight) {
     // result[0] will be the new ID given by the SQL
     // Insert into flights values(....)
     const result = await connectedKnex('flights').insert(new_flight).returning('*');
-    return  result[0] 
+    return result[0]
 }
 
 async function get_by_id(id) {
@@ -83,31 +79,19 @@ async function delete_all() {
     return result
 }
 
-
 // ---------------Test functions only---------------
-
-
 
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE flights_id_seq RESTART WITH ${id}`);
         return result;
-
     } catch (e) {
         throw console.error(e);
-
     }
 }
 async function get_by_flight_code(code) {
-
     const get_by_flight_code = await connectedKnex('flights').select('*').where('flight_code', code).first()
-
     return get_by_flight_code
 }
 
-
-module.exports = {
-    get_all, get_by_id, get_by_id_name, new_flight, update_flight, update_remaining_tickets, delete_flight,
-    delete_all,get_by_flight_code,set_id
-    // , create_table_if_not_exist
-}
+module.exports = { get_all, get_by_id, get_by_id_name, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id }

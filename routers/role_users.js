@@ -47,18 +47,16 @@ router.get('/users/search', async (request, response) => {
     const username = query.username
     const password = query.password
     const id = query.id
-   let search = email ? email : username  ? username : password  ? password : id;
-   let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
-    
+    let search = email ? email : username ? username : password ? password : id;
+    let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
 
     try {
-        const user = await bl.get_by_id_user(type,search)
+        const user = await bl.get_by_id_user(type, search)
         if (user) {
             response.status(200).json(user)
         }
         else {
             throw response.status(404).json({ "error": `The id ${search} you specified does not exist in the system ` })
-
         }
 
     } catch (error) {
@@ -75,7 +73,6 @@ router.post('/users', async (request, response) => {
 
     } catch (error) {
         throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
-        ; // מעבירה את השגיאה הלאה
     }
 
 })
@@ -94,7 +91,6 @@ router.put('/users/:id', async (request, response) => {
         }
         catch (error) {
             throw response.status(503).json({ "error": `The request failed, try again later  ` })
-            ; // מעבירה את השגיאה הלאה
         }
     }
     else {
@@ -114,15 +110,12 @@ router.delete('/users/:id', async (request, response) => {
         }
         catch (error) {
             throw response.status(503).json({ "error": `The request failed, try again later  ` })
-            ; // מעבירה את השגיאה הלאה
         }
     }
     else {
         throw response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
-
     }
 })
-
 
 // GET by ID
 router.get('/customers/:id', async (request, response) => {
@@ -169,6 +162,7 @@ router.get('/flights', async (request, response) => {
         response.json({ 'error': JSON.stringify(e) })
     }
 })
+
 // GET by ID
 router.get('/flights/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
@@ -211,7 +205,4 @@ router.get('/passengers/:id', async (request, response) => {
     }
 })
 
-
-
 module.exports = router
-

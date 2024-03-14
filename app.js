@@ -21,13 +21,9 @@ const options = {
         info: {
             title: "SkyRocket API",
             version: "1.0.1",
-            description: "My REST API SkyRocket",  
+            description: "My REST API SkyRocket",
         },
-        servers: [
-            {
-                url: "https://skyrocket.onrender.com/",
-            },
-        ],
+        servers: [{url: "https://skyrocket.onrender.com/",},],
     },
     apis: ["./swagger/*.js"],
 };
@@ -57,28 +53,17 @@ const port = 3000
 //     }
 // }));
 
-const users = {
-    'michael': 'Miki260623' // שם המשתמש והסיסמה
-};
+const users = {'michael': 'Miki260623' };
 
-const checkPassword = (username, password) => {
-    // בדיקת סיסמה נכונה
-    return users[username] === password;
-};
+const checkPassword = (username, password) => {return users[username] === password;};
 
 app.use(basicAuth({
     users: users,
     challenge: true,
-    unauthorizedResponse: (req) => {  
-        return 'Unauthorized';
-    },
-    authorizer: (username, password) => {
-        // בדיקת אימות סיסמה
-        return checkPassword(username, password);
-    }
-}));
+    unauthorizedResponse: (req) => {return 'Unauthorized';},
+    authorizer: (username, password) => {return checkPassword(username, password); }}));
 
-app.use("/swagger",swaggerUi.serve,swaggerUi.setup(specs));
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(cors());
 app.use(body_parser.json())

@@ -4,7 +4,6 @@ const dal_1 = require('../../dals/dal_table_users')
 const dal_3 = require('../../dals/dal_table_airlines')
 const dal_5 = require('../../dals/dal_table_flights')
 
-
 describe('Testing functionallity of the bl', () => {
 
     it('new_user_airlines and delete and get_by_id', async () => {

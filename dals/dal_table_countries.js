@@ -9,7 +9,6 @@ async function new_countrie(new_mes) {
     // result[0] will be the new ID given by the SQL
     // Insert into countries values(....)
     const result = await connectedKnex('countries').insert(new_mes).returning('*')
-    // החזרת אובייקט עם המידע החדש, כולל ה-id
     return result[0];
 }
 
@@ -24,9 +23,7 @@ async function get_by_id(id) {
 }
 
 async function get_by_name(name) {
-
     const country_name = await connectedKnex('countries').select('*').where('country_name', name).first()
-
     return country_name
 }
 
@@ -45,7 +42,7 @@ async function delete_countrie(id) {
 async function get_all() {
     // db.run('select * from countries')
     const countries = await connectedKnex.raw(`SELECT get_all_countries();`)
-   return countries.rows[0].get_all_countries
+    return countries.rows[0].get_all_countries
 }
 
 async function delete_all() {
@@ -57,22 +54,13 @@ async function delete_all() {
 
 // ---------------Test functions only---------------
 
-
-
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE countries_id_seq RESTART WITH ${id}`);
         return result;
-
     } catch (e) {
         throw console.error(e);
-
     }
 }
 
-
-module.exports = {
-    get_all, get_by_id,get_by_name, new_countrie, update_countrie, delete_countrie,
-    delete_all,set_id
-    // , create_table_if_not_exist
-}
+module.exports = { get_all, get_by_id, get_by_name, new_countrie, update_countrie, delete_countrie, delete_all, set_id }

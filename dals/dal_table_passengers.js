@@ -1,6 +1,7 @@
 const knex = require('knex')
 const db = require('../connect_db/default')
 const connectedKnex = db.connect()
+
 // ---------------User functions only and admin---------------
 
 async function new_passenger(new_passenger) {
@@ -8,7 +9,7 @@ async function new_passenger(new_passenger) {
     // result[0] will be the new ID given by the SQL
     // Insert into passengers values(....)
     const result = await connectedKnex('passengers').insert(new_passenger).returning('*');
-   return  result[0] 
+    return result[0]
 }
 
 async function get_by_id_passenger(id) {
@@ -33,7 +34,6 @@ async function delete_passenger(id) {
 async function get_all() {
     // db.run('select * from passengers')
     const passengers = await connectedKnex.raw(`SELECT get_all_passengers();`)
-
     return passengers.rows[0].get_all_passengers
 }
 
@@ -56,22 +56,17 @@ async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE passengers_id_seq RESTART WITH ${id}`);
         return result;
-
     } catch (e) {
         throw console.error('Error fetching next user ID:', e);
-
     }
 }
 
 async function get_by_passport_number(id) {
-
     const airline_name = await connectedKnex('passengers').select('*').where('passport_number', id).first()
-
     return airline_name
 }
 
 module.exports = {
     get_all, get_by_id, new_passenger, update_passenger, delete_passenger,
-    delete_all, get_by_id_passenger, set_id,get_by_passport_number
-    // , create_table_if_not_exist
+    delete_all, get_by_id_passenger, set_id, get_by_passport_number
 }

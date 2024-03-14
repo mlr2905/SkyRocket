@@ -30,7 +30,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/users:
  *   post:
  *     summary: Create a new user
@@ -103,7 +103,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/users/{id}:
  *   get:
  *     summary: Get a user by ID
@@ -161,7 +161,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/users/search:
  *   get:
  *     summary: Search users by ID, username, email, or password
@@ -203,7 +203,7 @@
  *                     type: string
  *                   role_id:
  *                     type: number
- *                   
+ *
  *                   # Exclude password from response
  *       '404':
  *         description: No users found matching the criteria.
@@ -228,7 +228,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/users/{id}:
  *   put:
  *     summary: Update the user by the ID
@@ -270,7 +270,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/users/{id}:
  *   delete:
  *     summary: Delete an user by ID
@@ -308,7 +308,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/customers:
  *   post:
  *     summary: Create a new customer
@@ -397,7 +397,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/customers/{id}:
  *   get:
  *     summary: Get a customer by ID
@@ -458,7 +458,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/customers/{id}:
  *   put:
  *     summary: Update the customer by the ID
@@ -540,7 +540,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/customers/{id}:
  *   put:
  *     summary: Update the customer by the ID
@@ -612,7 +612,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/flights:
  *   get:
  *     summary: Get all flights
@@ -678,7 +678,7 @@
  *       in: header
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
- * 
+ *
  * /role_users/flights/{id}:
  *   get:
  *     summary: Get a flight by ID
@@ -911,7 +911,7 @@
  *                   properties:
  *                     error:
  *                       type: string
- */ 
+ */
 
 /**
 *  @swagger

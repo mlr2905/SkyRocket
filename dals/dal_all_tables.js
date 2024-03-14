@@ -2,11 +2,10 @@ const knex = require('knex')
 const db = require('../connect_db/default')
 const connectedKnex = db.connect()
 
-
 async function get_all() {
     // db.run('select * from chat1')
-      const arr = await connectedKnex.raw(`SELECT get_all_data();`)
-  return arr.rows[0].get_all_data
+    const arr = await connectedKnex.raw(`SELECT get_all_data();`)
+    return arr.rows[0].get_all_data
 }
 
 async function get_by_id(id) {
@@ -18,7 +17,6 @@ async function get_by_id(id) {
     const e = await connectedKnex('flights').select('*').where('id', id).first()
     const f = await connectedKnex('tickets').select('*').where('id', id).first()
     const h = await connectedKnex('passengers').select('*').where('id', id).first()
-
 
     const arr = { 0: a, 1: b, 2: c, 3: d, 4: e, 5: f, 6: h }
     return arr
@@ -33,20 +31,13 @@ async function registered_Tables() {
 
     } catch (e) {
         throw console.error(e);
-
     }
 }
 
 async function get_qr(code) {
     // db.run('select * from flights')
     const flights = await connectedKnex.raw(`SELECT generate_qr_code('${code}');`)
-    console.log(flights.rows[0].generate_qr_code);
-
     return flights.rows[0].generate_qr_code
 }
 
-
-
-module.exports = {
-    get_all, get_by_id,registered_Tables,get_qr
-}
+module.exports = { get_all, get_by_id, registered_Tables, get_qr }

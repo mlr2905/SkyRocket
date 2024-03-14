@@ -10,7 +10,6 @@ async function new_chair(new_t) {
     // Insert into chairs_taken values(....)
     const result = await connectedKnex('chairs_taken').insert(new_t).returning('*');
     return result[0]
-
 }
 
 // ---------------Admin permission only---------------
@@ -27,12 +26,12 @@ async function delete_chair(id) {
     return result
 }
 
-
 async function update_chair(id, updated_chair) {
     // db.run('update chairs_taken ....')
     const result = await connectedKnex('chairs_taken').where('id', id).update(updated_chair)
     return updated_chair
 }
+
 async function get_all() {
     // db.run('select * from chairs_taken')
     const chairs_taken = await connectedKnex.raw(`SELECT get_all_chairs_taken();`)
@@ -51,17 +50,10 @@ async function delete_all() {
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE chairs_id_seq RESTART WITH ${id}`);
-        return result;
-
+        return result
     } catch (e) {
         throw console.error(e);
-
     }
 }
 
-
-
-module.exports = {
-    get_all, get_by_id, new_chair, update_chair, delete_chair, set_id, delete_all
-    // , create_table_if_not_exist
-}
+module.exports = { get_all, get_by_id, new_chair, update_chair, delete_chair, set_id, delete_all }

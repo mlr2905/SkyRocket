@@ -1,6 +1,7 @@
 const knex = require('knex')
 const db = require('../connect_db/default')
 const connectedKnex = db.connect()
+
 // ---------------User airline functions only and admin---------------
 
 async function new_airline(new_mes) {
@@ -9,9 +10,8 @@ async function new_airline(new_mes) {
     // Insert into airlines values(....)
     const result = await connectedKnex('airlines').insert(new_mes).returning('*');
     // החזרת אובייקט עם המידע החדש, כולל ה-id
-    return  result[0]
-  }
-  
+    return result[0]
+}
 
 async function get_by_id(id) {
     // db.run('select * from airlines where id=?')
@@ -38,39 +38,33 @@ async function delete_airline(id) {
     return result
 }
 
-
 async function get_all() {
     // db.run('select * from airlines')
     const airlines = await connectedKnex.raw(`SELECT get_all_airlines();`)
     return airlines.rows[0].get_all_airlines
 }
+
 async function delete_all() {
     // db.run('update airlines ....')
     const result = await connectedKnex('airlines').del()
     await connectedKnex.raw('ALTER SEQUENCE "airlines_id_seq" RESTART WITH 1');
     return result
 }
+
 // ---------------Test functions only---------------
 
 async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE airlines_id_seq RESTART WITH ${id}`);
         return result;
-
     } catch (e) {
         throw console.error(e);
-
     }
 }
+
 async function get_by_name(name) {
-
     const airline_name = await connectedKnex('airlines').select('*').where('name', name).first()
-
     return airline_name
 }
 
-module.exports = {
-    get_all, get_by_id, new_airline, update_airline, delete_airline,set_id,get_by_name,
-    delete_all
-    // , create_table_if_not_exist
-}
+module.exports = { get_all, get_by_id, new_airline, update_airline, delete_airline, set_id, get_by_name, delete_all }

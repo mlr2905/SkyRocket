@@ -4,25 +4,20 @@ const connectedKnex = db.connect()
 
 // ---------------User functions only and admin---------------
 
-
 async function checkPassword (username,password) {
     // db.run('select * from users where id=?')
-
     const user = await connectedKnex.raw('SELECT * FROM users WHERE username = ? AND password = ?', [username, password])
-
     return user
 }
 
 async function get_by_name(name) {
     // db.run('select * from users where id=?')
-
     const user = await connectedKnex.raw('users').select('*').where('username', name).first()
-
     return user
 }
+
 //new_user
 async function sp_i_users_airlines(user) {
-
     const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`)
     return new_user
 }
@@ -37,6 +32,7 @@ async function sp_i_users(user) {
     const new_user = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`)
     return new_user
 }
+
 //new_user (Automatically generates a password)
 async function sp_pass_users(user) {
     const Result = await connectedKnex.raw(`CALL sp_pass_users('${user.username}','${user.email}','');`)
@@ -55,17 +51,14 @@ async function update_user(id, user) {
                 return update
             }
             if (user.password === 'null') {
-
                 const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
                 return update
             }
-
             return { error: 'The fields are not registered well' }
         // }
     }
     catch (e) {
         throw console.error('Not carried out:', e);
-        ; // Re-throw the error for further handling
     }
 }
 
@@ -76,7 +69,6 @@ async function get_by_id(type,id) {
         .join('roles', 'users.role_id', 'roles.id')
         .where(`users.${type}`, id)
         .first();
-
     return user
 }
 
@@ -87,6 +79,7 @@ async function delete_user(id) {
 }
 
 // ---------------Admin permission only---------------
+
 async function get_all() {
     // db.run('select * from users')
     const users = await connectedKnex.raw(`SELECT get_all_users();`)
@@ -105,15 +98,12 @@ async function set_id(id) {
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE users_id_seq RESTART WITH ${id}`);
         return result;
-
     } catch (e) {
         throw console.error(e);
-
     }
 }
 
 module.exports = {
     get_by_name, get_all, get_by_id, update_user, delete_user,checkPassword,
     delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, set_id
-    // ,create_table_if_not_exist
 }
