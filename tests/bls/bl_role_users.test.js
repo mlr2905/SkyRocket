@@ -107,9 +107,10 @@ describe('Testing functionallity of the bl', () => {
         const actual = await bl.get_by_id_ticket(id.id)
         assert.strictEqual(expected, actual.customer_id)
     })
-    //.................delete and reset...........
 
-    it('delete_ticket ', async () => {
+    //...This test does not test a function in BL, it is designed to reset and delete what the test created...
+
+    it('reset and delete', async () => {
         await dal_6.delete_ticket(id.id)
         const expected = undefined
         const actual = await dal_6.get_by_id_ticket(id.id)
