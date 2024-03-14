@@ -27,21 +27,22 @@ async function create_user(uesr) {
   }
 }
 
-async function get_by_id_user(id) {
-  const user_id = await dal_1.get_by_id(id);
+async function get_by_id_user(type, id) {
+  const user_id = await dal_1.get_by_id(type, id);
   return user_id
 }
 
-async function update_user(id, email, password) {
-  const user_id = await dal_1.get_by_id(id);
+async function update_user(id, user) {
+  const user_id = await dal_1.get_by_id('id',id);
   if (user_id) {
-    const update_user = await dal_1.update_user(id, email, password);
+    const update_user = await dal_1.update_user(id, user);
     return `${user_id.username}${update_user}`
   }
   else {
-    return console.error('The ID you specified does not exist:');
+    return user_id
   }
 }
+
 
 // airline
 
