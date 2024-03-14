@@ -47,5 +47,12 @@ describe('Testing functionallity of the bl', () => {
     // get_by_id
     // update_airline
 
+   ///................flights....................
+
+    // new_flight
+    // get_by_id
+    // update_flight
+    // DELETE_flight
+
 })
 
