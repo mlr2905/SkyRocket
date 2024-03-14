@@ -152,6 +152,7 @@ router.get('/flights', async (request, response) => {
         response.json({ 'error': JSON.stringify(e) })
     }
 })
+
 // GET by ID
 router.get('/flights/:id', async (request, response) => {
     const by_id = parseInt(request.params.id)
