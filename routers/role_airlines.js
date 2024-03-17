@@ -146,7 +146,6 @@ router.put('/airlines/:id', async (request, response) => {
 router.get('/airline_id/:id', async (request, response) => {
     try {
         const by_id = parseInt(request.params.id)
-console.log(by_id);
         const id = await bl.get_flight_by_airline_id(by_id)
         if (id) {
             response.json(id)

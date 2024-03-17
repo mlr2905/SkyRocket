@@ -94,10 +94,8 @@ async function get_by_id_flights(id) {
   }
 }
 async function get_flight_by_airline_id(id) {
-  console.log(id);
   try {
     const get_by_id = await dal_5.get_flight_by_airline_id(id);
-console.log(get_by_id);
     if (get_by_id) {
       return get_by_id
     } else {
