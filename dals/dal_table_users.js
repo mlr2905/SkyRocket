@@ -11,14 +11,15 @@ async function checkPassword (username,password) {
 }
 
 async function get_by_name(name) {
-    // db.run('select * from users where id=?')
-    const user = await connectedKnex.raw('users').select('*').where('username', name).first()
-    return user
+    const user = await connectedKnex('users').select('*').where('username', name).first();
+    return user;
 }
+
 
 //new_user
 async function sp_i_users_airlines(user) {
     const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`)
+
     return new_user
 }
 
@@ -73,15 +74,20 @@ async function get_by_id(type,id) {
 }
 
 async function delete_user(id) {
-    // db.run('update users ....')
+
         const delete_user = await connectedKnex.raw(`CALL delete_user(${id});`)
         return delete_user
+}
+
+async function delete_user_airlines(id) {
+    // db.run('update customers ....')
+    const result = await connectedKnex('users').where('id', id).del()
+    return result
 }
 
 // ---------------Admin permission only---------------
 
 async function get_all() {
-    // db.run('select * from users')
     const users = await connectedKnex.raw(`SELECT get_all_users();`)
     return users.rows[0].get_all_users
 }
@@ -104,6 +110,6 @@ async function set_id(id) {
 }
 
 module.exports = {
-    get_by_name, get_all, get_by_id, update_user, delete_user,checkPassword,
+    get_by_name, get_all, get_by_id, update_user, delete_user,delete_user_airlines,checkPassword,
     delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, set_id
 }

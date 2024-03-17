@@ -45,12 +45,11 @@ async function get_by_id(id) { //getAirlineById
  * @returns {Promise<object>} The successfully updated company.
  */
 async function update_airline(id, updatedAirline) { //updateAirline
+
     try {
         const result = await connectedKnex('airlines').where('id', id).update(updatedAirline);
-        if (result === 0) {
-            throw new Error('No airline found with the provided id');
-        }
-        return updatedAirline;
+        return result
+
     } catch (error) {
         throw new Error(`Failed to update airline: ${error.message}`);
     }
@@ -136,5 +135,12 @@ async function get_by_name(name) { //getAirlineByName
     }
 }
 
+async function get_by_airline_id_test(id) {
+    // db.run('select * from flights where id=?')
+    
+    const result = await connectedKnex.raw(`SELECT get_flights_by_airline(${id})`);
 
-module.exports = { get_all, get_by_id, new_airline, update_airline, delete_airline, set_id, get_by_name, delete_all }
+    return result
+}
+
+module.exports = { get_all, get_by_id, new_airline, update_airline, delete_airline, set_id, get_by_name, delete_all,get_by_airline_id_test }

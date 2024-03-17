@@ -5,6 +5,7 @@ const dal_5 = require('../dals/dal_table_flights')
 //func users 
 async function create_user(uesr) {
   const user_name = await dal_1.get_by_name(uesr.username);
+
   if (user_name === undefined) {
     try {
       // בודקת אם קיבלה סיסמה
@@ -13,6 +14,7 @@ async function create_user(uesr) {
         const new_user = await dal_1.sp_i_users_airlines(uesr);
         return new_user
       } else {
+
         // מפעילה את הפרוצדורה sp_pass_users
         const new_user = await dal_1.sp_pass_users_airlines(uesr);
         return new_user
@@ -44,6 +46,8 @@ async function update_user(id, user) {
 }
 
 
+
+
 // airline
 
 async function create_airline(username) {
@@ -65,10 +69,11 @@ async function get_by_id_airline(id) {
 async function update_airline(id, update_airline) {
   const user_id = await dal_3.get_by_id(id);
   if (user_id) {
-    const update_user = await dal_1.update_user(id, update_airline);
+    const update_user = await dal_3.update_airline(id, update_airline);
     return `${user_id.name}${update_user}`
   }
   else {
+    console.log('bl no ko');
     return console.error('The ID you specified does not exist:');
   }
 }
@@ -88,9 +93,9 @@ async function get_by_id_flights(id) {
     throw error; // מעבירה את השגיאה הלאה
   }
 }
-async function get_by_id_name(id) {
+async function get_by_airline_id(id) {
   try {
-    const get_by_id = await dal_5.get_by_id_name(id);
+    const get_by_id = await dal_5.get_by_airline_id(id);
 
     if (get_by_id) {
       return get_by_id
@@ -117,7 +122,7 @@ async function create_new_flight(flights) {
 async function update_flight(id, update_flight) {
   const flight_id = await dal_5.get_by_id(id);
   if (flight_id) {
-    const update = await dal_1.update_user(id, update_flight);
+    const update = await dal_5.update_flight(id, update_flight);
     return `${flight_id.id}${update}`
   }
   else {
@@ -135,8 +140,9 @@ async function delete_flight(id) {
   }
 }
 
+
 module.exports = {
   create_user, get_by_id_user, update_user, create_airline, get_by_id_airline,
-  update_airline, get_by_id_name, get_by_id_flights, create_new_flight,
+  update_airline, get_by_airline_id, get_by_id_flights, create_new_flight,
   update_flight, delete_flight
 }

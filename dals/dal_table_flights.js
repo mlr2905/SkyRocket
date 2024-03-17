@@ -44,16 +44,12 @@ async function get_by_id(id) {
     return flight
 }
 
-async function get_by_id_name(id) {
+async function get_flight_by_airline_id(id) {
     // db.run('select * from flights where id=?')
-    const flight = await connectedKnex('flights')
-        .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
-        .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
-        .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
-        .leftJoin('planes', 'planes.id', 'flights.plane_id')
-        .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 'destination_countries.country_name as destination_country_name', 'planes.seat as Total_tickets')
-        .where('flights.airline_id', id).first()
-    return flight
+    
+    const result = await connectedKnex.raw(`SELECT get_flight_details_by_airline(${id})`);
+
+    return result
 }
 
 async function update_flight(id, updated_flight) {
@@ -93,5 +89,12 @@ async function get_by_flight_code(code) {
     const get_by_flight_code = await connectedKnex('flights').select('*').where('flight_code', code).first()
     return get_by_flight_code
 }
+async function get_flight_by_airline_id_test(id) {
+    // db.run('select * from flights where id=?')
+    
+    const result = await connectedKnex.raw(`SELECT get_flights_by_airline(${id})`);
 
-module.exports = { get_all, get_by_id, get_by_id_name, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id }
+    return result
+}
+
+module.exports = { get_all, get_by_id, get_flight_by_airline_id, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id,get_flight_by_airline_id_test }

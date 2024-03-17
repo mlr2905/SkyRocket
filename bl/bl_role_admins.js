@@ -52,6 +52,16 @@ async function delete_account(id) {
     return console.error('The ID you specified does not exist:', error);
   }
 }
+async function delete_account_airlines(id) {
+  const user_id = await dal_1.get_by_id('id',id);
+  if (user_id) {
+    const delete_user = await dal_1.delete_user_airlines(id);
+    return `User '${user_id.username}' deleted successfully `
+  }
+  else {
+    return `The ID ${id} you specified does not exist`;
+  }
+}
 
 async function get_all_flights() {
   try {
@@ -97,5 +107,5 @@ async function delete_flight(id) {
 }
 
 module.exports = {
-  delete_flight, purchase_ticket, create_user, get_all_flights, update_user, get_by_id_user, delete_account
+  delete_flight, purchase_ticket, create_user, get_all_flights, update_user, get_by_id_user, delete_account,delete_account_airlines
 }
