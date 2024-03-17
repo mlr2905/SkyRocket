@@ -660,6 +660,83 @@
 
 
 /**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ *
+ * /role_airlines/flights/{id}:
+ *   put:
+ *     summary: Update the flight by the ID
+ *     tags: [role_airlines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The flights id
+ *     security:
+ *       - CustomAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/flights'
+ *     responses:
+ *       200:
+ *         description: The user_airline was updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/flights'
+ *       404:
+ *         description: The user_airline was not found
+ *       500:
+ *         description: Some error happened
+ */
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ *
+ * /role_airlines/flights/{id}:
+ *   delete:
+ *     summary: Delete an flight by ID
+ *     tags: [role_airlines]
+ *     description: Delete the flight record with the specified ID. Requires authentication.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the flight to delete.
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - CustomAuth: []
+ *     responses:
+ *       204:
+ *         description: flight deleted successfully.
+ *       404:
+ *         description: flight not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: cannot find flight with id {id}
+ */
+
+/**
 *  @swagger
 *  components:
 *    schemas:
