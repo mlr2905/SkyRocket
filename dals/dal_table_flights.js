@@ -49,7 +49,7 @@ async function get_flight_by_airline_id(id) {
     
     const result = await connectedKnex.raw(`SELECT get_flight_details_by_airline(${id})`);
 
-    return result
+    return result[0]
 }
 
 async function update_flight(id, updated_flight) {
