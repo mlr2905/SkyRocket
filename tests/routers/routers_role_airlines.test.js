@@ -1,268 +1,210 @@
-const request = require('supertest');
-const app = require('../app'); // assuming your Express app is exported from app.js
-const { expect } = require('chai');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const expect = chai.expect;
 
-// GET /role_airlines/users/:id
-describe('GET /role_airlines/users/:id', function() {
-  it('should return user by id', function(done) {
-    request(app)
-      .get('/role_airlines/users/1') // assuming the user ID is 1
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body).to.have.property(/* property indicating user details */);
+chai.use(chaiHttp);
+
+// Define the API you're testing
+const apiURL = 'https://skyrocket.onrender.com/role_airlines';
+const expectedUser = {
+  "id": 1, "username": "Idit Rozental", "password": "jsad439", "email": "idit@gmail.com", "role_id": 1, "role_name": "user"
+};
+
+describe('API Tests', function () {
+  // Example test for a GET request
+  it('should GET all items by email', function (done) {
+    const userEmail = 'idit@gmail.com'; // Replace with the email you want to test
+    chai.request(apiURL)
+      .get(`/users/search?email=${userEmail}`) // Endpoint adjusted to include email query parameter
+      .auth('michael', 'Miki260623') // Add authentication credentials
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.deep.equal(expectedUser); // Deep equal to compare objects
+        // Optionally, you can add more assertions to validate the response data
         done();
       });
   });
-
-  it('should return 404 for non-existent user', function(done) {
-    request(app)
-      .get('/role_airlines/users/999') // assuming non-existent user ID
-      .expect(404)
-      .end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body).to.have.property('error');
-        done();
-      });
-  });
-
-  // Add more tests for error handling...
-
 });
 
-// POST /role_airlines/users
-describe('POST /role_airlines/users', function() {
-  it('should create a new user', function(done) {
-    const newUser = { /* populate with valid user data */ };
-    request(app)
-      .post('/role_airlines/users')
+
+// GET /users/search
+it('should return user by username', function (done) {
+  request(app)
+    .get('/users/search')
+    .query({ username: 'Egyptair' })
+    .auth('michael', 'Miki260623') // Add authentication credentials
+    .expect(200)
+    .end(function (err, res) {
+      if (err) return done(err);
+      expect(res.body).to.have.property('username', 'Egyptair');
+      done();
+    });
+});
+
+// Add more tests for other scenarios...
+
+// GET /users/search
+it('should return 404 for non-existent user', function (done) {
+  request(app)
+    .get('/users/search')
+    .query({ id: 4 })
+    .auth('michael', 'Miki260623') // Add authentication credentials
+    .expect(404)
+    .end(function (err, res) {
+      if (err) return done(err);
+      expect(res.body).to.have.property('error');
+      done();
+    });
+});
+
+  // Example test for a GET request
+  it('should GET all items by email', function (done) {
+    const userEmail = 'idit@gmail.com'; // Replace with the email you want to test
+    chai.request(apiURL)
+      .get(`/users/search?email=${userEmail}`) // Endpoint adjusted to include email query parameter
+      .auth('michael', 'Miki260623') // Add authentication credentials
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.deep.equal(expectedUser); // Deep equal to compare objects
+        // Optionally, you can add more assertions to validate the response data
+        done();
+      });
+  });
+
+  // POST /users
+  it('should create a new user', function (done) {
+    const newUser = {
+      // Provide necessary user data for the test
+      // Ensure data is unique for each test to avoid conflicts
+    };
+
+    chai.request(apiURL)
+      .post('/users')
       .send(newUser)
-      .expect(201)
-      .end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body).to.have.property(/* property indicating successful creation */);
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        // Add assertions to validate the response body if needed
         done();
       });
   });
 
-  // Add more tests for error handling...
+  // PUT /users/:id
+  it('should update an existing user', function (done) {
+    const userId = 1; // Provide an existing user ID for the test
+    const updatedUserData = {
+      // Provide necessary updated user data for the test
+    };
 
-});
-
-// PUT /role_airlines/users/:id
-describe('PUT /role_airlines/users/:id', function() {
-  it('should update user details', function(done) {
-    const updatedUser = { /* populate with updated user data */ };
-    request(app)
-      .put('/role_airlines/users/1') // assuming the user ID is 1
-      .send(updatedUser)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body).to.deep.equal(updatedUser);
+    chai.request(apiURL)
+      .put(`/users/${userId}`)
+      .send(updatedUserData)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        // Add assertions to validate the response body if needed
         done();
       });
   });
 
-  // Add more tests for error handling...
+  // DELETE /users/:id
+  it('should delete an existing user', function (done) {
+    const userId = 1; // Provide an existing user ID for the test
 
-});
-
-// GET /role_airlines/airlines/:id
-describe('GET /role_airlines/airlines/:id', function() {
-  it('should return airline by id', function(done) {
-    request(app)
-      .get('/role_airlines/airlines/1') // assuming the airline ID is 1
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body).to.have.property(/* property indicating airline details */);
+    chai.request(apiURL)
+      .delete(`/users/${userId}`)
+      .end((err, res) => {
+        expect(res).to.have.status(204);
         done();
       });
   });
 
-  it('should return 404 for non-existent airline', function(done) {
-    request(app)
-      .get('/role_airlines/airlines/999') // assuming non-existent airline ID
-      .expect(404)
-      .end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body).to.have.property('error');
-        done();
+
+  // GET /airlines/:id
+  describe('GET /airlines/:id', function() {
+      it('should return an airline by ID if it exists', function(done) {
+          chai.request(apiURL)
+              .get('/airlines/1') // Assuming the ID 1 exists
+              .auth('michael', 'Miki260623') // Add authentication credentials
+              .end((err, res) => {
+                  expect(res).to.have.status(200);
+                  expect(res.body).to.be.an('object');
+                  // Add more assertions based on the response body schema
+                  done();
+              });
+      });
+
+      it('should return a 404 error if airline is not found', function(done) {
+          chai.request(apiURL)
+              .get('/airlines/999') // Assuming the ID 999 does not exist
+              .auth('michael', 'Miki260623') // Add authentication credentials
+              .end((err, res) => {
+                  expect(res).to.have.status(404);
+                  expect(res.body).to.have.property('error');
+                  // Add more assertions based on the error response
+                  done();
+              });
       });
   });
 
-  // Add more tests for error handling...
+  // POST /airlines
+  describe('POST /airlines', function() {
+      it('should create a new airline', function(done) {
+          const newAirline = { /* valid airline data */ }; // Adjust to valid airline data
+          chai.request(apiURL)
+              .post('/airlines')
+              .auth('michael', 'Miki260623') // Add authentication credentials
+              .send(newAirline)
+              .end((err, res) => {
+                  expect(res).to.have.status(201);
+                  expect(res.body).to.be.an('object');
+                  // Add more assertions based on the response body schema
+                  done();
+              });
+      });
 
-});
-
-// POST /role_airlines/airlines
-describe('POST /role_airlines/airlines', function() {
-  it('should create a new airline', function(done) {
-    const newAirline = { /* populate with valid airline data */ };
-    request(app)
-      .post('/role_airlines/airlines')
-      .send(newAirline)
-      .expect(201)
-      .end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body).to.have.property(/* property indicating successful creation */);
-        done();
+      it('should return a 409 error if airline username or email already exist', function(done) {
+          const existingAirline = { /* existing airline data */ }; // Adjust to existing airline data
+          chai.request(apiURL)
+              .post('/airlines')
+              .auth('michael', 'Miki260623') // Add authentication credentials
+              .send(existingAirline)
+              .end((err, res) => {
+                  expect(res).to.have.status(409);
+                  expect(res.body).to.have.property('error');
+                  // Add more assertions based on the error response
+                  done();
+              });
       });
   });
 
-  // Add more tests for error handling...
+  // PUT /airlines/:id
+  describe('PUT /airlines/:id', function() {
+      it('should update an airline by ID', function(done) {
+          const updatedAirlineData = { /* updated airline data */ }; // Adjust to valid updated airline data
+          chai.request(apiURL)
+              .put('/airlines/1') // Assuming the ID 1 exists
+              .auth('michael', 'Miki260623') // Add authentication credentials
+              .send(updatedAirlineData)
+              .end((err, res) => {
+                  expect(res).to.have.status(200);
+                  expect(res.body).to.be.an('object');
+                  // Add more assertions based on the response body schema
+                  done();
+              });
+      });
 
-});
-
-// PUT /role_airlines/airlines/:id
-describe('PUT /role_airlines/airlines/:id', function() {
-  it('should update airline details', function(done) {
-    const updatedAirline = { /* populate with updated airline data */ };
-    request(app)
-      .put('/role_airlines/airlines/1') // assuming the airline ID is 1
-      .send(updatedAirline)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        expect(res.body).to.deep.equal(updatedAirline);
-        done();
+      it('should return a 404 error if airline is not found', function(done) {
+          const updatedAirlineData = { /* updated airline data */ }; // Adjust to valid updated airline data
+          chai.request(apiURL)
+              .put('/airlines/999') // Assuming the ID 999 does not exist
+              .auth('michael', 'Miki260623') // Add authentication credentials
+              .send(updatedAirlineData)
+              .end((err, res) => {
+                  expect(res).to.have.status(404);
+                  expect(res.body).to.have.property('error');
+                  // Add more assertions based on the error response
+                  done();
+              });
       });
   });
 
-//role_airlines/flights
-
-// GET /flights
-describe('GET /flights', function() {
-  it('should return all flights', function(done) {
-    request(app)
-      .get('/flights')
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        // Perform assertions
-        done();
-      });
-  });
-
-  it('should handle errors appropriately', function(done) {
-    // Test error handling if needed
-    done();
-  });
-});
-
-// GET /flights/:id
-describe('GET /flights/:id', function() {
-  it('should return a specific flight by id', function(done) {
-    request(app)
-      .get('/flights/1') // assuming the flight ID is 1
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        // Perform assertions
-        done();
-      });
-  });
-
-  it('should return 404 for non-existent flight', function(done) {
-    request(app)
-      .get('/flights/999') // assuming non-existent flight ID
-      .expect(404)
-      .end(function(err, res) {
-        if (err) return done(err);
-        // Perform assertions
-        done();
-      });
-  });
-
-  it('should handle errors appropriately', function(done) {
-    // Test error handling if needed
-    done();
-  });
-});
-
-// POST /flights
-describe('POST /flights', function() {
-  it('should create a new flight', function(done) {
-    const newFlight = { /* populate with valid flight data */ };
-    request(app)
-      .post('/flights')
-      .send(newFlight)
-      .expect(201)
-      .end(function(err, res) {
-        if (err) return done(err);
-        // Perform assertions
-        done();
-      });
-  });
-
-  it('should handle errors appropriately', function(done) {
-    // Test error handling if needed
-    done();
-  });
-});
-
-// PUT /flights/:id
-describe('PUT /flights/:id', function() {
-  it('should update a specific flight by id', function(done) {
-    const updatedFlight = { /* populate with updated flight data */ };
-    request(app)
-      .put('/flights/1') // assuming the flight ID is 1
-      .send(updatedFlight)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        // Perform assertions
-        done();
-      });
-  });
-
-  it('should return 404 for non-existent flight', function(done) {
-    request(app)
-      .put('/flights/999') // assuming non-existent flight ID
-      .expect(404)
-      .end(function(err, res) {
-        if (err) return done(err);
-        // Perform assertions
-        done();
-      });
-  });
-
-  it('should handle errors appropriately', function(done) {
-    // Test error handling if needed
-    done();
-  });
-});
-
-// DELETE /flights/:id
-describe('DELETE /flights/:id', function() {
-  it('should delete a specific flight by id', function(done) {
-    request(app)
-      .delete('/flights/1') // assuming the flight ID is 1
-      .expect(204)
-      .end(function(err, res) {
-        if (err) return done(err);
-        // Perform assertions
-        done();
-      });
-  });
-
-  it('should return 404 for non-existent flight', function(done) {
-    request(app)
-      .delete('/flights/999') // assuming non-existent flight ID
-      .expect(404)
-      .end(function(err, res) {
-        if (err) return done(err);
-        // Perform assertions
-        done();
-      });
-  });
-
-  it('should handle errors appropriately', function(done) {
-    // Test error handling if needed
-    done();
-  });
-});
-
-});
 
