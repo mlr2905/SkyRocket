@@ -6,7 +6,6 @@ const dal_5 = require('../../dals/dal_table_flights')
 
 describe('Testing functionallity of the bl', () => {
 
-
     //................users....................
 
     it('new_user and get_by_id', async () => {
@@ -44,9 +43,7 @@ describe('Testing functionallity of the bl', () => {
         assert.strictEqual(expected, actual.password)
     })
 
-
     ///................airlines....................
-
 
     let id = null
 
@@ -73,7 +70,6 @@ describe('Testing functionallity of the bl', () => {
     })
 
     // ///................flights....................
-
 
     let new_flight = null
 
