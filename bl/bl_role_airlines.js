@@ -93,9 +93,9 @@ async function get_by_id_flights(id) {
     throw error; // מעבירה את השגיאה הלאה
   }
 }
-async function get_by_airline_id(id) {
+async function get_flight_by_airline_id(id) {
   try {
-    const get_by_id = await dal_5.get_by_airline_id(id);
+    const get_by_id = await dal_5.get_flight_by_airline_id(id);
 
     if (get_by_id) {
       return get_by_id
@@ -143,6 +143,6 @@ async function delete_flight(id) {
 
 module.exports = {
   create_user, get_by_id_user, update_user, create_airline, get_by_id_airline,
-  update_airline, get_by_airline_id, get_by_id_flights, create_new_flight,
+  update_airline, get_flight_by_airline_id, get_by_id_flights, create_new_flight,
   update_flight, delete_flight
 }
