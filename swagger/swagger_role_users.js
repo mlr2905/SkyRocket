@@ -6,18 +6,8 @@
  *   name: role_users
  *   description: The role_users managing API
  */
-/**
- * @swagger
- * tags:
- *   name: role_airlines
- *   description: The role_airlines managing API
- */
-/**
- * @swagger
- * tags:
- *   name: role_admins
- *   description: The role_admins managing API
- */
+
+
 
 //role_users/users
 /**
