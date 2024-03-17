@@ -8,7 +8,7 @@
  *   description: The role_airlines managing API
  */
 
-//role_airlines/airlines
+//role_airlines/
 
 /**
  * @swagger
@@ -284,6 +284,381 @@
  *             example:
  *               error: cannot find user with id {id}
  */
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ *
+ * /role_airlines/airlines:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [role_airlines]
+ *     description: Create a new user record with the provided details. Requires authentication.
+ *     security:
+ *       - CustomAuth: []
+ *     deprecated: false
+ *     readOnly: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The username of the user.
+ *               country_id:
+ *                 type: number
+ *                 description: The password of the user.
+ *               user_id:
+ *                 type: number
+ *                 description: The email of the user.
+ *             
+ *     responses:
+ *       '201':
+ *         description: User created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     name:
+ *                       type: string
+ *                     country_id:
+ *                       type: number
+ *                     user_id:
+ *                       type: number
+ *       '400':
+ *         description: Bad request. Ensure all required fields are provided.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ */
+
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ *
+ * /role_airlines/airlines/{id}:
+ *   get:
+ *     summary: Get a user_airline by ID
+ *     tags: [role_airlines]
+ *     description: Retrieve user_airline details based on the provided ID. Requires authentication.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user_airline to retrieve.
+ *         schema:
+ *           type: number
+ *     security:
+ *       - CustomAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response with the user_airline details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  example:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     name:
+ *                       type: string
+ *                     country_id:
+ *                       type: number
+ *                     user_id:
+ *                       type: number
+ *       '404':
+ *         description: user_airline not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ *         example:
+ *             error: Cannot find user_airline with ID {id}.
+ */
+
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ *
+ * /role_airlines/airlines/{id}:
+ *   put:
+ *     summary: Update the user_airline by the ID
+ *     tags: [role_airlines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user id
+ *     security:
+ *       - CustomAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/airline'
+ *     responses:
+ *       200:
+ *         description: The user_airline was updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/airline'
+ *       404:
+ *         description: The user_airline was not found
+ *       500:
+ *         description: Some error happened
+ */
+
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ *
+ * /role_airlines/airline_id/{id}:
+ *   get:
+ *     summary: Get a user_airline by ID
+ *     tags: [role_airlines]
+ *     description: Retrieve user_airline details based on the provided ID. Requires authentication.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user_airline to retrieve.
+ *         schema:
+ *           type: number
+ *     security:
+ *       - CustomAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response with the user_airline details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  example:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     name:
+ *                       type: string
+ *                     country_id:
+ *                       type: number
+ *                     user_id:
+ *                       type: number
+ *       '404':
+ *         description: user_airline not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ *         example:
+ *             error: Cannot find user_airline with ID {id}.
+ */
+
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ *
+ * /role_airlines/flights/{id}:
+ *   get:
+ *     summary: Get a user_airline by ID
+ *     tags: [role_airlines]
+ *     description: Retrieve user_airline details based on the provided ID. Requires authentication.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user_airline to retrieve.
+ *         schema:
+ *           type: number
+ *     security:
+ *       - CustomAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response with the user_airline details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  example:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     name:
+ *                       type: string
+ *                     country_id:
+ *                       type: number
+ *                     user_id:
+ *                       type: number
+ *       '404':
+ *         description: user_airline not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ *         example:
+ *             error: Cannot find user_airline with ID {id}.
+ */
+
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     CustomAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ *       description: Enter API key as "Bearer <API_KEY>"
+ *
+ * /role_airlines/flights:
+ *   post:
+ *     summary: Create a new flight
+ *     tags: [role_airlines]
+ *     description: Create a new flight record with the provided details. Requires authentication.
+ *     security:
+ *       - CustomAuth: []
+ *     deprecated: false
+ *     readOnly: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the flight.
+ *               airline_id:
+ *                 type: number
+ *                 description: The airline_id of the flight.
+ *               origin_country_id:
+ *                 type: number
+ *                 description: The origin_country_id of the flight.
+ *               destination_country_id:
+ *                 type: number
+ *                 description: The destination_country_id of the flight.
+ *               departure_time:
+ *                 type: data
+ *                 description: The departure_time of the flight. *               
+ *               landing_time:
+ *                 type: data
+ *                 description: The landing_time of the flight. *               
+ *               plane_id:
+ *                 type: number
+ *                 description: The plane_id of the flight.
+ *     responses:
+ *       '201':
+ *         description: flight created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                     name:
+ *                       type: string
+ *                     country_id:
+ *                       type: number
+ *                     user_id:
+ *                       type: number
+ *       '400':
+ *         description: Bad request. Ensure all required fields are provided.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 flight:
+ *                   type: object
+ *                   properties:
+ *                     error:
+ *                       type: string
+ */
+
+
 /**
 *  @swagger
 *  components:

@@ -143,13 +143,19 @@ router.put('/airlines/:id', async (request, response) => {
 
 //role_airlines/flights
 
-router.get('/flights', async (request, response) => {
+router.get('/airline_id/:id', async (request, response) => {
     try {
-        const by_id_name = await bl.get_by_id_name()
-        response.json(by_id_name)
-    }
+        const by_id = parseInt(request.params.id)
+
+        const id = await bl.get_by_airline_id(by_id)
+        if (id) {
+            response.json(id)
+        }
+        else {
+            response.status(404).json({ "error": `cannot find user with id ${by_id}` })
+        }    }
     catch (e) {
-        response.json({ 'error': JSON.stringify(e) })
+        response.status(503).json({ 'error': JSON.stringify(e) })
     }
 })
 
