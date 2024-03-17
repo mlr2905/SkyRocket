@@ -297,9 +297,9 @@
  *
  * /role_airlines/airlines:
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new user_airlines
  *     tags: [role_airlines]
- *     description: Create a new user record with the provided details. Requires authentication.
+ *     description: Create a new user_airlines record with the provided details. Requires authentication.
  *     security:
  *       - CustomAuth: []
  *     deprecated: false
@@ -313,17 +313,17 @@
  *             properties:
  *               name:
  *                 type: string
- *                 description: The username of the user.
+ *                 description: The name of the user_airlines.
  *               country_id:
  *                 type: number
- *                 description: The password of the user.
+ *                 description: The country_id of the user_airlines.
  *               user_id:
  *                 type: number
- *                 description: The email of the user.
+ *                 description: The user_id of the user_airlines.
  *             
  *     responses:
  *       '201':
- *         description: User created successfully.
+ *         description: user_airlines created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -347,7 +347,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 user_airlines:
  *                   type: object
  *                   properties:
  *                     error:
@@ -443,14 +443,14 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/airline'
+ *             $ref: '#/components/schemas/airlines'
  *     responses:
  *       200:
  *         description: The user_airline was updated
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/airline'
+ *               $ref: '#/components/schemas/airlines'
  *       404:
  *         description: The user_airline was not found
  *       500:
@@ -604,9 +604,6 @@
  *           schema:
  *             type: object
  *             properties:
- *               name:
- *                 type: string
- *                 description: The name of the flight.
  *               airline_id:
  *                 type: number
  *                 description: The airline_id of the flight.
@@ -634,16 +631,18 @@
  *               type: object
  *               properties:
  *                 example:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: number
- *                     name:
- *                       type: string
- *                     country_id:
- *                       type: number
- *                     user_id:
- *                       type: number
+ *               airline_id:
+ *                 type: number
+ *               origin_country_id:
+ *                 type: number
+ *               destination_country_id:
+ *                 type: number
+ *               departure_time:
+ *                 type: data
+ *               landing_time:
+ *                 type: data
+ *               plane_id:
+ *                 type: number
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
