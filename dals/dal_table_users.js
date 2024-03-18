@@ -20,7 +20,7 @@ async function get_by_name(name) {
 async function sp_i_users_airlines(user) {
     const Result = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`)
     if (Result) {
-        return  'User `${user.username}` created successfully'
+        return  `User ${user.username} created successfully`
 
     }
     return Result
