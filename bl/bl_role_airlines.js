@@ -48,7 +48,12 @@ async function update_user(id, user) {
   const user_id = await dal_1.get_by_id('id', id);
   if (user_id) {
     const update_user = await dal_1.update_user(id, user);
-    return `${user_id.username}${update_user}`
+    if (update_user) {
+      return update_user
+    }
+    else{
+      return false
+    }
   }
   else {
     return user_id

@@ -56,8 +56,8 @@
  *             schema:
  *               type: string
  *               example: User 'tset_swagger' successfully created
- *       '404':
- *         description: Bad request. Ensure all required fields are provided.
+ *       '409':
+ *         description: The email system exists.
  *         content:
  *           application/json:
  *             schema:
@@ -116,7 +116,7 @@
  *                       example: tset_swagger@gmail.com
  *                       description: The email of the user.
  *       '403':
- *         description: User not found with the specified ID.
+ *         description: No access to the requested user.
  *         content:
  *           application/json:
  *             schema:
@@ -232,16 +232,39 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/user'
+*             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: tset_swagger_put
+ *                 description: The username of the user.
+ *               password:
+ *                 type: string
+ *                 example: Aasj232
+ *                 description: The password of the user.
+ *               email:
+ *                 type: string
+ *                 example: tset_swagger_put@gmail.com
+ *                 description: The email of the user. *     
  *     responses:
- *       200:
+ *       201:
  *         description: The user was updated
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/user'
+ *               $ref: '#/components/schemas/role_airlines/properties/users'
  *       404:
  *         description: The user was not found
+ *       409:
+ *         description: The email system exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   example: 'tset_swagger_put@gmail.com'  already exists
  *       500:
  *         description: Some error happened
  */
@@ -725,17 +748,11 @@
  *             example:
  *               error: cannot find flight with id {id}
  */
-
 /**
 *  @swagger
 *  components:
 *    schemas:
 *      role_airlines:
-*        type: object
-*        required:
-*          - users
-*          - airlines
-*          - flights
 *        properties:
 *          users:
 *            type: object
@@ -746,7 +763,6 @@
 *            properties:
 *              username:
 *                type: string
-*                description: The username of the user.
 *                example: test tsets
 *              password:
 *                type: string
@@ -804,6 +820,6 @@
 *              remaining_tickets:
 *                type: integer
 *                example: 195
-*            xml:
-*              name: role_airlines
+*        xml:
+*          name: role_airlines
 */

@@ -1,5 +1,6 @@
 const knex = require('knex')
 const db = require('../connect_db/default')
+const { loggers } = require('winston')
 const connectedKnex = db.connect()
 
 // ---------------User functions only and admin---------------
@@ -60,11 +61,11 @@ async function update_user(id, user) {
                 const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
                 return update
             }
-            return { error: 'The fields are not registered well' }
         // }
     }
     catch (e) {
-        throw console.error('Not carried out:', e);
+        return false
+
     }
 }
 

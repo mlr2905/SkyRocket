@@ -45,26 +45,30 @@ router.get('/users/:id', async (request, response) => {
                 response.status(403).json({ error: 'You do not have permission to access the requested user' })
             }
         }
-        else{
+        else {
             response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-
         }
-    } 
+    }
     catch (error) {
-           response.status(503).json({ "error": `The request failed, try again later ` })
+        response.status(503).json({ "error": `The request failed, try again later ` })
     }
 })
 
 // POST
 router.post('/users', async (request, response) => {
-    const new_user = request.body
     try {
-        const result = await bl.create_user(new_user)
-        response.status(201).json(result)
+        const new_user = request.body
+        try {
+            const result = await bl.create_user(new_user)
+            response.status(201).json(result)
 
-    } catch (error) {
-        throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
-        ; // מעבירה את השגיאה הלאה
+        } catch (error) {
+            throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
+            ; // מעבירה את השגיאה הלאה
+        }
+    }
+    catch (error) {
+        response.status(503).json({ "error": `The request failed, try again later ` })
     }
 })
 
@@ -78,10 +82,15 @@ router.put('/users/:id', async (request, response) => {
         try {
             const updated_user_req = request.body
             const result = await bl.update_user(user_id, updated_user_req)
-            response.json(updated_user_req)
+            if(result){
+                response.status(201).json(result)
+            }
+            else{
+                response.status(409).json({ "error":`${updated_user_req.email} already exists`})
+            }
         }
         catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+             response.status(503).json({ "error": `The request failed, try again later  ` })
             ; // מעבירה את השגיאה הלאה
         }
     }
