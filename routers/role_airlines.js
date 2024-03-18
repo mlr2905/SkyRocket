@@ -39,7 +39,7 @@ router.get('/users/:id', async (request, response) => {
     try {
         const user = await bl.get_by_id_user(user_id)
         if (user) {
-            if (user !== Postponed)
+            if (user !== 'Postponed')
                 response.status(201).json(user)
             else {
                 throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })

@@ -36,7 +36,7 @@ async function get_by_id_user(id) {
       return user_id
     }
     else {
-      return Postponed
+      return 'Postponed'
     }
   }
   else {
