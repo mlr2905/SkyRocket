@@ -42,7 +42,7 @@ router.get('/users/:id', async (request, response) => {
             if (user !== 'Postponed')
                 response.status(201).json(user)
             else {
-                response.status(404).json({ error: 'You do not have permission to access the requested user' })
+                response.status(403).json({ error: 'You do not have permission to access the requested user' })
             }
         }
         else{
