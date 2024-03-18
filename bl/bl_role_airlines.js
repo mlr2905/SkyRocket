@@ -30,7 +30,7 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-  const user_id = await dal_1.get_by_id(type, id);
+  const user_id = await dal_1.get_by_id_user_airline(type, id);
   return user_id
 }
 

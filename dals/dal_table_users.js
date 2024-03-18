@@ -63,14 +63,24 @@ async function update_user(id, user) {
     }
 }
 
-async function get_by_id(type,id) {
-    // db.run('select * from users where id=?')
+async function get_by_id(type, id) {
     const user = await connectedKnex('users')
         .select('users.*', 'roles.role_name')
         .join('roles', 'users.role_id', 'roles.id')
         .where(`users.${type}`, id)
+        .andWhere('users.role_id', 1)
         .first();
-    return user
+    return user;
+}
+
+async function get_by_id_user_airline(type, id) {
+    const user = await connectedKnex('users')
+        .select('users.*', 'roles.role_name')
+        .join('roles', 'users.role_id', 'roles.id')
+        .where(`users.${type}`, id)
+        .andWhere('users.role_id', 2)
+        .first();
+    return user;
 }
 
 async function delete_user(id) {
@@ -110,6 +120,6 @@ async function set_id(id) {
 }
 
 module.exports = {
-    get_by_name, get_all, get_by_id, update_user, delete_user,delete_user_airlines,checkPassword,
+    get_by_name, get_all, get_by_id,get_by_id_user_airline, update_user, delete_user,delete_user_airlines,checkPassword,
     delete_all, sp_i_users, sp_pass_users, sp_i_users_airlines, sp_pass_users_airlines, set_id
 }
