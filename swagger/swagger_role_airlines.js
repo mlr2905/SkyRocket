@@ -77,6 +77,8 @@
  *                   properties:
  *                     error:
  *                       type: string
+ *                       example:`Username 'tset_swagger' or email 'tset_swagger@gmail.com' exist in the system
+ * 
  */
 
 /**
