@@ -115,6 +115,16 @@
  *                       type: string
  *                       example: tset_swagger@gmail.com
  *                       description: The email of the user.
+ *        '403':
+ *         description: User not found with the specified ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   example: You do not have permission to access the requested user.
  *       '404':
  *         description: User not found with the specified ID.
  *         content:
