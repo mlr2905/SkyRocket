@@ -57,11 +57,11 @@
  *               type: string
  *               properties:
  *                 example:
- *                   type: string
+ *                   type: object
  *                   properties:
  *                     uername:
  *                       type: string
- *                     example:
+ *                     password:
  *                       type: string
  *                     email:
  *                       type: string
