@@ -38,16 +38,16 @@
  *             properties:
  *               username:
  *                 type: string
+ *                 example: tset_swagger
  *                 description: The username of the user.
  *               password:
  *                 type: string
+ *                 example: Aasj212
  *                 description: The password of the user.
  *               email:
  *                 type: string
+ *                 example: tset_swagger@gmail.com
  *                 description: The email of the user.
- *               role_id:
- *                 type: number
- *                 description: The role_id of the user.
  *     responses:
  *       '201':
  *         description: User created successfully.
@@ -56,19 +56,15 @@
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 example:
  *                   type: object
  *                   properties:
- *                     ID:
- *                       type: number
- *                     USERNAME:
+ *                     uername:
  *                       type: string
- *                     PASSWORD:
+ *                     password:
  *                       type: string
- *                     EMAIL:
+ *                     email:
  *                       type: string
- *                     ROLE_ID:
- *                       type: number
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
@@ -76,7 +72,7 @@
  *             schema:
  *               type: object
  *               properties:
- *                 user:
+ *                 example:
  *                   type: object
  *                   properties:
  *                     error:
