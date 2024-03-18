@@ -18,20 +18,24 @@ async function get_by_name(name) {
 
 //new_user
 async function sp_i_users_airlines(user) {
-    const new_user = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`)
+    const Result = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`)
+    if (Result) {
+        return  'User `${user.username}` created successfully'
 
-    return new_user
+    }
+    return Result
+
 }
 
 //new_user (Automatically generates a password)
 async function sp_pass_users_airlines(user) {
-    const new_user = await connectedKnex.raw(`CALL sp_pass_users_airlines('${user.username}','${user.email}','');`)
-    return new_user
+    const Result = await connectedKnex.raw(`CALL sp_pass_users_airlines('${user.username}','${user.email}','');`)
+    return Result.rows[0]._generated_password
 }
 
 async function sp_i_users(user) {
-    const new_user = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`)
-    return new_user
+    const Result = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`)
+    return Result
 }
 
 //new_user (Automatically generates a password)
