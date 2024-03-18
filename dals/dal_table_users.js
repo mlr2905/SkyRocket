@@ -70,7 +70,11 @@ async function get_by_id(type, id) {
         .where(`users.${type}`, id)
         .andWhere('users.role_id', 1)
         .first();
+        if (!user) {
+            throw new Error('User not found or unauthorized');
+        }
     return user;
+
 }
 
 async function get_by_id_user_airline(type, id) {
@@ -80,6 +84,9 @@ async function get_by_id_user_airline(type, id) {
         .where(`users.${type}`, id)
         .andWhere('users.role_id', 2)
         .first();
+        if (!user) {
+            throw new Error('User not found or unauthorized');
+        }
     return user;
 }
 
