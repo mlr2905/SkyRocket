@@ -64,31 +64,41 @@ async function update_user(id, user) {
 }
 
 async function get_by_id(type, id) {
-    const user = await connectedKnex('users')
-        .select('users.*', 'roles.role_name')
-        .join('roles', 'users.role_id', 'roles.id')
-        .where(`users.${type}`, id)
-        .andWhere('users.role_id', 1)
-        .first();
+    try {
+        const user = await connectedKnex('users')
+            .select('users.*', 'roles.role_name')
+            .join('roles', 'users.role_id', 'roles.id')
+            .where(`users.${type}`, id)
+            .first();
         if (!user) {
-            throw new Error('User not found or unauthorized');
+            throw new Error('User not found or unauthorized'); // הודעת שגיאה אם המשתמש לא נמצא או אם הוא לא מורשה
         }
-    return user;
-
+        return user;
+    } catch (error) {
+        // טיפול בשגיאה כאן
+        console.error(error);
+        throw error; // הזרקת השגיאה כדי שהיא תתפוס בקריאה לפונקציה
+    }
 }
 
-async function get_by_id_user_airline(type, id) {
-    const user = await connectedKnex('users')
-        .select('users.*', 'roles.role_name')
-        .join('roles', 'users.role_id', 'roles.id')
-        .where(`users.${type}`, id)
-        .andWhere('users.role_id', 2)
-        .first();
+async function get_by_id_user_airline( id) {
+    try {
+        const user = await connectedKnex('users')
+            .select('users.*', 'roles.role_name')
+            .join('roles', 'users.role_id', 'roles.id')
+            .where('users.id', id)
+            .first();
         if (!user) {
-            throw new Error('User not found or unauthorized');
+           return  false
         }
-    return user;
+        return user;
+    } catch (error) {
+        // טיפול בשגיאה כאן
+        console.error(error);
+        throw error; // הזרקת השגיאה כדי שהיא תתפוס בקריאה לפונקציה
+    }
 }
+
 
 async function delete_user(id) {
 

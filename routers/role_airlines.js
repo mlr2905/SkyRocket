@@ -35,6 +35,7 @@ const bl = require('../bl/bl_role_airlines')
 // GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
+
     try {
         const user = await bl.get_by_id_user(user_id)
         if (user) {
