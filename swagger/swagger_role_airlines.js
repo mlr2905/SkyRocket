@@ -61,7 +61,10 @@
  *                   properties:
  *                     uername:
  *                       type: string
- *                     example: User 'tset_swagger' successfully created
+ *                     example:
+ *                       type: string
+ *                     email:
+ *                       type: string
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
