@@ -122,13 +122,9 @@
  *             schema:
  *               type: object
  *               properties:
- *                 example:
+ *                 error:
  *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
- *         example:
- *             error: Cannot find user with ID {id}.
+ *                   example: The id [id] you specified does not exist in the system.
  */
 
 /**
