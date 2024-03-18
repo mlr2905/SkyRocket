@@ -39,13 +39,14 @@ router.get('/users/:id', async (request, response) => {
     try {
         const user = await bl.get_by_id_user(user_id)
         if (user) {
-            response.json(user)
+            if (user !== Postponed)
+                response.status(201).json(user)
+            else {
+                throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+            }
         }
-        else {
-            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-        }
-
-    } catch (error) {
+    } 
+    catch (error) {
         throw response.status(503).json({ "error": `The request failed, try again later ` })
     }
 })
@@ -153,7 +154,8 @@ router.get('/airline_id/:id', async (request, response) => {
         }
         else {
             response.status(404).json({ "error": `cannot find user with id ${by_id}` })
-        }    }
+        }
+    }
     catch (e) {
         response.status(503).json({ 'error': JSON.stringify(e) })
     }

@@ -93,7 +93,7 @@
  *     security:
  *       - CustomAuth: []
  *     responses:
- *       '200':
+ *       '201':
  *         description: Successful response with the user details.
  *         content:
  *           application/json:
@@ -105,12 +105,16 @@
  *                   properties:
  *                     username:
  *                       type: string
+ *                       example: tset_swagger
+ *                       description: The username of the user.
  *                     password:
  *                       type: string
+ *                       example: Aasj212
+ *                       description: The password of the user.
  *                     email:
  *                       type: string
- *                     role_id:
- *                       type: number
+ *                       example: tset_swagger@gmail.com
+ *                       description: The email of the user.
  *       '404':
  *         description: User not found with the specified ID.
  *         content:
