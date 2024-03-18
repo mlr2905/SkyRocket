@@ -115,7 +115,7 @@
  *                       type: string
  *                       example: tset_swagger@gmail.com
  *                       description: The email of the user.
- *        '403':
+ *       '403':
  *         description: User not found with the specified ID.
  *         content:
  *           application/json:
