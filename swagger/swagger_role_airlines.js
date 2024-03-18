@@ -57,7 +57,7 @@
  *               type: object
  *               properties:
  *                 example:
- *                   type: string
+ *                   type: object
  *                   properties:
  *                   example 'tset_swagger' successfully created
  *       '400':
