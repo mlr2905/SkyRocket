@@ -46,7 +46,7 @@
  *                 description: The password of the user.
  *               email:
  *                 type: string
- *                 example: tset_swagger@gmail.com
+ *                  example: tset_swagger@gmail.com
  *                 description: The email of the user.
  *     responses:
  *       '201':
@@ -54,7 +54,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: string
+ *               type: object
  *               properties:
  *                 example:
  *                   type: object
@@ -77,8 +77,6 @@
  *                   properties:
  *                     error:
  *                       type: string
- *                       example:`Username 'tset_swagger' or email 'tset_swagger@gmail.com' exist in the system
- * 
  */
 
 /**
