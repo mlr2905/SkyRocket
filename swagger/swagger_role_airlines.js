@@ -54,12 +54,9 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                   example 'tset_swagger' successfully created
+ *               type: string
+ *               example: user 'tset_swagger' successfully created
+ *             
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
