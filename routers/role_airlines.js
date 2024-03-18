@@ -42,8 +42,12 @@ router.get('/users/:id', async (request, response) => {
             if (user !== 'Postponed')
                 response.status(201).json(user)
             else {
-                response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+                response.status(404).json({ error: 'You do not have permission to access the requested user' })
             }
+        }
+        else{
+            response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+
         }
     } 
     catch (error) {
