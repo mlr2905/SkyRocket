@@ -317,9 +317,6 @@
  *               country_id:
  *                 type: number
  *                 description: The country_id of the user_airlines.
- *               user_id:
- *                 type: number
- *                 description: The user_id of the user_airlines.
  *             
  *     responses:
  *       '201':
@@ -337,8 +334,6 @@
  *                     name:
  *                       type: string
  *                     country_id:
- *                       type: number
- *                     user_id:
  *                       type: number
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
