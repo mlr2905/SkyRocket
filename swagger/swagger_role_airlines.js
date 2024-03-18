@@ -46,7 +46,7 @@
  *                 description: The password of the user.
  *               email:
  *                 type: string
- *                  example: tset_swagger@gmail.com
+ *                 example: tset_swagger@gmail.com
  *                 description: The email of the user.
  *     responses:
  *       '201':
@@ -54,29 +54,18 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                     uername:
- *                       type: string
- *                     password:
- *                       type: string
- *                     email:
- *                       type: string
- *       '400':
+ *               type: string
+ *               example: User 'tset_swagger' successfully created
+ *       '404':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 example:
+ *                 error:
  *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
+ *                   example: Username 'tset_swagger' or email  tset_swagger@gmail.com  exist in the system
  */
 
 /**
