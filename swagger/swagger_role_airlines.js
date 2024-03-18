@@ -57,14 +57,9 @@
  *               type: object
  *               properties:
  *                 example:
- *                   type: object
+ *                   type: string
  *                   properties:
- *                     uername:
- *                       type: string
- *                     password:
- *                       type: string
- *                     email:
- *                       type: string
+ *                   example 'tset_swagger' successfully created
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
