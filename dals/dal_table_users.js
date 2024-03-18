@@ -20,8 +20,7 @@ async function get_by_name(name) {
 async function sp_i_users_airlines(user) {
     const Result = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`)
     if (Result) {
-        return  `User ${user.username} created successfully`
-
+        return  true
     }
     return Result
 
@@ -35,8 +34,10 @@ async function sp_pass_users_airlines(user) {
 
 async function sp_i_users(user) {
     const Result = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`)
-    return Result
-}
+    if (Result) {
+        return  true
+    }
+    return Result}
 
 //new_user (Automatically generates a password)
 async function sp_pass_users(user) {

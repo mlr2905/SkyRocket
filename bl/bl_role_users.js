@@ -13,7 +13,6 @@ async function create_user(uesr) {
   if (uesr.password !== '') {
     // מפעילה את הפרוצדורה sp_i_users
     const new_user = await dal_1.sp_i_users(uesr);
-    console.log('bl',new_user);
     return `User '${uesr.username}' successfully created`
   } else {
     // מפעילה את הפרוצדורה sp_pass_users
