@@ -55,8 +55,13 @@
  *           application/json:
  *             schema:
  *               type: string
- *               example: user 'tset_swagger' successfully created
- *             
+ *               properties:
+ *                 example:
+ *                   type: string
+ *                   properties:
+ *                     uername:
+ *                       type: string
+ *                     example: User 'tset_swagger' successfully created
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
