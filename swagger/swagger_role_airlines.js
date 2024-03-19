@@ -232,7 +232,7 @@
  *       content:
  *         application/json:
  *           schema:
-*             type: object
+ *             type: object
  *             properties:
  *               username:
  *                 type: string
@@ -245,17 +245,28 @@
  *               email:
  *                 type: string
  *                 example: tset_swagger_put@gmail.com
- *                 description: The email of the user. *     
+ *                 description: The email of the user.
  *     responses:
- *       201:
+ *       '201':
  *         description: The user was updated
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/role_airlines/properties/users'
- *       404:
- *         description: The user was not found
- *       409:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                   example: tset_swagger_put
+ *                   description: The username of the user.
+ *                 password:
+ *                   type: string
+ *                   example: Aasj232
+ *                   description: The password of the user.
+ *                 email:
+ *                   type: string
+ *                   example: tset_swagger_put@gmail.com
+ *                   description: The email of the user.
+ *       '404':
  *         description: The email system exists.
  *         content:
  *           application/json:
@@ -263,11 +274,30 @@
  *               type: object
  *               properties:
  *                 error:
- *                   type: object
- *                   example: 'tset_swagger_put@gmail.com'  already exists
- *       500:
- *         description: Some error happened
+ *                   type: string
+ *                   example: The id ${id} you specified does not exist in the system
+ *       '409':
+ *         description: The email system exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: tset_swagger_put@gmail.com already exists
+ *       '503':
+ *         description: The email system exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: The request failed, try again later
  */
+
 
 /**
  * @swagger
