@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "mocha tests/bls/bl_role_airlines.test.js --timeout 50000"
+    "test": "mocha dals/dal_table_airlines.js --timeout 50000"
   },
   "keywords": [],
   "author": "",

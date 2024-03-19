@@ -10,32 +10,63 @@ describe('Testing functionallity of the DAL', () => {
         assert.strictEqual(expected.users, actual.length)
     })
 
-    it('get_by_id', async () => {
+    it('get_by_id (role_id 1)', async () => {
         const expected = 'Michael29'
         const user_id = await dal.get_by_id('id', 36)
         const actual = user_id.username
         assert.strictEqual(expected, actual)
     })
 
-    it('new_user', async () => {
+    it('new_user (role_id 1)', async () => {
         await dal.sp_i_users({ 'username': 'michael_test', 'password': 'test', 'email': 'michael_test@gmail.com' })
         const expected = 'michael_test'
         const actual = await dal.get_by_id('email', 'michael_test@gmail.com')
         assert.strictEqual(expected, actual.username)
     })
 
-    it('update_user', async () => {
+    it('update_user (role_id 1)', async () => {
         const user = await dal.get_by_id('email', 'michael_test@gmail.com')
-        await dal.update_user(user.id, { 'username': 'michael_test', 'password': 'test_12345', 'email': 'null' })
+        await dal.update_user(user.id, { 'password': 'test_12345', 'email': 'null' })
         const expected = 'test_12345'
         const actual = await dal.get_by_id('id', user.id)
         assert.strictEqual(expected, actual.password)
     })
 
-    it('delete_user', async () => {
+    it('delete_user (role_id 1)', async () => {
         const user = await dal.get_by_id('email', 'michael_test@gmail.com')
         await dal.delete_user(user.id)
-        const expected = undefined
+        const expected = false
+        const actual = await dal.get_by_id('id', user.id)
+        const set_id_user = await dal.set_id(user.id)
+        assert.strictEqual(expected, actual)
+    })
+
+    it('get_by_id (role_id 2)', async () => {
+        const expected = 'Michael29'
+        const user_id = await dal.get_by_id('id', 36)
+        const actual = user_id.username
+        assert.strictEqual(expected, actual)
+    })
+
+    it('new_user (role_id 2)', async () => {
+        await dal.sp_i_users({ 'username': 'michael_test', 'password': 'test', 'email': 'michael_test@gmail.com' })
+        const expected = 'michael_test'
+        const actual = await dal.get_by_id('email', 'michael_test@gmail.com')
+        assert.strictEqual(expected, actual.username)
+    })
+
+    it('update_user (role_id 2)', async () => {
+        const user = await dal.get_by_id('email', 'michael_test@gmail.com')
+        await dal.update_user(user.id, { 'password': 'test_12345', 'email': 'null' })
+        const expected = 'test_12345'
+        const actual = await dal.get_by_id('id', user.id)
+        assert.strictEqual(expected, actual.password)
+    })
+
+    it('delete_user (role_id 2)', async () => {
+        const user = await dal.get_by_id('email', 'michael_test@gmail.com')
+        await dal.delete_user(user.id)
+        const expected = false
         const actual = await dal.get_by_id('id', user.id)
         const set_id_user = await dal.set_id(user.id)
         assert.strictEqual(expected, actual)
