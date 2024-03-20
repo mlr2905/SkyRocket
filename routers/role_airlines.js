@@ -89,7 +89,7 @@ router.put('/users/:id', async (request, response) => {
                 response.status(201).json(result)
             }
             else{
-                response.status(409).json({ "error":`${updated_user_req.email} already exists`})
+                response.status(409).json(result.ok)
             }
         }
         catch (error) {
