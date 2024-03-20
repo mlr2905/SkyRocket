@@ -80,10 +80,13 @@ async function get_by_id(type, id) {
             .join('roles', 'users.role_id', 'roles.id')
             .where(`users.${type}`, id)
             .first();
-        if (!user) {
+        if (user) {
+            return user;
+        }
+        else{
             return false
         }
-        return user;
+        
     } catch (error) {
         // טיפול בשגיאה כאן
         console.error(error);
