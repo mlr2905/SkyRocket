@@ -30,9 +30,22 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
+
   const user_id = await dal_1.get_by_id(type, id);
-  return user_id
+  if (user_id) {
+
+    if (user_id.role_id === 1) {
+      return user_id
+    }
+    else {
+      return 'Postponed'
+    }
+  }
+  else {
+    return false
+  }
 }
+
 
 async function get_qr(id) {
   const user_id = await dal_0.get_qr(id);
@@ -43,7 +56,7 @@ async function update_user(id, user) {
   const user_id = await dal_1.get_by_id('id', id);
   if (user_id) {
     const update_user = await dal_1.update_user(id, user);
-    return `${user_id.username}${update_user}`
+    return {'ok':`${user_id.username}${update_user}`}
   }
   else {
     return user_id

@@ -86,25 +86,31 @@ router.post('/users', async (request, response) => {
 })
 
 // PUT 
-router.put('/users/:id', async (request, response) => {
 
+router.put('/users/:id', async (request, response) => { 
     const user_id = parseInt(request.params.id)
     const user = await bl.get_by_id_user('id',user_id)
-
     if (user) {
         try {
             const updated_user_req = request.body
             const result = await bl.update_user(user_id, updated_user_req)
-            response.json(updated_user_req)
+            if(result.ok){
+                response.status(201).json(result)
+            }
+            else{
+                response.status(409).json({ "error":`${updated_user_req.email} already exists`})
+            }
         }
         catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+             response.status(503).json({ "error": `The request failed, try again later  ` })
+            ; // מעבירה את השגיאה הלאה
         }
     }
     else {
         throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
     }
 })
+
 
 // DELETE
 router.delete('/users/:id', async (request, response) => {

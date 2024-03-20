@@ -9,10 +9,10 @@ async function create_user(uesr) {
     try {
       const new_user = await dal_1.new_user_role2(uesr)
       if (new_user.length === 8) {
-        return {'OK':`'${uesr.username}' successfully created,This is the generated password,'${new_user}'`}
+        return { 'OK': `'${uesr.username}' successfully created,This is the generated password,'${new_user}'` }
       }
       if (new_user === true) {
-        return {'OK':`'${uesr.username}' successfully created`}
+        return { 'OK': `'${uesr.username}' successfully created` }
       }
       return new_user
     }
@@ -26,9 +26,9 @@ async function create_user(uesr) {
   }
 }
 
-async function get_by_id_user(type,id) {
-  
-  const user_id = await dal_1.get_by_id(type,id);
+async function get_by_id_user(type, id) {
+
+  const user_id = await dal_1.get_by_id(type, id);
   if (user_id) {
 
     if (user_id.role_id === 2) {
@@ -44,18 +44,13 @@ async function get_by_id_user(type,id) {
 }
 
 async function update_user(id, user) {
-  const user_id = await dal_1.get_by_id('id', id);
-  if (user_id) {
-    const update_user = await dal_1.update_user(id, user);
-    if (update_user) {
-      return update_user
-    }
-    else{
-      return false
-    }
+
+  const update_user = await dal_1.update_user(id, user);
+  if (update_user) {
+    return {'ok':`${user_id.username}${update_user}`}
   }
   else {
-    return user_id
+    return false
   }
 }
 
