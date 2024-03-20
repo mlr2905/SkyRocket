@@ -102,7 +102,7 @@ router.put('/users/:id', async (request, response) => {
             }
         }
         catch (error) {
-             response.status(503).json({ "error": `The request failed, try again later  ` })
+             response.status(503).json({ "error": `The request failed, try again later ${error}` })
             ; // מעבירה את השגיאה הלאה
         }
     }

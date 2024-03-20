@@ -87,7 +87,7 @@ async function get_by_id(type, id) {
     } catch (error) {
         // טיפול בשגיאה כאן
         console.error(error);
-        throw error; // הזרקת השגיאה כדי שהיא תתפוס בקריאה לפונקציה
+        return error; // הזרקת השגיאה כדי שהיא תתפוס בקריאה לפונקציה
     }
 }
 
