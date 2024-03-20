@@ -71,7 +71,7 @@ app.use(express.static(path.join('.', '/static/')))
 app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
-});
+}); 
 app.use(cors());
 app.use('/all_tables', all_tables_router)
 app.use('/role_admins', role_admins)
