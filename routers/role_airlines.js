@@ -79,7 +79,7 @@ router.put('/users/:id', async (request, response) => {
 
     const id = request.params.id
 
-    // const user = await bl.get_by_id_user('id',id)
+    const user = await bl.get_by_id_user('id',id)
 
     // if (user) {
         // try {
@@ -91,15 +91,12 @@ router.put('/users/:id', async (request, response) => {
             else{
                 response.status(409).json({ "error":`${updated_user_req.email} already exists`})
             }
-        }
+        // }
         // catch (error) {
         //      response.status(503).json({ "error": `The request failed, try again later ${error}` })
         //     ; // מעבירה את השגיאה הלאה
         // }
-    // }
-    // else {
-    //     throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-    // }
+   
 })
 
 //role_airlines/airline
