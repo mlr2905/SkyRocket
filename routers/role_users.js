@@ -94,7 +94,7 @@ router.put('/users/:id', async (request, response) => {
         try {
             const updated_user_req = request.body
             const result = await bl.update_user(user_id, updated_user_req)
-            if(result.ok){
+            if(result){
                 response.status(201).json(result)
             }
             else{
