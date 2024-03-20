@@ -57,11 +57,11 @@ router.get('/users/search', async (request, response) => {
             response.status(200).json(user)
         }
         else {
-            throw response.status(404).json({ "error": `The id ${search} you specified does not exist in the system ` })
+            throw response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
         }
 
     } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ` })
+        throw response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 
@@ -70,11 +70,18 @@ router.post('/users', async (request, response) => {
     const new_user = request.body
     try {
         const result = await bl.create_user(new_user)
-        response.status(201).json(result)
-
+        if (result.ok) {
+            response.status(201).json(result)
+        }
+        else if (result === 'rejected') {
+            response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
+        }
+        else {
+            response.status(503).json({ "error": `The request failed, try again later` })
+        }
     } catch (error) {
-        throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
     }
+    response.status(503).json({ "error": `The request failed, try again later ${error}` })
 
 })
 

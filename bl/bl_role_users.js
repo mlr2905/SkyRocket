@@ -8,16 +8,24 @@ const dal_7 = require('../dals/dal_table_passengers')
 
 //func users
 async function create_user(uesr) {
-
-  // בודק אם קיבלה סיסמה
-  if (uesr.password !== '') {
-    // מפעילה את הפרוצדורה sp_i_users
-    const new_user = await dal_1.sp_i_users(uesr);
-    return `User '${uesr.username}' successfully created`
-  } else {
-    // מפעילה את הפרוצדורה sp_pass_users
-    const Result = await dal_1.sp_pass_users(uesr);
-    return `User '${uesr.username}' successfully created,This is the generated password,'${Result}'`
+  const user_name = await dal_1.get_by_name(uesr.username)
+  if (user_name === undefined) {
+    try {
+      const new_user = await dal_1.new_user_role1(uesr)
+      if (new_user.length === 8) {
+        return {'OK':`'${uesr.username}' successfully created,This is the generated password,'${new_user}'`}
+      }
+      if (new_user === true) {
+        return {'OK':`'${uesr.username}' successfully created`}
+      }
+      return new_user
+    }
+    catch (error) {
+      return error;
+    }
+  }
+  else {
+    return 'rejected';
   }
 }
 
@@ -32,7 +40,7 @@ async function get_qr(id) {
 }
 
 async function update_user(id, user) {
-  const user_id = await dal_1.get_by_id('id',id);
+  const user_id = await dal_1.get_by_id('id', id);
   if (user_id) {
     const update_user = await dal_1.update_user(id, user);
     return `${user_id.username}${update_user}`
@@ -43,7 +51,7 @@ async function update_user(id, user) {
 }
 
 async function delete_account(id) {
-  const user_id = await dal_1.get_by_id('id',id);
+  const user_id = await dal_1.get_by_id('id', id);
   if (user_id) {
     const delete_user = await dal_1.delete_user(id);
     return `User '${user_id.username}' deleted successfully `
@@ -56,10 +64,8 @@ async function delete_account(id) {
 // func customers
 
 async function new_customer(new_cus) {
-  console.log('bl',new_cus);
   const Credit_check = await dal_4.credit_check(new_cus.credit_card_no)
   if (!Credit_check) {
-    console.log('Credit_check',Credit_check);
     const new_customer = await dal_4.new_customer(new_cus);
     if (new_customer) {
       return new_cus
@@ -80,8 +86,7 @@ async function get_by_id_customer(id) {
 async function update_customer(id, update) {
   const get_by_id = await dal_4.get_by_id(id);
   if (get_by_id) {
-    console.log('ok');
-    const update_customer = await dal_4.update_customer(id,update);
+    const update_customer = await dal_4.update_customer(id, update);
     return `${get_by_id.id}${update_customer}`
   }
   else {

@@ -4,32 +4,31 @@ const dal_5 = require('../dals/dal_table_flights')
 
 //func users 
 async function create_user(uesr) {
-  const user_name = await dal_1.get_by_name(uesr.username);
-
+  const user_name = await dal_1.get_by_name(uesr.username)
   if (user_name === undefined) {
     try {
-      // בודקת אם קיבלה סיסמה
-      if (uesr.password !== '') {
-        // מפעילה את הפרוצדורה sp_i_users
-        const new_user = await dal_1.sp_i_users_airlines(uesr);
-        return `User '${uesr.username}' successfully created`
-      } else {
-        // מפעילה את הפרוצדורה sp_pass_users
-        const new_user = await dal_1.sp_pass_users_airlines(uesr);
-        return `User '${uesr.username}' successfully created,This is the generated password,'${Result}'`
+      const new_user = await dal_1.new_user_role2(uesr)
+      if (new_user.length === 8) {
+        return {'OK':`'${uesr.username}' successfully created,This is the generated password,'${new_user}'`}
       }
-    } catch (error) {
-      console.error('Error passing users:', error);
-      throw error; // מעבירה את השגיאה הלאה
+      if (new_user === true) {
+        return {'OK':`'${uesr.username}' successfully created`}
+      }
+      return new_user
+    }
+    catch (error) {
+      return error;
     }
   }
+
   else {
-    return console.error('User exists in the system:', error);
+    return 'rejected';
   }
 }
 
-async function get_by_id_user(id) {
-  const user_id = await dal_1.get_by_id_user_airline(id);
+async function get_by_id_user(type,id) {
+  
+  const user_id = await dal_1.get_by_id(type,id);
   if (user_id) {
 
     if (user_id.role_id === 2) {

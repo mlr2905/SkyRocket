@@ -16,21 +16,27 @@ async function get_by_name(name) {
     return user;
 }
 
-async function new_user_role1(uesr) {
-    if (user.password === 'null') {
-        const Result = await connectedKnex.raw(`CALL sp_pass_users('${user.username}','${user.email}','');`)
-        return Result.rows[0]._generated_password
-    }
-    else {
-        const Result = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`)
-        if (Result) {
-            return true
+async function new_user_role1(user) {
+    try {
+        if (user.password === 'null') {
+            const Result = await connectedKnex.raw(`CALL sp_pass_users('${user.username}','${user.email}','');`)
+            return Result.rows[0]._generated_password
         }
-        return Result
+        else {
+            const Result = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`)
+            if (Result) {
+                return true
+            }
+            return 'rejected'
+        }
     }
-} new_user_role1,new_user_role2
+    catch (e) {
+        return false
 
-async function new_user_role2(uesr) {
+    }
+}
+
+async function new_user_role2(user) {
 
     if (user.password === 'null') {
         const Result = await connectedKnex.raw(`CALL sp_pass_users_airlines('${user.username}','${user.email}','');`)
@@ -43,7 +49,6 @@ async function new_user_role2(uesr) {
         }
         return Result
     }
-
 }
 
 async function update_user(id, user) {
@@ -65,7 +70,6 @@ async function update_user(id, user) {
     }
     catch (e) {
         return false
-
     }
 }
 
@@ -94,7 +98,8 @@ async function delete_user(id) {
     if (user.role === 1) {
         return result = await connectedKnex.raw(`CALL delete_user(${id});`)
     }
-    else{
+    else {
+        
         return result = await connectedKnex('users').where('id', id).del()
     }
 }
@@ -106,6 +111,7 @@ async function get_all() {
     const users = await connectedKnex.raw(`SELECT get_all_users();`)
     return users.rows[0].get_all_users
 }
+
 async function delete_all() {
     // db.run('update users ....')
     const result = await connectedKnex('users').del()
@@ -125,5 +131,5 @@ async function set_id(id) {
 }
 
 module.exports = {
-    get_by_name, get_all, new_user_role1,new_user_role2,get_by_id, update_user, delete_user, checkPassword,delete_all, set_id
+    get_by_name, get_all, new_user_role1, new_user_role2, get_by_id, update_user, delete_user, checkPassword, delete_all, set_id
 }

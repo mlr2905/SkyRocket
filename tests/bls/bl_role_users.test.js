@@ -38,7 +38,7 @@ describe('Testing functionallity of the bl', () => {
     })
 
     it('new_user and delete and get_by_id ', async () => {
-        const new_user = await bl.create_user({ 'username': 'michael_test2', 'password': '', 'email': 'michael_test2@gmail.com' })
+        const new_user = await bl.create_user({ 'username': 'michael_test2', 'password': 'null', 'email': 'michael_test2@gmail.com' })
         const id = await bl.get_by_id_user('username', 'michael_test2')
         const expected = id.password
         const actual = await bl.get_by_id_user('email', 'michael_test2@gmail.com')
@@ -48,7 +48,7 @@ describe('Testing functionallity of the bl', () => {
     })
 
     it('new_customer', async () => {
-        const new_customer = await bl.new_customer({ 'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '5555-5432-1098-7337', 'user_id': 36 })
+        const new_customer = await bl.new_customer({ 'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '0506367322', 'credit_card_no': '5555-5432-1098-7337', 'user_id': 36 })
         const expected = 'Michael29'
         const actual = await dal_4.get_by_name('Michael29')
         assert.strictEqual(expected, actual.last_name)
@@ -56,7 +56,7 @@ describe('Testing functionallity of the bl', () => {
 
     it('update_customer', async () => {
         const by_name = await dal_4.get_by_name('Michael29')
-        await bl.update_customer(by_name.id, { 'first_name': 'admin', 'last_name': 'Michael29', 'address': 'israel', 'phone_no': '05034284744', 'credit_card_no': '4444-5432-1098-7654', 'user_id': 36 })
+        await bl.update_customer(by_name.id, { 'credit_card_no': '4444-5432-1098-7654' })
         const expected = '************7654'
         const actual = await dal_4.get_by_id(by_name.id)
         assert.strictEqual(expected, actual.credit_card_no)
@@ -101,9 +101,9 @@ describe('Testing functionallity of the bl', () => {
 
     it('delete_ticket ', async () => {
         await dal_6.delete_ticket(id.id)
-        const expected = 4
+        const expected = undefined
         const actual = await bl.get_by_id_ticket(id.id)
-        assert.strictEqual(expected, actual.customer_id)
+        assert.strictEqual(expected, actual)
     })
 
     //...This test does not test a function in BL, it is designed to reset and delete what the test created...
@@ -111,12 +111,14 @@ describe('Testing functionallity of the bl', () => {
     it('reset and delete', async () => {
         await dal_6.delete_ticket(id.id)
         const expected = undefined
-        const actual = await dal_6.get_by_id_ticket(id.id)
+        const actual = await dal_6.get_by_id(id.id)
         await dal_6.set_id(id.id)
         await dal_7.delete_passenger(id.passenger_id)
         await dal_7.set_id(id.passenger_id)
         await dal_5.delete_chair(id.chair_id)
         await dal_5.set_id(id.chair_id)
+        await dal_4.delete_customer(id.customer_id)
+        await dal_4.set_id(id.customer_id)
         assert.strictEqual(expected, actual)
     })
 

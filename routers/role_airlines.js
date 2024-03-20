@@ -56,20 +56,22 @@ router.get('/users/:id', async (request, response) => {
 
 // POST
 router.post('/users', async (request, response) => {
+    const new_user = request.body
     try {
-        const new_user = request.body
-        try {
-            const result = await bl.create_user(new_user)
+        const result = await bl.create_user(new_user)
+        if (result.ok) {
             response.status(201).json(result)
-
-        } catch (error) {
-            throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
-            ; // מעבירה את השגיאה הלאה
         }
+        else if (result === 'rejected') {
+            response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
+        }
+        else {
+            response.status(503).json({ "error": `The request failed, try again later` })
+        }
+    } catch (error) {
     }
-    catch (error) {
-        response.status(503).json({ "error": `The request failed, try again later ` })
-    }
+    response.status(503).json({ "error": `The request failed, try again later ${error}` })
+
 })
 
 // PUT 
