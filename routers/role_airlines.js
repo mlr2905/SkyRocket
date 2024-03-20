@@ -77,14 +77,14 @@ router.post('/users', async (request, response) => {
 // PUT 
 router.put('/users/:id', async (request, response) => {
 
-    const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_user('id',user_id)
+    const id = parseInt(request.params.id)
+    const user = await bl.get_by_id_user('id',id)
 
     if (user) {
 
         try {
             const updated_user_req = request.body
-            const result = await bl.update_user(user_id, updated_user_req)
+            const result = await bl.update_user(id, updated_user_req)
             if(result){
                 response.status(201).json(result)
             }

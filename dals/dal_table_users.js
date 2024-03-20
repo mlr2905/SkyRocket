@@ -58,11 +58,11 @@ async function update_user(id, user) {
         //     return update
         // }
         // else {
-        if (user.email === 'null') {
+        if (user.email === 'null' || user.email === "null") {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`)
             return update
         }
-        if (user.password === 'null') {
+        if (user.password === 'null'|| user.password === "null") {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
             return update
         }
