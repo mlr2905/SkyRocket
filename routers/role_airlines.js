@@ -77,8 +77,7 @@ router.post('/users', async (request, response) => {
 // PUT 
 router.put('/users/:id', async (request, response) => {
 
-    const id = parseInt(request.params.id)
-    console.log('id',id);
+    const id = request.params.id
 
     const user = await bl.get_by_id_user('id',id)
 
