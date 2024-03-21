@@ -67,7 +67,7 @@ async function update_user(id, user) {
     }
   }
   catch (error) {
-    return error;
+    return 'error',error,'update_user',update_user
   }
 }
 
