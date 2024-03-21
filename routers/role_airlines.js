@@ -36,13 +36,21 @@ const bl = require('../bl/bl_role_airlines')
 // GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
+    try {
     const user = await bl.get_by_id_user('id',user_id)
     if (user) {
         response.status(200).json(user)
     }
-    else {
-        response.status(404).json({ "error": `cannot find user with id ${user_id}` })
+    else if ('Postponed') {
+        response.status(403).json({ "error":`Access denied, you do not have permission to access the requested Id '${user_id}'`})
     }
+    else {
+        response.status(404).json({ "error": `cannot find user with id '${user_id}'` })
+    }
+} catch (error) {
+    throw response.status(503).json({ "error": `The request failed, try again later '${error}'` })
+}
+
 })
 
 // GET by search

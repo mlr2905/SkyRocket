@@ -28,8 +28,23 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-  const user_id = id === undefined ? await dal_1.get_by_id(id) : await dal_1.get_by_id_type(type, id);
-  return user_id && user_id.role_id === 2 ? user_id : !user_id ? 'Postponed' : false;
+  if (id === undefined) {
+    const user_id = await dal_1.get_by_id(id);
+  }
+  else {
+    const user_id = await dal_1.get_by_id_type(type, id);
+  }
+  if (user_id) {
+    if (user_id.role_id === 2) {
+      return user_id
+    }
+    else {
+      return 'Postponed'
+    }
+  }
+  else {
+    return false
+  }
 }
 
 
