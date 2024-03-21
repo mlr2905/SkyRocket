@@ -29,35 +29,45 @@ async function create_user(uesr) {
 
 async function get_by_id_user(type, id) {
   let user_id = null
-  if (id === undefined) {
-     user_id = await dal_1.get_by_id(id);
-  }
-  else {
-     user_id = await dal_1.get_by_id_type(type, id);
-  }
+  try {
 
-  if (user_id) {
-    if (user_id.role_id === 2) {
-      return user_id
+    if (id === undefined) {
+      user_id = await dal_1.get_by_id(id);
     }
     else {
-      return 'Postponed'
+      user_id = await dal_1.get_by_id_type(type, id);
+    }
+
+    if (user_id) {
+      if (user_id.role_id === 2) {
+        return user_id
+      }
+      else {
+        return 'Postponed'
+      }
+    }
+    else {
+      return false
     }
   }
-  else {
-    return false
+  catch (error) {
+    return error;
   }
 }
 
 
 async function update_user(id, user) {
-
-  const update_user = await dal_1.update_user(id, user);
-  if (update_user) {
-    return { 'ok': `${user_id.username}${update_user}` }
+  try {
+    const update_user = await dal_1.update_user(id, user);
+    if (update_user) {
+      return { 'ok': `${user_id.username}${update_user}` }
+    }
+    else {
+      return false
+    }
   }
-  else {
-    return false
+  catch (error) {
+    return error;
   }
 }
 
