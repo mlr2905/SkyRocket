@@ -73,7 +73,7 @@ async function update_user(id, user) {
     }
 }
 
-async function get_by_id(type, id) {
+async function get_by_id_type(type, id) {
     try {
         const user = await connectedKnex('users')
             .select('users.*', 'roles.role_name')
@@ -94,6 +94,26 @@ async function get_by_id(type, id) {
     }
 }
 
+async function get_by_id(id) {
+    try {
+        const user = await connectedKnex('users')
+            .select('users.*', 'roles.role_name')
+            .join('roles', 'users.role_id', 'roles.id')
+            .where('users.id', id)
+            .first();
+        if (user) {
+            return user;
+        }
+        else{
+            return false
+        }
+        
+    } catch (error) {
+        // טיפול בשגיאה כאן
+        console.error(error);
+        return error; // הזרקת השגיאה כדי שהיא תתפוס בקריאה לפונקציה
+    }
+}
 
 async function delete_user(id) {
 
@@ -134,5 +154,5 @@ async function set_id(id) {
 }
 
 module.exports = {
-    get_by_name, get_all, new_user_role1, new_user_role2, get_by_id, update_user, delete_user, checkPassword, delete_all, set_id
+    get_by_name, get_all, new_user_role1, new_user_role2, get_by_id, get_by_id_type,update_user, delete_user, checkPassword, delete_all, set_id
 }

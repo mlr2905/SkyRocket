@@ -1,6 +1,7 @@
 const dal_1 = require('../dals/dal_table_users')
 const dal_3 = require('../dals/dal_table_airlines')
 const dal_5 = require('../dals/dal_table_flights')
+const { log } = require('winston')
 
 //func users 
 async function create_user(uesr) {
@@ -27,27 +28,16 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-
-  const user_id = await dal_1.get_by_id(type, id);
-  if (user_id) {
-
-    if (user_id.role_id === 2) {
-      return user_id
-    }
-    else {
-      return 'Postponed'
-    }
-  }
-  else {
-    return false
-  }
+  const user_id = id === undefined ? await dal_1.get_by_id(id) : await dal_1.get_by_id_type(type, id);
+  return user_id && user_id.role_id === 2 ? user_id : !user_id ? 'Postponed' : false;
 }
+
 
 async function update_user(id, user) {
 
   const update_user = await dal_1.update_user(id, user);
   if (update_user) {
-    return {'ok':`${user_id.username}${update_user}`}
+    return { 'ok': `${user_id.username}${update_user}` }
   }
   else {
     return false
