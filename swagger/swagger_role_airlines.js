@@ -50,14 +50,14 @@
  *                 description: The email of the user.
  *     responses:
  *       '201':
- *         description: User created successfully.
+ *         description: Created
  *         content:
  *           application/json:
  *             schema:
  *               type: string
  *               example: User 'tset_swagger' successfully created
  *       '409':
- *         description: The email system exists.
+ *         description: Conflict
  *         content:
  *           application/json:
  *             schema:
@@ -94,7 +94,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '201':
- *         description: Successful response with the user details.
+ *         description: Created
  *         content:
  *           application/json:
  *             schema:
@@ -116,7 +116,7 @@
  *                       example: tset_swagger@gmail.com
  *                       description: The email of the user.
  *       '403':
- *         description: Error Forbidden.
+ *         description: Forbidden.
  *         content:
  *           application/json:
  *             schema:
@@ -126,7 +126,7 @@
  *                   type: object
  *                   example: Access denied, you do not have permission to access the requested Id '{id}'.
  *       '404':
- *         description: Error Not Found.
+ *         description: Not Found.
  *         content:
  *           application/json:
  *             schema:
@@ -136,7 +136,7 @@
  *                   type: object
  *                   example: cannot find user with id '{id}'.
  *       '503':
- *         description: service is unavailable.
+ *         description: Service Unavailable.
  *         content:
  *           application/json:
  *             schema:
@@ -183,7 +183,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: Successful response with matching user details.
+ *         description: OK.
  *         content:
  *           application/json:
  *             schema:
@@ -201,7 +201,7 @@
  *
  *                   # Exclude password from response
  *       '404':
- *         description: No users found matching the criteria.
+ *         description: Not Found.
  *         content:
  *           application/json:
  *             schema:
@@ -257,26 +257,17 @@
  *                 description: The email of the user.
  *     responses:
  *       '200':
- *         description: The user was updated
+ *         description: OK
  *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 username:
- *                   type: string
- *                   example: tset_swagger_put
- *                   description: The username of the user.
- *                 password:
- *                   type: string
- *                   example: Aasj232
- *                   description: The password of the user.
- *                 email:
- *                   type: string
- *                   example: tset_swagger_put@gmail.com
- *                   description: The email of the user
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  example:
+ *                    type: string
+ *                    example: email ${email} successfully updated
  *       '404':
- *         description: Error Not Found
+ *         description: Not Found
  *         content:
  *            application/json:
  *              schema:
@@ -286,7 +277,7 @@
  *                    type: string
  *                    example: No user found with this handle <id>
  *       '409':
- *         description: Conflict. The email already exists.
+ *         description: Conflict
  *         content:
  *            application/json:
  *              schema:
@@ -335,9 +326,9 @@
  *       - CustomAuth: []
  *     responses:
  *       204:
- *         description: user deleted successfully.
+ *         description: No Content.
  *       404:
- *         description: user not found with the specified ID.
+ *         description: Not Found.
  *         content:
  *           application/json:
  *             example:
@@ -379,7 +370,7 @@
  *             
  *     responses:
  *       '201':
- *         description: user_airlines created successfully.
+ *         description: Created.
  *         content:
  *           application/json:
  *             schema:
@@ -435,7 +426,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: Successful response with the user_airline details.
+ *         description: OK.
  *         content:
  *           application/json:
  *             schema:
@@ -500,7 +491,7 @@
  *             $ref: '#/components/schemas/airlines'
  *     responses:
  *       200:
- *         description: The user_airline was updated
+ *         description: OK
  *         content:
  *           application/json:
  *             schema:
@@ -538,7 +529,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: Successful response with the user_airline details.
+ *         description: OK.
  *         content:
  *           application/json:
  *             schema:
@@ -598,7 +589,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: Successful response with the user_airline details.
+ *         description: OK.
  *         content:
  *           application/json:
  *             schema:
@@ -743,7 +734,7 @@
  *             $ref: '#/components/schemas/flights'
  *     responses:
  *       200:
- *         description: The user_airline was updated
+ *         description: OK
  *         content:
  *           application/json:
  *             schema:
