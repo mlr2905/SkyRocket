@@ -116,17 +116,7 @@
  *                       example: tset_swagger@gmail.com
  *                       description: The email of the user.
  *       '403':
- *         description: No access to the requested user.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: object
- *                   example: You do not have permission to access the requested user.
- *       '403':
- *         description: Access denied.
+ *         description: Error Forbidden.
  *         content:
  *           application/json:
  *             schema:
@@ -136,7 +126,7 @@
  *                   type: object
  *                   example: Access denied, you do not have permission to access the requested Id '{id}'.
  *       '404':
- *         description: User not found.
+ *         description: Error Not Found.
  *         content:
  *           application/json:
  *             schema:
@@ -266,7 +256,7 @@
  *                 example: tset_swagger_put@gmail.com
  *                 description: The email of the user.
  *     responses:
- *       '201':
+ *       '200':
  *         description: The user was updated
  *         content:
  *           application/json:
@@ -284,29 +274,19 @@
  *                 email:
  *                   type: string
  *                   example: tset_swagger_put@gmail.com
- *                   description: The email of the user.
- *       '404':
- *         description: The email system exists.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: The id ${id} you specified does not exist in the system
+ *                   description: The email of the user
  *       '409':
- *         description: The email already exists.
+ *         description: Conflict. The email already exists.
  *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: {email} already exists
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The email {email} already exists
  *       '503':
- *         description: service is unavailable.
+ *         description: Service Unavailable.
  *         content:
  *           application/json:
  *             schema:
@@ -316,6 +296,7 @@
  *                   type: string
  *                   example: The request failed, try again later {error}
  */
+
 
 
 /**
