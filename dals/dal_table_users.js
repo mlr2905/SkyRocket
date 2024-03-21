@@ -60,21 +60,22 @@ async function update_user(id, user) {
         // else {
         if (user.email === 'null' || user.email === "null") {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`)
-            if (update.name !== "error") {
-                return true
+            if (update.name == "error") {
+                return update.detail
             }
             else{
-                return update.detail
+                return true
             }
         }
         if (user.password === 'null'|| user.password === "null") {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
-            if (update) {
-                return update
+            if (update.name == "error") {
+                return update.detail
             }
-            return false
+            else{
+                return true
+            }
         }
-        // }
     }
     catch (e) {
         return e
