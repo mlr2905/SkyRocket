@@ -33,27 +33,42 @@ const bl = require('../bl/bl_role_airlines')
 
 //role_airlines/users
 // GET by ID
+// GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-
-    try {
-        const user = await bl.get_by_id_user(user_id)
-        if (user) {
-            if (user !== 'Postponed')
-                response.status(201).json(user)
-            else {
-                response.status(403).json({ error: 'You do not have permission to access the requested user' })
-            }
-        }
-        else {
-            response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
-        }
+    const user = await bl.get_by_id_customer('id',user_id)
+    if (user) {
+        response.status(200).json(user)
     }
-    catch (error) {
-        response.status(503).json({ "error": `The request failed, try again later ` })
+    else {
+        response.status(404).json({ "error": `cannot find user with id ${user_id}` })
     }
 })
 
+// GET by search
+router.get('/users/search', async (request, response) => {
+    // const user_id = parseInt(request.params.id)
+    const query = request.query
+    const email = query.email
+    const username = query.username
+    const password = query.password
+    const id = query.id
+    let search = email ? email : username ? username : password ? password : id;
+    let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
+
+    try {
+        const user = await bl.get_by_id_user(type, search)
+        if (user) {
+            response.status(200).json(user)
+        }
+        else {
+            throw response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
+        }
+
+    } catch (error) {
+        throw response.status(503).json({ "error": `The request failed, try again later ${error}` })
+    }
+})
 // POST
 router.post('/users', async (request, response) => {
     const new_user = request.body
