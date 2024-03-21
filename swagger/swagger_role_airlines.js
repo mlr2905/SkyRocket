@@ -249,7 +249,7 @@
  *                 description: The username of the user.
  *               password:
  *                 type: string
- *                 example: Aasj232
+ *                 example: 'null'
  *                 description: The password of the user.
  *               email:
  *                 type: string
@@ -275,6 +275,16 @@
  *                   type: string
  *                   example: tset_swagger_put@gmail.com
  *                   description: The email of the user
+ *       '404':
+ *         description: Error Not Found
+ *         content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: No user found with this handle <id>
  *       '409':
  *         description: Conflict. The email already exists.
  *         content:
