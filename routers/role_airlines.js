@@ -122,6 +122,9 @@ router.put('/users/:id', async (request, response) => {
                 ; // מעבירה את השגיאה הלאה
         }
     }
+    else{
+        response.status(404).json({ "error": `No user found with this handle '${id}'` })
+    }
 })
 
 
