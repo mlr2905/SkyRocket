@@ -108,16 +108,15 @@ router.put('/users/:id', async (request, response) => {
 
     if (user) {
         try {
-            const updated_user_req = request.body
-            const result = await bl.update_user(id, updated_user_req)
+            const updated = request.body
+            const result = await bl.update_user(id, updated)
             if (result) {
-                response.status(201).json(result)
+                response.status(201).json(`email ${updated.email} successfully updated`)
             }
             else {
-                response.status(409).json({ "error": `${updated_user_req.email} already exists` })
+                response.status(409).json({ "error": `${updated.email} already exists` })
             }
         }
-
         catch (error) {
             response.status(503).json({ "error": `The request failed, try again later ${error}` })
                 ; // מעבירה את השגיאה הלאה
