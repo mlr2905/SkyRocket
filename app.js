@@ -31,6 +31,8 @@ const options = {
 const specs = swaggerJsdoc(options);
 
 const app = express()
+app.use(cors());
+
 const port = 3000
 // // אימות בסיסי
 // const users = {
@@ -61,14 +63,13 @@ app.use(basicAuth({
     challenge: true,
     unauthorizedResponse: (req) => {return 'Unauthorized';},
     authorizer: (username, password) => {return checkPassword(username, password); }}));
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/')))
 app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 }); 
-app.use(cors());
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/all_tables', all_tables_router)
 app.use('/role_admins', role_admins)
 app.use('/role_airlines', role_airlines)
