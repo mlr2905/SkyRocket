@@ -69,12 +69,10 @@ async function update_user(id, user) {
         }
         if (user.password === 'null'|| user.password === "null") {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
-            if (!update) {
+           
                 return update
-            }
-            else{
-                return true
-            }
+            
+            
         }
     }
     catch (e) {
