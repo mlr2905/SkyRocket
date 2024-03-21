@@ -58,16 +58,16 @@ async function get_by_id_user(type, id) {
 
 async function update_user(id, user) {
   try {
-    const update_user = await dal_1.update_user(id, user);
-    if (update_user) {
-      return { 'ok': `${user_id.username}${update_user}` }
+    const result = await dal_1.update_user(id, user);
+    if (result) {
+      return { 'ok': `${user_id.username}${result}` }
     }
     else {
       return false
     }
   }
   catch (error) {
-    return 'error',error,'update_user',update_user
+    return 'error',error,'update_user',result
   }
 }
 
