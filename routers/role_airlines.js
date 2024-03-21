@@ -39,10 +39,13 @@ router.get('/users/:id', async (request, response) => {
     try {
     const user = await bl.get_by_id_user('id',user_id)
     if (user) {
-        response.status(200).json(user)
-    }
-    else if ('Postponed') {
-        response.status(403).json({ "error":`Access denied, you do not have permission to access the requested Id '${user_id}'`})
+        if (user !== 'Postponed') {
+            response.status(200).json(user)
+        }
+        else{
+            response.status(403).json({ "error":`Access denied, you do not have permission to access the requested Id '${user_id}'`})
+
+        }
     }
     else {
         response.status(404).json({ "error": `cannot find user with id '${user_id}'` })
