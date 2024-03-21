@@ -60,16 +60,24 @@ async function update_user(id, user) {
         // else {
         if (user.email === 'null' || user.email === "null") {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`)
-            return update
+            if (update) {
+                return true
+            }
+            else{
+                return false
+            }
         }
         if (user.password === 'null'|| user.password === "null") {
             const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
-            return update
+            if (update) {
+                return true
+            }
+            return false
         }
         // }
     }
     catch (e) {
-        return false
+        return e
     }
 }
 
@@ -107,10 +115,8 @@ async function get_by_id(id) {
         else{
             return false
         }
-        
     } catch (error) {
         // טיפול בשגיאה כאן
-        console.error(error);
         return error; // הזרקת השגיאה כדי שהיא תתפוס בקריאה לפונקציה
     }
 }

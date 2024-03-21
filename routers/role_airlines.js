@@ -106,23 +106,25 @@ router.put('/users/:id', async (request, response) => {
 
     const user = await bl.get_by_id_user('id', id)
 
-    // if (user) {
-    // try {
-    const updated_user_req = request.body
-    const result = await bl.update_user(id, updated_user_req)
-    if (result) {
-        response.status(201).json(result)
-    }
-    else {
-        response.status(409).json({ "error": `${updated_user_req.email} already exists` })
-    }
-    // }
-    // catch (error) {
-    //      response.status(503).json({ "error": `The request failed, try again later ${error}` })
-    //     ; // מעבירה את השגיאה הלאה
-    // }
+    if (user) {
+        try {
+            const updated_user_req = request.body
+            const result = await bl.update_user(id, updated_user_req)
+            if (result) {
+                response.status(201).json(result)
+            }
+            else {
+                response.status(409).json({ "error": `${updated_user_req.email} already exists` })
+            }
+        }
 
+        catch (error) {
+            response.status(503).json({ "error": `The request failed, try again later ${error}` })
+                ; // מעבירה את השגיאה הלאה
+        }
+    }
 })
+
 
 //role_airlines/airline
 

@@ -58,21 +58,12 @@ async function get_by_id_user(type, id) {
 
 async function update_user(id, user) {
   try {
-    const result = await dal_1.update_user(id, user);
-    if (result) {
-      return { 'ok': `${user_id.username}${result}` }
-    }
-    else {
-      return false
-    }
+   return await dal_1.update_user(id, user);
   }
   catch (error) {
-    return 'error',error,'update_user',result
+    return 
   }
 }
-
-
-
 
 // airline
 
