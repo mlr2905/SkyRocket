@@ -28,8 +28,7 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-  let user_id = nul
-  console.log('bl id',id);
+  let user_id = null
   if (id === undefined) {
      user_id = await dal_1.get_by_id(id);
   }
