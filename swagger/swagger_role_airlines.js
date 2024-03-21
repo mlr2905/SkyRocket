@@ -236,13 +236,14 @@
  *         description: The user id
  *     security:
  *       - CustomAuth: []
- *     requestBody:
+ *     requestBody: 
  *       required: true
+ *       description: "⛔⛔⛔Please note: Either password or email can be updated, not both at the same time.!!!⛔⛔⛔"
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
+ *             properties: 
  *               username:
  *                 type: string
  *                 example: tset_swagger_put
