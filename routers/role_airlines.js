@@ -37,23 +37,22 @@ const bl = require('../bl/bl_role_airlines')
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
     try {
-    const user = await bl.get_by_id_user('id',user_id)
-    if (user) {
-        if (user !== 'Postponed') {
-            response.status(200).json(user)
+        const user = await bl.get_by_id_user('id', user_id)
+        if (user) {
+            if (user !== 'Postponed') {
+                response.status(200).json(user)
+            }
+            else {
+                response.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id ${user_id}` })
+            }
         }
-        else{
-            response.status(403).json({ "error":`Access denied, you do not have permission to access the requested Id '${user_id}'`})
-
+        else {
+            response.status(404).json({ "error": `cannot find user with id '${user_id}'` })
         }
     }
-    else {
-        response.status(404).json({ "error": `cannot find user with id '${user_id}'` })
+    catch (error) {
+        response.status(503).json({ "error": `The request failed, try again later '${error}'` })
     }
-} catch (error) {
-    throw response.status(503).json({ "error": `The request failed, try again later '${error}'` })
-}
-
 })
 
 // GET by search
@@ -105,24 +104,24 @@ router.put('/users/:id', async (request, response) => {
 
     const id = request.params.id
 
-    const user = await bl.get_by_id_user('id',id)
+    const user = await bl.get_by_id_user('id', id)
 
     // if (user) {
-        // try {
-            const updated_user_req = request.body
-            const result = await bl.update_user(id, updated_user_req)
-            if(result){
-                response.status(201).json(result)
-            }
-            else{
-                response.status(409).json({ "error":`${updated_user_req.email} already exists`})
-            }
-        // }
-        // catch (error) {
-        //      response.status(503).json({ "error": `The request failed, try again later ${error}` })
-        //     ; // מעבירה את השגיאה הלאה
-        // }
-   
+    // try {
+    const updated_user_req = request.body
+    const result = await bl.update_user(id, updated_user_req)
+    if (result) {
+        response.status(201).json(result)
+    }
+    else {
+        response.status(409).json({ "error": `${updated_user_req.email} already exists` })
+    }
+    // }
+    // catch (error) {
+    //      response.status(503).json({ "error": `The request failed, try again later ${error}` })
+    //     ; // מעבירה את השגיאה הלאה
+    // }
+
 })
 
 //role_airlines/airline

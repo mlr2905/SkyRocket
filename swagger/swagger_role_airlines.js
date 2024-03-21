@@ -125,8 +125,8 @@
  *                 error:
  *                   type: object
  *                   example: You do not have permission to access the requested user.
- *       '404':
- *         description: User not found with the specified ID.
+ *       '403':
+ *         description: Access denied.
  *         content:
  *           application/json:
  *             schema:
@@ -134,9 +134,28 @@
  *               properties:
  *                 error:
  *                   type: object
- *                   example: The id [id] you specified does not exist in the system.
+ *                   example: Access denied, you do not have permission to access the requested Id '{id}'.
+ *       '404':
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   example: cannot find user with id '{id}'.
+ *       '503':
+ *         description: service is unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   example: the service is temporarily unavailable '{error}'.
  */
-
 
 /**
  * @swagger
@@ -277,7 +296,7 @@
  *                   type: string
  *                   example: The id ${id} you specified does not exist in the system
  *       '409':
- *         description: The email system exists.
+ *         description: The email already exists.
  *         content:
  *           application/json:
  *             schema:
@@ -285,9 +304,9 @@
  *               properties:
  *                 error:
  *                   type: string
- *                   example: tset_swagger_put@gmail.com already exists
+ *                   example: {email} already exists
  *       '503':
- *         description: The email system exists.
+ *         description: service is unavailable.
  *         content:
  *           application/json:
  *             schema:
@@ -295,7 +314,7 @@
  *               properties:
  *                 error:
  *                   type: string
- *                   example: The request failed, try again later
+ *                   example: The request failed, try again later {error}
  */
 
 

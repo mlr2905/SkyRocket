@@ -29,19 +29,17 @@ async function create_user(uesr) {
   }
 }
 
-async function get_by_id_user(type,id) {
-
+async function get_by_id_user(type, id) {
+  let user_id = null
   if (id === undefined) {
-    const user_id = await dal_1.get_by_id(id);
-
+     user_id = await dal_1.get_by_id(id);
   }
-  else{
-    const user_id = await dal_1.get_by_id_type(type, id);
-
+  else {
+     user_id = await dal_1.get_by_id_type(type, id);
   }
+
   if (user_id) {
-
-    if (user_id.role_id === 1) {
+    if (user_id.role_id === 2) {
       return user_id
     }
     else {
