@@ -69,7 +69,7 @@ async function update_user(id, user) {
 // airline
 
 async function create_airline(uesr) {
-  const user_name = await dal_3.get_by_name(uesr.name)
+  const user_name = await dal_3.get_by_id_type('user_id',uesr.user_id)
   if (user_name === undefined) {
     try {
       const new_user = await dal_3.new_airline(uesr)

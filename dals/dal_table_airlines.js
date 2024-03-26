@@ -135,6 +135,15 @@ async function get_by_name(name) { //getAirlineByName
     }
 }
 
+async function get_by_id_type(type,id) { //getAirlineByName
+    try {
+        const airline = await connectedKnex('airlines').select('*').where(`${type}`, id).first();
+        return airline;
+    } catch (error) {
+        throw new Error(`Failed to get airline by name: ${error.message}`);
+    }
+}
+
 async function get_by_airline_id_test(id) {
     // db.run('select * from flights where id=?')
     
@@ -143,4 +152,4 @@ async function get_by_airline_id_test(id) {
     return result
 }
 
-module.exports = { get_all, get_by_id, new_airline, update_airline, delete_airline, set_id, get_by_name, delete_all,get_by_airline_id_test }
+module.exports = { get_all, get_by_id, get_by_id_type, new_airline, update_airline, delete_airline, set_id, get_by_name, delete_all,get_by_airline_id_test }
