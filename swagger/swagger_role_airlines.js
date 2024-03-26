@@ -50,7 +50,7 @@
  *                 description: The email of the user.
  *     responses:
  *       '201':
- *         description: Created
+ *         description: Created 🆗
  *         content:
  *           application/json:
  *             schema:
@@ -94,7 +94,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '201':
- *         description: Created
+ *         description: Created 🆗
  *         content:
  *           application/json:
  *             schema:
@@ -183,7 +183,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: OK.
+ *         description: 🆗
  *         content:
  *           application/json:
  *             schema:
@@ -238,7 +238,7 @@
  *       - CustomAuth: []
  *     requestBody: 
  *       required: true
- *       description: "⛔⛔⛔Please note: Either password or email can be updated, not both at the same time.!!!⛔⛔⛔"
+ *       description: "⚠⚠⚠Please note: Either password or email can be updated, not both at the same time.!!!⚠⚠⚠"
  *       content:
  *         application/json:
  *           schema:
@@ -258,7 +258,7 @@
  *                 description: The email of the user.
  *     responses:
  *       '200':
- *         description: OK
+ *         description: 🆗
  *         content:
  *            application/json:
  *              schema:
@@ -371,7 +371,7 @@
  *             
  *     responses:
  *       '201':
- *         description: Created.
+ *         description: Created🆗
  *         content:
  *           application/json:
  *             schema:
@@ -427,7 +427,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: OK.
+ *         description: 🆗
  *         content:
  *           application/json:
  *             schema:
@@ -492,7 +492,7 @@
  *             $ref: '#/components/schemas/airlines'
  *     responses:
  *       200:
- *         description: OK
+ *         description: 🆗
  *         content:
  *           application/json:
  *             schema:
@@ -530,7 +530,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: OK.
+ *         description: 🆗
  *         content:
  *           application/json:
  *             schema:
@@ -590,7 +590,7 @@
  *       - CustomAuth: []
  *     responses:
  *       '200':
- *         description: OK.
+ *         description: 🆗
  *         content:
  *           application/json:
  *             schema:
@@ -670,7 +670,7 @@
  *                 description: The plane_id of the flight.
  *     responses:
  *       '201':
- *         description: flight created successfully.
+ *         description: created 🆗
  *         content:
  *           application/json:
  *             schema:
@@ -735,7 +735,7 @@
  *             $ref: '#/components/schemas/flights'
  *     responses:
  *       200:
- *         description: OK
+ *         description: 🆗
  *         content:
  *           application/json:
  *             schema:
