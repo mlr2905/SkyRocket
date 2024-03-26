@@ -87,7 +87,7 @@ router.post('/users', async (request, response) => {
         if (result.ok) {
             response.status(201).json(result.ok)
         }
-        else if (result === "rejected") {
+        else if (result === 'rejected') {
             response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
         }
         else {
@@ -138,7 +138,7 @@ router.post('/airlines', async (request, response) => {
         if (result.ok) {
             response.status(201).json(result.ok)
         }
-        else if (result === "rejected") {
+        else if (result === 'rejected') {
             response.status(409).json({ "error": `name ${new_user.name} or user_id ${new_user.user_id} exist in the system` })
         }
         else {
