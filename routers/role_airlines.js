@@ -32,7 +32,31 @@ const bl = require('../bl/bl_role_airlines')
 // })
 
 //role_airlines/users
-// GET by ID
+
+// GET by search
+router.get('/users/search', async (request, response) => {
+    // const user_id = parseInt(request.params.id)
+    const query = request.query
+    const email = query.email
+    const username = query.username
+    const password = query.password
+    const id = query.id
+    let search = email ? email : username ? username : password ? password : id;
+    let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
+
+    try {
+        const user = await bl.get_by_id_user(type, search)
+        if (user) {
+            response.status(200).json(user)
+        }
+        else {
+            throw response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
+        }
+
+    } catch (error) {
+        throw response.status(503).json({ "error": `The request failed, try again later ${error}` })
+    }
+})
 // GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
@@ -55,30 +79,6 @@ router.get('/users/:id', async (request, response) => {
     }
 })
 
-// GET by search
-router.get('/users/search', async (request, response) => {
-    // const user_id = parseInt(request.params.id)
-    const query = request.query
-    const email = query.email
-    const username = query.username
-    const password = query.password
-    const id = query.id
-    let search = email ? email : username ? username : password ? password : id;
-    let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
-
-    try {
-        const user = await bl.get_by_id_user(type, search)
-        if (user) {
-            response.status(200).json(user)
-        }
-        else {
-             response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
-        }
-
-    } catch (error) {
-         response.status(503).json({ "error": `The request failed, try again later ${error}` })
-    }
-})
 // POST
 router.post('/users', async (request, response) => {
     const new_user = request.body

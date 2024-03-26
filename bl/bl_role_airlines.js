@@ -28,6 +28,7 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
+  console.log('type, id',type, id);
   let user_id = null
   try {
 
