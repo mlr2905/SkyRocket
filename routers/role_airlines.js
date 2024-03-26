@@ -120,7 +120,6 @@ router.put('/users/:id', async (request, response) => {
         }
         catch (error) {
             response.status(503).json({ "error": `The request failed, try again later ${error}` })
-                ; // מעבירה את השגיאה הלאה
         }
     }
     else{
@@ -136,14 +135,14 @@ router.post('/airlines', async (request, response) => {
     const new_user = request.body
     try {
         const result = await bl.create_user(new_user)
-        if (result) {
+        if (result.id) {
             response.status(201).json(result)
         }
         else if (result === 'rejected') {
             response.status(409).json({ "error": `name ${new_user.name} or user_id ${new_user.user_id} exist in the system` })
         }
         else {
-            response.status(503).json({ "error": `The request failed, try again later` })
+            response.status(503).json({ "error": `The request failed, try again later ${result}` })
         }
     } catch (error) {
     
