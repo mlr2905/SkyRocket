@@ -28,7 +28,6 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-  console.log('type, id',type, id);
   let user_id = null
   try {
 
@@ -72,11 +71,7 @@ async function create_airline(uesr) {
   const user_name = await dal_3.get_by_name(uesr.name)
   if (user_name === undefined) {
     try {
-      const new_user = await dal_3.new_airline(uesr)
-      
-      if (new_user) {
-        return { 'OK': `'${uesr.name}' successfully created` }
-      }
+      return new_user = await dal_3.new_airline(uesr)
     }
     catch (error) {
       return error;
@@ -99,7 +94,6 @@ async function update_airline(id, update_airline) {
     return `${user_id.name}${update_user}`
   }
   else {
-    console.log('bl no ko');
     return console.error('The ID you specified does not exist:');
   }
 }

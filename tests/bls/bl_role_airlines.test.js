@@ -6,7 +6,7 @@ const dal_5 = require('../../dals/dal_table_flights')
 
 describe('Testing functionallity of the bl', () => {
 
-    //................users....................
+    // //................users....................
 
     it('new_user and get_by_id', async () => {
         await bl.create_user({ 'username': 'air_test2', 'password': 'test', 'email': 'air_test2@gmail.com' })

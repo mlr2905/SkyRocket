@@ -81,7 +81,6 @@ async function update_user(id, user) {
 }
 
 async function get_by_id_type(type, id) {
-    console.log('type, id',type, id);
     try {
         const user = await connectedKnex('users')
             .select('users.*', 'roles.role_name')
@@ -97,7 +96,6 @@ async function get_by_id_type(type, id) {
         
     } catch (error) {
         // טיפול בשגיאה כאן
-        console.error(error);
         return error; // הזרקת השגיאה כדי שהיא תתפוס בקריאה לפונקציה
     }
 }

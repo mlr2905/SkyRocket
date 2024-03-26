@@ -135,8 +135,8 @@ router.post('/airlines', async (request, response) => {
     const new_user = request.body
     try {
         const result = await bl.create_user(new_user)
-        if (result.ok) {
-            response.status(201).json(result.ok)
+        if (result) {
+            response.status(201).json(result)
         }
         else if (result === 'rejected') {
             response.status(409).json({ "error": `name ${new_user.name} or user_id ${new_user.user_id} exist in the system` })

@@ -18,7 +18,7 @@ describe('Testing functionallity of the DAL', () => {
     })
 
     it('new_airline', async () => {
-        const new_airline = await dal.new_airline({ 'name': 'airline_tset', 'country_id': 74, 'user_id': 36 })
+        const new_airline = await dal.new_airline({ 'name': 'airline_tset', 'country_id': 74, 'user_id': 37 })
         const expected = 'airline_tset'
         const actual = await dal.get_by_id(new_airline.id)
         assert.strictEqual(expected, actual.name)
@@ -26,7 +26,7 @@ describe('Testing functionallity of the DAL', () => {
 
     it('update_airline', async () => {
         const by_name = await dal.get_by_name('airline_tset')
-        await dal.update_airline(by_name.id, { 'name': 'airline_tset2', 'country_id': 74, 'user_id': 36 })
+        await dal.update_airline(by_name.id, { 'name': 'airline_tset2', 'country_id': 74, 'user_id': 37 })
         const expected = 'airline_tset2'
         const actual = await dal.get_by_id(by_name.id)
         assert.strictEqual(expected, actual.name)
