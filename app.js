@@ -36,7 +36,7 @@ const options = {
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
           },
-        servers: [{url: "https://skyrocket.onrender.com/",},],
+        servers: [{url: "https://skyrocket.onrender.com/"}],
     },
     apis: ["./swagger/*.js"],
 };

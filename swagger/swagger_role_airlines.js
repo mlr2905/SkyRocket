@@ -8,7 +8,10 @@
  *   description: The role_airlines managing API
  */
 
+
 //role_airlines/
+
+
 
 /**
  * @swagger
@@ -182,24 +185,38 @@
  *     security:
  *       - CustomAuth: []
  *     responses:
- *       '200':
- *         description: 🆗
+ *       '201':
+ *         description: Created 🆗
  *         content:
  *           application/json:
  *             schema:
- *                 properties:
- *                   id:
- *                     type: number
- *                   username:
- *                     type: string
- *                   email:
- *                     type: string
- *                   password:
- *                     type: string
- *                   role_id:
- *                     type: number
- *
- *                   # Exclude password from response
+ *               type: object
+ *               properties:
+ *                 example:
+ *                   type: object
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                       example: tset_swagger
+ *                       description: The username of the user.
+ *                     password:
+ *                       type: string
+ *                       example: Aasj212
+ *                       description: The password of the user.
+ *                     email:
+ *                       type: string
+ *                       example: tset_swagger@gmail.com
+ *                       description: The email of the user.
+ *       '403':
+ *         description: Forbidden.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   example: Access denied, you do not have permission to access the requested Id '{id}'.
  *       '404':
  *         description: Not Found.
  *         content:
@@ -208,9 +225,18 @@
  *               type: object
  *               properties:
  *                 error:
- *                   type: string
- *             example:
- *               error: No users found matching the search criteria.
+ *                   type: object
+ *                   example: cannot find user with id '{id}'.
+ *       '503':
+ *         description: Service Unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   example: the service is temporarily unavailable '{error}'.
  */
 
 /**
@@ -298,6 +324,20 @@
  *                   type: string
  *                   example: The request failed, try again later {error}
  */
+/**
+ * @swagger
+ *
+ * /:
+ *   post:
+ *     summary: 
+ *     tags: [role_airlines]
+ *     description: 
+ *     security:
+ *       - CustomAuth: []
+ *     deprecated: true
+ *     readOnly: false 
+ */
+
 
 /**
  * @swagger
@@ -327,42 +367,48 @@
  *             properties:
  *               name:
  *                 type: string
- *                 description: The name of the user_airlines.
+ *                 example: airline_tset
+ *                 description: The name of the user.
  *               country_id:
- *                 type: number
- *                 description: The country_id of the user_airlines.
- *             
+ *                 type: string
+ *                 example: 1
+ *                 description: The country_id of the user.
+ *               user_id:
+ *                 type: string
+ *                 example: 37
+ *                 description: The user_id of the user.
  *     responses:
  *       '201':
- *         description: Created🆗
+ *         description: Created 🆗
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: User 'tset_swagger' successfully created
+ *       '409':
+ *         description: Conflict
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 example:
+ *                 error:
  *                   type: object
- *                   properties:
- *                     id:
- *                       type: number
- *                     name:
- *                       type: string
- *                     country_id:
- *                       type: number
- *       '400':
- *         description: Bad request. Ensure all required fields are provided.
+ *                   example: name ${username} or user_id ${id} exist in the system
+ *       '503':
+ *         description: Conflict
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 user_airlines:
+ *                 error:
  *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
+ *                   example: The request failed, try again later ${error}
  */
-
+/**
+ * # Create New User Airlines Record
+ */
 
 /**
  * @swagger

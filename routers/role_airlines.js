@@ -88,7 +88,7 @@ router.post('/users', async (request, response) => {
             response.status(201).json(result)
         }
         else if (result === 'rejected') {
-            response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
+            response.status(409).json({ "error": `Username ${new_user.username} or user_id ${new_user.user_id} exist in the system` })
         }
         else {
             response.status(503).json({ "error": `The request failed, try again later` })
