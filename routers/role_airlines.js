@@ -72,11 +72,11 @@ router.get('/users/search', async (request, response) => {
             response.status(200).json(user)
         }
         else {
-            throw response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
+             response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
         }
 
     } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ${error}` })
+         response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 // POST

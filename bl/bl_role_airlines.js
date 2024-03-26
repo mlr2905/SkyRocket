@@ -58,10 +58,10 @@ async function get_by_id_user(type, id) {
 
 async function update_user(id, user) {
   try {
-   return await dal_1.update_user(id, user);
+    return await dal_1.update_user(id, user);
   }
   catch (error) {
-    return 
+    return
   }
 }
 

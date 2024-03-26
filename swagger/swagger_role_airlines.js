@@ -299,43 +299,6 @@
  *                   example: The request failed, try again later {error}
  */
 
-
-
-/**
- * @swagger
- * components:
- *   securitySchemes:
- *     CustomAuth:
- *       type: apiKey
- *       in: header
- *       name: Authorization
- *       description: Enter API key as "Bearer <API_KEY>"
- *
- * /role_airlines/users/{id}:
- *   delete:
- *     summary: Delete an user by ID
- *     tags: [role_airlines]
- *     description: Delete the user record with the specified ID. Requires authentication.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The ID of the user to delete.
- *         schema:
- *           type: integer
- *     security:
- *       - CustomAuth: []
- *     responses:
- *       204:
- *         description: No Content.
- *       404:
- *         description: Not Found.
- *         content:
- *           application/json:
- *             example:
- *               error: cannot find user with id {id}
- */
-
 /**
  * @swagger
  * components:

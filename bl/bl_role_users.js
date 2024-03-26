@@ -13,10 +13,10 @@ async function create_user(uesr) {
     try {
       const new_user = await dal_1.new_user_role1(uesr)
       if (new_user.length === 8) {
-        return {'OK':`'${uesr.username}' successfully created,This is the generated password,'${new_user}'`}
+        return { 'OK': `'${uesr.username}' successfully created,This is the generated password,'${new_user}'` }
       }
       if (new_user === true) {
-        return {'OK':`'${uesr.username}' successfully created`}
+        return { 'OK': `'${uesr.username}' successfully created` }
       }
       return new_user
     }
@@ -32,10 +32,10 @@ async function create_user(uesr) {
 async function get_by_id_user(type, id) {
   let user_id = null
   if (id === undefined) {
-     user_id = await dal_1.get_by_id(id);
+    user_id = await dal_1.get_by_id(id);
   }
   else {
-     user_id = await dal_1.get_by_id_type(type, id);
+    user_id = await dal_1.get_by_id_type(type, id);
   }
 
   if (user_id) {
@@ -60,7 +60,7 @@ async function update_user(id, user) {
   const user_id = await dal_1.get_by_id('id', id);
   if (user_id) {
     const update_user = await dal_1.update_user(id, user);
-    return {'ok':`${user_id.username}${update_user}`}
+    return { 'ok': `${user_id.username}${update_user}` }
   }
   else {
     return user_id
@@ -225,7 +225,7 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user,delete_account, new_customer
+  purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }
