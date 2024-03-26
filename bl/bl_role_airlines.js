@@ -68,14 +68,22 @@ async function update_user(id, user) {
 
 // airline
 
-async function create_airline(username) {
-  try {
-    const new_user = await dal_3.new_airline(username);
-    return new_user
-
-  } catch (error) {
-    console.error('Error passing users:', error);
-    throw error; // מעבירה את השגיאה הלאה
+async function create_airline(uesr) {
+  const user_name = await dal_3.get_by_name(uesr.username)
+  if (user_name === undefined) {
+    try {
+      const new_user = await dal_3.new_airline(uesr)
+      
+      if (new_user) {
+        return { 'OK': `'${uesr.username}' successfully created` }
+      }
+    }
+    catch (error) {
+      return error;
+    }
+  }
+  else {
+    return 'rejected';
   }
 }
 
