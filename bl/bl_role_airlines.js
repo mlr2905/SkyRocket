@@ -28,7 +28,7 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-  console.log('type, id', type, id);
+  console.log('type, id',type, id);
   let user_id = null
   try {
 
@@ -69,24 +69,21 @@ async function update_user(id, user) {
 // airline
 
 async function create_airline(uesr) {
-  const user_name = await dal_3.get_by_id_type('user_id', uesr.user_id)
-  try {
-    if (user_name === undefined) {
-
+  const user_name = await dal_3.get_by_name(uesr.name)
+  if (user_name === undefined) {
+    try {
       const new_user = await dal_3.new_airline(uesr)
-
+      
       if (new_user) {
         return { 'OK': `'${uesr.name}' successfully created` }
       }
-        return  new_user
-      
     }
-    else {
-      return 'rejected';
+    catch (error) {
+      return error;
     }
   }
-  catch (error) {
-    return error;
+  else {
+    return 'rejected';
   }
 }
 
