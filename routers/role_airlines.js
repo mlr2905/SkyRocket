@@ -87,8 +87,8 @@ router.post('/users', async (request, response) => {
         if (result.ok) {
             response.status(201).json(result.ok)
         }
-        else if (result === 'rejected') {
-            response.status(409).json({ "error": `Username ${new_user.username} or user_id ${new_user.user_id} exist in the system` })
+        else if (result === "rejected") {
+            response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
         }
         else {
             response.status(503).json({ "error": `The request failed, try again later` })
@@ -130,6 +130,27 @@ router.put('/users/:id', async (request, response) => {
 
 //role_airlines/airline
 
+// POST
+router.post('/airlines', async (request, response) => {
+    const new_user = request.body
+    try {
+        const result = await bl.create_user(new_user)
+        if (result.ok) {
+            response.status(201).json(result.ok)
+        }
+        else if (result === "rejected") {
+            response.status(409).json({ "error": `name ${new_user.name} or user_id ${new_user.user_id} exist in the system` })
+        }
+        else {
+            response.status(503).json({ "error": `The request failed, try again later ${error}` })
+        }
+    } catch (error) {
+    }
+    response.status(503).json({ "error": `The request failed, try again later ${error}` })
+
+
+})
+
 // GET by ID
 router.get('/airlines/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
@@ -146,21 +167,6 @@ router.get('/airlines/:id', async (request, response) => {
         throw response.status(503).json({ "error": `The request failed, try again later ` })
     }
 })
-
-// POST
-router.post('/airlines', async (request, response) => {
-    const new_user = request.body
-    try {
-        const result = await bl.create_airline(new_user)
-        response.status(201).json(result)
-
-    } catch (error) {
-        throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
-        ; // מעבירה את השגיאה הלאה
-    }
-
-})
-
 // PUT 
 router.put('/airlines/:id', async (request, response) => {
 
