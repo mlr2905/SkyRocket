@@ -126,13 +126,9 @@ async function set_id(id) {  //setSequenceId
  * @returns {Promise<object|null>} Company details if found, or an empty value if not found.
  * @throws {Error} An error occurred during the query.
  */
-async function get_by_name(name) { //getAirlineByName
-    try {
-        const airline = await connectedKnex('airlines').select('*').where('name', name).first();
-        return airline;
-    } catch (error) {
-        throw new Error(`Failed to get airline by name: ${error.message}`);
-    }
+async function get_by_name(name) {
+    const user = await connectedKnex('airlines').select('*').where('name', name).first();
+    return user;
 }
 
 async function get_by_id_type(type,id) { //getAirlineByName
