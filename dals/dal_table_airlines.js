@@ -137,7 +137,7 @@ async function get_by_name(name) { //getAirlineByName
 
 async function get_by_id_type(type,id) { //getAirlineByName
     try {
-        const airline = await connectedKnex('airlines').select('*').where(`${type}`, id).first();
+        const airline = await connectedKnex('airlines').select('*').where(type, id).first();
         return airline;
     } catch (error) {
         throw new Error(`Failed to get airline by name: ${error.message}`);
