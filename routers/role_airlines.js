@@ -85,7 +85,7 @@ router.post('/users', async (request, response) => {
     try {
         const result = await bl.create_user(new_user)
         if (result.ok) {
-            response.status(201).json(result)
+            response.status(201).json(result.ok)
         }
         else if (result === 'rejected') {
             response.status(409).json({ "error": `Username ${new_user.username} or user_id ${new_user.user_id} exist in the system` })
