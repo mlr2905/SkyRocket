@@ -145,9 +145,9 @@ router.post('/airlines', async (request, response) => {
             response.status(503).json({ "error": `The request failed, try again later` })
         }
     } catch (error) {
-    }
+    
     response.status(503).json({ "error": `The request failed, try again later ${error}` })
-
+    }
 
 })
 
