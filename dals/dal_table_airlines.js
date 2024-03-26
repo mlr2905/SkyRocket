@@ -127,8 +127,13 @@ async function set_id(id) {  //setSequenceId
  * @throws {Error} An error occurred during the query.
  */
 async function get_by_name(name) {
+    try {
     const user = await connectedKnex('airlines').select('*').where('name', name).first();
     return user;
+    }
+    catch (error) {
+        throw new Error(`Failed to get airline by name: ${error.message}`);
+    }
 }
 
 async function get_by_id_type(type,id) { //getAirlineByName

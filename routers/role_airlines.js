@@ -134,7 +134,7 @@ router.put('/users/:id', async (request, response) => {
 router.post('/airlines', async (request, response) => {
     const new_user = request.body
     try {
-        const result = await bl.create_user(new_user)
+        const result = await bl.create_airline(new_user)
         if (result.id) {
             response.status(201).json(result)
         }
@@ -142,7 +142,7 @@ router.post('/airlines', async (request, response) => {
             response.status(409).json({ "error": `name ${new_user.name} or user_id ${new_user.user_id} exist in the system` })
         }
         else {
-            response.status(503).json({ "error": `The request failed, try again later22 ${result}` })
+            response.status(503).json({ "error": `The request failed, try again later ${result}` })
         }
     } catch (error) {
     
