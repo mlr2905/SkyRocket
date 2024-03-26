@@ -54,7 +54,7 @@ router.get('/users/search', async (request, response) => {
         }
 
     } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ${error}` })
+         response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 // GET by ID
@@ -94,8 +94,9 @@ router.post('/users', async (request, response) => {
             response.status(503).json({ "error": `The request failed, try again later` })
         }
     } catch (error) {
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
+
     }
-    response.status(503).json({ "error": `The request failed, try again later ${error}` })
 
 })
 
