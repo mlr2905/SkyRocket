@@ -236,14 +236,14 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/user'
+ *             $ref: '#/components/schemas/users'
  *     responses:
  *       200:
  *         description: The user was updated
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/user'
+ *               $ref: '#/components/schemas/users'
  *       404:
  *         description: The user was not found
  *       500:
