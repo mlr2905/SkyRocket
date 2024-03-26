@@ -142,7 +142,7 @@ router.post('/airlines', async (request, response) => {
             response.status(409).json({ "error": `name ${new_user.name} or user_id ${new_user.user_id} exist in the system` })
         }
         else {
-            response.status(503).json({ "error": `The request failed, try again later ${error}` })
+            response.status(503).json({ "error": `The request failed, try again later` })
         }
     } catch (error) {
     }
