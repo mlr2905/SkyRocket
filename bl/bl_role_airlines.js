@@ -28,19 +28,19 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-  let u = null
+  let user_id = null
   try {
 
     if (id === undefined) {
-      u = await dal_1.get_by_id(id);
+      user_id = await dal_1.get_by_id(id);
     }
     else {
-      u = await dal_1.get_by_id_type(type, id);
+      user_id = await dal_1.get_by_id_type(type, id);
     }
 
-    if (u) {
+    if (user_id) {
       if (user_id.role_id === 2) {
-        return u
+        return user_id
       }
       else {
         return 'Postponed'
@@ -87,10 +87,10 @@ async function get_by_id_airline(id) {
 }
 
 async function update_airline(id, update_airline) {
-  const user_id = await dal_3.get_by_id(id);
-  if (user_id) {
+  const by_id = await dal_3.get_by_id(id);
+  if (by_id) {
     const update_user = await dal_3.update_airline(id, update_airline);
-    return `${user_id.name}${update_user}`
+    return `${by_id.name}${update_user}`
   }
   else {
     return console.error('The ID you specified does not exist:');
