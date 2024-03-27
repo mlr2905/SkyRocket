@@ -167,11 +167,12 @@ router.get('/airlines/:id', async (request, response) => {
          response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
+
 // PUT 
 router.put('/airlines/:id', async (request, response) => {
 
     const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_user(user_id)
+    const user = await bl.get_by_id_airline(user_id)
 
     if (user) {
         try {
@@ -181,14 +182,11 @@ router.put('/airlines/:id', async (request, response) => {
         }
         catch (error) {
              response.status(503).json({ "error": `The request failed, try again later ${error}` })
-            ; // מעבירה את השגיאה הלאה
         }
     }
     else {
          response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system` })
-
     }
-
 })
 
 //role_airlines/flights
