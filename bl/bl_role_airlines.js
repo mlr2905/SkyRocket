@@ -102,8 +102,11 @@ async function update_airline(id, update_airline) {
 async function get_by_id_flights(id) {
   try {
     const get_by_id = await dal_5.get_by_id(id);
-    return get_by_id
-    
+    if (get_by_id) {
+      return get_by_id
+    } else {
+      return false
+    }
   } catch (error) {
     return error;
   }
