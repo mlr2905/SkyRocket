@@ -907,7 +907,7 @@
  *       - CustomAuth: []
  *     responses:
  *       204:
- *         description: flight deleted successfully.
+ *         description: No Content.
  *       '404':
  *         description: Not Found
  *         content:
