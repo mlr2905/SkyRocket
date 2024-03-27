@@ -694,17 +694,42 @@
  *             schema:
  *               type: object
  *               properties:
- *                  example:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     name:
- *                       type: string
- *                     country_id:
- *                       type: integer
- *                     user_id:
- *                       type: integer
+ *                 id:
+ *                   type: integer     
+ *                   example: 4
+ *                 airline_id:
+ *                   type: integer     
+ *                   example: 25
+ *                 origin_country_id:
+ *                   type: integer     
+ *                   example: 74
+ *                 destination_country_id:
+ *                   type: integer     
+ *                   example: 19
+ *                 departure_time:
+ *                   type: string
+ *                   example: "2024-03-03T05:00:00"
+ *                 landing_time:
+ *                   type: string
+ *                   example: "2024-03-03T10:00:00"
+ *                 plane_id:
+ *                   type: integer     
+ *                   example: 1
+ *                 remaining_tickets:
+ *                   type: integer     
+ *                   example: 144
+ *                 airline_name:
+ *                   type: string
+ *                   example: "Arkay"
+ *                 origin_country_name:
+ *                   type: string
+ *                   example: "Israel"
+ *                 destination_country_name:
+ *                   type: string
+ *                   example: "Thailand"
+ *                 total_tickets:
+ *                   type: integer     
+ *                   example: 144
  *       '404':
  *         description: Not Found
  *         content:
