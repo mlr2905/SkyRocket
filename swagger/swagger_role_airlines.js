@@ -512,6 +512,19 @@
  *         description: Some error happened
  */
 
+/**
+ * @swagger
+ *
+ * //:
+ *   post:
+ *     summary: 
+ *     tags: [role_airlines]
+ *     description: 
+ *     security:
+ *       - CustomAuth: []
+ *     deprecated: true
+ *     readOnly: false 
+ */
 
 /**
  * @swagger
@@ -525,7 +538,7 @@
  *
  * /role_airlines/airline_id/{id}:
  *   get:
- *     summary: Get a user_airline by ID
+ *     summary: Get flights by airline_id
  *     tags: [role_airlines]
  *     description: Retrieve user_airline details based on the provided ID. Requires authentication.
  *     parameters:
@@ -571,6 +584,7 @@
  *         example:
  *             error: Cannot find user_airline with ID {id}.
  */
+
 
 
 /**
