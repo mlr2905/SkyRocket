@@ -177,7 +177,7 @@ router.put('/airlines/:id', async (request, response) => {
         try {
             const updated_user_req = request.body
             const result = await bl.update_airline(user_id, updated_user_req)
-            responsestatus(201).json(result)
+            response.status(201).json(result)
         }
         catch (error) {
              response.status(503).json({ "error": `The request failed, try again later ${error}` })
