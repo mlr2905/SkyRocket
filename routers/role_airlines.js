@@ -12,7 +12,7 @@ const bl = require('../bl/bl_role_airlines')
 //         response.status(400).json(messages)
 //     }
 //     catch (error) {
-//         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+//          response.status(503).json({ 'error': 'The request failed, try again later', error })
 //     }
 // })
 
@@ -27,7 +27,7 @@ const bl = require('../bl/bl_role_airlines')
 //         response.status(400).json(messages)
 //     }
 //     catch (error) {
-//         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+//          response.status(503).json({ 'error': 'The request failed, try again later', error })
 //     }
 // })
 
@@ -50,7 +50,7 @@ router.get('/users/search', async (request, response) => {
             response.status(200).json(user)
         }
         else {
-            throw response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
+             response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
         }
 
     } catch (error) {
@@ -160,11 +160,11 @@ router.get('/airlines/:id', async (request, response) => {
             response.json(user)
         }
         else {
-            throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+             response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system` })
         }
 
     } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ${error} ` })
+         response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 // PUT 
@@ -177,15 +177,15 @@ router.put('/airlines/:id', async (request, response) => {
         try {
             const updated_user_req = request.body
             const result = await bl.update_airline(user_id, updated_user_req)
-            response.json(updated_user_req)
+            responsestatus(201).json(result)
         }
         catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later ${error} ` })
+             response.status(503).json({ "error": `The request failed, try again later ${error}` })
             ; // מעבירה את השגיאה הלאה
         }
     }
     else {
-        throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+         response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system` })
 
     }
 
@@ -229,7 +229,7 @@ router.post('/flights', async (request, response) => {
         response.status(201).json(result)
 
     } catch (error) {
-        // throw response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system ` })
+        //  response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
         ; // לציין שגיאה עם קיימת טיסה עם אותם פרטים
     }
 
@@ -248,12 +248,12 @@ router.put('/flights/:id', async (request, response) => {
             response.json(update_flight_req)
         }
         catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later ${error} ` })
+             response.status(503).json({ "error": `The request failed, try again later ${error}` })
             ; // מעבירה את השגיאה הלאה
         }
     }
     else {
-        throw response.status(404).json({ "error": `The id ${update_flight} you specified does not exist in the system ` })
+         response.status(404).json({ "error": `The id ${update_flight} you specified does not exist in the system` })
 
     }
 
@@ -270,12 +270,12 @@ router.delete('/flights/:id', async (request, response) => {
             response.status(204).json({ result })
         }
         catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later ${error}  ` })
+             response.status(503).json({ "error": `The request failed, try again later ${error}` })
             ; // מעבירה את השגיאה הלאה
         }
     }
     else {
-        throw response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
+         response.status(404).json({ "error": `The ID ${user_id} you specified does not exist` })
 
     }
 })
