@@ -87,10 +87,10 @@ async function get_by_id_airline(id) {
 }
 
 async function update_airline(id, update_airline) {
-  const by_id = await dal_3.get_by_id(id);
-  if (by_id) {
+  const user_id = await dal_3.get_by_id(id);
+  if (user_id) {
     const update_user = await dal_3.update_airline(id, update_airline);
-    return `${by_id.name}${update_user}`
+    return `${user_id.name}${update_user}`
   }
   else {
     return console.error('The ID you specified does not exist:');
