@@ -50,20 +50,23 @@ describe('Testing functionallity of the bl', () => {
     //......................airlines....................
 
     it('new_airline', async () => {
-        id = await bl.create_airline({ 'name': 'airline_tset', 'country_id': 74, 'user_id': 37 })
-        const expected = 'airline_tset'
+         await bl.create_user({ 'username': 'air_test4', 'password': 'null', 'email': 'air_test4@gmail.com' })
+        const user = await bl.get_by_id_user('email', 'air_test4@gmail.com')
+        id = await bl.create_airline({ 'name': 'air_test4', 'country_id': 74, 'user_id': user.id })
+        const expected = 'air_test4'
         const actual = await dal_3.get_by_id(id.id)
         assert.strictEqual(expected, actual.name)
     })
 
     it('get_airline_by_id', async () => {
-        const expected = 37
+        const user = await bl.get_by_id_user('email', 'air_test4@gmail.com')
+        const expected = user.id
         const actual = await bl.get_by_id_airline(id.id)
         assert.strictEqual(expected, actual.user_id)
     })
 
     it('update_airline', async () => {
-        await bl.update_airline(id.id, { 'name': 'airline_tset2', 'country_id': 74, 'user_id': 37 })
+        await bl.update_airline(id.id, { 'name': 'airline_tset2'})
         const expected = 'airline_tset2'
         const actual = await dal_3.get_by_id(id.id)
         const delete_account = await dal_3.delete_airline(actual.id)

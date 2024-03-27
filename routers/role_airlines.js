@@ -234,7 +234,7 @@ router.post('/flights', async (request, response) => {
 })
 // PUT 
 
-router.put('/flights/:id', async (request, response) => {
+router.put('/flights_up/:id', async (request, response) => {
 
     const update_flight = parseInt(request.params.id)
     const flight = await bl.get_by_id_flights(update_flight)
@@ -258,7 +258,7 @@ router.put('/flights/:id', async (request, response) => {
 })
 
 // DELETE
-router.delete('/flights/:id', async (request, response) => {
+router.delete('/flights_dal/:id', async (request, response) => {
     const by_id = parseInt(request.params.id)
     const flight = await bl.get_by_id_flights(by_id)
 
