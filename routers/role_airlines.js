@@ -164,7 +164,7 @@ router.get('/airlines/:id', async (request, response) => {
         }
 
     } catch (error) {
-        throw response.status(503).json({ "error": `The request failed, try again later ` })
+        throw response.status(503).json({ "error": `The request failed, try again later ${error} ` })
     }
 })
 // PUT 
@@ -180,7 +180,7 @@ router.put('/airlines/:id', async (request, response) => {
             response.json(updated_user_req)
         }
         catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+            throw response.status(503).json({ "error": `The request failed, try again later ${error} ` })
             ; // מעבירה את השגיאה הלאה
         }
     }
@@ -248,7 +248,7 @@ router.put('/flights/:id', async (request, response) => {
             response.json(update_flight_req)
         }
         catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+            throw response.status(503).json({ "error": `The request failed, try again later ${error} ` })
             ; // מעבירה את השגיאה הלאה
         }
     }
@@ -270,7 +270,7 @@ router.delete('/flights/:id', async (request, response) => {
             response.status(204).json({ result })
         }
         catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+            throw response.status(503).json({ "error": `The request failed, try again later ${error}  ` })
             ; // מעבירה את השגיאה הלאה
         }
     }

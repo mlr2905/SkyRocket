@@ -463,6 +463,16 @@
  *                  error:
  *                    type: string
  *                    example: The id {id} you specified does not exist in the system
+ *       '503':
+ *         description: Service Unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: The request failed, try again later {error}
  */
 
 
@@ -494,7 +504,19 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/airlines'
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: airline_tset
+ *                 description: The name of the user.
+ *               country_id:
+ *                 type: string
+ *                 example: 1
+ *                 description: The country_id of the user.
+ *               user_id:
+ *                 type: string
+ *                 example: 37
+ *                 description: The user_id of the user.
  *     responses:
  *       200:
  *         description: 🆗
