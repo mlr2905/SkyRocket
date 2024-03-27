@@ -105,11 +105,10 @@ async function get_by_id_flights(id) {
     if (get_by_id) {
       return get_by_id
     } else {
-      return console.error('The hand does not exist in Bella'); // מחזירה null אם הטבלה לא קיימת
+      return false 
     }
   } catch (error) {
-    console.error('Error checking id  or fetching flight:', error);
-    throw error; // מעבירה את השגיאה הלאה
+    return error;
   }
 }
 async function get_flight_by_airline_id(id) {

@@ -833,7 +833,7 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  *
- * /role_airlines/flights_up/{id}:
+ * /role_airlines/flights/{id}:
  *   put:
  *     summary: Update the flight by the ID
  *     tags: [role_airlines]
@@ -891,7 +891,7 @@
  *       name: Authorization
  *       description: Enter API key as "Bearer <API_KEY>"
  *
- * /role_airlines/flights_dal/{id}:
+ * /role_airlines/flights/{id}:
  *   delete:
  *     summary: Delete an flight by ID
  *     tags: [role_airlines]

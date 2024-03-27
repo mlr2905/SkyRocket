@@ -234,7 +234,7 @@ router.post('/flights', async (request, response) => {
 })
 // PUT 
 
-router.put('/flights_up/:id', async (request, response) => {
+router.put('/flights/:id', async (request, response) => {
 
     const update_flight = parseInt(request.params.id)
     const flight = await bl.get_by_id_flights(update_flight)
@@ -258,14 +258,14 @@ router.put('/flights_up/:id', async (request, response) => {
 })
 
 // DELETE
-router.delete('/flights_dal/:id', async (request, response) => {
+router.delete('/flights/:id', async (request, response) => {
     const by_id = parseInt(request.params.id)
     const flight = await bl.get_by_id_flights(by_id)
 
     if (flight) {
         try {
             const result = await bl.delete_flight(by_id)
-            response.status(201).json(`flight id: ${by_id} deleted successfully`)
+            response.status(204).json(`flight id: ${by_id} deleted successfully`)
         }
         catch (error) {
              response.status(503).json({ "error": `The request failed, try again later ${error}` })
