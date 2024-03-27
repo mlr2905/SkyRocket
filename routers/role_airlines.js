@@ -261,6 +261,7 @@ router.put('/flights/:id', async (request, response) => {
 router.delete('/flights/:id', async (request, response) => {
     const id = parseInt(request.params.id)
     const by_id = await bl.get_by_id_flights(id)
+    console.log('by_id',by_id);
     try {
         if (by_id) {
             const result = await bl.delete_flight(id)

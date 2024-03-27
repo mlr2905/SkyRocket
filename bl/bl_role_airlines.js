@@ -28,19 +28,19 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-  let user_id = null
+  let u = null
   try {
 
     if (id === undefined) {
-      user_id = await dal_1.get_by_id(id);
+      u = await dal_1.get_by_id(id);
     }
     else {
-      user_id = await dal_1.get_by_id_type(type, id);
+      u = await dal_1.get_by_id_type(type, id);
     }
 
-    if (user_id) {
+    if (u) {
       if (user_id.role_id === 2) {
-        return user_id
+        return u
       }
       else {
         return 'Postponed'
@@ -152,8 +152,7 @@ async function delete_flight(id) {
     const delete_flight = await dal_5.delete_flight(id);
     return delete_flight
   } catch (error) {
-    console.error('Error passing users:', error);
-    throw error; // מעבירה את השגיאה הלאה
+    return error;
   }
 }
 

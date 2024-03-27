@@ -47,7 +47,6 @@ async function get_by_id(id) {
 async function get_flight_by_airline_id(id) {
     // db.run('select * from flights where id=?')
     const result = await connectedKnex.raw(`SELECT get_flight_details_by_airline(${id})`);
-    console.log(result);
     return result.rows[0].get_flight_details_by_airline
 }
 
