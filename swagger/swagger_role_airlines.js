@@ -442,17 +442,18 @@
  *             schema:
  *               type: object
  *               properties:
- *                  example:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: number
- *                     name:
- *                       type: string
- *                     country_id:
- *                       type: number
- *                     user_id:
- *                       type: number
+ *                 name:
+ *                   type: string
+ *                   example: airline_tset
+ *                   description: The name of the user.
+ *                 country_id:
+ *                   type: string
+ *                   example: 1
+ *                   description: The country_id of the user.
+ *                 user_id:
+ *                   type: string
+ *                   example: 37
+ *                   description: The user_id of the user.
  *       '404':
  *         description: Not Found
  *         content:
@@ -523,7 +524,19 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/airlines'
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                   example: airline_tset
+ *                   description: The name of the user.
+ *                 country_id:
+ *                   type: string
+ *                   example: 1
+ *                   description: The country_id of the user.
+ *                 user_id:
+ *                   type: string
+ *                   example: 37
+ *                   description: The user_id of the user.
  *       '404':
  *         description: Not Found
  *         content:
