@@ -202,8 +202,8 @@ router.get('/airline_id/:id', async (request, response) => {
             response.status(404).json({ "error": `cannot find user with id ${by_id}` })
         }
     }
-    catch (e) {
-        response.status(503).json({ 'error': JSON.stringify(e) })
+    catch (error) {
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 

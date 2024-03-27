@@ -92,7 +92,7 @@
  *         required: true
  *         description: The ID of the user to retrieve.
  *         schema:
- *           type: number
+ *           type: integer
  *     security:
  *       - CustomAuth: []
  *     responses:
@@ -353,7 +353,9 @@
  *   post:
  *     summary: Create a new user_airlines
  *     tags: [role_airlines]
- *     description: Create a new user_airlines record with the provided details. Requires authentication.
+ *     description: 
+ *      <p> 1. Create a new user_airlines record with the provided details. Requires authentication.</p>
+ *      <h3> 2.<b> 😬 You must first create a user user and then register the id of the new user.😬</b></h3>
  *     security:
  *       - CustomAuth: []
  *     deprecated: false
@@ -367,7 +369,7 @@
  *             properties:
  *               name:
  *                 type: string
- *                 example: airline_tset
+ *                 example: airline_tset_swagger
  *                 description: The name of the user.
  *               country_id:
  *                 type: string
@@ -406,9 +408,8 @@
  *                   type: object
  *                   example: The request failed, try again later ${error}
  */
-/**
- * # Create New User Airlines Record
- */
+
+
 
 /**
  * @swagger
@@ -431,7 +432,7 @@
  *         required: true
  *         description: The ID of the user_airline to retrieve.
  *         schema:
- *           type: number
+ *           type: integer
  *     security:
  *       - CustomAuth: []
  *     responses:
@@ -514,10 +515,6 @@
  *                 type: string
  *                 example: 1
  *                 description: The country_id of the user.
- *               user_id:
- *                 type: string
- *                 example: 32
- *                 description: The user_id of the user.
  *     responses:
  *       200:
  *         description: 🆗
@@ -547,8 +544,16 @@
  *                  error:
  *                    type: string
  *                    example: The id {id} you specified does not exist in the system
- *       500:
- *         description: Some error happened
+ *       '503':
+ *         description: Service Unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: The request failed, try again later {error}
  */
 
 /**
@@ -586,7 +591,7 @@
  *         required: true
  *         description: The ID of the user_airline to retrieve.
  *         schema:
- *           type: number
+ *           type: integer      
  *     security:
  *       - CustomAuth: []
  *     responses:
@@ -597,17 +602,42 @@
  *             schema:
  *               type: object
  *               properties:
- *                  example:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: number
- *                     name:
- *                       type: string
- *                     country_id:
- *                       type: number
- *                     user_id:
- *                       type: number
+ *                 id:
+ *                   type: integer     
+ *                   example: 4
+ *                 airline_id:
+ *                   type: integer     
+ *                   example: 25
+ *                 origin_country_id:
+ *                   type: integer     
+ *                   example: 74
+ *                 destination_country_id:
+ *                   type: integer     
+ *                   example: 19
+ *                 departure_time:
+ *                   type: string
+ *                   example: "2024-03-03T05:00:00"
+ *                 landing_time:
+ *                   type: string
+ *                   example: "2024-03-03T10:00:00"
+ *                 plane_id:
+ *                   type: integer     
+ *                   example: 1
+ *                 remaining_tickets:
+ *                   type: integer     
+ *                   example: 144
+ *                 airline_name:
+ *                   type: string
+ *                   example: "Arkay"
+ *                 origin_country_name:
+ *                   type: string
+ *                   example: "Israel"
+ *                 destination_country_name:
+ *                   type: string
+ *                   example: "Thailand"
+ *                 total_tickets:
+ *                   type: integer     
+ *                   example: 144
  *       '404':
  *         description: Not Found
  *         content:
@@ -618,6 +648,16 @@
  *                  error:
  *                    type: string
  *                    example: The id {id} you specified does not exist in the system
+ *       '503':
+ *         description: Service Unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: The request failed, try again later {error}
  */
 
 
@@ -643,7 +683,7 @@
  *         required: true
  *         description: The ID of the user_airline to retrieve.
  *         schema:
- *           type: number
+ *           type: integer
  *     security:
  *       - CustomAuth: []
  *     responses:
@@ -658,13 +698,13 @@
  *                   type: object
  *                   properties:
  *                     id:
- *                       type: number
+ *                       type: integer
  *                     name:
  *                       type: string
  *                     country_id:
- *                       type: number
+ *                       type: integer
  *                     user_id:
- *                       type: number
+ *                       type: integer
  *       '404':
  *         description: Not Found
  *         content:
@@ -705,13 +745,13 @@
  *             type: object
  *             properties:
  *               airline_id:
- *                 type: number
+ *                 type: integer
  *                 description: The airline_id of the flight.
  *               origin_country_id:
- *                 type: number
+ *                 type: integer
  *                 description: The origin_country_id of the flight.
  *               destination_country_id:
- *                 type: number
+ *                 type: integer
  *                 description: The destination_country_id of the flight.
  *               departure_time:
  *                 type: data
@@ -720,7 +760,7 @@
  *                 type: data
  *                 description: The landing_time of the flight. *               
  *               plane_id:
- *                 type: number
+ *                 type: integer
  *                 description: The plane_id of the flight.
  *     responses:
  *       '201':
@@ -732,17 +772,17 @@
  *               properties:
  *                 example:
  *               airline_id:
- *                 type: number
+ *                 type: integer
  *               origin_country_id:
- *                 type: number
+ *                 type: integer
  *               destination_country_id:
- *                 type: number
+ *                 type: integer
  *               departure_time:
  *                 type: data
  *               landing_time:
  *                 type: data
  *               plane_id:
- *                 type: number
+ *                 type: integer
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
@@ -804,8 +844,16 @@
  *                  error:
  *                    type: string
  *                    example: The id {id} you specified does not exist in the system
- *       500:
- *         description: Some error happened
+ *       '503':
+ *         description: Service Unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: The request failed, try again later {error}
  */
 
 /**

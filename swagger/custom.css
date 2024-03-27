@@ -1,0 +1,16 @@
+/* Example of custom CSS */
+/* Hide the default Swagger UI logo */
+.topbar-wrapper {
+  color: red;
+
+  }
+  
+  /* Add custom logo */
+  .logo_small_svg__SW_TM-logo-on-dark .topbar .link:before {
+    content: "";
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-image: url('https://lh3.googleusercontent.com/a/ACg8ocJVAXkqxKXmXk6vWK8_f9FTOS8OWA16oPFvBCs0pefU80pc=s96-c-rg-br100');
+    background-size: contain;
+  }  
