@@ -375,7 +375,7 @@
  *                 description: The country_id of the user.
  *               user_id:
  *                 type: string
- *                 example: 37
+ *                 example: 32
  *                 description: The user_id of the user.
  *     responses:
  *       '201':
@@ -452,7 +452,7 @@
  *                   description: The country_id of the user.
  *                 user_id:
  *                   type: string
- *                   example: 37
+ *                   example: 32
  *                   description: The user_id of the user.
  *       '404':
  *         description: Not Found
@@ -516,7 +516,7 @@
  *                 description: The country_id of the user.
  *               user_id:
  *                 type: string
- *                 example: 37
+ *                 example: 32
  *                 description: The user_id of the user.
  *     responses:
  *       200:
@@ -535,7 +535,7 @@
  *                   description: The country_id of the user.
  *                 user_id:
  *                   type: string
- *                   example: 37
+ *                   example: 32
  *                   description: The user_id of the user.
  *       '404':
  *         description: Not Found
