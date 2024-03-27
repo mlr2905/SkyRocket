@@ -265,7 +265,7 @@ router.delete('/flights/:id', async (request, response) => {
     try {
         if (by_id) {
             const result = await bl.delete_flight(id)
-            response.status(200).json(`flight id: ${id} deleted successfully`)
+            response.status(204)
         }
         else {
             response.status(404).json({ "error": `The ID ${id} you specified does not exist` })
