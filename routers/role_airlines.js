@@ -50,11 +50,11 @@ router.get('/users/search', async (request, response) => {
             response.status(200).json(user)
         }
         else {
-             response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
+            response.status(404).json({ "error": `The id ${search} you specified does not exist in the system` })
         }
 
     } catch (error) {
-         response.status(503).json({ "error": `The request failed, try again later ${error}` })
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 // GET by ID
@@ -122,7 +122,7 @@ router.put('/users/:id', async (request, response) => {
             response.status(503).json({ "error": `The request failed, try again later ${error}` })
         }
     }
-    else{
+    else {
         response.status(404).json({ "error": `No user found with this handle '${id}'` })
     }
 })
@@ -145,8 +145,8 @@ router.post('/airlines', async (request, response) => {
             response.status(503).json({ "error": `The request failed, try again later ${result}` })
         }
     } catch (error) {
-    
-    response.status(503).json({ "error": `The request failed, try again later ${error}` })
+
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 
 })
@@ -160,11 +160,11 @@ router.get('/airlines/:id', async (request, response) => {
             response.json(user)
         }
         else {
-             response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system` })
+            response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system` })
         }
 
     } catch (error) {
-         response.status(503).json({ "error": `The request failed, try again later ${error}` })
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 
@@ -181,11 +181,11 @@ router.put('/airlines/:id', async (request, response) => {
             response.status(201).json(result)
         }
         catch (error) {
-             response.status(503).json({ "error": `The request failed, try again later ${error}` })
+            response.status(503).json({ "error": `The request failed, try again later ${error}` })
         }
     }
     else {
-         response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system` })
+        response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system` })
     }
 })
 
@@ -212,7 +212,7 @@ router.get('/flights/:id', async (request, response) => {
     const by_id = parseInt(request.params.id)
     const id = await bl.get_by_id_flights(by_id)
     if (id) {
-        response.json(id)
+        response.status(200).json(id)
     }
     else {
         response.status(404).json({ "error": `cannot find user with id ${by_id}` })
@@ -236,22 +236,22 @@ router.post('/flights', async (request, response) => {
 
 router.put('/flights/:id', async (request, response) => {
 
-    const update_flight = parseInt(request.params.id)
-    const flight = await bl.get_by_id_flights(update_flight)
+    const id = parseInt(request.params.id)
+    const by_id = await bl.get_by_id_flights(id)
 
-    if (flight) {
+    if (by_id) {
         try {
             const update_flight_req = request.body
-            const result = await bl.update_airline(update_flight, update_flight_req)
+            const result = await bl.update_airline(id, update_flight_req)
             response.json(update_flight_req)
         }
         catch (error) {
-             response.status(503).json({ "error": `The request failed, try again later ${error}` })
-            ; // מעבירה את השגיאה הלאה
+            response.status(503).json({ "error": `The request failed, try again later ${error}` })
+                ; // מעבירה את השגיאה הלאה
         }
     }
     else {
-         response.status(404).json({ "error": `The id ${update_flight} you specified does not exist in the system` })
+        response.status(404).json({ "error": `The id ${update_flight} you specified does not exist in the system` })
 
     }
 
@@ -259,24 +259,21 @@ router.put('/flights/:id', async (request, response) => {
 
 // DELETE
 router.delete('/flights/:id', async (request, response) => {
-    const by_id = parseInt(request.params.id)
-    const flight = await bl.get_by_id_flights(by_id)
-
-    if (flight) {
-        try {
-            const result = await bl.delete_flight(by_id)
-            response.status(204).json(`flight id: ${by_id} deleted successfully`)
+    const id = parseInt(request.params.id)
+    const by_id = await bl.get_by_id_flights(id)
+    try {
+        if (by_id) {
+            const result = await bl.delete_flight(id)
+            response.status(204).json(`flight id: ${id} deleted successfully`)
         }
-        catch (error) {
-             response.status(503).json({ "error": `The request failed, try again later ${error}` })
-            ; // מעבירה את השגיאה הלאה
+        else {
+            response.status(404).json({ "error": `The ID ${user_id} you specified does not exist` })
         }
     }
-    else {
-         response.status(404).json({ "error": `The ID ${user_id} you specified does not exist` })
-
-    }
-})
+    catch (error) {
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
+      }  
+    })
 
 
 

@@ -105,7 +105,7 @@ async function get_by_id_flights(id) {
     if (get_by_id) {
       return get_by_id
     } else {
-      return false 
+      return false
     }
   } catch (error) {
     return error;
