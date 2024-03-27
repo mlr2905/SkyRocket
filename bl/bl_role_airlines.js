@@ -137,20 +137,24 @@ async function create_new_flight(flights) {
 }
 
 async function update_flight(id, update_flight) {
+  try {
   const flight_id = await dal_5.get_by_id(id);
   if (flight_id) {
     const update = await dal_5.update_flight(id, update_flight);
     return `${flight_id.id}${update}`
   }
-  else {
-    return console.error('The ID you specified does not exist:');
-  }
+} catch (error) {
+  return error;
+}
 }
 
 async function delete_flight(id) {
   try {
     const delete_flight = await dal_5.delete_flight(id);
-    return delete_flight
+    if (delete_flight) {
+      return true
+    }
+    else false
   } catch (error) {
     return error;
   }
