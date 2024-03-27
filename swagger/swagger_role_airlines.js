@@ -137,7 +137,7 @@
  *               properties:
  *                 error:
  *                   type: object
- *                   example: cannot find user with id '{id}'.
+ *                   example: The id {id} you specified does not exist in the system
  *       '503':
  *         description: Service Unavailable.
  *         content:
@@ -226,7 +226,7 @@
  *               properties:
  *                 error:
  *                   type: object
- *                   example: cannot find user with id '{id}'.
+ *                   example: The id {id} you specified does not exist in the system.
  *       '503':
  *         description: Service Unavailable.
  *         content:
@@ -302,7 +302,7 @@
  *                properties:
  *                  error:
  *                    type: string
- *                    example: No user found with this handle <id>
+ *                    example: The id {id} you specified does not exist in the system
  *       '409':
  *         description: Conflict
  *         content:
@@ -454,19 +454,15 @@
  *                     user_id:
  *                       type: number
  *       '404':
- *         description: user_airline not found with the specified ID.
+ *         description: Not Found
  *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
- *         example:
- *             error: Cannot find user_airline with ID {id}.
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The id {id} you specified does not exist in the system
  */
 
 
@@ -506,8 +502,16 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/airlines'
- *       404:
- *         description: The user_airline was not found
+ *       '404':
+ *         description: Not Found
+ *         content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The id {id} you specified does not exist in the system
  *       500:
  *         description: Some error happened
  */
@@ -570,19 +574,15 @@
  *                     user_id:
  *                       type: number
  *       '404':
- *         description: user_airline not found with the specified ID.
+ *         description: Not Found
  *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
- *         example:
- *             error: Cannot find user_airline with ID {id}.
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The id {id} you specified does not exist in the system
  */
 
 
@@ -631,19 +631,15 @@
  *                     user_id:
  *                       type: number
  *       '404':
- *         description: user_airline not found with the specified ID.
+ *         description: Not Found
  *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 example:
- *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
- *         example:
- *             error: Cannot find user_airline with ID {id}.
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The id {id} you specified does not exist in the system
  */
 
 
@@ -763,8 +759,16 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/flights'
- *       404:
- *         description: The user_airline was not found
+ *       '404':
+ *         description: Not Found
+ *         content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The id {id} you specified does not exist in the system
  *       500:
  *         description: Some error happened
  */
@@ -796,12 +800,16 @@
  *     responses:
  *       204:
  *         description: flight deleted successfully.
- *       404:
- *         description: flight not found with the specified ID.
+ *       '404':
+ *         description: Not Found
  *         content:
- *           application/json:
- *             example:
- *               error: cannot find flight with id {id}
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The id {id} you specified does not exist in the system
  */
 /**
 *  @swagger
