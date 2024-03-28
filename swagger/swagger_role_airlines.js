@@ -895,7 +895,7 @@
  *       - in: path
  *         name: id
  *         schema:
- *           type: string
+ *           type: integer
  *         required: true
  *         description: The flights id
  *     security:
