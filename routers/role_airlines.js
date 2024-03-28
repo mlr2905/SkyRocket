@@ -228,9 +228,12 @@ router.post('/flights', async (request, response) => {
             response.status(201).json(result)
         }
         else{
-            const name = str.replace(`/${new_flight.result}/g`, `${new_flight.result}`);
-
-            response.status(404).json({ "error": `The ${name} you specified does not exist in the ${result}`})
+          const  id = result === "airline_id" ? new_flight.airline_id :
+            result === "origin_country_id" ? new_flight.origin_country_id :
+            result === "destination_country_id" ? new_flight.destination_country_id :
+            result === "plane_id" ? new_flight.plane_id : null;
+           
+            response.status(404).json({ "error": `The ${id} you specified does not exist in the ${result}`})
         }
     } catch (error) {
         //  response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
