@@ -77,7 +77,7 @@ describe('Testing functionallity of the bl', () => {
     //.......................flights....................
 
     it('new_flight', async () => {
-        id = await bl.create_new_flight({ 'airline_id': 25, 'origin_country_id': 74, 'destination_country_id': 30, 'departure_time': '2024-04-25 05:00:00', 'landing_time': '2024-01-25 07:00:00', 'plane_id': 1, 'remaining_tickets': 144 })
+        id = await bl.create_new_flight({ 'airline_id': 25, 'origin_country_id': 74, 'destination_country_id': 30, 'departure_time': '2024-04-25 05:00:00', 'landing_time': '2024-01-25 07:00:00', 'plane_id': 1})
         const expected = 25
         actual = id
         assert.strictEqual(expected, actual.airline_id)
@@ -90,7 +90,7 @@ describe('Testing functionallity of the bl', () => {
     })
 
     it('update_flight', async () => {
-        await bl.update_flight(id.id, { 'airline_id': 26, 'origin_country_id': 74, 'destination_country_id': 20, 'departure_time': '2024-03-03 05:00:00', 'landing_time': '2024-03-03 10:00:00', 'plane_id': 1, 'remaining_tickets': 144 })
+        await bl.update_flight(id.id, { 'airline_id': 26, 'origin_country_id': 74, 'destination_country_id': 20, 'departure_time': '2024-03-03 05:00:00', 'landing_time': '2024-03-03 10:00:00', 'plane_id': 1})
         const expected = 26
         const actual = await dal_5.get_by_id(id.id)
         assert.strictEqual(expected, actual.airline_id)

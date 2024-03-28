@@ -708,10 +708,10 @@
  *                   example: 19
  *                 departure_time:
  *                   type: string
- *                   example: "2024-03-03T05:00:00"
+ *                   example: "2024-07-03T05:00:00"
  *                 landing_time:
  *                   type: string
- *                   example: "2024-03-03T10:00:00"
+ *                   example: "2024-07-03T10:00:00"
  *                 plane_id:
  *                   type: integer     
  *                   example: 1
@@ -771,21 +771,27 @@
  *             properties:
  *               airline_id:
  *                 type: integer
+ *                 example: 20
  *                 description: The airline_id of the flight.
  *               origin_country_id:
  *                 type: integer
+ *                 example: 2
  *                 description: The origin_country_id of the flight.
  *               destination_country_id:
  *                 type: integer
+ *                 example: 4
  *                 description: The destination_country_id of the flight.
  *               departure_time:
- *                 type: data
+ *                 type: string
+ *                 example: "2024-07-03T05:00:00"
  *                 description: The departure_time of the flight. *               
  *               landing_time:
- *                 type: data
+ *                 type: string
+ *                 example: "2024-07-03T10:00:00"
  *                 description: The landing_time of the flight. *               
  *               plane_id:
  *                 type: integer
+ *                 example: 1
  *                 description: The plane_id of the flight.
  *     responses:
  *       '201':
