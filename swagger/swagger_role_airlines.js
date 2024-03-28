@@ -828,18 +828,16 @@
  *                 flight_code:
  *                   type: string     
  *                   example: 'e33776a8-2082-4c14-8c6f-7191c7207c4d'
- *       '400':
- *         description: Bad request. Ensure all required fields are provided.
+ *       '404':
+ *         description: Not Found
  *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 flight:
- *                   type: object
- *                   properties:
- *                     error:
- *                       type: string
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The id {id} you specified does not exist in the system
  */
 
 
