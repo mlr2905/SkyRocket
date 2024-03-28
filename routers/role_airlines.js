@@ -265,14 +265,19 @@ router.put('/flights/:id', async (request, response) => {
 
     try {
         if (by_id) {
+
             if (check_flight_existence !== true) {
                 const result = await bl.update_flight(id, update_flight)
-                if(result){
-                    response.json(id,update_flight)
+                if (result) {
+                    response.json(id, update_flight)
+                }
+                else {
+                    response.status(404).json(result)
+        
                 }
             }
-            else{
-                response.status(409).json({ "error": `${check_flight_existence}The flight you want already exists`})
+            else {
+                response.status(409).json({ "error": `${check_flight_existence}The flight you want already exists` })
             }
         }
         else {
@@ -280,7 +285,7 @@ router.put('/flights/:id', async (request, response) => {
 
         }
     }
-    catch () {
+    catch (error) {
         response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })

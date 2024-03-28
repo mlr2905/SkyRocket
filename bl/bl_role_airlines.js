@@ -122,41 +122,48 @@ async function get_flight_by_airline_id(id) {
     }
   } catch (error) {
     console.error('Error checking id  or fetching flight:', error);
-    return error; 
+    return error;
   }
 }
 
 async function check_flight_existence(v) {
   try {
-        
-      return  await dal_5.check_flight_existence(v);
-  
+
+    return await dal_5.check_flight_existence(v);
+
   } catch (error) {
-    return error; 
+    return error;
   }
 }
 async function create_new_flight(flights) {
   try {
     const check = await dal_0.flights_records_tables();
-    if (flights.airline_id > check.airlines) return 'airline_id';
-    if (flights.origin_country_id > check.countries) return 'origin_country_id';
-    if (flights.destination_country_id > check.countries) return 'destination_country_id';
-    if (flights.plane_id > check.planes) return 'plane_id';
+    if (check.airline_id || check.origin_country_id || check.destination_country_id || check.plane_id) {
+      return { "error": `The specified ${Object.keys(check).filter(key => check[key]).join(", ")} does not exist in the corresponding table(s)` };
+    }
 
     const new_flights = await dal_5.new_flight(flights);
     return new_flights
 
   } catch (error) {
-    return error; 
+    return error;
   }
 }
 
 async function update_flight(id, update_flight) {
   try {
+
     const flight_id = await dal_5.get_by_id(id);
     if (flight_id) {
-      const update = await dal_5.update_flight(id, update_flight);
-      return `${flight_id.id}${update}`
+      const check = await dal_0.flights_records_tables();
+      if (check.airline_id || check.origin_country_id || check.destination_country_id || check.plane_id) {
+        return { "error": `The specified ${Object.keys(check).filter(key => check[key]).join(", ")} does not exist in the corresponding table(s)` };
+      }
+      else {
+        const update = await dal_5.update_flight(id, update_flight);
+        return `${flight_id.id}${update}`
+      }
+
     }
   } catch (error) {
     return error;
@@ -178,6 +185,6 @@ async function delete_flight(id) {
 
 module.exports = {
   create_user, get_by_id_user, update_user, create_airline, get_by_id_airline,
-  update_airline, get_flight_by_airline_id, get_by_id_flights,check_flight_existence, create_new_flight,
+  update_airline, get_flight_by_airline_id, get_by_id_flights, check_flight_existence, create_new_flight,
   update_flight, delete_flight
 }
