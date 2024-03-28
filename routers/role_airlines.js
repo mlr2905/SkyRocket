@@ -224,9 +224,8 @@ router.post('/flights', async (request, response) => {
     const new_flight = request.body
     try {
         const result = await bl.create_new_flight(new_flight)
-        if(result){
+        if(result.id > 0){                
             response.status(201).json(result)
-
         }
         else{
             response.status(404).json({ "error": `cannot find user with id ${result}` })

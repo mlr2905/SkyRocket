@@ -825,18 +825,9 @@
  *                 remaining_tickets:
  *                   type: integer     
  *                   example: 144
- *                 airline_name:
- *                   type: string
- *                   example: "Arkay"
- *                 origin_country_name:
- *                   type: string
- *                   example: "Israel"
- *                 destination_country_name:
- *                   type: string
- *                   example: "Thailand"
- *                 total_tickets:
- *                   type: integer     
- *                   example: 144
+ *                 flight_code:
+ *                   type: string     
+ *                   example: 'e33776a8-2082-4c14-8c6f-7191c7207c4d'
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:
