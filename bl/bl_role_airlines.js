@@ -128,8 +128,7 @@ async function get_flight_by_airline_id(id) {
 
 async function check_flight_existence(v) {
   try {
-    const check = `${v.airline_id},${v.origin_country_id},
-    ${v.destination_country_id},${v.departure_time},${v.landing_time}`;
+    const check = `${v.airline_id},${v.origin_country_id},${v.destination_country_id},${v.departure_time},${v.landing_time}`
 
       return  await dal_5.check_flight_existence(check);
   
