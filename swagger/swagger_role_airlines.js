@@ -925,9 +925,6 @@
  *                 plane_id:
  *                   type: integer     
  *                   example: 1
- *                 remaining_tickets:
- *                   type: integer     
- *                   example: 144
  *     responses:
  *       200:
  *         description: 🆗
