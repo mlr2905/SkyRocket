@@ -211,11 +211,15 @@ router.get('/airline_id/:id', async (request, response) => {
 router.get('/flights/:id', async (request, response) => {
     const by_id = parseInt(request.params.id)
     const id = await bl.get_by_id_flights(by_id)
-    if (id) {
-        response.status(200).json(id)
-    }
-    else {
-        response.status(404).json({ "error": `cannot find user with id ${by_id}` })
+    try {
+        if (id) {
+            response.status(200).json(id)
+        }
+        else {
+            response.status(404).json({ "error": `cannot find user with id ${by_id}` })
+        }
+    } catch (error) {
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 

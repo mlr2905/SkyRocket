@@ -740,6 +740,16 @@
  *                  error:
  *                    type: string
  *                    example: The id {id} you specified does not exist in the system
+ *       '503':
+ *         description: Service Unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: The request failed, try again later {error}
  */
 
 
@@ -838,6 +848,26 @@
  *                  error:
  *                    type: string
  *                    example: The ${id} you specified does not exist in the ${name}
+ *       '409':
+ *         description: Not Found
+ *         content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: The flight you want already exists
+ *       '503':
+ *         description: Service Unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: The request failed, try again later {error}
  */
 
 
