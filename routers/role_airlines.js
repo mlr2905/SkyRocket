@@ -272,7 +272,7 @@ router.put('/flights/:id', async (request, response) => {
                 }
             }
             else{
-                response.status(409).json({ "error": "The flight you want already exists" })
+                response.status(409).json({ "error": ${check_flight_existence},"The flight you want already exists" })
             }
         }
         else {
