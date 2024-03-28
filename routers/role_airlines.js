@@ -266,7 +266,7 @@ router.put('/flights/:id', async (request, response) => {
             if (!check_flight_existence) {
                 const update_flight_req = request.body
                 const result = await bl.update_flight(id, update_flight_req)
-                response.json(update_flight_req)
+                response.json(id,update_flight_req)
             }
             else{
                 response.status(409).json({ "error": "The flight you want already exists" })
