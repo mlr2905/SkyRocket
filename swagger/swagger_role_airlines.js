@@ -849,7 +849,7 @@
  *                    type: string
  *                    example: The ${id} you specified does not exist in the ${name}
  *       '409':
- *         description: Not Found
+ *         description: Conflict
  *         content:
  *            application/json:
  *              schema:
