@@ -129,7 +129,6 @@ async function get_flight_by_airline_id(id) {
 async function create_new_flight(flights) {
   try {
     const check = await dal_0.flights_records_tables();
-
     if (flights.airline_id > check.airlines) return 'airline_id';
     if (flights.origin_country_id > check.countries) return 'origin_country_id';
     if (flights.destination_country_id > check.countries) return 'destination_country_id';

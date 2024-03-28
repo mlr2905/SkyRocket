@@ -228,11 +228,11 @@ router.post('/flights', async (request, response) => {
             response.status(201).json(result)
         }
         else{
-            response.status(404).json({ "error": `The id ${result} you specified does not exist in the system`})
+            response.status(404).json({ "error": `The ${new_flight.result} you specified does not exist in the ${result}`})
         }
     } catch (error) {
         //  response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
-        ; // לציין שגיאה עם קיימת טיסה עם אותם פרטים
+        // לציין שגיאה עם קיימת טיסה עם אותם פרטים
     }
 
 })

@@ -837,7 +837,7 @@
  *                properties:
  *                  error:
  *                    type: string
- *                    example: The id {id} you specified does not exist in the system
+ *                    example: The {id} you specified does not exist in the system
  */
 
 
