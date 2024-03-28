@@ -261,13 +261,15 @@ router.put('/flights/:id', async (request, response) => {
     const id = parseInt(request.params.id)
     const by_id = await bl.get_by_id_flights(id)
     const update_flight = request.body
+    const check_flight_existence = await bl.check_flight_existence(update_flight)
 
     try {
         if (by_id) {
-            const check_flight_existence = await bl.check_flight_existence(update_flight)
             if (!check_flight_existence) {
                 const result = await bl.update_flight(id, update_flight)
-                response.json(id,update_flight)
+                if(result){
+                    response.json(id,update_flight)
+                }
             }
             else{
                 response.status(409).json({ "error": "The flight you want already exists" })
