@@ -6,7 +6,7 @@ const connectedKnex = db.connect()
 
 async function check_flight_existence(v) {
     try {
-        const check = await connectedKnex.raw(`SELECT check_flight_existence(${v})`)
+        const check = await connectedKnex.raw(`SELECT check_flight_existence('${v}')`)
 
         return check.rows[0].check_flight_existence
     }
