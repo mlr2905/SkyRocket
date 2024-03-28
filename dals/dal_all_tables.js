@@ -24,7 +24,7 @@ async function get_by_id(id) {
 
 // ---------------Test functions only---------------
 
-async function registered_Tables() {
+async function registered_Tables () {
     try {
         let result = await connectedKnex.raw(` SELECT registered_Tables();`);
         return result.rows[0].registered_tables
@@ -33,6 +33,16 @@ async function registered_Tables() {
         throw console.error(e);
     }
 }
+async function flights_records_tables() {
+    try {
+        let result = await connectedKnex.raw(` SELECT flights_records_tables();`);
+        return result.rows[0].flights_records_tables
+
+    } catch (e) {
+        throw console.error(e);
+    }
+}
+
 
 async function get_qr(code) {
     // db.run('select * from flights')
@@ -40,4 +50,4 @@ async function get_qr(code) {
     return flights.rows[0].generate_qr_code
 }
 
-module.exports = { get_all, get_by_id, registered_Tables, get_qr }
+module.exports = { get_all, get_by_id, registered_Tables,flights_records_tables, get_qr }

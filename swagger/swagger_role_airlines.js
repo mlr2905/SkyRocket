@@ -771,15 +771,15 @@
  *             properties:
  *               airline_id:
  *                 type: integer
- *                 example: 20
+ *                 example: 25
  *                 description: The airline_id of the flight.
  *               origin_country_id:
  *                 type: integer
- *                 example: 2
+ *                 example: 74
  *                 description: The origin_country_id of the flight.
  *               destination_country_id:
  *                 type: integer
- *                 example: 4
+ *                 example: 19
  *                 description: The destination_country_id of the flight.
  *               departure_time:
  *                 type: string
@@ -801,19 +801,42 @@
  *             schema:
  *               type: object
  *               properties:
- *                 example:
- *               airline_id:
- *                 type: integer
- *               origin_country_id:
- *                 type: integer
- *               destination_country_id:
- *                 type: integer
- *               departure_time:
- *                 type: data
- *               landing_time:
- *                 type: data
- *               plane_id:
- *                 type: integer
+ *                 id:
+ *                   type: integer     
+ *                   example: 4
+ *                 airline_id:
+ *                   type: integer     
+ *                   example: 25
+ *                 origin_country_id:
+ *                   type: integer     
+ *                   example: 74
+ *                 destination_country_id:
+ *                   type: integer     
+ *                   example: 19
+ *                 departure_time:
+ *                   type: string
+ *                   example: "2024-07-03T05:00:00"
+ *                 landing_time:
+ *                   type: string
+ *                   example: "2024-07-03T10:00:00"
+ *                 plane_id:
+ *                   type: integer     
+ *                   example: 1
+ *                 remaining_tickets:
+ *                   type: integer     
+ *                   example: 144
+ *                 airline_name:
+ *                   type: string
+ *                   example: "Arkay"
+ *                 origin_country_name:
+ *                   type: string
+ *                   example: "Israel"
+ *                 destination_country_name:
+ *                   type: string
+ *                   example: "Thailand"
+ *                 total_tickets:
+ *                   type: integer     
+ *                   example: 144
  *       '400':
  *         description: Bad request. Ensure all required fields are provided.
  *         content:

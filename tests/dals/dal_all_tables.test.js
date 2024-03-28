@@ -6,9 +6,20 @@ describe('Testing functionallity of the DAL', () => {
     it('get_all', async () => {
         const expected = 7;
         const all_tables = await dal.get_all();
-        // בדיקה שהתוצאה אינה ריקה או מקורסת
-        assert.ok(all_tables && all_tables.rows && all_tables.rows.length > 0, 'No data returned');
-        const actual = Object.keys(all_tables.rows[0].get_all_data).length;
+        const actual = Object.keys(all_tables).length;
+        assert.strictEqual(expected, actual);
+    });
+
+    it('registered_Tables', async () => {
+        const expected = 7;
+        const all_tables = await dal.registered_Tables();
+        const actual = Object.keys(all_tables).length;
+        assert.strictEqual(expected, actual);
+    });
+    it('flights_records_tables', async () => {
+        const expected = 3;
+        const all_tables = await dal.flights_records_tables();
+        const actual = Object.keys(all_tables).length;
         assert.strictEqual(expected, actual);
     });
 

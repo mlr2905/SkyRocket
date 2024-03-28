@@ -224,7 +224,14 @@ router.post('/flights', async (request, response) => {
     const new_flight = request.body
     try {
         const result = await bl.create_new_flight(new_flight)
-        response.status(201).json(result)
+        if(result){
+            response.status(201).json(result)
+
+        }
+        else{
+            response.status(404).json({ "error": `cannot find user with id ${result}` })
+
+        }
 
     } catch (error) {
         //  response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
