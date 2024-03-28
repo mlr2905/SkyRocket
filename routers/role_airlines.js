@@ -228,7 +228,9 @@ router.post('/flights', async (request, response) => {
             response.status(201).json(result)
         }
         else{
-            response.status(404).json({ "error": `The ${new_flight.result} you specified does not exist in the ${result}`})
+            const name = str.replace(/new_flight.result/g, "new_flight.result");
+
+            response.status(404).json({ "error": `The ${name} you specified does not exist in the ${result}`})
         }
     } catch (error) {
         //  response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
