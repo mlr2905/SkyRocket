@@ -638,6 +638,9 @@
  *                 total_tickets:
  *                   type: integer     
  *                   example: 144
+ *                 flight_code:
+ *                   type: string     
+ *                   example: 'e33776a8-2082-4c14-8c6f-7191c7207c4d'
  *       '404':
  *         description: Not Found
  *         content:
@@ -730,6 +733,9 @@
  *                 total_tickets:
  *                   type: integer     
  *                   example: 144
+ *                 flight_code:
+ *                   type: string     
+ *                   example: 'e33776a8-2082-4c14-8c6f-7191c7207c4d'
  *       '404':
  *         description: Not Found
  *         content:
@@ -899,14 +905,61 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/flights'
+ *               type: object
+ *               properties:
+ *                 airline_id:
+ *                   type: integer     
+ *                   example: 25
+ *                 origin_country_id:
+ *                   type: integer     
+ *                   example: 74
+ *                 destination_country_id:
+ *                   type: integer     
+ *                   example: 19
+ *                 departure_time:
+ *                   type: string
+ *                   example: "2024-07-03T05:00:00"
+ *                 landing_time:
+ *                   type: string
+ *                   example: "2024-07-03T10:00:00"
+ *                 plane_id:
+ *                   type: integer     
+ *                   example: 1
+ *                 remaining_tickets:
+ *                   type: integer     
+ *                   example: 144
  *     responses:
  *       200:
  *         description: 🆗
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/flights'
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer     
+ *                   example: 4
+ *                 airline_id:
+ *                   type: integer     
+ *                   example: 25
+ *                 origin_country_id:
+ *                   type: integer     
+ *                   example: 74
+ *                 destination_country_id:
+ *                   type: integer     
+ *                   example: 19
+ *                 departure_time:
+ *                   type: string
+ *                   example: "2024-07-03T05:00:00"
+ *                 landing_time:
+ *                   type: string
+ *                   example: "2024-07-03T10:00:00"
+ *                 plane_id:
+ *                   type: integer     
+ *                   example: 1
+ *                 remaining_tickets:
+ *                   type: integer     
+ *                   example: 144
  *       '404':
  *         description: Not Found
  *         content:
@@ -1039,6 +1092,9 @@
 *              remaining_tickets:
 *                type: integer
 *                example: 195
+*              flight_code:
+*                type: string     
+*                example: 'e33776a8-2082-4c14-8c6f-7191c7207c4d'
 *        xml:
 *          name: role_airlines
 */
