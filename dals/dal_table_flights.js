@@ -6,7 +6,7 @@ const connectedKnex = db.connect()
 
 async function check_flight_existence(v) {
 
-    const check = await connectedKnex.raw(`SELECT check_flight_existence(${v.airline_id},${v.origin_country_id},${v.destination_country_id},${v.departure_time},${v.landing_time})`)
+    const check = await connectedKnex.raw(`SELECT check_flight_existence("${v.airline_id}","${v.origin_country_id}","${v.destination_country_id}","${v.departure_time}","${v.landing_time})"`)
 
     return check.rows[0].check_flight_existence
 }
