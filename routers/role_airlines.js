@@ -266,7 +266,7 @@ router.put('/flights/:id', async (request, response) => {
     if (by_id) {
         try {
             const update_flight_req = request.body
-            const result = await bl.update_airline(id, update_flight_req)
+            const result = await bl.update_flight(id, update_flight_req)
             response.json(update_flight_req)
         }
         catch (error) {
