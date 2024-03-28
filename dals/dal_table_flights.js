@@ -4,9 +4,8 @@ const connectedKnex = db.connect()
 
 // ---------------All types of users can activate---------------
 
-async function check_flight_existence() {
-    // db.run('select * from flights')
-    const check = await connectedKnex.raw(`check_flight_existence();`)
+async function check_flight_existence(v) {
+    const check = await connectedKnex.raw(`check_flight_existence(${v});`)
 
     return check.rows[0].check_flight_existence
 }
