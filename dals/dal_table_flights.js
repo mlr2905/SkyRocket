@@ -4,6 +4,13 @@ const connectedKnex = db.connect()
 
 // ---------------All types of users can activate---------------
 
+async function check_flight_existence() {
+    // db.run('select * from flights')
+    const check = await connectedKnex.raw(`check_flight_existence();`)
+
+    return check.rows[0].check_flight_existence
+}
+
 async function get_all() {
     // db.run('select * from flights')
     const flights = await connectedKnex.raw(`SELECT get_all_flights();`)
@@ -95,4 +102,4 @@ async function get_flight_by_airline_id_test(id) {
     return result
 }
 
-module.exports = { get_all, get_by_id, get_flight_by_airline_id, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id,get_flight_by_airline_id_test }
+module.exports = {check_flight_existence,get_all, get_by_id, get_flight_by_airline_id, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id,get_flight_by_airline_id_test }

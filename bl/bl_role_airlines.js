@@ -122,10 +122,21 @@ async function get_flight_by_airline_id(id) {
     }
   } catch (error) {
     console.error('Error checking id  or fetching flight:', error);
-    throw error; 
+    return error; 
   }
 }
 
+async function check_flight_existence(v) {
+  try {
+    const check = `${v.airline_id},${v.origin_country_id},
+    ${v.destination_country_id},${v.departure_time},${v.landing_time}`;
+
+      return  await dal_5.check_flight_existence(check);
+  
+  } catch (error) {
+    return error; 
+  }
+}
 async function create_new_flight(flights) {
   try {
     const check = await dal_0.flights_records_tables();
@@ -169,6 +180,6 @@ async function delete_flight(id) {
 
 module.exports = {
   create_user, get_by_id_user, update_user, create_airline, get_by_id_airline,
-  update_airline, get_flight_by_airline_id, get_by_id_flights, create_new_flight,
+  update_airline, get_flight_by_airline_id, get_by_id_flights,check_flight_existence, create_new_flight,
   update_flight, delete_flight
 }

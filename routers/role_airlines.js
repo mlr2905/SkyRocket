@@ -223,19 +223,30 @@ router.get('/flights/:id', async (request, response) => {
 router.post('/flights', async (request, response) => {
     const new_flight = request.body
     try {
-        const result = await bl.create_new_flight(new_flight)
-        if(result.id > 0){                
-            response.status(201).json(result)
+
+        const check_flight_existence = await bl.check_flight_existence(new_flight)
+
+        if (!check_flight_existence) {
+            const result = await bl.create_new_flight(new_flight)
+            if (result.id > 0) {
+                response.status(201).json(result)
+            }
+            else {
+                const id = result === "airline_id" ? new_flight.airline_id :
+                    result === "origin_country_id" ? new_flight.origin_country_id :
+                        result === "destination_country_id" ? new_flight.destination_country_id :
+                            result === "plane_id" ? new_flight.plane_id : null;
+
+                response.status(404).json({ "error": `The ${id} you specified does not exist in the ${result}` })
+            }
         }
-        else{
-          const  id = result === "airline_id" ? new_flight.airline_id :
-            result === "origin_country_id" ? new_flight.origin_country_id :
-            result === "destination_country_id" ? new_flight.destination_country_id :
-            result === "plane_id" ? new_flight.plane_id : null;
-           
-            response.status(404).json({ "error": `The ${id} you specified does not exist in the ${result}`})
+        else {
+            response.status(409).json({ "error": "The flight you want already exists" })
+
         }
     } catch (error) {
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
+
         //  response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
         // לציין שגיאה עם קיימת טיסה עם אותם פרטים
     }
@@ -270,7 +281,7 @@ router.put('/flights/:id', async (request, response) => {
 router.delete('/flights/:id', async (request, response) => {
     const id = parseInt(request.params.id)
     const by_id = await bl.get_by_id_flights(id)
-    console.log('by_id',by_id);
+    console.log('by_id', by_id);
     try {
         if (by_id) {
             const result = await bl.delete_flight(id)
@@ -282,8 +293,8 @@ router.delete('/flights/:id', async (request, response) => {
     }
     catch (error) {
         response.status(503).json({ "error": `The request failed, try again later ${error}` })
-      }  
-    })
+    }
+})
 
 
 
