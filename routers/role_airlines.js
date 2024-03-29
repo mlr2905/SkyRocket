@@ -262,11 +262,13 @@ router.put('/flights/:id', async (request, response) => {
     const by_id = await bl.get_by_id_flights(id)
     const update_flight = request.body
     const check_flight_existence = await bl.check_flight_existence(update_flight)
+    let a= null
     try {
         if (by_id) {
 
             if (check_flight_existence !== true) {
                 const result = await bl.update_flight(id, update_flight)
+                a=result
                 if (result) {
                     response.json(id, update_flight)
                 }
@@ -285,7 +287,7 @@ router.put('/flights/:id', async (request, response) => {
         }
     }
     catch (error) {
-        response.status(503).json({ "error": `The request failed, try again later ${error}` })
+        response.status(503).json({ "error": `The request failed, try again later ${a}` })
     }
 })
 
