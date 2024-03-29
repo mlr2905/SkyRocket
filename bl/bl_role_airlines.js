@@ -161,9 +161,7 @@ async function update_flight(id, update_flight) {
         return `${flight_id.id}${update}`
       }
       else {
-      
         return check
-
       }
 
     }
