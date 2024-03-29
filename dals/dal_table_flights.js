@@ -6,7 +6,7 @@ const connectedKnex = db.connect()
 
 async function flights_records_tables(v) {
     try {
-        const check = await connectedKnex.raw(`SELECT flights_records_tables(${v.airline_id},${v.origin_country_id},${v.destination_country_id},${v.planes_id})`)
+        const check = await connectedKnex.raw(`SELECT flights_records_tables(${v.airline_id},${v.origin_country_id},${v.destination_country_id},${v.plane_id})`)
 
         return check.rows[0].flights_records_tables
     }
