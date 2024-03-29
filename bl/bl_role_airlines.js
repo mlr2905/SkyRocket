@@ -155,7 +155,7 @@ async function update_flight(id, update_flight) {
 
     const flight_id = await dal_5.get_by_id(id);
     if (flight_id) {
-      const check = await dal_0.flights_records_tables();
+      const check = await dal_5.flights_records_tables();
       if (check) {
         const update = await dal_5.update_flight(id, update_flight);
         return `${flight_id.id}${update}`
