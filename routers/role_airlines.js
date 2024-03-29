@@ -272,13 +272,8 @@ router.put('/flights/:id', async (request, response) => {
                 if (result) {
                     response.json(id, update_flight)
                 }
-                if ( result ==[object ]) {
-                    response.status(404).json({ "error": `The id ${id} you specified does not exist in the ${result}` })
-
-                }
-                else {
-                    response.status(404).json({ "error": `The id ${id} you specified does not exist in the ${result}` })
-        
+                if ( result.status) {
+                    response.status(404).json({ "error": `The id ${id} you specified does not exist in the ${result.status}` })
                 }
             }
             else {
