@@ -162,7 +162,7 @@ async function update_flight(id, update_flight) {
       }
       else {
       
-        return { "error": `The id specified  does not exist in the corresponding tables ${check} ` };
+        return check
 
       }
 
