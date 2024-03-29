@@ -156,12 +156,14 @@ async function update_flight(id, update_flight) {
     const flight_id = await dal_5.get_by_id(id);
     if (flight_id) {
       const check = await dal_0.flights_records_tables();
-      if (check.airline_id || check.origin_country_id || check.destination_country_id || check.plane_id) {
-        return { "error": `The specified ${Object.keys(check).filter(key => check[key]).join(", ")} does not exist in the corresponding table(s)` };
-      }
-      else {
+      if (check) {
         const update = await dal_5.update_flight(id, update_flight);
         return `${flight_id.id}${update}`
+      }
+      else {
+      
+        return { "error": `The id specified  does not exist in the corresponding tables ${check} ` };
+
       }
 
     }
