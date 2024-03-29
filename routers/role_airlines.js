@@ -261,6 +261,7 @@ router.put('/flights/:id', async (request, response) => {
     const id = parseInt(request.params.id)
     const by_id = await bl.get_by_id_flights(id)
     const update_flight = request.body
+    const check_flight_existence = await bl.check_flight_existence(update_flight)
     let a= null
     try {
         if (by_id) {
