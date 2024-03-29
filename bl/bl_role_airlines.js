@@ -150,24 +150,24 @@ async function create_new_flight(flights) {
   }
 }
 
-async function update_flight(id, update_flight) {
+async function update_flight(id, v) {
   try {
 
-    const flight_id = await dal_5.get_by_id(id);
-    if (flight_id) {
-      const check = await dal_5.flights_records_tables(update_flight);
-      if (check.status === "correct") {
-        const update = await dal_5.update_flight(id, update_flight);
-        return  true
-      }
-      else {
-        return {"status" : "OK"}
-      }
+    const check1 = await dal_5.check_flight_existence(v);
 
+    const check2 = await dal_5.flights_records_tables(v);
+
+    if (check1.status == true && check2.status === "correct") {
+      const update = await dal_5.update_flight(id, v);
+      return true
     }
+    else {
+      return { "status": "OK" }
+    }
+  
   } catch (error) {
-    return error;
-  }
+  return error;
+}
 }
 
 async function delete_flight(id) {
