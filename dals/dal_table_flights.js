@@ -14,6 +14,17 @@ async function flights_records_tables(v) {
         return error
     }
 }
+async function check_flight_existence(v) {
+    try {
+        const check = await connectedKnex.raw(`SELECT check_flight_existence(${v.airline_id},${v.origin_country_id},${v.destination_country_id},${v.plane_id})`)
+
+        return check.rows[0].check_flight_existence
+    }
+    catch (error) {
+        return error
+    }
+}
+
 
 async function get_all() {
     // db.run('select * from flights')
@@ -106,7 +117,7 @@ async function get_flight_by_airline_id_test(id) {
     return result
 }
 
-module.exports = { flights_records_tables, get_all, get_by_id, get_flight_by_airline_id, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id, get_flight_by_airline_id_test }
+module.exports = { flights_records_tables, check_flight_existence,get_all, get_by_id, get_flight_by_airline_id, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id, get_flight_by_airline_id_test }
 
 
 

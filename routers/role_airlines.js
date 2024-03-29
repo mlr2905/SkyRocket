@@ -261,24 +261,23 @@ router.put('/flights/:id', async (request, response) => {
     const id = parseInt(request.params.id)
     const by_id = await bl.get_by_id_flights(id)
     const update_flight = request.body
-    const check_flight_existence = await bl.check_flight_existence(update_flight)
     let a= null
     try {
         if (by_id) {
 
             if (check_flight_existence !== true) {
                 const result = await bl.update_flight(id, update_flight)
-                a=result
-                if (result) {
+                if (result.status === "OK") {
                     response.json(id, update_flight)
                 }
-                if ( result.status) {
+                else if ( result.status !== "some") {
                     response.status(404).json({ "error": `The id ${id} you specified does not exist in the ${result.status}` })
                 }
+                 else {
+                    response.status(409).json({ "error": `${check_flight_existence}The flight you want already exists` })
+                }
             }
-            else {
-                response.status(409).json({ "error": `${check_flight_existence}The flight you want already exists` })
-            }
+            
         }
         else {
             response.status(404).json({ "error": `The id ${id} you specified does not exist in the system` })
@@ -286,7 +285,7 @@ router.put('/flights/:id', async (request, response) => {
         }
     }
     catch (error) {
-        response.status(503).json({ "error": `The request failed, try again later ${a}` })
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
 
