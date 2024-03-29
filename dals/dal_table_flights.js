@@ -4,11 +4,11 @@ const connectedKnex = db.connect()
 
 // ---------------All types of users can activate---------------
 
-async function check_flight_existence(v) {
+async function flights_records_tables(v) {
     try {
-        const check = await connectedKnex.raw(`SELECT check_flight_existence(${v.airline_id},${v.origin_country_id},${v.destination_country_id}')`)
+        const check = await connectedKnex.raw(`SELECT flights_records_tables(${v.airline_id},${v.origin_country_id},${v.destination_country_id},${v.planes_id})`)
 
-        return check.rows[0].check_flight_existence
+        return check.rows[0].flights_records_tables
     }
     catch (error) {
         return error
@@ -106,4 +106,7 @@ async function get_flight_by_airline_id_test(id) {
     return result
 }
 
-module.exports = { check_flight_existence, get_all, get_by_id, get_flight_by_airline_id, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id, get_flight_by_airline_id_test }
+module.exports = { flights_records_tables, get_all, get_by_id, get_flight_by_airline_id, new_flight, update_flight, update_remaining_tickets, delete_flight, delete_all, get_by_flight_code, set_id, get_flight_by_airline_id_test }
+
+
+
