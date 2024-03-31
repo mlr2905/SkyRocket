@@ -266,8 +266,7 @@ router.put('/flights/:id', async (request, response) => {
         if (by_id) {
             result = await bl.update_flight(id, update_flight)
             if (result.status === "OK") {
-                update_flight.id =id
-                response.status(200).json(update_flight)
+                response.status(200).json({ ...update_flight, id })
             }
             if (result.status === "some") {
                 response.status(404).json({ "error": `The id ${update_flight} you specified does not exist in the ${result.status}` })
