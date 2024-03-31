@@ -967,6 +967,16 @@
  *                  error:
  *                    type: string
  *                    example: The id {id} you specified does not exist in the system
+ *       '409':
+ *         description: Not Found
+ *         content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example:  The flight you want already exists
  *       '503':
  *         description: Service Unavailable.
  *         content:
