@@ -269,11 +269,11 @@ router.put('/flights/:id', async (request, response) => {
                 response.json(id, update_flight)
             }
             
-            else if (result.status === some) {
+            else if (result.status == "some") {
                 response.status(404).json({ "error": `The id ${update_flight.result.status} you specified does not exist in the ${result.status}` })
 
             }
-            else if (result.status === exists) {
+            else if (result.status == "exists") {
 
                 response.status(409).json({ "error": `${result.status} The flight you want already exists` })
             }
@@ -298,7 +298,8 @@ router.put('/flights/:id', async (request, response) => {
         }
     }
     catch (error) {
-        response.status(503).json({ "error": `The request failed, try again later---n  result: ${result.status}` })
+        const a= (result.status == "plane_id")
+        response.status(503).json({ "error": `The request failed, try again later---n  result: ${a}` })
     }
 })
 
