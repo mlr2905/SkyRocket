@@ -157,11 +157,11 @@ async function update_flight(id, v) {
 
     const check2 = await dal_5.flights_records_tables(v);
 
-    if (check1.status == true && check2.status === "correct") {
+    if (check1.status !== true && check2.status === "correct") {
       const update = await dal_5.update_flight(id, v);
       return { "status": "OK" }
     }
-    else if (check1 !== true) {
+    else if (check1 === true) {
       return { "status": "exists" }
     }
     else if (check2.status !== "correct") {
