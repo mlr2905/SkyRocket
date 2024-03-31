@@ -288,8 +288,8 @@
 /**
  * @swagger
  *
- * /:
- *   post:
+ * //-/:
+ *   put:
  *     summary: 
  *     tags: [role_users]
  *     description: 
