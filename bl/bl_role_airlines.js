@@ -135,6 +135,15 @@ async function check_flight_existence(v) {
     return error;
   }
 }
+async function flights_records_tables(v) {
+  try {
+
+    return await dal_5.flights_records_tables(v);
+
+  } catch (error) {
+    return error;
+  }
+}
 async function create_new_flight(flights) {
   try {
     const check = await dal_0.flights_records_tables();
@@ -157,7 +166,7 @@ async function update_flight(id, v) {
 
     const check2 = await dal_5.flights_records_tables(v);
 
-    if (check1.status === false && check2.status === "correct") {
+    if (check1 === false && check2.status === "correct") {
       const update = await dal_5.update_flight(id, v);
       if (update.airline_id > 0) {
         return { "status": "OK" }
@@ -196,7 +205,7 @@ async function delete_flight(id) {
 
 
 module.exports = {
-  create_user, get_by_id_user, update_user, create_airline, get_by_id_airline,
+  create_user, get_by_id_user, update_user, create_airline, get_by_id_airline,flights_records_tables,
   update_airline, get_flight_by_airline_id, get_by_id_flights, check_flight_existence, create_new_flight,
   update_flight, delete_flight
 }
