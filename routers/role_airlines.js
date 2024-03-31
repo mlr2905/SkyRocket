@@ -272,11 +272,11 @@ router.put('/flights/:id', async (request, response) => {
                 response.status(404).json({ "error": `The id ${update_flight} you specified does not exist in the ${result.status}` })
             }
             if (result.status == "plane_id" || result.status === "origin_country_id" || result.status === "destination_country_id" || result.status === "airline_id") {
-                let n = result.status === "plane_id" ? plane_id :
-                result.status === "origin_country_id" ? origin_country_id :
-                result.status === "destination_country_id" ? destination_country_id :
-                result.status === "airline_id" ? airline_id : null;
-                     response.status(404).json({ "error": `The id ${update_flight.n} you specified does not exist in the ${result.status}` })
+                const str = result.status
+                const name = str.replace('"', ''); // השמטת המרכאות הפתוחות והסגורות
+                console.log(newStr); // ידפיס: name
+
+                response.status(404).json({ "error": `The id ${update_flight.name} you specified does not exist in the ${result.status}` })
             }
             if (result.status == "exists") {
                 response.status(409).json({ "error": `${result.status} The flight you want already exists` })
@@ -287,7 +287,7 @@ router.put('/flights/:id', async (request, response) => {
         }
     }
     catch (error) {
-        response.status(503).json({ "error": `The request failed, try again later---n  result: ${result}` })
+        response.status(503).json({ "error": `The request failed, try again later---n  result: ${result.status}` })
     }
 })
 
