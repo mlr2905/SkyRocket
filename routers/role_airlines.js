@@ -272,11 +272,11 @@ router.put('/flights/:id', async (request, response) => {
                 response.status(404).json({ "error": `The id ${update_flight} you specified does not exist in the ${result.status}` })
             }
             if (result.status == "plane_id" || result.status === "origin_country_id" || result.status === "destination_country_id" || result.status === "airline_id") {
-                const str = result.status
-                const name = str.replace('"', ''); // השמטת המרכאות הפתוחות והסגורות
-                console.log(newStr); // ידפיס: name
-
-                response.status(404).json({ "error": `The id ${update_flight.name} you specified does not exist in the ${result.status}` })
+                let id = result.status === "plane_id" ? update_flight.plane_id :
+                result.status === "origin_country_id" ? update_flight.origin_country_id :
+                result.status === "destination_country_id" ? update_flight.destination_country_id :
+                result.status === "airline_id" ? update_flight.airline_id : null;
+                     response.status(404).json({ "error": `The id ${id} you specified does not exist in the ${result.status}` })
             }
             if (result.status == "exists") {
                 response.status(409).json({ "error": `${result.status} The flight you want already exists` })
