@@ -306,7 +306,7 @@ router.put('/flights/:id', async (request, response) => {
         const f= (result.status == "destination_country_id")
         const h= (result.status == "airline_id")
 
-        response.status(503).json({ "error": `The request failed, try again later---n  result: ${a,b,c,d,e,f,h}` })
+        response.status(503).json({ "error": `The request failed, try again later---n  result: ${a}${b}${c}${d}${e}${f}${h}` })
     }
 })
 
