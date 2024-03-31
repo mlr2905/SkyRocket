@@ -162,7 +162,7 @@ async function update_flight(id, v) {
       return { "status": "OK" }
     }
     else if (check1.status !== true) {
-      return { "status": "exists" }
+      return check1
     }
     else if (check2.status !== "correct") {
       return check2
