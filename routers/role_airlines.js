@@ -289,7 +289,7 @@ router.put('/flights/:id', async (request, response) => {
         }
     }
     catch (error) {
-        response.status(503).json({ "error": `The request failed, try again later---n  result: ${result}` })
+        response.status(503).json({ "error": `The request failed, try again later---n  result: ${result.status}` })
     }
 })
 
