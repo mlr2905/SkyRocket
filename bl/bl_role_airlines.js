@@ -180,7 +180,7 @@ async function update_flight(id, v) {
       return  "exists" 
     }
     else if (check2.status !== "correct") {
-      return `"${check2.status}"`
+      return check2.status
     }
     else {
       return { "error": `${check1} and${check2}` }
