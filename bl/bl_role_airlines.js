@@ -149,7 +149,7 @@ async function create_new_flight(flights) {
     return error;
   }
 }
-
+/// לשנותכאן
 async function update_flight(id, v) {
   try {
 
@@ -159,10 +159,16 @@ async function update_flight(id, v) {
 
     if (check1.status == true && check2.status === "correct") {
       const update = await dal_5.update_flight(id, v);
-      return true
+      return { "status": "OK" }
+    }
+    else if (check1.status !== true) {
+      return { "status": "exists" }
+    }
+    else if (check2.status !== "correct") {
+      return check2
     }
     else {
-      return { "status": "OK" }
+      return { "error": `${check1} and${check2}` }
     }
   
   } catch (error) {
