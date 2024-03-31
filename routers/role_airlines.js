@@ -157,7 +157,7 @@ router.get('/airlines/:id', async (request, response) => {
     try {
         const user = await bl.get_by_id_airline(user_id)
         if (user) {
-            response.json(user)
+            response.status(200).json(user)
         }
         else {
             response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system` })
@@ -196,7 +196,7 @@ router.get('/airline_id/:id', async (request, response) => {
         const by_id = parseInt(request.params.id)
         const id = await bl.get_flight_by_airline_id(by_id)
         if (id) {
-            response.json(id)
+            response.status(200).json(id)
         }
         else {
             response.status(404).json({ "error": `cannot find user with id ${by_id}` })
