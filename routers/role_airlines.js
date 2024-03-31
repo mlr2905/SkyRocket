@@ -236,12 +236,12 @@ router.post('/flights', async (request, response) => {
                 response.status(201).json(result)
             }
             else {
-                const id = result === "airline_id" ? new_flight.airline_id :
-                    result === "origin_country_id" ? new_flight.origin_country_id :
-                        result === "destination_country_id" ? new_flight.destination_country_id :
-                            result === "plane_id" ? new_flight.plane_id : null;
+                const id = result.status === "airline_id" ? new_flight.airline_id :
+                    result.status === "origin_country_id" ? new_flight.origin_country_id :
+                        result.status === "destination_country_id" ? new_flight.destination_country_id :
+                            result.status === "plane_id" ? new_flight.plane_id : null;
 
-                response.status(404).json({ "error": `The ${id} you specified does not exist in the ${result}` })
+                response.status(404).json({ "error": `The ${id} you specified does not exist in the ${result.status}` })
             }
         }
         else {
@@ -266,16 +266,16 @@ router.put('/flights/:id', async (request, response) => {
         if (by_id) {
             result = await bl.update_flight(id, update_flight)
             if (result.status === "OK") {
-                response.status(200).json({ id ,...update_flight })
+                response.status(200).json({ id, ...update_flight })
             }
             if (result.status === "some") {
                 response.status(404).json({ "error": `The id ${update_flight} you specified does not exist in the ${result.status}` })
             }
             if (result.status === "plane_id" || result.status === "origin_country_id" || result.status === "destination_country_id" || result.status === "airline_id") {
                 let id = result.status === "plane_id" ? update_flight.plane_id :
-                result.status === "origin_country_id" ? update_flight.origin_country_id :
-                result.status === "destination_country_id" ? update_flight.destination_country_id :
-                result.status === "airline_id" ? update_flight.airline_id : null;
+                    result.status === "origin_country_id" ? update_flight.origin_country_id :
+                        result.status === "destination_country_id" ? update_flight.destination_country_id :
+                            result.status === "airline_id" ? update_flight.airline_id : null;
                 response.status(404).json({ "error": `The id ${id} you specified does not exist in the ${result.status}` })
             }
             if (result.status == "exists") {

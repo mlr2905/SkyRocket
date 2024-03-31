@@ -146,34 +146,33 @@ async function flights_records_tables(v) {
 }
 async function create_new_flight(flights) {
   try {
-    const check = await dal_0.flights_records_tables();
-    if (check.airline_id || check.origin_country_id || check.destination_country_id || check.plane_id) {
-      return { "error": `The specified ${Object.keys(check).filter(key => check[key]).join(", ")} does not exist in the corresponding table(s)` };
+    const check = await dal_5.flights_records_tables(flights);
+    if (check.status === "correct") {
+      const new_flights = await dal_5.new_flight(flights);
+      return new_flights
     }
-
-    const new_flights = await dal_5.new_flight(flights);
-    return new_flights
-
+    else if (check.status !== "correct") {
+      return check
+    }
+    else {
+      return { "error": `${check}` }
+    }
   } catch (error) {
     return error;
   }
 }
-/// לשנותכאן
 async function update_flight(id, v) {
   try {
 
     const check1 = await dal_5.check_flight_existence(v);
-
     const check2 = await dal_5.flights_records_tables(v);
-
     if (check1 === false && check2.status === "correct") {
       const update = await dal_5.update_flight(id, v);
       if (update.airline_id > 0) {
         return { "status": "OK" }
       }
-      else{
+      else {
         return { "error": `Please refer to the following error:${update}` }
- 
       }
     }
     else if (check1 === true) {
@@ -185,10 +184,9 @@ async function update_flight(id, v) {
     else {
       return { "error": `${check1} and${check2}` }
     }
-  
   } catch (error) {
-  return error;
-}
+    return error;
+  }
 }
 
 async function delete_flight(id) {
@@ -205,7 +203,7 @@ async function delete_flight(id) {
 
 
 module.exports = {
-  create_user, get_by_id_user, update_user, create_airline, get_by_id_airline,flights_records_tables,
+  create_user, get_by_id_user, update_user, create_airline, get_by_id_airline, flights_records_tables,
   update_airline, get_flight_by_airline_id, get_by_id_flights, check_flight_existence, create_new_flight,
   update_flight, delete_flight
 }
