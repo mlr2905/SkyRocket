@@ -761,19 +761,6 @@
  *         example:
  *             error: Cannot find user with ID {id}.
  */
-/**
- * @swagger
- *
- * ////:
- *   post:
- *     summary: 
- *     tags: [role_users]
- *     description: 
- *     security:
- *       - CustomAuth: []
- *     deprecated: true
- *     readOnly: false 
- */
 
 //role_users/tickets
 
@@ -856,19 +843,7 @@
  *                       type: string
  */
 
-/**
- * @swagger
- *
- * /////:
- *   post:
- *     summary: 
- *     tags: [role_users]
- *     description: 
- *     security:
- *       - CustomAuth: []
- *     deprecated: true
- *     readOnly: false 
- */
+
 /**
  * @swagger
  * components:
