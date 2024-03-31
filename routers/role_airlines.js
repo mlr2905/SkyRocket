@@ -298,8 +298,15 @@ router.put('/flights/:id', async (request, response) => {
         }
     }
     catch (error) {
-        const a= (result.status == "airline_id")
-        response.status(503).json({ "error": `The request failed, try again later---n  result: ${a}` })
+        const a= (result.status == "OK")
+        const b= (result.status == "some")
+        const c= (result.status == "exists")
+        const d= (result.status == "plane_id")
+        const e= (result.status == "origin_country_id")
+        const f= (result.status == "destination_country_id")
+        const h= (result.status == "airline_id")
+
+        response.status(503).json({ "error": `The request failed, try again later---n  result: ${a,b,c,d,e,f,h}` })
     }
 })
 
