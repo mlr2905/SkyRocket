@@ -268,29 +268,14 @@ router.put('/flights/:id', async (request, response) => {
             if (result.status === "OK") {
                 response.json(id, update_flight)
             }
-            
-            else if (result.status == "some") {
+            if (result.status === "some") {
                 response.status(404).json({ "error": `The id ${update_flight.result.status} you specified does not exist in the ${result.status}` })
-
             }
-            else if (result.status == "exists") {
-
+            if (result.status === "exists") {
                 response.status(409).json({ "error": `${result.status} The flight you want already exists` })
             }
-            else if (result.status == "plane_id") {
+             if (result.status === "plane_id" || result.status === "origin_country_id" || result.status === "destination_country_id" || result.status === "airline_id") {
                 response.status(404).json({ "error": `The id ${update_flight.result.status} you specified does not exist in the ${result.status}` })
-            }
-            else if ( result.status == "origin_country_id") {
-                response.status(404).json({ "error": `The id ${update_flight.result.status} you specified does not exist in the ${result.status}` })
-            }
-            else if (result.status == "destination_country_id" ) {
-                response.status(404).json({ "error": `The id ${update_flight.result.status} you specified does not exist in the ${result.status}` })
-            }
-            else if ( result.status == "airline_id") {
-                response.status(404).json({ "error": `The id ${update_flight.result.status} you specified does not exist in the ${result.status}` })
-            }
-            else {
-                response.status(503).json({ "error": `The request failed, try again later ${result}` })
             }
         }
         else {
@@ -298,15 +283,7 @@ router.put('/flights/:id', async (request, response) => {
         }
     }
     catch (error) {
-        const a= (result.status == "OK")
-        const b= (result.status == "some")
-        const c= (result.status == "exists")
-        const d= (result.status == "plane_id")
-        const e= (result.status == "origin_country_id")
-        const f= (result.status == "destination_country_id")
-        const h= (result.status == "airline_id")
-
-        response.status(503).json({ "error": `The request failed, try again later---n  result: ${a}${b}${c}${d}${e}${f}${h}` })
+        response.status(503).json({ "error": `The request failed, try again later---n  result: ${result.status}` })
     }
 })
 
