@@ -153,6 +153,7 @@ async function create_new_flight(flights) {
 async function update_flight(id, v) {
   try {
 
+    
     const check1 = await dal_5.check_flight_existence(v);
 
     const check2 = await dal_5.flights_records_tables(v);
