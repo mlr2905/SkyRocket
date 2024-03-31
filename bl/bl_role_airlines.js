@@ -169,7 +169,7 @@ async function update_flight(id, v) {
     if (check1 === false && check2.status === "correct") {
       const update = await dal_5.update_flight(id, v);
       if (update.airline_id > 0) {
-        return "OK"
+        return { "status": "OK" }
       }
       else{
         return { "error": `Please refer to the following error:${update}` }
@@ -177,10 +177,10 @@ async function update_flight(id, v) {
       }
     }
     else if (check1 === true) {
-      return  "exists" 
+      return { "status": "exists" }
     }
     else if (check2.status !== "correct") {
-      return check2.status
+      return check2
     }
     else {
       return { "error": `${check1} and${check2}` }
