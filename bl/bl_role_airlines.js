@@ -187,7 +187,7 @@ async function update_flight(id, v) {
     }
   
   } catch (error) {
-  return error;
+  return "ffff"";
 }
 }
 
