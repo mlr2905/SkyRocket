@@ -261,9 +261,10 @@ router.put('/flights/:id', async (request, response) => {
     const id = parseInt(request.params.id)
     const by_id = await bl.get_by_id_flights(id)
     const update_flight = request.body
+    const result = null
     try {
         if (by_id) {
-            const result = await bl.update_flight(id, update_flight)
+             result = await bl.update_flight(id, update_flight)
             if (result.status === "OK") {
                 response.json(id, update_flight)
             }
