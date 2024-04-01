@@ -6,7 +6,6 @@ const dal_5 = require('../dals/dal_table_flights')
 const dal_6 = require('../dals/dal_table_tickets')
 const dal_7 = require('../dals/dal_table_passengers')
 
-
 //func users
 async function create_user_role1(uesr) {
   const user_name = await dal_1.get_by_name(uesr.username)
@@ -29,7 +28,7 @@ async function create_user_role1(uesr) {
     return 'rejected';
   }
 }
- //// create_user
+//// create_user
 async function create_user_role2(uesr) {
   const user_name = await dal_1.get_by_name(uesr.username)
   if (user_name === undefined) {
@@ -182,7 +181,6 @@ async function get_all_flights(id) {
     // check error
   }
 }
-// flights
 
 async function get_by_id_flights(id) {
   try {
@@ -364,9 +362,9 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  purchase_ticket, create_user_role1,create_user_role2, get_by_id_flights, get_all_flights, update_user, get_by_id_user,
-  delete_account,new_customer,get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr,
-  get_by_id_user, update_user, create_airline, get_by_id_airline, flights_records_tables,update_airline,get_flight_by_airline_id,
-  get_by_id_flights, check_flight_existence, create_new_flight,update_flight, delete_flight
+  purchase_ticket, create_user_role1, create_user_role2, get_by_id_flights, get_all_flights, update_user, get_by_id_user,
+  delete_account, new_customer, get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr,
+  get_by_id_user, update_user, create_airline, get_by_id_airline, flights_records_tables, update_airline, get_flight_by_airline_id,
+  get_by_id_flights, check_flight_existence, create_new_flight, update_flight, delete_flight
 
 }
