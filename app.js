@@ -65,7 +65,7 @@ const port = 3000
 //     }
 // }));
 
-const users = {'michael': 'Miki260623' };
+const users = {'michael': 'Miki260623',"itay":"a123456" };
 
 const checkPassword = (username, password) => {return users[username] === password;};
 app.use(cors());
