@@ -324,6 +324,7 @@
  *                   type: string
  *                   example: The request failed, try again later {error}
  */
+
 /**
  * @swagger
  *
