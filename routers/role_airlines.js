@@ -44,6 +44,7 @@ router.get('/users/search', async (request, response) => {
     let search = email ? email : username ? username : password ? password : id;
     let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
 
+
     try {
         const user = await bl.get_by_id_user(type, search)
         if (user) {
