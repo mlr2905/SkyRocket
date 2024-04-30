@@ -30,26 +30,29 @@ async function create_user(uesr) {
 }
 
 async function get_by_id_user(type, id) {
-  let user_id = null
+  let url = null;
+
   if (id === undefined) {
-    user_id = await dal_1.get_by_id(id);
-  }
-  else {
-    user_id = await dal_1.get_by_id_type(type, id);
+      url = `https://node-mongodb-rest.onrender.com/api/users/${id}`;
+  } else {
+      url = `https://node-mongodb-rest.onrender.com/api/users/search?${type}=${id}`;
   }
 
-  if (user_id) {
-    if (user_id.role_id === 2) {
-      return user_id
-    }
-    else {
-      return 'Postponed'
-    }
-  }
-  else {
-    return false
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data && data.role_id === 1) {
+          return data;
+      } else {
+          return 'Postponed';
+      }
+  } catch (error) {
+      console.error('Error:', error);
+      return false;
   }
 }
+
 
 async function get_qr(id) {
   const user_id = await dal_0.get_qr(id);

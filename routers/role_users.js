@@ -32,7 +32,6 @@ const { log } = require('winston');
 
 // GET by search
 router.get('/users/search', async (request, response) => {
-    // const user_id = parseInt(request.params.id)
     const query = request.query
     const email = query.email
     const username = query.username
@@ -48,11 +47,11 @@ router.get('/users/search', async (request, response) => {
                 response.status(200).json(user)
             }
             else {
-                response.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${user_id}'` })
+                response.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${search}'` })
             }
         }
         else {
-            response.status(404).json({ "error": `cannot find user with id '${user_id}'` })
+            response.status(404).json({ "error": `cannot find user with id '${search}'` })
         }
     }
     catch (error) {
