@@ -45,35 +45,51 @@ const specs = swaggerJsdoc(options);
 
 const port = 3000
 // // אימות בסיסי
-// const users = {
-//     'admin': '123456'
-// };
 
-// const checkPassword = (username, password) => {
-//     return users[username] === password;
-// };
 
-// // הוספת אימות בסיסי לכל הנתיבים של Swagger UI
-// app.use('/swagger', basicAuth({
+app.use(body_parser.json())
+
+app.use(cors())
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+
+// the request will pass here each time
+app.get('*', (request, response, next) => {
+    console.log(request.url);
+    if (request.url == "/questions.html") {
+        if (!request.cookies.auth) {
+            response.status(200).redirect('./login.html')
+            return
+        }
+    }
+    if (request.url == "/signup.html") {
+        if (request.cookies.auth) {
+            response.status(200).redirect('./questions.html')
+            return
+        }
+    }   
+    if (request.url == "/login.html") {
+        if (request.cookies.auth) {
+            response.status(200).redirect('./questions.html')
+            return
+        }
+    }       
+    if (request.url == "/logout.html") {
+        response.clearCookie('auth')
+    }        
+
+    next()
+})
+// const users = {'michael': 'Miki260623',"itay":"a123456" };
+
+// const checkPassword = (username, password) => {return users[username] === password;};
+// app.use(cors());
+// app.use(basicAuth({
 //     users: users,
 //     challenge: true,
-//     unauthorizedResponse: (req) => {
-//         return 'Unauthorized';
-//     },
-//     authorizer: (username, password) => {
-//         return checkPassword(username, password);
-//     }
-// }));
+//     unauthorizedResponse: (req) => {return 'Unauthorized';},
+//     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
-const users = {'michael': 'Miki260623',"itay":"a123456" };
-
-const checkPassword = (username, password) => {return users[username] === password;};
-app.use(cors());
-app.use(basicAuth({
-    users: users,
-    challenge: true,
-    unauthorizedResponse: (req) => {return 'Unauthorized';},
-    authorizer: (username, password) => {return checkPassword(username, password); }}));
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/')))
