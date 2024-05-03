@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello - Question Page</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+        }
+        .question {
+            margin: 20px 0;
+            font-size: 18px;
+            color: #555;
+        }
+        .answer {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .answer:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 >Hello</h1>
+        <h4 id="hello_text"></h4>
+        <!-- the question and answers will be read with AJAX -->
+        <div class="question">What is the capital of France?</div>
+        <button class="answer" data-answer="1" onclick="send_answer(1)">New-York</button>
+        <button class="answer" data-answer="2" onclick="send_answer(2)">Tomr</button>
+        <button class="answer" data-answer="3" onclick="send_answer(3)">Venice</button>
+        <button class="answer" data-answer="4" onclick="send_answer(4)">Jerusalem</button>
+    </div>
+    <script>
+        // 'auth=fullstack270923%40gmail.com'
+        let email = document.cookie.split('=')[1].split('_')[0]
+        email = decodeURIComponent(email)
+        document.getElementById('hello_text').textContent = `${email}`
+
+        async function send_answer (answer_number) {
+            const response = await fetch('/api/poll', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ answer: answer_number})
+            })
+            const data = await response.json()
+            alert(JSON.stringify(data))
+        }
+    </script>
+</body>
+</html>
