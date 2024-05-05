@@ -36,7 +36,7 @@ return jwt.sign({ id, email }, 'secret key', {
 });
 };
 router.get('*', (request, response, next) => {
-    if (!request.cookies.auth) {
+    if (!request.cookies.sky) {
         response.status(200).redirect('./login.html')
         return
     }
