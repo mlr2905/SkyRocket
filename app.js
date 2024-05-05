@@ -5,7 +5,6 @@ const express = require('express')
 const cors = require('cors');
 const basicAuth = require('express-basic-auth');
 const jwt = require('jsonwebtoken');
-const axios = require('axios');
 
 
 
@@ -27,6 +26,8 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join('.', '/static/')))
 
+const axios = require('axios');
+
 app.get('*', async (req, res, next) => {
     if (!req.headers.cookie) {
         return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
@@ -38,28 +39,32 @@ app.get('*', async (req, res, next) => {
 
     if (!skyToken) {
         return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
-    } 
+    } else {
+        const token = skyToken.split('=')[1];
 
+        try {
+            const response = await axios.get('https://jwt-node-mongodb.onrender.com/data', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
-    const token = skyToken.split('=')[1];
-    
-    try {
-        const response = await axios.post('https://jwt-node-mongodb.onrender.com/data', { token }); // Replace 'URL_OF_AUTH_SERVER' with the actual URL of the authentication server
-        if (response.data.valid) {
-            // Token is valid, continue to the requested route
-            next();
-        } else {
-            // Token is not valid, redirect to login page
-            return res.status(200).redirect(302, './login.html');
+            const data = response.data; // Assuming the server responds with JSON data
+
+            if (data.valid) {
+                // Token is valid, continue to the requested route
+                next();
+            } else {
+                // Token is not valid, redirect to login page
+                return res.status(200).redirect(302, './login.html');
+            }
+        } catch (error) {
+            // console.error('Error validating token:', error);
+            return res.status(500).send('Internal Server Error');
         }
-    } catch (error) {
-        console.error('Error validating token:', error);
-        return res.status(500).send('Internal Server Error');
     }
-    // Verify the token
-    
-    
-})
+});
+
 
 const options = {
     definition: {
