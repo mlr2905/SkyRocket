@@ -3,6 +3,8 @@ const router = express.Router()
 const qrcode = require('qrcode');
 const bl = require('../bl/bl_role_users');
 const { log } = require('winston');
+const jwt = require('jsonwebtoken');
+
 
 
 // router.get('/', async (request, response) => {
@@ -27,23 +29,33 @@ const { log } = require('winston');
 //         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
 //     }
 // })
-
+const maxAge = 3 * 24 * 60 * 60;
+const createToken = (id, email) => {
+return jwt.sign({ id, email }, 'secret key', {
+  expiresIn: maxAge
+});
+};
 router.post('/login', async (request, response) => {
     try {
-        console.log(request.body);
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
         const user = await bl.login(email, password)
+
         if (user) {
-            const token = createToken(user._id, user.email);
-            res.status(200).json({ id: user._id, jwt:token });
+            console.log("user22", user);
+            const token = createToken(user._id, user.email)
+            response.cookie('sky', token, { httpOnly: true, maxAge: maxAge * 1000 });
+
+            response.status(200).json(user);
         }
     }
     catch (error) {
-        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+        response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
-})
+});
+
+
 
 
 // GET by search

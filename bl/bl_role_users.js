@@ -8,7 +8,6 @@ const dal_7 = require('../dals/dal_table_passengers')
 
 async function login(email, password) {
   let url = 'https://jwt-node-mongodb.onrender.com/login';
-console.log('email, password',email, password);
   
   const data = {
     email: email,
@@ -25,8 +24,8 @@ console.log('email, password',email, password);
   
   try {
     const user = await fetch(url, requestOptions);
-
-      return  user
+    const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
+      return  data
   
   } catch (error) {
       console.error('Error:', error);
