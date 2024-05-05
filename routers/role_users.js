@@ -35,18 +35,7 @@ return jwt.sign({ id, email }, 'secret key', {
   expiresIn: maxAge
 });
 };
-router.get('*', (request, response, next) => {
-    if (!request.headers.cookie) {
-        response.status(200).redirect('./login.html')
-        return  
-    }
-else if (!request.headers.cookie.split('=')[0] == "sky") {
-    response.status(200).redirect('./login.html')
-    return
-}
 
-next()
-})
 router.post('/login', async (request, response) => {
     try {
         const Query = request.body;
