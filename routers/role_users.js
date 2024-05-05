@@ -28,6 +28,22 @@ const { log } = require('winston');
 //     }
 // })
 
+router.post('/login', async (request, response) => {
+    try {
+        console.log(request.body);
+        const Query = request.body;
+        const email = Query.email;
+        const password = Query.password;
+        const user = await bl.login(email, password)
+        if (user) {
+            const token = createToken(user._id, user.email);
+            res.status(200).json({ id: user._id, jwt:token });
+        }
+    }
+    catch (error) {
+        throw response.status(503).json({ 'error': 'The request failed, try again later', error })
+    }
+})
 
 
 // GET by search
@@ -237,3 +253,11 @@ router.get('/passengers/:id', async (request, response) => {
 })
 
 module.exports = router
+
+
+
+
+
+
+
+

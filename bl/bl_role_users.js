@@ -6,6 +6,34 @@ const dal_6 = require('../dals/dal_table_tickets')
 const dal_7 = require('../dals/dal_table_passengers')
 
 
+async function login(email, password) {
+  let url = 'https://jwt-node-mongodb.onrender.com/login';
+console.log('email, password',email, password);
+  
+  const data = {
+    email: email,
+    password: password
+  };
+  
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  };
+  
+  try {
+    const user = await fetch(url, requestOptions);
+
+      return  user
+  
+  } catch (error) {
+      console.error('Error:', error);
+      return false;
+  }
+}
+
 //func users
 async function create_user(uesr) {
   const user_name = await dal_1.get_by_name(uesr.username)
@@ -228,7 +256,7 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
+  login,purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }
