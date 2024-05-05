@@ -4,6 +4,7 @@ const path = require('path')
 const express = require('express')
 const cors = require('cors');
 const basicAuth = require('express-basic-auth');
+const jwt = require('jsonwebtoken');
 
 
 const body_parser = require('body-parser')
@@ -25,22 +26,30 @@ app.use((req, res, next) => {
 app.use(express.static(path.join('.', '/static/')))
 
 app.get('*', (req, res, next) => {
-    // if (request.url == "/login.html") {
-    //     next()
-    // }
-    // else {
+    if (!req.headers.cookie) {
+        return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
+    }
 
-        if (!req.headers.cookie) {
+    // Split cookies and check for "sky" token
+    const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+    const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
+
+    if (!skyToken) {
+        return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
+    } 
+
+    // Verify the token
+    const token = skyToken.split('=')[1]; // Extract token value from the cookie
+    jwt.verify(token, 'your_secret_key', (err, decoded) => {
+        if (err) {
+            // Token is invalid, redirect to login page
             return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
+        } else {
+            // Token is valid, continue to the requested route
+            next();
         }
-        // Split cookies and check for "sky" token
-        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
-        if (!skyToken) {
-            return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
-        }
+    });
     
-    next()
 })
 
 const options = {
