@@ -22,33 +22,33 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
   });
-  app.get('*', (request, response, next) => {
-    console.log(request.url);
-    if (request.url == "/questions.html") {
-        if (!request.cookies.auth) {
-            response.status(200).redirect('./login.html')
-            return
-        }
-    }
-    if (request.url == "/signup.html") {
-        if (request.cookies.auth) {
-            response.status(200).redirect('./questions.html')
-            return
-        }
-    }   
-    if (request.url == "/login.html") {
+//   app.get('*', (request, response, next) => {
+//     console.log(request.url);
+//     if (request.url == "/questions.html") {
+//         if (!request.cookies.auth) {
+//             response.status(200).redirect('./login.html')
+//             return
+//         }
+//     }
+//     if (request.url == "/signup.html") {
+//         if (request.cookies.auth) {
+//             response.status(200).redirect('./questions.html')
+//             return
+//         }
+//     }   
+//     if (request.url == "/login.html") {
         
-        if (request.cookies.auth) {
-            response.status(200).redirect('./questions.html')
-            return
-        }
-    }       
-    if (request.url == "/logout.html") {
-        response.clearCookie('auth')
-    }        
+//         if (request.cookies.auth) {
+//             response.status(200).redirect('./questions.html')
+//             return
+//         }
+//     }       
+//     if (request.url == "/logout.html") {
+//         response.clearCookie('auth')
+//     }        
 
-    next()
-})
+//     next()
+// })
 
 const options = {
     definition: {
