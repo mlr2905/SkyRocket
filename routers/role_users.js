@@ -35,6 +35,15 @@ return jwt.sign({ id, email }, 'secret key', {
   expiresIn: maxAge
 });
 };
+router.get('*', (request, response, next) => {
+    if (!request.cookies.auth) {
+        response.status(200).redirect('./login.html')
+        return
+    }
+
+
+next()
+})
 router.post('/login', async (request, response) => {
     try {
         const Query = request.body;
