@@ -21,18 +21,23 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
-  });
-  app.get('*', (req, res, next) => {
-    if (!req.headers.cookie) {
-        return res.status(200).redirect(302,'https://skyrocket.onrender.com/login.html');
+});
+app.get('*', (req, res, next) => {
+    if (request.url == "/login.html") {
+        next()
     }
-    // Split cookies and check for "sky" token
-    const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-    const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
-    if (!skyToken) {
-        return res.status(200).redirect(302,'https://skyrocket.onrender.com/login.html');
-    } 
+    else {
 
+        if (!req.headers.cookie) {
+            return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
+        }
+        // Split cookies and check for "sky" token
+        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
+        if (!skyToken) {
+            return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
+        }
+    }
     next()
 })
 
@@ -48,8 +53,8 @@ const options = {
             origin: '*',
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
-          },
-        servers: [{url: "https://skyrocket.onrender.com/"}],
+        },
+        servers: [{ url: "https://skyrocket.onrender.com/" }],
     },
     apis: ["./swagger/*.js"],
 };
@@ -69,14 +74,14 @@ const port = 3000
 //     challenge: true,
 //     unauthorizedResponse: (req) => {return 'Unauthorized';},
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
-    
+
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(body_parser.json())
 app.use(express.static(path.join('.', '/static/')))
 app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
-}); 
+});
 app.use('/all_tables', all_tables_router)
 app.use('/role_admins', role_admins)
 app.use('/role_airlines', role_airlines)
