@@ -22,7 +22,19 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
   });
+  app.get('*', (req, res, next) => {
+    if (!req.headers.cookie) {
+        return res.status(200).redirect(302,'https://skyrocket.onrender.com/login.html');
+    }
+    // Split cookies and check for "sky" token
+    const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+    const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
+    if (!skyToken) {
+        return res.status(200).redirect(302,'https://skyrocket.onrender.com/login.html');
+    } 
 
+    next()
+})
 
 const options = {
     definition: {

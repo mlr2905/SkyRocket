@@ -36,11 +36,14 @@ return jwt.sign({ id, email }, 'secret key', {
 });
 };
 router.get('*', (request, response, next) => {
-    if (!request.cookies.sky) {
+    if (!request.headers.cookie) {
         response.status(200).redirect('./login.html')
-        return
+        return  
     }
-
+else if (!request.headers.cookie.split('=')[0] == "sky") {
+    response.status(200).redirect('./login.html')
+    return
+}
 
 next()
 })
