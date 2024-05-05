@@ -40,13 +40,14 @@ app.get('*', async (req, res, next) => {
     if (!skyToken) {
         return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
     } else {
+        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
         const token = skyToken.split('=')[1];
+        console.log(token);
 
         try {
             const response = await axios.get('https://jwt-node-mongodb.onrender.com/data', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                data: { token }
             });
 
             const data = response.data; // Assuming the server responds with JSON data
