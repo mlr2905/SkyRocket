@@ -65,13 +65,6 @@ const port = 3000
 //     unauthorizedResponse: (req) => {return 'Unauthorized';},
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
-app.use(body_parser.json())
-app.use(express.static(path.join('.', '/static/')))
-app.listen(3000, () => {
-    logger.info('==== Server started =======')
-    console.log('Express server is running ....');
-});
 app.get('*', async (req, res, next) => {
     if (!req.headers.cookie) {
         return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
@@ -109,6 +102,15 @@ app.get('*', async (req, res, next) => {
         }
     }
 });
+app.listen(3000, () => {
+    logger.info('==== Server started =======')
+    console.log('Express server is running ....');
+});
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
+app.use(body_parser.json())
+app.use(express.static(path.join('.', '/static/')))
+
+
 app.use('/all_tables', all_tables_router)
 app.use('/role_admins', role_admins)
 app.use('/role_airlines', role_airlines)
