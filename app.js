@@ -22,11 +22,13 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
+app.use(express.static(path.join('.', '/static/')))
+
 app.get('*', (req, res, next) => {
-    if (request.url == "/login.html") {
-        next()
-    }
-    else {
+    // if (request.url == "/login.html") {
+    //     next()
+    // }
+    // else {
 
         if (!req.headers.cookie) {
             return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
@@ -37,7 +39,7 @@ app.get('*', (req, res, next) => {
         if (!skyToken) {
             return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
         }
-    }
+    
     next()
 })
 
