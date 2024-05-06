@@ -88,11 +88,12 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    // שמירת העוגיה באיחסון המקומי
-                    document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
-
+                    
                     // שמירת פרטי המשתמש באיחסון המקומיn
                     localStorage.setItem('sky', JSON.stringify({ id: data.id, jwt: data.jwt }));
+
+                    // שמירת העוגיה באיחסון המקומי
+                    document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
 
                     // הודעת הצלחה
                     var successMessage = document.getElementById('success-message');
