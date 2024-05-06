@@ -52,8 +52,8 @@
     </style>
 </head>
 <body>
-    <form class="signup-form" action="https://jwt-node-mongodb.onrender.com/signup" method="POST">
-        <h1>SIGNUP</h1>
+    <form class="signup-form" id="sipnup-form">
+        <h1>signup</h1>
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
@@ -63,7 +63,33 @@
             <input type="password" id="password" name="password" required minlength="6">
         </div>
         <button type="submit">Submit</button>
-        <p></p><br /><a href="/login.html">already registered? click here ...</a>         
+        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/login.html">Have an account? Click here ...</a>
     </form>
+
+    <script>
+        document.getElementById('sipnup-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
+
+            // שליחת בקשה POST לשרת
+            var formData = new FormData(document.getElementById('sipnup-form'));
+            fetch('/role_users/sipnup', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    
+                    // שמירת פרטי המשתמש באיחסון המקומיn
+                  
+                    // הודעת הצלחה
+                    var successMessage = document.getElementById('success-message');
+                    successMessage.textContent = 'Login successful!';
+
+                    // הפניה לדף Swagger
+                    window.location.href = data.swaggerUrl;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>

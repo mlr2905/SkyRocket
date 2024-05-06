@@ -66,13 +66,22 @@ const port = 3000
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
 app.get('*', async (req, res, next) => {
+
     if (!req.headers.cookie) {
-      return  res.status(200).send(`
+        if (req.url === '/role_users/signup') {
+            next();
+
+        }
+        else {
+
+
+            return res.status(200).send(`
         <script>
             document.cookie = 'redirect=${req.originalUrl}; max-age=3600';
             window.location.href = 'https://skyrocket.onrender.com/login.html';
         </script>
     `);
+        }
     }
 
     // Split cookies and check for "sky" token

@@ -8,12 +8,12 @@ const dal_7 = require('../dals/dal_table_passengers')
 
 async function login(email, password) {
   let url = 'https://jwt-node-mongodb.onrender.com/login';
-  
+
   const data = {
     email: email,
     password: password
   };
-  
+
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -21,18 +21,55 @@ async function login(email, password) {
     },
     body: JSON.stringify(data)
   };
-  
+
   try {
     const user = await fetch(url, requestOptions);
     const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-      return  data
-  
+    return data
+
   } catch (error) {
-      console.error('Error:', error);
-      return false;
+    console.error('Error:', error);
+    return false;
   }
 }
+async function signup(email, password) {
+  let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
+  let url_spring = "https://spring-postgresql.onrender.com"
+  const data = {
+    email: email,
+    password: password
+  };
 
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  };
+
+  try {
+    const user = await fetch(url_node_mongo, requestOptions);
+    const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
+    console.log("data", data);
+    if (data.id !== undefined) {
+      data.splice(1, 1);
+      data.push({
+        username: data.username,
+        role_id: 1
+      });
+      const create_user = await fetch(url_spring, requestOptions);
+      data = await create_user.json(); // או כל פעולה אחרת לקריאת הנתונים
+
+      return data
+
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+    return false;
+  }
+}
 //func users
 async function create_user(uesr) {
   const user_name = await dal_1.get_by_name(uesr.username)
@@ -60,23 +97,23 @@ async function get_by_id_user(type, id) {
   let url = null;
 
   if (id === undefined) {
-      url = `https://node-mongodb-rest.onrender.com/api/users/${id}`;
+    url = `https://node-mongodb-rest.onrender.com/api/users/${id}`;
   } else {
-      url = `https://node-mongodb-rest.onrender.com/api/users/search?${type}=${id}`;
+    url = `https://node-mongodb-rest.onrender.com/api/users/search?${type}=${id}`;
   }
 
   try {
-      const response = await fetch(url);
-      const data = await response.json();
+    const response = await fetch(url);
+    const data = await response.json();
 
-      if (data && data.role_id === 1) {
-          return data;
-      } else {
-          return 'Postponed';
-      }
+    if (data && data.role_id === 1) {
+      return data;
+    } else {
+      return 'Postponed';
+    }
   } catch (error) {
-      console.error('Error:', error);
-      return false;
+    console.error('Error:', error);
+    return false;
   }
 }
 
@@ -255,7 +292,7 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  login,purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
+  login, signup, purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }

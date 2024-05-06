@@ -60,7 +60,29 @@ router.post('/login', async (request, response) => {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 });
+router.post('/signup', async (request, response) => {
+    try {
+        console.log('request.body',request.body);
+        const Query = request.body;
+        const email = Query.email;
+        const password = Query.password;
+        const user = await bl.signup(email, password)
 
+        if (user) {
+            console.log("user signup", user);
+            
+            // בניית הקישור לדף Swagger
+            const loginUrl = 'https://skyrocket.onrender.com/login/';
+            
+            // הפניה לדף login בתגובה המוחזרת
+            response.status(200).json( loginUrl );
+        }
+        
+    }
+    catch (error) {
+        response.status(503).json({ 'error': 'The request failed, try again later', error });
+    }
+});
 
 
 
