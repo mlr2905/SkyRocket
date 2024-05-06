@@ -66,14 +66,9 @@ const port = 3000
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
 app.get('*', async (req, res, next) => {
-    if (req.url === '/role_users/signup') {
-        console.log('req.url',req.url);
-        next();
+    console.log('req.url',req.url);
 
-    }
-    
-
-    else if (!req.headers.cookie) {
+     if (!req.headers.cookie) {
 
             return res.status(200).send(`
         <script>
@@ -116,6 +111,7 @@ app.get('*', async (req, res, next) => {
                 }
             }
         }
+        next();
 
 });
 
