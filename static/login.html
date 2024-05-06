@@ -52,8 +52,7 @@
     </style>
 </head>
 <body>
-
-    <form class="signup-form" action="/role_users/login" method="POST">
+    <form class="signup-form" id="login-form" >
         <h1>LOGIN</h1>
         <div class="form-group">
             <label for="email">Email:</label>
@@ -64,7 +63,33 @@
             <input type="password" id="password" name="password" required minlength="6">
         </div>
         <button type="submit">Submit</button>      
-        <p></p><br /><a href="/signup.html">new user? click here ...</a>         
+        <p id="success-message"></p><br /><a href="/signup.html">New user? Click here ...</a>         
     </form>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
+            
+            // שליחת בקשה POST לשרת
+            var formData = new FormData(document.getElementById('login-form'));
+            fetch('/role_users/login', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // שמירת העוגיה באיחסון המקומי
+                document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
+                
+                // שמירת פרטי המשתמש באיחסון המקומי
+                localStorage.setItem('user', JSON.stringify(data.user));
+
+                // הודעת הצלחה
+                var successMessage = document.getElementById('success-message');
+                successMessage.textContent = 'Login successful!';
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>
