@@ -72,7 +72,7 @@
 
             // שליחת בקשה POST לשרת
             var formData = new FormData(document.getElementById('sipnup-form'));
-            fetch('/role_users/sipnup', {
+            fetch('/role_users/signup', {
                 method: 'POST',
                 body: formData
             })
@@ -86,7 +86,7 @@
                     successMessage.textContent = 'Login successful!';
 
                     // הפניה לדף Swagger
-                    window.location.href = data.swaggerUrl;
+                    window.location.href = data.loginUrl;
                 })
                 .catch(error => console.error('Error:', error));
         });
