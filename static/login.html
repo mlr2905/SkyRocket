@@ -90,7 +90,7 @@
                 .then(data => {
                     
                     // שמירת פרטי המשתמש באיחסון המקומיn
-                    localStorage.setItem('sky', JSON.stringify({ id: data.id, jwt: data.jwt }));
+                    localStorage.setItem('sky', JSON.stringify({ id: data.user.id, jwt: data.user.jwt }));
 
                     // שמירת העוגיה באיחסון המקומי
                     document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
