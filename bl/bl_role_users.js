@@ -54,7 +54,6 @@ async function signup(email, password) {
     const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("data", data);
     if (data.id !== undefined) {
-      data.splice(1, 1);
       data.push({
         username: data.username,
         role_id: 1

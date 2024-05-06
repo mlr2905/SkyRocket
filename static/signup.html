@@ -82,6 +82,8 @@
     
             // שליחת בקשה POST לשרת
             var formData = new FormData(document.getElementById('signup-form'));
+            console.log("formData",formData);
+
             fetch('/role_users/signup', {
                 method: 'POST',
                 body: formData
