@@ -82,7 +82,7 @@
                 document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
                 
                 // שמירת פרטי המשתמש באיחסון המקומי
-                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('user', JSON.stringify(data));
 
                 // הודעת הצלחה
                 var successMessage = document.getElementById('success-message');
