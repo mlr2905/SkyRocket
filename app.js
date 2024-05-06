@@ -67,12 +67,13 @@ const port = 3000
 
 app.get('*', async (req, res, next) => {
     if (req.url === '/role_users/signup') {
+        console.log('req.url',req.url);
         next();
 
     }
-    else {
+    
 
-        if (!req.headers.cookie) {
+    else if (!req.headers.cookie) {
 
             return res.status(200).send(`
         <script>
@@ -115,7 +116,7 @@ app.get('*', async (req, res, next) => {
                 }
             }
         }
-    }
+
 });
 
 app.listen(3000, () => {
