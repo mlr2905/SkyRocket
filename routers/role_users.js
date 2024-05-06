@@ -47,9 +47,14 @@ router.post('/login', async (request, response) => {
             console.log("user22", user);
             const token = createToken(user._id, user.email)
             response.cookie('sky', token, { httpOnly: true, maxAge: maxAge * 1000 });
-
-            response.status(200).json(user);
+        
+            // בניית הקישור לדף Swagger
+            const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
+            
+            // הפניה לדף Swagger בתגובה המוחזרת
+            response.status(200).json({ user, swaggerUrl });
         }
+        
     }
     catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });

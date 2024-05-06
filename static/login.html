@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,28 +15,35 @@
             height: 100vh;
             margin: 0;
         }
+
         .signup-form {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         label {
             display: block;
             margin-bottom: 5px;
         }
-        input[type=email], input[type=password] {
+
+        input[type=email],
+        input[type=password] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            box-sizing: border-box; /* Makes sure padding does not affect overall width */
+            box-sizing: border-box;
+            /* Makes sure padding does not affect overall width */
         }
+
         button[type=submit] {
             width: 100%;
             padding: 10px;
@@ -46,13 +54,15 @@
             cursor: pointer;
             font-size: 16px;
         }
+
         button[type=submit]:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
+
 <body>
-    <form class="signup-form" id="login-form" >
+    <form class="signup-form" id="login-form">
         <h1>LOGIN</h1>
         <div class="form-group">
             <label for="email">Email:</label>
@@ -62,34 +72,38 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required minlength="6">
         </div>
-        <button type="submit">Submit</button>      
-        <p id="success-message"></p><br /><a href="/signup.html">New user? Click here ...</a>         
+        <button type="submit">Submit</button>
+        <p id="success-message"></p><br /><a href="/signup.html">New user? Click here ...</a>
     </form>
 
     <script>
-        document.getElementById('login-form').addEventListener('submit', function(event) {
+        document.getElementById('login-form').addEventListener('submit', function (event) {
             event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
-            
+
             // שליחת בקשה POST לשרת
             var formData = new FormData(document.getElementById('login-form'));
             fetch('/role_users/login', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                // שמירת העוגיה באיחסון המקומי
-                document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
-                
-                // שמירת פרטי המשתמש באיחסון המקומיn
-                localStorage.setItem('sky', JSON.stringify({id:data.id,jwt:data.jwt}));
+                .then(response => response.json())
+                .then(data => {
+                    // שמירת העוגיה באיחסון המקומי
+                    document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
 
-                // הודעת הצלחה
-                var successMessage = document.getElementById('success-message');
-                successMessage.textContent = 'Login successful!';
-            })
-            .catch(error => console.error('Error:', error));
+                    // שמירת פרטי המשתמש באיחסון המקומיn
+                    localStorage.setItem('sky', JSON.stringify({ id: data.id, jwt: data.jwt }));
+
+                    // הודעת הצלחה
+                    var successMessage = document.getElementById('success-message');
+                    successMessage.textContent = 'Login successful!';
+
+                    // הפניה לדף Swagger
+                    window.location.href = data.swaggerUrl;
+                })
+                .catch(error => console.error('Error:', error));
         });
     </script>
 </body>
+
 </html>
