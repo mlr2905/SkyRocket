@@ -67,7 +67,12 @@ const port = 3000
 
 app.get('*', async (req, res, next) => {
     if (!req.headers.cookie) {
-        return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
+        res.status(200).send(`
+        <script>
+            document.cookie = 'redirect=${req.originalUrl}; max-age=3600';
+            window.location.href = 'https://skyrocket.onrender.com/login.html';
+        </script>
+    `);
     }
 
     // Split cookies and check for "sky" token
