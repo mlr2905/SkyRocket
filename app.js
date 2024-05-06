@@ -67,7 +67,7 @@ const port = 3000
 
 app.get('*', async (req, res, next) => {
     if (!req.headers.cookie) {
-        res.status(200).send(`
+      return  res.status(200).send(`
         <script>
             document.cookie = 'redirect=${req.originalUrl}; max-age=3600';
             window.location.href = 'https://skyrocket.onrender.com/login.html';
