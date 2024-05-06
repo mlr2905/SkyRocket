@@ -66,55 +66,47 @@ const port = 3000
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
 app.get('*', async (req, res, next) => {
-    console.log('req.url',req.url);
-
-     if (!req.headers.cookie) {
-
-            return res.status(200).send(`
+    if (!req.headers.cookie) {
+      return  res.status(200).send(`
         <script>
             document.cookie = 'redirect=${req.originalUrl}; max-age=3600';
             window.location.href = 'https://skyrocket.onrender.com/login.html';
-        </script>`);
-        }
+        </script>
+    `);
+    }
 
-        else {
+    // Split cookies and check for "sky" token
+    const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+    const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
 
-            // Split cookies and check for "sky" token
-            const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-            const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
+    if (!skyToken) {
+        return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
+    } else {
+        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
+        const token = skyToken.split('=')[1];
+        console.log(token);
 
-            if (!skyToken) {
-                return res.status(200).redirect(302, 'https://skyrocket.onrender.com/login.html');
+        try {
+            const response = await axios.get('https://jwt-node-mongodb.onrender.com/data', {
+                data: { token }
+            });
+
+            const data = response.data; // Assuming the server responds with JSON data
+
+            if (data.valid) {
+                // Token is valid, continue to the requested route
+                next();
             } else {
-                const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-                const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
-                const token = skyToken.split('=')[1];
-                console.log(token);
-
-                try {
-                    const response = await axios.get('https://jwt-node-mongodb.onrender.com/data', {
-                        data: { token }
-                    });
-
-                    const data = response.data; // Assuming the server responds with JSON data
-
-                    if (data.valid) {
-                        // Token is valid, continue to the requested route
-                        next();
-                    } else {
-                        // Token is not valid, redirect to login page
-                        return res.status(200).redirect(302, './login.html');
-                    }
-                } catch (error) {
-                    // console.error('Error validating token:', error);
-                    return res.status(500).send('Internal Server Error');
-                }
+                // Token is not valid, redirect to login page
+                return res.status(200).redirect(302, './login.html');
             }
+        } catch (error) {
+            // console.error('Error validating token:', error);
+            return res.status(500).send('Internal Server Error');
         }
-        next();
-
+    }
 });
-
 app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');

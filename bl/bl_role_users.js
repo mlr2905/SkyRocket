@@ -33,6 +33,7 @@ async function login(email, password) {
   }
 }
 async function signup(email, password) {
+  console.log('email, password',email, password);
   let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
   let url_spring = "https://spring-postgresql.onrender.com"
   const data = {

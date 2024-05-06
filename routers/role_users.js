@@ -31,9 +31,9 @@ const jwt = require('jsonwebtoken');
 // })
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id, email) => {
-return jwt.sign({ id, email }, 'secret key', {
-  expiresIn: maxAge
-});
+    return jwt.sign({ id, email }, 'secret key', {
+        expiresIn: maxAge
+    });
 };
 
 router.post('/login', async (request, response) => {
@@ -47,37 +47,37 @@ router.post('/login', async (request, response) => {
             console.log("user22", user);
             const token = createToken(user._id, user.email)
             response.cookie('sky', token, { httpOnly: true, maxAge: maxAge * 1000 });
-        
+
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
-            
+
             // הפניה לדף Swagger בתגובה המוחזרת
             response.status(200).json({ user, swaggerUrl });
         }
-        
+
     }
     catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 });
+
 router.post('/signup', async (request, response) => {
     try {
-        console.log('request.body',request.body);
+        console.log('request.body', request.body);
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
         const user = await bl.signup(email, password)
-
         if (user) {
             console.log("user signup", user);
-            
+
             // בניית הקישור לדף Swagger
             const loginUrl = 'https://skyrocket.onrender.com/login/';
-            
+
             // הפניה לדף login בתגובה המוחזרת
-            response.status(200).json( loginUrl );
+            response.status(200).json(loginUrl);
         }
-        
+
     }
     catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
