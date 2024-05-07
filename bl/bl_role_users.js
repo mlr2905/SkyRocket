@@ -33,7 +33,6 @@ async function login(email, password) {
   }
 }
 async function signup(email, password) {
-  console.log('bl email, password',email, password);
   let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
   let url_spring = "https://spring-postgresql.onrender.com"
   const data = {
@@ -52,8 +51,7 @@ async function signup(email, password) {
   try {
     const user = await fetch(url_node_mongo, requestOptions);
     const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("bl data", data);
-    if (data.id !== undefined) {
+    if (data.mingo_id !== undefined) {
       data.username= data.username;
       data.role_id= 1;
     }
@@ -61,7 +59,6 @@ async function signup(email, password) {
       console.log("bl data לפני בקשה ספרינג", data);
 
       const create_user = await fetch(url_spring, requestOptions);
-      console.log("bl תשובה מספרינג",create_user);
       data = await create_user.json(); // או כל פעולה אחרת לקריאת הנתונים
       console.log("bl data מספרינג",data);
 
