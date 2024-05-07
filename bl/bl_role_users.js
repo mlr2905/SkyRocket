@@ -52,7 +52,7 @@ async function signup(email, password) {
     const user = await fetch(url_node_mongo, requestOptions);
     const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
     if (data.mingo_id !== undefined) {
-      data.username= data.username;
+      data.username= data.username,
       data.role_id= 1;
     }
      
