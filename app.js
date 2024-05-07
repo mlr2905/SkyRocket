@@ -66,6 +66,12 @@ const port = 3000
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
 app.get('*', async (req, res, next) => {
+    const clientIP = req.ip;
+    console.log('Client IP:', clientIP);
+    next()
+    // המשך עיבוד הבקשה כרגיל
+});
+app.get('*', async (req, res, next) => {
     if (!req.headers.cookie) {
       return  res.status(200).send(`
         <script>
