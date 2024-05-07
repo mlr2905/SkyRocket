@@ -68,8 +68,7 @@ async function signup(email, password) {
       return data
 
     }
-
-  } catch (error) {
+   catch (error) {
     console.error('Error:', error);
     return false;
   }
