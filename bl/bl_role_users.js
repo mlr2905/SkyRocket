@@ -54,10 +54,10 @@ async function signup(email, password) {
     const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("bl data", data);
     if (data.id !== undefined) {
-      data.push({
-        username: data.username,
-        role_id: 1
-      });
+      data.username= data.username;
+      data.role_id= 1;
+    }
+     
       console.log("bl data לפני בקשה ספרינג", data);
 
       const create_user = await fetch(url_spring, requestOptions);
