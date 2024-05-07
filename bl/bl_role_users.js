@@ -40,7 +40,7 @@ async function signup(email, password) {
     password: password
   };
 
-  const requestOptions = {
+  let requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -50,18 +50,21 @@ async function signup(email, password) {
 
   try {
     const user = await fetch(url_node_mongo, requestOptions);
-     const data_spring = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-     console.log("vto v,bth v,ehho BL",data_spring.mingo_id !== undefined)
-    if (data_spring.mingo_id !== undefined) {
+    const data_spring = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
+    if (data_spring.mongo_id !== undefined) {
       data_spring.role_id = 1
 
-      console.log("bl data לפני בקשה ספרינג", data);
-
+       requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data_spring)
+      };     
       const create_user = await fetch(url_spring, requestOptions);
-      data = await create_user.json(); // או כל פעולה אחרת לקריאת הנתונים
-      console.log("bl data מספרינג", data);
+      const response = await create_user.json(); // או כל פעולה אחרת לקריאת הנתונים
 
-      return data
+      return response
 
     }
   }

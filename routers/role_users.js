@@ -67,15 +67,11 @@ router.post('/signup', async (request, response) => {
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
-        console.log('router  email, password', email, password);
 
         const user = await bl.signup(email, password)
-        console.log('router  תשובה',user);
 
-        if (user) {
-            console.log("router תנאי ", user);
+        if (user.mongo_id !== undefined) {
 
-            // בניית הקישור לדף Swagger
             const loginUrl = 'https://skyrocket.onrender.com/login/';
 
             // הפניה לדף login בתגובה המוחזרת
@@ -83,6 +79,7 @@ router.post('/signup', async (request, response) => {
         }
 
     }
+    
     catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
