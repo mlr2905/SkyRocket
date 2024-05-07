@@ -69,9 +69,10 @@ router.post('/signup', async (request, response) => {
         const password = Query.password;
 
         const user = await bl.signup(email, password)
+        console.log(user.mongo_id !== undefined);
+        console.log(user);
 
         if (user.mongo_id !== undefined) {
-
             const loginUrl = 'https://skyrocket.onrender.com/login/';
 
             // הפניה לדף login בתגובה המוחזרת
@@ -79,7 +80,7 @@ router.post('/signup', async (request, response) => {
         }
 
     }
-    
+
     catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }

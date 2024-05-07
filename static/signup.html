@@ -97,7 +97,7 @@
                         successMessage.textContent = 'Signup successful!';
     
                         // הפניה לדף login
-                        window.location.href = data.loginrUrl;
+                        window.location.href = data;
                     } else {
                         // אם ההרשמה לא הצליחה, ניתן להציג הודעה או לטפל בצורה אחרת
                         console.error('Signup failed:', data.error);
