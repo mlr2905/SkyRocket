@@ -50,22 +50,21 @@ async function signup(email, password) {
 
   try {
     const user = await fetch(url_node_mongo, requestOptions);
-    const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-    if (data.mingo_id !== undefined) {
-      data.username= data.username,
-      data.role_id= 1;
-    }
-     
+     const data_spring = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
+    if (data_spring.mingo_id !== undefined) {
+      data_spring.role_id = 1
+
       console.log("bl data לפני בקשה ספרינג", data);
 
       const create_user = await fetch(url_spring, requestOptions);
       data = await create_user.json(); // או כל פעולה אחרת לקריאת הנתונים
-      console.log("bl data מספרינג",data);
+      console.log("bl data מספרינג", data);
 
       return data
 
     }
-   catch (error) {
+  }
+  catch (error) {
     console.error('Error:', error);
     return false;
   }
