@@ -73,7 +73,8 @@
             <input type="password" id="password" name="password" required minlength="6">
         </div>
         <button type="submit">Submit</button>
-        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here ...</a>
+        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here
+            ...</a>
     </form>
 
     <script>
@@ -84,11 +85,14 @@
             var formData = new FormData(document.getElementById('login-form'));
             fetch('/role_users/login', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: formData
             })
                 .then(response => response.json())
                 .then(data => {
-                    
+
                     // שמירת פרטי המשתמש באיחסון המקומיn
                     localStorage.setItem('sky', JSON.stringify({ id: data.user.id, jwt: data.user.jwt }));
 

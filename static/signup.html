@@ -73,40 +73,37 @@
             <input type="password" id="password" name="password" required minlength="6">
         </div>
         <button type="submit">Submit</button>
-        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/login.html">Have an account? Click here ...</a>
+        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/login.html">Have an account? Click
+            here ...</a>
     </form>
 
     <script>
         document.getElementById('signup-form').addEventListener('submit', function (event) {
             event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
-    
+
             // שליחת בקשה POST לשרת
             var formData = new FormData(document.getElementById('signup-form'));
-            console.log("formData",formData);
-
             fetch('/role_users/signup', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: formData
             })
                 .then(response => response.json())
                 .then(data => {
-                    // בדיקה אם ההרשמה הצליחה
-                    if (data.success) {
-                        // הודעת הצלחה
-                        var successMessage = document.getElementById('success-message');
-                        successMessage.textContent = 'Signup successful!';
-    
-                        // הפניה לדף login
-                        window.location.href = data;
-                    } else {
-                        // אם ההרשמה לא הצליחה, ניתן להציג הודעה או לטפל בצורה אחרת
-                        console.error('Signup failed:', data.error);
-                    }
+
+                    // הודעת הצלחה
+                    var successMessage = document.getElementById('success-message');
+                    successMessage.textContent = 'signup successful!';
+
+                    console.log(data);
+                    // הפניה לדף login
+                    window.location.href = data.loginUrl;
                 })
                 .catch(error => console.error('Error:', error));
         });
     </script>
-    
 </body>
 
 </html>

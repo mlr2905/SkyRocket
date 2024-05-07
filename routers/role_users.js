@@ -76,7 +76,7 @@ router.post('/signup', async (request, response) => {
             const loginUrl = 'https://skyrocket.onrender.com/login/';
 
             // הפניה לדף login בתגובה המוחזרת
-            response.status(200).json(loginUrl);
+            response.status(200).json({"loginUrl":loginUrl});
         }
 
     }
