@@ -63,13 +63,17 @@ router.post('/login', async (request, response) => {
 
 router.post('/signup', async (request, response) => {
     try {
-        console.log('request.body', request.body);
+        console.log('router  request.body', request.body);
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
+        console.log('router  email, password', email, password);
+
         const user = await bl.signup(email, password)
+        console.log('router  תשובה',user);
+
         if (user) {
-            console.log("user signup", user);
+            console.log("router תנאי ", user);
 
             // בניית הקישור לדף Swagger
             const loginUrl = 'https://skyrocket.onrender.com/login/';
