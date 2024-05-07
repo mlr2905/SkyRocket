@@ -51,6 +51,7 @@ async function signup(email, password) {
   try {
     const user = await fetch(url_node_mongo, requestOptions);
      const data_spring = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
+     console.log("vto v,bth v,ehho BL",data_spring.mingo_id !== undefined)
     if (data_spring.mingo_id !== undefined) {
       data_spring.role_id = 1
 
