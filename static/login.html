@@ -95,7 +95,7 @@
                 }`})
                 .then(response => response.json())
                 .then(data => {
-                    
+                    console.log(data);
                     // שמירת פרטי המשתמש באיחסון המקומיn
                     localStorage.setItem('sky', JSON.stringify({ id: data.user.id, jwt: data.user.jwt }));
 

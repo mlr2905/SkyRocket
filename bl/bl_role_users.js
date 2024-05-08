@@ -23,9 +23,9 @@ async function login(email, password) {
   };
 
   try {
-    const user = await fetch(url, requestOptions);
-    const data = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-    return data
+    const response = await fetch(url, requestOptions);
+    const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
+    return user
 
   } catch (error) {
     console.error('Error:', error);
