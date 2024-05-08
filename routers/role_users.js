@@ -38,6 +38,7 @@ const createToken = (id, email) => {
 
 router.post('/login', async (request, response) => {
     try {
+        console.log("request.body",request.body);
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;

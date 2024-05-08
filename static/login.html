@@ -81,11 +81,18 @@
             event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
 
             // שליחת בקשה POST לשרת
-            var formData = new FormData(document.getElementById('login-form'));
-            fetch('/role_users/login', {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;           
+             fetch('/role_users/login', {
                 method: 'POST',
-                body: formData
-            })
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: `{
+                    "email": "${email}",
+                    "password": "${password}"
+
+                }`})
                 .then(response => response.json())
                 .then(data => {
                     
