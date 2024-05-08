@@ -49,13 +49,15 @@ app.get('*', async (req, res, next) => {
             const data = response.data;
 
             if (data) {
-                
-            }
+                return res.status(200).redirect(302, './login.html');
 
-            // אם הנתיב הוא '/signup.html', אפשר לבצע פעולות נוספות כפי שרצוי
-            // לדוגמה, אם רצינו לעשות משהו מיוחד במקרה זה
-            // לדוגמה: return res.status(200).send('Signup page');
-            return next(); // או להמשיך לפעולות הבאות בקוד
+            }
+            else{
+                return next(); // או להמשיך לפעולות הבאות בקוד
+            }
+        }
+        if (req.path === '/login.html') {
+            return next()
         }
         if (!req.headers.cookie) {
             return redirectToLogin(req, res);
