@@ -67,7 +67,7 @@ router.post('/signup', async (request, response) => {
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
-
+console.log(email, password);
         const user = await bl.signup(email, password)
         console.log(user.mongo_id !== undefined);
         console.log(user);

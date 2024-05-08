@@ -80,26 +80,32 @@
     <script>
         document.getElementById('signup-form').addEventListener('submit', function (event) {
             event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
-
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             // שליחת בקשה POST לשרת
-            var formData = new FormData(document.getElementById('signup-form'));
+
             fetch('/role_users/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: formData
-            })
+                body: `{
+                    "email": "${email}",
+                    "password": "${password}"
+
+                }`})
+
                 .then(response => response.json())
                 .then(data => {
 
                     // הודעת הצלחה
-                    var successMessage = document.getElementById('success-message');
-                    successMessage.textContent = 'signup successful!';
+                    if (data.loginUrl) {
+                        const successMessage = document.getElementById('success-message');
+                        successMessage.textContent = 'signup successful!';
+                        window.location.href = data.loginUrl;
+                    }
 
-                    console.log(data);
-                    // הפניה לדף login
-                    window.location.href = data.loginUrl;
+
                 })
                 .catch(error => console.error('Error:', error));
         });
