@@ -41,12 +41,11 @@ app.listen(3000, () => {
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
 app.post('*', async (req, res, next) => {
-    console.log("request.body", req);
-    console.log("request.body", res);
 
-    const email = req.body.email;
 
     if (req.path === '/role_users/signup') {
+        const email = req.body.email;
+
         try {
             const response = await axios.get(`https://skyrocket.onrender.com/users/search?email=${email}`);
             const data = response.data;
