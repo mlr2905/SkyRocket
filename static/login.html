@@ -80,16 +80,19 @@
     <script>
         document.getElementById('login-form').addEventListener('submit', function (event) {
             event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
-
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             // שליחת בקשה POST לשרת
-            var formData = new FormData(document.getElementById('login-form'));
             fetch('/role_users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: formData
-            })
+                body: `{
+                    "email": "${email}",
+                    "password": "${password}"
+
+                }`})
                 .then(response => response.json())
                 .then(data => {
 
