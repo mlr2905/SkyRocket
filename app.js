@@ -40,22 +40,33 @@ app.listen(3000, () => {
 //     unauthorizedResponse: (req) => {return 'Unauthorized';},
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
+app.post('*', async (req, res, next) => {
+    console.log("request.body", req);
+    console.log("request.body", res);
 
-app.get('*', async (req, res, next) => {
-    try {
-        if (req.path === '/signup.html') {
-            const response = await axios.get(`https://skyrocket.onrender.com/users/search?enail=${rep.body.email}`, {
-            });
+    const email = req.body.email;
+
+    if (req.path === '/role_users/signup') {
+        try {
+            const response = await axios.get(`https://skyrocket.onrender.com/users/search?email=${email}`);
             const data = response.data;
 
             if (data) {
-                return res.status(200).redirect(302, './login.html');
-
-            }
-            else{
+                return res.status(302).redirect('./login.html');
+            } else {
                 return next(); // או להמשיך לפעולות הבאות בקוד
             }
+        } catch (error) {
+            console.error('Error:', error);
+            return res.status(500).send('Internal Server Error');
         }
+    }
+    next();
+});
+app.get('*', async (req, res, next) => {
+    try {
+       
+        
         if (req.path === '/login.html') {
             return next()
         }
