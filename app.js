@@ -40,28 +40,8 @@ app.listen(3000, () => {
 //     unauthorizedResponse: (req) => {return 'Unauthorized';},
 //     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
-app.post('*', async (req, res, next) => {
 
 
-    if (req.path === '/role_users/signup') {
-        const email = req.body.email;
-
-        try {
-            const response = await axios.get(`https://skyrocket.onrender.com/users/search?email=${email}`);
-            const data = response.data;
-
-            if (data) {
-                return res.status(302).redirect('./login.html');
-            } else {
-                return next(); // או להמשיך לפעולות הבאות בקוד
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            return res.status(500).send('Internal Server Error');
-        }
-    }
-    next();
-});
 app.get('*', async (req, res, next) => {
     try {
        

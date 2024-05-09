@@ -97,13 +97,24 @@
 
                 .then(response => response.json())
                 .then(data => {
+                    console.log("data.err", data.err);
+                    console.log("data loginUrl", data.loginUrl);
 
-                    // הודעת הצלחה
-                    if (data.loginUrl) {
+                    if (data.err === "yes") {
                         const successMessage = document.getElementById('success-message');
-                        successMessage.textContent = 'signup successful!';
+                        successMessage.textContent = data.error;
                         window.location.href = data.loginUrl;
+
                     }
+                    else {
+                        // הודעת הצלחה
+                        if (data.loginUrl) {
+                            const successMessage = document.getElementById('success-message');
+                            successMessage.textContent = 'signup successful!';
+                            window.location.href = data.loginUrl;
+                        }
+                    }
+
 
 
                 })

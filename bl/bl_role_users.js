@@ -50,21 +50,27 @@ async function signup(email, password) {
 
   try {
     const user = await fetch(url_node_mongo, requestOptions);
-    const data_spring = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-    if (data_spring.mongo_id !== undefined) {
-      data_spring.role_id = 1
+    const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
+    console.log("data_mongo",data_mongo);
+    if (data_mongo.errors) {
+      return {"err":"yes","error": data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password};
+    }
+    
+    if (data_mongo.mongo_id !== undefined) {
+      data_mongo.role_id = 1
 
-       requestOptions = {
+      requestOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data_spring)
-      };     
+        body: JSON.stringify(data_mongo)
+      };
+
       const create_user = await fetch(url_spring, requestOptions);
       const response = await create_user.json(); // או כל פעולה אחרת לקריאת הנתונים
 
-      return response
+      return {"err":"no","response":response}
 
     }
   }
@@ -96,29 +102,29 @@ async function create_user(uesr) {
   }
 }
 
-async function get_by_id_user(type, id) {
-  let url = null;
+// async function get_by_id_user(type, id) {
+//   let url = null;
 
-  if (id === undefined) {
-    url = `https://node-mongodb-rest.onrender.com/api/users/${id}`;
-  } else {
-    url = `https://node-mongodb-rest.onrender.com/api/users/search?${type}=${id}`;
-  }
+//   if (id === undefined) {
+//     url = `https://spring-a.onrender.com/${id}`;
+//   } else {
+//     url = `https://node-mongodb-rest.onrender.com/api/users/search/${id}`;
+//   }
 
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
+//   try {
+//     const response = await fetch(url);
+//     const data = await response.json();
 
-    if (data && data.role_id === 1) {
-      return data;
-    } else {
-      return 'Postponed';
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    return false;
-  }
-}
+//     if (data && data.role_id === 1) {
+//       return data;
+//     } else {
+//       return 'Postponed';
+//     }
+//   } catch (error) {
+//     console.error('Error:', error);
+//     return false;
+//   }
+// }
 
 
 async function get_qr(id) {
@@ -295,7 +301,7 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  login, signup, purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, get_by_id_user, delete_account, new_customer
+  login, signup, purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }

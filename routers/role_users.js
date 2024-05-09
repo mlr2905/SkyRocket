@@ -30,15 +30,11 @@ const jwt = require('jsonwebtoken');
 //     }
 // })
 const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id, email) => {
-    return jwt.sign({ id, email }, 'secret key', {
-        expiresIn: maxAge
-    });
-};
+
 
 router.post('/login', async (request, response) => {
     try {
-        console.log("request.body",request.body);
+        console.log("request.body", request.body);
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
@@ -62,21 +58,26 @@ router.post('/login', async (request, response) => {
 
 router.post('/signup', async (request, response) => {
     try {
-        console.log('router  request.body', request.body);
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
-console.log(email, password);
+        const loginUrl = 'https://skyrocket.onrender.com/login.html';
+
+
         const user = await bl.signup(email, password)
-        console.log(user.mongo_id !== undefined);
-        console.log(user);
+        if (user.err === "yes") {
+            response.status(409).json({"err":"yes", "error":`${user.error}`,"loginUrl": loginUrl });
 
-        if (user.mongo_id !== undefined) {
-            const loginUrl = 'https://skyrocket.onrender.com/login/';
-
-            // הפניה לדף login בתגובה המוחזרת
-            response.status(200).json({"loginUrl":loginUrl});
         }
+        else{
+            if (user.response.mongo_id !== undefined) {
+    
+                // הפניה לדף login בתגובה המוחזרת
+                response.status(200).json({"err":"no", "loginUrl": loginUrl });
+            }
+            
+        }
+       
 
     }
 
