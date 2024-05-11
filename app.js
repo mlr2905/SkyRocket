@@ -67,8 +67,8 @@ app.get('*', async (req, res, next) => {
         } else {
             return res.status(200).redirect(302, './login.html');
         }
-    } catch (error) {
-        return res.status(500).send('Internal Server Error');
+    } catch (e) {
+        return res.status(500).send({"error":e,"message":'Internal Server Error'});
     }
 });
 
