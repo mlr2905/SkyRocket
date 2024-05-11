@@ -49,11 +49,16 @@ app.get('*', async (req, res, next) => {
         if (req.path === '/login.html') {
             return next()
         }
-     
-        const skyToken = JSON.parse(sessionStorage.getItem('sky'));
+        const cookiesHeader = req.headers['set-cookie'];
+        if (!cookiesHeader || cookiesHeader.length === 0) {
+            return redirectToLogin(req, res);
+        }
+        
+        // אם קיימים session cookies, תמשיך לבדוק את ה־'sky' cookie
+        const cookies = cookiesHeader.map(cookie => cookie.split(';')[0].trim());
+        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
+        
         if (!skyToken) {
-            console.log("נכנס");
-
             return redirectToLogin(req, res);
         }
         
@@ -62,7 +67,6 @@ app.get('*', async (req, res, next) => {
             data: { token }
         });
         const data = response.data;
-        console.log("אימת",data);
         if (data.valid) {
             next();
         } else {

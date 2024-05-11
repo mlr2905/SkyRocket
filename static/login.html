@@ -109,11 +109,9 @@
                         if (data.swaggerUrl) {
                          // שמירת פרטי המשתמש באיחסון המקומיn
                     localStorage.setItem('sky', JSON.stringify(data));
-                    // שמירת העוגיה באחסון הסשן
-                    sessionStorage.setItem('sky', JSON.stringify(data));
 
                     // שמירת העוגיה באיחסון המקומי
-                    document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
+                    document.cookie = `sky=${data.token}; path=/;`;
 
                     // הודעת הצלחה
                     var successMessage = document.getElementById('success-message');
