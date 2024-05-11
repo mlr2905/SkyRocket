@@ -11,8 +11,7 @@ const role_users = require('./routers/role_users')
 const role_airlines = require('./routers/role_airlines')
 const role_admins = require('./routers/role_admins')
 const swaggerJsdoc = require('swagger-jsdoc')
-const swaggerUi = require('swagger-ui-express');
-const { log } = require('util');
+const swaggerUi = require('swagger-ui-express')
 const app = express()
 
 
@@ -45,48 +44,30 @@ app.listen(3000, () => {
 
 app.get('*', async (req, res, next) => {
     try {
-
-
+       
+        
         if (req.path === '/login.html') {
             return next()
         }
-        // צפיפות מערך עם כל העוגיות המתקבלות מהתגובה
-        const cookies = cookiesHeader.map(cookie => cookie.split(';')[0].trim());
-
-        // בדיקה האם קיימת עוגיית סשן בתוך העוגיות
-        const sessionCookieExists = cookies.some(cookie => !cookie.includes('expires='));
-
-        if (!sessionCookieExists) {
-            console.log("a");
-
+        if (!req.headers.cookie) {
             return redirectToLogin(req, res);
         }
-
-        // אם קיימים session cookies, תמשיך לבדוק את ה־'sky' cookie
+        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
         const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
-
         if (!skyToken) {
-            console.log("b");
             return redirectToLogin(req, res);
         }
-
         const token = skyToken.split('=')[1];
         const response = await axios.get('https://jwt-node-mongodb.onrender.com/data', {
             data: { token }
         });
         const data = response.data;
         if (data.valid) {
-            console.log("c");
-
             next();
         } else {
-            console.log("d");
-
             return res.status(200).redirect(302, './login.html');
         }
     } catch (error) {
-        console.log("e");
-
         return res.status(500).send('Internal Server Error');
     }
 });
