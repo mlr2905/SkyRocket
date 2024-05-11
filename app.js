@@ -52,6 +52,8 @@ app.get('*', async (req, res, next) => {
      
         const skyToken = JSON.parse(sessionStorage.getItem('sky'));
         if (!skyToken) {
+            console.log("נכנס");
+
             return redirectToLogin(req, res);
         }
         
@@ -60,6 +62,7 @@ app.get('*', async (req, res, next) => {
             data: { token }
         });
         const data = response.data;
+        console.log("אימת",data);
         if (data.valid) {
             next();
         } else {
