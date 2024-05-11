@@ -52,11 +52,11 @@ app.get('*', async (req, res, next) => {
         if (!req.headers.cookie) {
             return redirectToLogin(req, res);
         }
-        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
+        const skyToken = JSON.parse(sessionStorage.getItem('sky'));
         if (!skyToken) {
             return redirectToLogin(req, res);
         }
+        
         const token = skyToken.split('=')[1];
         const response = await axios.get('https://jwt-node-mongodb.onrender.com/data', {
             data: { token }
