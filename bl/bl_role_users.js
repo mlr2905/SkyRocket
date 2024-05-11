@@ -25,7 +25,14 @@ async function login(email, password) {
   try {
     const response = await fetch(url, requestOptions);
     const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
-    return user
+    console.log("user",user);
+    if (user.errors) {
+      return {"err":"yes","error": user.errors.email ? user.errors.email : user.errors.password};
+    }
+    else{
+    return {"err":"no","user": user}
+
+    }
 
   } catch (error) {
     console.error('Error:', error);

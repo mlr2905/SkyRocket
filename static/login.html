@@ -73,7 +73,8 @@
             <input type="password" id="password" name="password" required minlength="6">
         </div>
         <button type="submit">Submit</button>
-        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here ...</a>
+        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here
+            ...</a>
     </form>
 
     <script>
@@ -82,8 +83,8 @@
 
             // שליחת בקשה POST לשרת
             const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;           
-             fetch('/role_users/login', {
+            const password = document.getElementById('password').value;
+            fetch('/role_users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -96,8 +97,20 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    // שמירת פרטי המשתמש באיחסון המקומיn
-                    localStorage.setItem('sky', JSON.stringify({ id: data.user.id, jwt: data.user.jwt }));
+
+                    if (data.err === "yes") {
+                        const successMessage = document.getElementById('success-message');
+                        successMessage.textContent = data.error;
+                        window.location.href = data.signupUrl;
+
+                    }
+                    else {
+                        // הודעת הצלחה
+                        if (data.swaggerUrl) {
+                         // שמירת פרטי המשתמש באיחסון המקומיn
+                    localStorage.setItem('sky', JSON.stringify(data));
+                    // שמירת העוגיה באחסון הסשן
+                    sessionStorage.setItem('sky', JSON.stringify(data));
 
                     // שמירת העוגיה באיחסון המקומי
                     document.cookie = `sky=${data.token}; max-age=${data.maxAge}`;
@@ -107,7 +120,12 @@
                     successMessage.textContent = 'Login successful!';
 
                     // הפניה לדף Swagger
-                    window.location.href = data.swaggerUrl;
+                    window.location.href = data.swaggerUrl;;
+                        }
+                    }
+                  
+
+                    
                 })
                 .catch(error => console.error('Error:', error));
         });

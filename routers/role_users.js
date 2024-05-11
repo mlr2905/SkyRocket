@@ -34,20 +34,28 @@ const maxAge = 3 * 24 * 60 * 60;
 
 router.post('/login', async (request, response) => {
     try {
-        console.log("request.body", request.body);
+        const signupUrl = 'https://skyrocket.onrender.com/signup.html';
+
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
         const user = await bl.login(email, password)
+        console.log("shshs",user);
+        console.log(user.err === "yes");
+        if (user.err === "yes") {
+            response.status(409).json({"err":"yes", "error":`${user.error}`,"signupUrl": signupUrl });
 
-        if (user) {
-            response.cookie('sky', user.jwt, { httpOnly: true, maxAge: maxAge * 1000 });
+        }
+        else {
+         const token =user.user.jwt
+            response.cookie('sky', token, { httpOnly: true, maxAge: maxAge * 1000 });
 
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
+            let data =user.user
 
             // הפניה לדף Swagger בתגובה המוחזרת
-            response.status(200).json({ user, swaggerUrl });
+            response.status(200).json({ data, swaggerUrl });
         }
 
     }
