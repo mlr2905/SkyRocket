@@ -11,7 +11,8 @@ const role_users = require('./routers/role_users')
 const role_airlines = require('./routers/role_airlines')
 const role_admins = require('./routers/role_admins')
 const swaggerJsdoc = require('swagger-jsdoc')
-const swaggerUi = require('swagger-ui-express')
+const swaggerUi = require('swagger-ui-express');
+const { log } = require('util');
 const app = express()
 
 
@@ -56,6 +57,8 @@ app.get('*', async (req, res, next) => {
         const sessionCookieExists = cookies.some(cookie => !cookie.includes('expires='));
 
         if (!sessionCookieExists) {
+            console.log("a");
+
             return redirectToLogin(req, res);
         }
 
@@ -63,6 +66,7 @@ app.get('*', async (req, res, next) => {
         const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
 
         if (!skyToken) {
+            console.log("b");
             return redirectToLogin(req, res);
         }
 
@@ -72,11 +76,17 @@ app.get('*', async (req, res, next) => {
         });
         const data = response.data;
         if (data.valid) {
+            console.log("c");
+
             next();
         } else {
+            console.log("d");
+
             return res.status(200).redirect(302, './login.html');
         }
     } catch (error) {
+        console.log("e");
+
         return res.status(500).send('Internal Server Error');
     }
 });
