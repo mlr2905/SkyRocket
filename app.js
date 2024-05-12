@@ -70,7 +70,7 @@ app.get('*', async (req, res, next) => {
             res.cookie('sky', token, {
                 httpOnly: true,
                 sameSite: 'strict',
-                expires: israelTime.add(2, 'minutes').toDate() // תוקף העוגיה ל־2 דקות מהשעה הנוכחית
+                expires: israelTime.add(3, 'hours').add(2, 'minutes').toDate()
             });
             next();
         } else {
