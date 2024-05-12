@@ -110,11 +110,6 @@
                             // שמירת פרטי המשתמש באיחסון המקומיn
                             localStorage.setItem('sky', JSON.stringify(data.token));
 
-                            
-                            document.cookie = `sky=${data.token}; path=/; expires=${data.expires};`;
-                            // שמירת העוגיה באיחסון המקומי
-                            // document.cookie = `sky=${data.token}; path=/;`;
-
                             // הודעת הצלחה
                             var successMessage = document.getElementById('success-message');
                             successMessage.textContent = 'Login successful!';

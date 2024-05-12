@@ -1,6 +1,5 @@
 const express = require('express')
-const session = require('express-session');
-
+const moment = require('moment-timezone');
 const logger = require('./logger/my_logger')
 const path = require('path')
 const cors = require('cors');
@@ -62,12 +61,17 @@ app.get('*', async (req, res, next) => {
         });
         const data = response.data;
         if (data.valid) {
+
+            // הגדרת השעה הנוכחית של השרת לשעה ישראלית
+            const israelTime = moment.tz(Date.now(), 'Asia/Jerusalem');
+
+            // השתמש בזמן השרת כזמן התחלה עבור העוגיה
             res.clearCookie('sky');
-            res.cookie('sky', token, { 
-               httpOnly: true, 
-               sameSite: 'strict', 
-               maxAge: 2 * 60 * 1000 // 15 דקות במילישניות
-             });
+            res.cookie('sky', token, {
+                httpOnly: true,
+                sameSite: 'strict',
+                expires: israelTime.add(2, 'minutes').toDate() // תוקף העוגיה ל־2 דקות מהשעה הנוכחית
+            });
             next();
         } else {
             return res.status(200).redirect(302, './login.html');
