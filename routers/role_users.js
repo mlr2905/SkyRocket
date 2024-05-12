@@ -44,12 +44,9 @@ router.post('/login', async (request, response) => {
 
         }
         else {
-         const token =user.jwt
-         response.cookie('sky', token, { 
-            httpOnly: true, 
-            sameSite: 'strict', 
-            maxAge: 15 * 60 * 1000 // 15 דקות במילישניות
-          });
+         const token =user.user.jwt
+         response.cookie('sky', token, { httpOnly: true, sameSite: 'strict' });
+
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
             let data =user.user
