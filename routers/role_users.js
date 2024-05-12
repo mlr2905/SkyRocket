@@ -44,11 +44,11 @@ router.post('/login', async (request, response) => {
 
         }
         else {
-         const token =user.user.jwt
+         const token =user.jwt
          response.cookie('sky', token, { 
             httpOnly: true, 
             sameSite: 'strict', 
-            maxAge: 2 * 60 * 1000 // 15 דקות במילישניות
+            maxAge: 15 * 60 * 1000 // 15 דקות במילישניות
           });
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
