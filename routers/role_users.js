@@ -40,7 +40,7 @@ router.post('/login', async (request, response) => {
         const password = Query.password;
         const user = await bl.login(email, password)
         if (user.err === "yes") {
-            response.status(409).json({"err":"yes", "error":`${user.error}`,"signupUrl": signupUrl });
+            response.status(409).json({"err":"yes", "error":`${user.error}` });
 
         }
         else {

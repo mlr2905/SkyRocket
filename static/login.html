@@ -105,7 +105,6 @@
                     if (data.err === "yes") {
                         const successMessage = document.getElementById('success-message');
                         successMessage.textContent = data.error;
-                        window.location.href = data.signupUrl;
 
                     }
                     else {
@@ -166,7 +165,7 @@
 
         }
 
-        setTimeout(showNotification, 10000);
+        setTimeout(showNotification, 10 * 60 * 1000);
 
     </script>
 </body>
