@@ -44,8 +44,10 @@ app.listen(3000, () => {
 
 app.get('*', async (req, res, next) => {
     try {
-       
-        
+        const clientIP = req.ip; // קבלת כתובת ה-IP של הלקוח (המחשב)
+        const serverIP = req.socket.localAddress; // כתובת ה-IP של השרת עצמו
+        console.log(clientIP, serverIP);
+
         if (req.path === '/login.html') {
             return next()
         }
@@ -68,7 +70,7 @@ app.get('*', async (req, res, next) => {
             return res.status(200).redirect(302, './login.html');
         }
     } catch (e) {
-        return res.status(500).send({"error":e,"message":'Internal Server Error'});
+        return res.status(500).send({ "error": e, "message": 'Internal Server Error' });
     }
 });
 
