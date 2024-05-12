@@ -66,7 +66,7 @@ app.get('*', async (req, res, next) => {
             res.cookie('sky', token, { 
                httpOnly: true, 
                sameSite: 'strict', 
-               maxAge: 15 * 60 * 1000 // 15 דקות במילישניות
+               maxAge: 2 * 60 * 1000 // 15 דקות במילישניות
              });
             next();
         } else {
