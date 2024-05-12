@@ -70,7 +70,7 @@ app.get('*', async (req, res, next) => {
             res.cookie('sky', token, {
                 httpOnly: true,
                 sameSite: 'strict',
-                expires: israelTime.add(3, 'hours').add(2, 'minutes').toDate()
+                expires: israelTime.add(3, 'hours').add(15, 'minutes').toDate()
             });
             next();
         } else {
