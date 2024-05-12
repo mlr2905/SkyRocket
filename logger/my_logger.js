@@ -1,19 +1,26 @@
 const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, label, prettyPrint } = format;
+const { combine, timestamp, label, printf } = format;
+const moment = require('moment-timezone');
 
-//const file_name = String((new Date()).toLocaleString()).replace('/','_').replace(':','_').replace(' ','_')
 const logger = createLogger({
   level: 'debug',
   format: combine(
     label({ label: 'REST API App' }),
-    timestamp(),
-    prettyPrint()
+    timestamp({
+      format: () => {
+        return moment().tz('Asia/Jerusalem').format('YYYY-MM-DD HH:mm:ss');
+      }
+    }),
+    printf(info => {
+      return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
+    })
   ),
-  transports: [new transports.Console(),
-  new transports.File({
-    filename: `logs/log1.log`
-  })
+  transports: [
+    new transports.Console(),
+    new transports.File({
+      filename: 'logs/log1.log'
+    })
   ]
-})
+});
 
 module.exports = logger

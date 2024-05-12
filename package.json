@@ -26,6 +26,7 @@
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.0.1",
     "mocha": "^10.2.0",
+    "moment-timezone": "^0.5.45",
     "pg": "^8.11.3",
     "qrcode": "^1.5.3",
     "should": "^13.2.3",
