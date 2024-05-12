@@ -63,7 +63,7 @@ app.get('*', async (req, res, next) => {
         const data = response.data;
         if (data.valid) {
             res.clearCookie('sky');
-            response.cookie('sky', token, { 
+            res.cookie('sky', token, { 
                httpOnly: true, 
                sameSite: 'strict', 
                maxAge: 15 * 60 * 1000 // 15 דקות במילישניות
