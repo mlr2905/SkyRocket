@@ -44,9 +44,14 @@ app.listen(3000, () => {
 
 app.get('*', async (req, res, next) => {
     try {
-        const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress; // קבלת כתובת ה-IP של הלקוח מהכותרת
+        const ip1 = req.headers['x-forwarded-for'] // קבלת כתובת ה-IP של הלקוח מהכותרת
+        const ip2 =  req.connection.remoteAddress  // קבלת כתובת ה-IP של הלקוח מהכותרת
+        const ip3 =  req.socket.remoteAddress; // קבלת כתובת ה-IP של הלקוח מהכותרת
 
-        console.log("clientIP", clientIP);
+        console.log("ip1", ip1);
+        console.log("ip2", ip2);
+        console.log("ip3", ip3);
+
 
 
         if (req.path === '/login.html') {
