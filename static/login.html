@@ -108,7 +108,7 @@
                         // הודעת הצלחה
                         if (data.swaggerUrl) {
                          // שמירת פרטי המשתמש באיחסון המקומיn
-                    localStorage.setItem('sky', JSON.stringify(data));
+                    localStorage.setItem('sky', JSON.stringify(data.token));
 
                     // שמירת העוגיה באיחסון המקומי
                     document.cookie = `sky=${data.token}; path=/;`;
