@@ -44,9 +44,10 @@ app.listen(3000, () => {
 
 app.get('*', async (req, res, next) => {
     try {
-        const clientIP = req.ip; // קבלת כתובת ה-IP של הלקוח (המחשב)
-        const serverIP = req.socket.localAddress; // כתובת ה-IP של השרת עצמו
-        console.log(clientIP, serverIP);
+        const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress; // קבלת כתובת ה-IP של הלקוח מהכותרת
+
+        console.log("clientIP", clientIP);
+
 
         if (req.path === '/login.html') {
             return next()
