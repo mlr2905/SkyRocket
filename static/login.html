@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
     <title>Login Page</title>
     <style>
         body {
@@ -124,6 +128,47 @@
                 })
                 .catch(error => console.error('Error:', error));
         });
+        function showNotification() {
+            // משתנה המכיל את זמן ההתראה בדקות
+            let timerInterval;
+            const fiveMinutes = 5 * 60 * 1000;
+
+            Swal.fire({
+    title: "proactive disconnection!",
+    html: "Due to inactivity, the user will be disconnected. in: <b></b> minutes.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    timer: fiveMinutes,
+    timerProgressBar: true,
+    showConfirmButton: true,
+
+    didOpen: () => {
+        Swal.showLoading();
+        const timer = Swal.getPopup().querySelector("b");
+        timerInterval = setInterval(() => {
+            const remainingTime = moment.utc(Swal.getTimerLeft());
+            const formattedTime = remainingTime.format("mm:ss");
+            timer.textContent = formattedTime;
+        }, 100);
+    },
+    willClose: () => {
+        clearInterval(timerInterval);
+    },
+}).then((result) => {
+    if (result.dismiss === Swal.DismissReason.cancel) {
+        // רענון הדף במקרה שנלחץ על הביטול
+        location.reload();
+    }
+});
+
+
+        }
+
+        // מפעיל את ההתראה לאחר 10 דקות (600,000 מילי-שניות)
+        setTimeout(showNotification, 500);
+
     </script>
 </body>
 
