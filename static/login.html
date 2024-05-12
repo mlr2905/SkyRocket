@@ -107,23 +107,25 @@
                     else {
                         // הודעת הצלחה
                         if (data.swaggerUrl) {
-                         // שמירת פרטי המשתמש באיחסון המקומיn
-                    localStorage.setItem('sky', JSON.stringify(data.token));
+                            // שמירת פרטי המשתמש באיחסון המקומיn
+                            localStorage.setItem('sky', JSON.stringify(data.token));
 
-                    // שמירת העוגיה באיחסון המקומי
-                    document.cookie = `sky=${data.token}; path=/;`;
+                            
+                            document.cookie = `sky=${data.token}; path=/; expires=${data.expires};`;
+                            // שמירת העוגיה באיחסון המקומי
+                            // document.cookie = `sky=${data.token}; path=/;`;
 
-                    // הודעת הצלחה
-                    var successMessage = document.getElementById('success-message');
-                    successMessage.textContent = 'Login successful!';
+                            // הודעת הצלחה
+                            var successMessage = document.getElementById('success-message');
+                            successMessage.textContent = 'Login successful!';
 
-                    // הפניה לדף Swagger
-                    window.location.href = data.swaggerUrl;;
+                            // הפניה לדף Swagger
+                            window.location.href = data.swaggerUrl;;
                         }
                     }
-                  
 
-                    
+
+
                 })
                 .catch(error => console.error('Error:', error));
         });

@@ -1,8 +1,9 @@
 const express = require('express')
+const session = require('express-session');
+
 const logger = require('./logger/my_logger')
 const path = require('path')
 const cors = require('cors');
-const basicAuth = require('express-basic-auth');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const body_parser = require('body-parser')
@@ -30,27 +31,17 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 });
 
-// const users = {'michael': 'Miki260623',"itay":"a123456" };
 
-// const checkPassword = (username, password) => {return users[username] === password;};
-// app.use(cors());
-// app.use(basicAuth({
-//     users: users,
-//     challenge: true,
-//     unauthorizedResponse: (req) => {return 'Unauthorized';},
-//     authorizer: (username, password) => {return checkPassword(username, password); }}));
 
 
 
 app.get('*', async (req, res, next) => {
     try {
         const ip1 = req.headers['x-forwarded-for'] // קבלת כתובת ה-IP של הלקוח מהכותרת
-        const ip2 =  req.connection.remoteAddress  // קבלת כתובת ה-IP של הלקוח מהכותרת
-        const ip3 =  req.socket.remoteAddress; // קבלת כתובת ה-IP של הלקוח מהכותרת
+        const forwardedFor = req.headers['x-forwarded-for'];
+        const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
+        const firstIPAddress = clientIPs[0];
 
-        console.log("ip1", ip1);
-        console.log("ip2", ip2);
-        console.log("ip3", ip3);
 
 
 
@@ -71,6 +62,12 @@ app.get('*', async (req, res, next) => {
         });
         const data = response.data;
         if (data.valid) {
+            res.clearCookie('sky');
+            response.cookie('sky', token, { 
+               httpOnly: true, 
+               sameSite: 'strict', 
+               maxAge: 15 * 60 * 1000 // 15 דקות במילישניות
+             });
             next();
         } else {
             return res.status(200).redirect(302, './login.html');

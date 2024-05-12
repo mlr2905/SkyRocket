@@ -29,7 +29,6 @@ const jwt = require('jsonwebtoken');
 //         throw response.status(503).json({ 'error': 'The request failed, try again later', error })
 //     }
 // })
-const maxAge = 3 * 24 * 60 * 60;
 
 
 router.post('/login', async (request, response) => {
@@ -46,8 +45,11 @@ router.post('/login', async (request, response) => {
         }
         else {
          const token =user.user.jwt
-         response.cookie('sky', token, { httpOnly: true, sameSite: 'strict' });
-
+         response.cookie('sky', token, { 
+            httpOnly: true, 
+            sameSite: 'strict', 
+            maxAge: 2 * 60 * 1000 // 15 דקות במילישניות
+          });
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
             let data =user.user
