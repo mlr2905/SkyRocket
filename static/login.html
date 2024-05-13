@@ -82,6 +82,16 @@
     </form>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+  // קריאת כתובת המייל מפרמטר ה-URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const email = urlParams.get('email');
+
+  // הצבת כתובת המייל בשדה המייל בטופס
+  if (email) {
+    document.getElementById('email').value = email;
+  }
+});
         document.getElementById('login-form').addEventListener('submit', function (event) {
             event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
 
