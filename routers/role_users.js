@@ -58,12 +58,10 @@ router.post('/authcode', async (request, response) => {
 
 router.post('/validation', async (request, response) => {
     try {
-console.log("ok");
         const Query = request.body;
         const email = Query.email;
         const code = Query.code;
         const user = await bl.login_code(email, code)
-        console.log("ss",user);
         if (user.e === "yes") {
             response.status(409).json({"e":"yes", "error":`${user.error}` });
 

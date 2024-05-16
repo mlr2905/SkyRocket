@@ -123,7 +123,7 @@
         </div>
         <br />
         <button type="submit" id="submit-button" onclick="login()">Submit</button>
-        <p id="success-message"></p><br /><a href="http://localhost:3000/signup.html">New user? Click here
+        <p id="success-message"></p><br /><a href="http://skyrocket.onrender.com/signup.html">New user? Click here
             ...</a>
     </form>
 
@@ -131,7 +131,7 @@
         function authcode() {
             const email = document.getElementById('email').value;
 
-            fetch('http://localhost:3000/role_users/authcode', {
+            fetch('http://skyrocket.onrender.com/role_users/authcode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -169,7 +169,7 @@
             const email = document.getElementById('email').value;
             const code = document.getElementById('verification-code').value;
 
-            fetch('http://localhost:3000/role_users/validation', {
+            fetch('http://skyrocket.onrender.com/role_users/validation', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
