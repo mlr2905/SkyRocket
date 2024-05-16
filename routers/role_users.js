@@ -69,7 +69,7 @@ console.log("ok");
 
         }
         else {
-         const token =user.user.jwt
+         const token =user.user.token
          response.cookie('sky', token, { 
             httpOnly: true, 
             sameSite: 'strict', 
