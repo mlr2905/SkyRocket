@@ -65,7 +65,7 @@ async function login_code(email, code) {
     console.log("bl user",user);
     const err =user.errors
     if (err.email !== '') {
-      return {"e":"yes","error": user.errors.email};
+      return {"e":"yes","errors": err.email};
     }
     else{
     return {"e":"no", user}
