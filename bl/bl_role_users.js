@@ -28,10 +28,10 @@ async function authcode(email) {
     const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("data_mongo",data_mongo);
     if (data_mongo.errors) {
-      return {"err":"yes","error": data_mongo.errors};
+      return {"e":"yes","error": data_mongo.errors};
     }
     else{
-      return {"err":"no","code": data_mongo.code};
+      return {"e":"no","code": data_mongo.code};
 
     }
     
@@ -64,10 +64,10 @@ async function login_code(email, code) {
     const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("user",user);
     if (user.errors) {
-      return {"err":"yes","error": user.errors.email};
+      return {"e":"yes","error": user.errors.email};
     }
     else{
-    return {"err":"no","user": user}
+    return {"e":"no","user": user}
 
     }
 
@@ -97,10 +97,10 @@ async function login(email, password) {
     const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("user",user);
     if (user.errors) {
-      return {"err":"yes","error": user.errors.email };
+      return {"e":"yes","error": user.errors.email };
     }
     else{
-    return {"err":"no","user": user}
+    return {"e":"no","user": user}
 
     }
 
@@ -131,7 +131,7 @@ async function signup(email, password) {
     const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("data_mongo",data_mongo);
     if (data_mongo.errors) {
-      return {"err":"yes","error": data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password};
+      return {"e":"yes","error": data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password};
     }
     
     if (data_mongo.mongo_id !== undefined) {
@@ -148,7 +148,7 @@ async function signup(email, password) {
       const create_user = await fetch(url_spring, requestOptions);
       const response = await create_user.json(); // או כל פעולה אחרת לקריאת הנתונים
 
-      return {"err":"no","response":response}
+      return {"e":"no","response":response}
 
     }
   }

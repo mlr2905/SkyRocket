@@ -38,8 +38,8 @@ router.post('/authcode', async (request, response) => {
         console.log(Query.email);
         const user = await bl.authcode(email)
         console.log(user);
-        if (user.err === "yes") {
-            response.status(409).json({"err":"yes", "error":`${user.error}`});
+        if (user.e === "yes") {
+            response.status(409).json({"e":"yes", "error":`${user.error}`});
 
         }
         else{
@@ -47,7 +47,7 @@ router.post('/authcode', async (request, response) => {
             if (user.code !== undefined) {
     
                 // הפניה לדף login בתגובה המוחזרת
-                response.status(200).json({"err":"no", "code": "success" });
+                response.status(200).json({"e":"no", "code": "success" });
             }
         }
     }
@@ -63,8 +63,8 @@ router.post('/validation', async (request, response) => {
         const email = Query.email;
         const code = Query.code;
         const user = await bl.login_code(email, code)
-        if (user.err === "yes") {
-            response.status(409).json({"err":"yes", "error":`${user.error}` });
+        if (user.e === "yes") {
+            response.status(409).json({"e":"yes", "error":`${user.error}` });
 
         }
         else {
@@ -96,8 +96,8 @@ router.post('/login', async (request, response) => {
         const email = Query.email;
         const password = Query.password;
         const user = await bl.login(email, password)
-        if (user.err === "yes") {
-            response.status(409).json({"err":"yes", "error":`${user.error}` });
+        if (user.e === "yes") {
+            response.status(409).json({"e":"yes", "error":`${user.error}` });
 
         }
         else {
@@ -128,15 +128,15 @@ router.post('/signup', async (request, response) => {
         const password = Query.password;
         const loginUrl = 'https://skyrocket.onrender.com/login.html';
         const user = await bl.signup(email, password)
-        if (user.err === "yes") {
-            response.status(409).json({"err":"yes", "error":`${user.error}`,"loginUrl": loginUrl });
+        if (user.e === "yes") {
+            response.status(409).json({"e":"yes", "error":`${user.error}`,"loginUrl": loginUrl });
 
         }
         else{
             if (user.response.mongo_id !== undefined) {
     
                 // הפניה לדף login בתגובה המוחזרת
-                response.status(200).json({"err":"no", "loginUrl": loginUrl });
+                response.status(200).json({"e":"no", "loginUrl": loginUrl });
             }
         }
     }
