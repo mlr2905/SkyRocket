@@ -60,12 +60,13 @@
         button[type=submit]:hover {
             background-color: #0056b3;
         }
-       
+
 
         button[type=button]:hover {
             background-color: #0056b3;
         }
-        .change{
+
+        .change {
             width: 30%;
             padding: 10px;
             border: none;
@@ -75,7 +76,8 @@
             cursor: pointer;
             font-size: 14px;
         }
-        .Send{
+
+        .Send {
             width: 40%;
             padding: 10px;
             border: none;
@@ -84,7 +86,7 @@
             color: white;
             cursor: pointer;
             font-size: 14px;
-            margin-left :2%
+            margin-left: 2%
         }
     </style>
 </head>
@@ -98,28 +100,30 @@
         </div>
         <div class="form-group">
             <label for="password" id="pass">Password:</label>
-            <input type="password" id="password" name="password" required minlength="6">
+            <input type="password" id="password" name="password" required minlength="6" style="display: block;">
         </div>
-       
+
         <div style="display: flex;">
             <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()">code by email</button>
+            <button type="button" class="Send" id="Verification" style="display: none;" onclick="authcode()">Send code
+                to email</button>
+
         </div>
-        <br/>
+        <br />
 
         <div id="verification-code-input" style="display: none;">
             <div class="form-group">
                 <div style="display: flex;">
                     <label for="verification-code">Enter a code:</label>
                     <input type="number" id="verification-code" name="verification-code" required readonly>
-                    <button type="button" class="Send" id="Verification" style="display: none;" onclick="authcode()">Send code to email</button>
-    
+
                 </div>
-             
+
             </div>
         </div>
-        <br/>
-         <button type="submit" id="submit-button">Submit</button>
-        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here
+        <br />
+        <button type="submit" id="submit-button" onclick="login()">Submit</button>
+        <p id="success-message"></p><br /><a href="http://localhost:3000/signup.html">New user? Click here
             ...</a>
     </form>
 
@@ -127,7 +131,7 @@
         function authcode() {
             const email = document.getElementById('email').value;
 
-            fetch('https://skyrocket.onrender.com/role_users/authcode', {
+            fetch('http://localhost:3000/role_users/authcode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -139,14 +143,54 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 'success') {
-                        const verificationCodeInput = document.getElementById('verification-code-input');
-                        verificationCodeInput.style.display = 'none';
+                        const codeInput = document.getElementById('verification-code-input');
+                        const change = document.getElementById('toggle-auth-type');
+
+                        codeInput.style.display = 'block';
+                        change.style.display = 'none';
+
+
                         var successMessage = document.getElementById('success-message');
-                            successMessage.textContent = data.code;
-                            document.getElementById("verification-code").removeAttribute("readonly");
+                        successMessage.textContent = data.code;
+                        document.getElementById("verification-code").removeAttribute("readonly");
 
                     } else {
                         // טיפול בכישלון בקבלת הקוד האימות
+                    }
+                })
+                .catch(error => {
+                    successMessage.textContent = `Try again! error:${error}`;
+                });
+        }
+
+
+        function validation() {
+
+            const email = document.getElementById('email').value;
+            const code = document.getElementById('verification-code').value;
+
+            fetch('http://localhost:3000/role_users/validation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    code: code
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.swaggerUrl) {
+                        // שמירת פרטי המשתמש באיחסון המקומיn
+                        localStorage.setItem('sky', JSON.stringify(data.token));
+
+                        // הודעת הצלחה
+                        var successMessage = document.getElementById('success-message');
+                        successMessage.textContent = data.code;
+
+                        // הפניה לדף Swagger
+                        window.location.href = data.swaggerUrl;;
                     }
                 })
                 .catch(error => {
@@ -156,41 +200,6 @@
         }
 
 
-        function validation() {
-           
-                const email = document.getElementById('email').value;
-                const code = document.getElementById('verification-code').value;
-
-                fetch('https://skyrocket.onrender.com/role_users/validation', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        code: code
-                    })
-                })
-                    .then(response => response.json())
-                    .then(data => {    if (data.swaggerUrl) {
-                            // שמירת פרטי המשתמש באיחסון המקומיn
-                            localStorage.setItem('sky', JSON.stringify(data.token));
-
-                            // הודעת הצלחה
-                            var successMessage = document.getElementById('success-message');
-                            successMessage.textContent = data.code;
-
-                            // הפניה לדף Swagger
-                            window.location.href = data.swaggerUrl;;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // טיפול בשגיאה
-                    });
-            }
-
-        
         document.addEventListener("DOMContentLoaded", function () {
             // קריאת כתובת המייל מפרמטר ה-URL
             const urlParams = new URLSearchParams(window.location.search);
@@ -202,8 +211,7 @@
             }
         });
 
-        document.getElementById('login-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
+        function login() {
 
             // שליחת בקשה POST לשרת
             const email = document.getElementById('email').value;
@@ -242,28 +250,26 @@
                     }
                 })
                 .catch(error => console.error('Error:', error));
-        });
+        }
 
-       
+
         function toggleAuthType() {
-            const verificationCodeInput = document.getElementById('verification-code-input');
             const passwordInput = document.getElementById('password');
             const passwordInputpass = document.getElementById('pass');
             const toggleButton = document.getElementById('toggle-auth-type');
             const submitButton = document.getElementById('submit-button');
 
-            if (verificationCodeInput.style.display === 'none') {
-                verificationCodeInput.style.display = 'block'
-                Verification.style.display ='block'
+            if (passwordInput.style.display === 'block') {
+                Verification.style.display = 'block'
                 passwordInput.style.display = 'none'
                 passwordInputpass.style.display = 'none'
                 submitButton.textContent = 'Submit Verification Code';
+                document.getElementById('submit-button').removeAttribute('onclick');
                 document.getElementById('submit-button').addEventListener('click', validation);
-
             } else {
-                verificationCodeInput.style.display = 'none';
-                Verification.style.display ='none'
-
+document.getElementById('submit-button').removeAttribute('onclick');
+                document.getElementById('submit-button').addEventListener('click', login);
+                Verification.style.display = 'none'
                 passwordInput.style.display = 'block';
                 submitButton.textContent = 'Submit';
             }
