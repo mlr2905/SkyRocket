@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-
-
     <title>Login Page</title>
     <style>
         body {
@@ -76,38 +74,47 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required minlength="6">
         </div>
-        <button type="submit">Submit</button>
+        <div id="verification-code-input" style="display: none;">
+            <div class="form-group">
+                <label for="verification-code">Verification Code:</label>
+                <input type="text" id="verification-code" name="verification-code" required>
+            </div>
+        </div>
+        <button type="button" id="toggle-auth-type" onclick="toggleAuthType()">Enter Verification Code</button>
+        <button type="button" id="request-verification-code">Request Verification Code</button>
+        <button type="submit" id="submit-button">Submit</button>
         <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here
             ...</a>
     </form>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-  // קריאת כתובת המייל מפרמטר ה-URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email');
+            // קריאת כתובת המייל מפרמטר ה-URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
 
-  // הצבת כתובת המייל בשדה המייל בטופס
-  if (email) {
-    document.getElementById('email').value = email;
-  }
-});
-        document.getElementById('login-form').addEventListener('submit', function (event) {
+            // הצבת כתובת המייל בשדה המייל בטופס
+            if (email) {
+                document.getElementById('email').value = email;
+            }
+        });
+
+        document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
 
             // שליחת בקשה POST לשרת
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             fetch('/role_users/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: `{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: `{
                     "email": "${email}",
                     "password": "${password}"
-
-                }`})
+                }`
+                })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
@@ -116,8 +123,7 @@
                         const successMessage = document.getElementById('success-message');
                         successMessage.textContent = data.error;
 
-                    }
-                    else {
+                    } else {
                         // הודעת הצלחה
                         if (data.swaggerUrl) {
                             // שמירת פרטי המשתמש באיחסון המקומיn
@@ -131,52 +137,95 @@
                             window.location.href = data.swaggerUrl;;
                         }
                     }
-
-
-
                 })
                 .catch(error => console.error('Error:', error));
         });
+
+        document.getElementById('request-verification-code').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            fetch('https://skyrocket.onrender.com/authcode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 'success') {
+                        const verificationCodeInput = document.getElementById('verification-code-input');
+                        verificationCodeInput.innerHTML = `
+                            <div class="form-group">
+                                <label for="verification-code">Verification Code:</label>
+                                <input type="text" id="verification-code" name="verification-code" required>
+                            </div>`;
+                        const submitButton = document.getElementById('submit-button');
+                        submitButton.innerHTML = `<button type="submit" id="submit-button">Submit Verification Code</button>`;
+                    } else {
+                        // טיפול בשגיאה בקבלת הקוד האימות
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // טיפול בשגיאה
+                });
+        });
+
+        function toggleAuthType() {
+            const verificationCodeInput = document.getElementById('verification-code-input');
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.getElementById('toggle-auth-type');
+            const submitButton = document.getElementById('submit-button');
+
+            if (verificationCodeInput.style.display === 'none') {
+                verificationCodeInput.style.display = 'block';
+                passwordInput.style.display = 'none';
+                toggleButton.textContent = 'Enter Password';
+                submitButton.textContent = 'Submit Verification Code';
+            } else {
+                verificationCodeInput.style.display = 'none';
+                passwordInput.style.display = 'block';
+                toggleButton.textContent = 'Enter Verification Code';
+                submitButton.textContent = 'Submit';
+            }
+        }
+
         function showNotification() {
-            // משתנה המכיל את זמן ההתראה בדקות
             let timerInterval;
             const fiveMinutes = 5 * 60 * 1000;
 
             Swal.fire({
-    title: "proactive disconnection!",
-    html: "Due to inactivity, the user will be disconnected. in: <b></b> minutes.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    timer: fiveMinutes,
-    timerProgressBar: true,
-    showConfirmButton: true,
-
-    didOpen: () => {
-        Swal.showLoading();
-        const timer = Swal.getPopup().querySelector("b");
-        timerInterval = setInterval(() => {
-            const remainingTime = moment.utc(Swal.getTimerLeft());
-            const formattedTime = remainingTime.format("mm:ss");
-            timer.textContent = formattedTime;
-        }, 100);
-    },
-    willClose: () => {
-        clearInterval(timerInterval);
-    },
-}).then((result) => {
-    if (result.dismiss === Swal.DismissReason.cancel) {
-        // רענון הדף במקרה שנלחץ על הביטול
-        location.reload();
-    }
-});
-
-
+                title: "proactive disconnection!",
+                html: "Due to inactivity, the user will be disconnected. in: <b></b> minutes.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                timer: fiveMinutes,
+                timerProgressBar: true,
+                showConfirmButton: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                    const timer = Swal.getPopup().querySelector("b");
+                    timerInterval = setInterval(() => {
+                        const remainingTime = moment.utc(Swal.getTimerLeft());
+                        const formattedTime = remainingTime.format("mm:ss");
+                        timer.textContent = formattedTime;
+                    }, 100);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.cancel) {
+                    location.reload();
+                }
+            });
         }
 
         setTimeout(showNotification, 10 * 60 * 1000);
-
     </script>
 </body>
 

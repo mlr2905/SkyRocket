@@ -31,6 +31,60 @@ const jwt = require('jsonwebtoken');
 // })
 
 
+router.post('/authcode', async (request, response) => {
+    try {
+        const Query = request.body;
+        const email = Query.email;
+        const user = await bl.authcode(email)
+        if (user.err === "yes") {
+            response.status(409).json({"err":"yes", "error":`${user.error}`,"loginUrl": loginUrl });
+
+        }
+        else{
+            if (user.code !== undefined) {
+    
+                // הפניה לדף login בתגובה המוחזרת
+                response.status(200).json({"err":"no", "code": user.code });
+            }
+        }
+    }
+    catch (error) {
+        response.status(503).json({ 'error': 'The request failed, try again later', error });
+    }
+});
+
+router.post('/validation', async (request, response) => {
+    try {
+
+        const Query = request.body;
+        const email = Query.email;
+        const code = Query.code;
+        const user = await bl.login_code(email, code)
+        if (user.err === "yes") {
+            response.status(409).json({"err":"yes", "error":`${user.error}` });
+
+        }
+        else {
+         const token =user.user.jwt
+         response.cookie('sky', token, { 
+            httpOnly: true, 
+            sameSite: 'strict', 
+            maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+        });
+            // בניית הקישור לדף Swagger
+            const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
+            let data =user.user
+
+            // הפניה לדף Swagger בתגובה המוחזרת
+            response.status(200).json({ data, swaggerUrl });
+        }
+
+    }
+    catch (error) {
+        response.status(503).json({ 'error': 'The request failed, try again later', error });
+    }
+});
+
 router.post('/login', async (request, response) => {
     try {
         const signupUrl = 'https://skyrocket.onrender.com/signup.html';
@@ -70,8 +124,6 @@ router.post('/signup', async (request, response) => {
         const email = Query.email;
         const password = Query.password;
         const loginUrl = 'https://skyrocket.onrender.com/login.html';
-
-
         const user = await bl.signup(email, password)
         if (user.err === "yes") {
             response.status(409).json({"err":"yes", "error":`${user.error}`,"loginUrl": loginUrl });
@@ -83,12 +135,8 @@ router.post('/signup', async (request, response) => {
                 // הפניה לדף login בתגובה המוחזרת
                 response.status(200).json({"err":"no", "loginUrl": loginUrl });
             }
-            
         }
-       
-
     }
-
     catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }

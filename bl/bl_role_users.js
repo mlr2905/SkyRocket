@@ -5,7 +5,73 @@ const dal_5 = require('../dals/dal_table_flights')
 const dal_6 = require('../dals/dal_table_tickets')
 const dal_7 = require('../dals/dal_table_passengers')
 
+async function authcode(email, password) {
+  let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
+  const data = {
+    email: email
+  };
 
+  let requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  };
+
+  try {
+    const user = await fetch(url_node_mongo, requestOptions);
+    const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
+    console.log("data_mongo",data_mongo);
+    if (data_mongo.errors) {
+      return {"err":"yes","error": data_mongo.errors};
+    }
+    else{
+      return {"err":"no","error": data_mongo.code};
+
+    }
+    
+   
+  }
+  catch (error) {
+    console.error('Error:', error);
+    return false;
+  }
+}
+
+async function login_code(email, code) {
+  let url = 'https://jwt-node-mongodb.onrender.com/verifyCode';
+
+  const data = {
+    email: email,
+    code: code
+  };
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  };
+
+  try {
+    const response = await fetch(url, requestOptions);
+    const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
+    console.log("user",user);
+    if (user.errors) {
+      return {"err":"yes","error": user.errors.email ? user.errors.email : user.errors.password};
+    }
+    else{
+    return {"err":"no","user": user}
+
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+    return false;
+  }
+}
 async function login(email, password) {
   let url = 'https://jwt-node-mongodb.onrender.com/login';
 
@@ -39,6 +105,7 @@ async function login(email, password) {
     return false;
   }
 }
+
 async function signup(email, password) {
   let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
   let url_spring = "https://spring-postgresql.onrender.com"
@@ -308,7 +375,7 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  login, signup, purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
+  authcode,login_code,login, signup, purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }
