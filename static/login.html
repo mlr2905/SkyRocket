@@ -143,16 +143,14 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    if (data.code !== '') {
+                    if (data.code == "succeeded") {
                         const codeInput = document.getElementById('verification-code-input');
                         const change = document.getElementById('toggle-auth-type');
-
                         codeInput.style.display = 'block';
                         change.style.display = 'none';
 
-
                         var successMessage = document.getElementById('success-message');
-                        successMessage.textContent = data.code;
+                        successMessage.textContent = "The code has been sent successfully";
                         document.getElementById("verification-code").removeAttribute("readonly");
 
                     } else {
