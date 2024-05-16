@@ -62,7 +62,7 @@ router.post('/validation', async (request, response) => {
         const email = Query.email;
         const code = Query.code;
         const data = await bl.login_code(email, code)
-        if (data.e === "yes") {
+        if (data.user.e === "yes") {
             response.status(409).json({"e":"yes", "error":`${user.error}` });
 
         }
