@@ -69,7 +69,8 @@ console.log("ok");
 
         }
         else {
-         const token =user.user.token
+         const token =user.token
+         console.log("token",token);
          response.cookie('sky', token, { 
             httpOnly: true, 
             sameSite: 'strict', 
@@ -102,7 +103,7 @@ router.post('/login', async (request, response) => {
 
         }
         else {
-         const token =user.user.token
+         const token =user.token
          response.cookie('sky', token, { 
             httpOnly: true, 
             sameSite: 'strict', 
