@@ -60,6 +60,32 @@
         button[type=submit]:hover {
             background-color: #0056b3;
         }
+       
+
+        button[type=button]:hover {
+            background-color: #0056b3;
+        }
+        .change{
+            width: 30%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #b0b6bd;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .Send{
+            width: 40%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #b0b6bd;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left :2%
+        }
     </style>
 </head>
 
@@ -71,18 +97,28 @@
             <input type="email" id="email" name="email" required>
         </div>
         <div class="form-group">
-            <label for="password">Password:</label>
+            <label for="password" id="pass">Password:</label>
             <input type="password" id="password" name="password" required minlength="6">
         </div>
+       
+        <div style="display: flex;">
+            <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()">code by email</button>
+        </div>
+        <br/>
+
         <div id="verification-code-input" style="display: none;">
             <div class="form-group">
-                <label for="verification-code">Verification Code:</label>
-                <input type="text" id="verification-code" name="verification-code" required>
+                <div style="display: flex;">
+                    <label for="verification-code">Enter a code:</label>
+                    <input type="number" id="verification-code" name="verification-code" required readonly>
+                    <button type="button" class="Send" id="Verification" style="display: none;" onclick="authcode()">Send code to email</button>
+    
+                </div>
+             
             </div>
         </div>
-        <button type="button" id="toggle-auth-type" onclick="toggleAuthType()">Enter Verification Code</button>
-        <button type="button" id="request-verification-code" onclick="authcode()">Request Verification Code</button>
-        <button type="submit" id="submit-button">Submit</button>
+        <br/>
+         <button type="submit" id="submit-button">Submit</button>
         <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here
             ...</a>
     </form>
@@ -104,6 +140,10 @@
                 .then(data => {
                     if (data.code === 'success') {
                         verificationCodeInput.style.display = 'block';
+                        var successMessage = document.getElementById('success-message');
+                            successMessage.textContent = data.code;
+                            document.getElementById("verification-code").removeAttribute("readonly");
+
                     } else {
                         // טיפול בכישלון בקבלת הקוד האימות
                     }
@@ -207,20 +247,23 @@
         function toggleAuthType() {
             const verificationCodeInput = document.getElementById('verification-code-input');
             const passwordInput = document.getElementById('password');
+            const passwordInputpass = document.getElementById('pass');
             const toggleButton = document.getElementById('toggle-auth-type');
             const submitButton = document.getElementById('submit-button');
 
             if (verificationCodeInput.style.display === 'none') {
-                verificationCodeInput.style.display = 'block';
-                passwordInput.style.display = 'none';
-                toggleButton.textContent = 'Enter Password';
+                verificationCodeInput.style.display = 'block'
+                Verification.style.display ='block'
+                passwordInput.style.display = 'none'
+                passwordInputpass.style.display = 'none'
                 submitButton.textContent = 'Submit Verification Code';
                 document.getElementById('submit-button').addEventListener('click', validation);
 
             } else {
                 verificationCodeInput.style.display = 'none';
+                Verification.style.display ='none'
+
                 passwordInput.style.display = 'block';
-                toggleButton.textContent = 'Enter Verification Code';
                 submitButton.textContent = 'Submit';
             }
         }
