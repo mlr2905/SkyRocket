@@ -41,7 +41,7 @@ router.post('/authcode', async (request, response) => {
         if (datas.e === "yes") {
             response.status(409).json({"e":"yes", "errors":`${datas.error}`});
         } else {
-            console.log(user.code !== undefined);
+            console.log(datas.code !== undefined);
             if (datas.code !== undefined) {
                 response.status(200).json({datas});
             }
