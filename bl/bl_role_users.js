@@ -27,8 +27,9 @@ async function authcode(email) {
     
     const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("data_mongo",data_mongo);
-    if (data_mongo.errors) {
-      return {"e":"yes","error": data_mongo.errors};
+    const err =data_mongo.errors
+    if (err.email !== '') {    
+        return {"e":"yes","errors": data_mongo.errors};
     }
     else{
       return {"e":"no","code": data_mongo.code};
@@ -63,9 +64,8 @@ async function login_code(email, code) {
     const data = await fetch(url, requestOptions);
     const user = await data.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("bl user",user);
-    const err =user.errors
-    if (err.email !== '') {
-      return {"e":"yes","errors": err.email};
+    if (user.e === "yes") {
+      return {"e":"yes","errors": user.error};
     }
     else{
     return {"e":"no", user}
