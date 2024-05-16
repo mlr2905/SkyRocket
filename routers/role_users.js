@@ -38,13 +38,12 @@ router.post('/authcode', async (request, response) => {
         console.log(Query.email);
         const datas = await bl.authcode(email)
         console.log("rl",datas);
-        const data =datas.data
         if (datas.e === "yes") {
             response.status(409).json({"e":"yes", "errors":`${datas.error}`});
         } else {
-            console.log(data.code !== undefined);
+            console.log(datas.code !== undefined);
             if (datas.code !== undefined) {
-                response.status(200).json({data});
+                response.status(200).json({datas});
             }
         }
     } catch (error) {

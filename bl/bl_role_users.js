@@ -5,7 +5,6 @@ const dal_5 = require('../dals/dal_table_flights')
 const dal_6 = require('../dals/dal_table_tickets')
 const dal_7 = require('../dals/dal_table_passengers')
 const { log } = require('winston')
-
 async function authcode(email) {
   console.log(email);
   let url = 'https://jwt-node-mongodb.onrender.com/authcode';
@@ -22,12 +21,14 @@ async function authcode(email) {
   };
 
   try {
-    const uesr = await fetch(url, requestOptions);
-    console.log("bl", uesr.data);
-    if (uesr.e === "yes") {
-      return uesr;
+    const response = await fetch(url, requestOptions);
+    const responseData = await response.json();
+
+    if (responseData.e === "yes") {
+      return false; // או כל ערך שאתה רוצה להחזיר במקרה של שגיאה
     } else {
-      return  uesr.data ;
+      console.log("bl",responseData);
+      return responseData; // או כל ערך שאתה רוצה להחזיר במקרה של הצלחה
     }
 
   } catch (error) {
@@ -35,6 +36,7 @@ async function authcode(email) {
     return false;
   }
 }
+
 
 
 async function login_code(email, code) {
