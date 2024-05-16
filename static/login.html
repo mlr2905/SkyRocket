@@ -184,7 +184,7 @@
                     if (data.swaggerUrl) {
                         console.log(data);
                         // שמירת פרטי המשתמש באיחסון המקומיn
-                        localStorage.setItem('sky', JSON.stringify(data.datas.token));
+                        localStorage.setItem('sky', JSON.stringify(data.datas.jwt));
 
                         // הודעת הצלחה
                         var successMessage = document.getElementById('success-message');
@@ -239,7 +239,7 @@
                         // הודעת הצלחה
                         if (data.swaggerUrl) {
                             // שמירת פרטי המשתמש באיחסון המקומיn
-                            localStorage.setItem('sky', JSON.stringify(data.token));
+                            localStorage.setItem('sky', JSON.stringify(data.jdt));
 
                             // הודעת הצלחה
                             var successMessage = document.getElementById('success-message');

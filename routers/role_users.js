@@ -3,8 +3,7 @@ const router = express.Router()
 const qrcode = require('qrcode');
 const bl = require('../bl/bl_role_users');
 const { log } = require('winston');
-const jwt = require('jsonwebtoken');
-
+=
 
 
 // router.get('/', async (request, response) => {
