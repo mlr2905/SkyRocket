@@ -40,18 +40,13 @@ router.post('/authcode', async (request, response) => {
         console.log(user);
         if (user.e === "yes") {
             response.status(409).json({"e":"yes", "errors":`${user.errors}`});
-
-        }
-        else{
+        } else {
             console.log(user.code !== undefined);
             if (user.code !== undefined) {
-    
-                // הפניה לדף login בתגובה המוחזרת
                 response.status(200).json({"e":"no", "code": "The code has been sent successfully!" });
             }
         }
-    }
-    catch (error) {
+    } catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 });

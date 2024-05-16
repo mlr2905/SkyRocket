@@ -8,7 +8,7 @@ const { log } = require('winston')
 
 async function authcode(email) {
   console.log(email);
-  let url= 'https://jwt-node-mongodb.onrender.com/authcode';
+  let url = 'https://jwt-node-mongodb.onrender.com/authcode';
   const data = {
     email: email
   };
@@ -24,25 +24,22 @@ async function authcode(email) {
   try {
     console.log(requestOptions);
     const user = await fetch(url, requestOptions);
-    
-    const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("data_mongo",data_mongo);
-    const err =data_mongo.errors
-    if (err.email !== '') {    
-        return {"e":"yes","errors": data_mongo.errors};
-    }
-    else{
-      return {"e":"no","code": data_mongo.code};
 
+    const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
+    console.log("data_mongo", data_mongo);
+    const err = data_mongo.e
+    if (data_mongo.e === "yes") {
+      return { "e": "yes", "error": data_mongo.error };
+    } else {
+      return { "e": "no", "code": data_mongo.code };
     }
-    
-   
-  }
-  catch (error) {
+
+  } catch (error) {
     console.error('Error:', error);
     return false;
   }
 }
+
 
 async function login_code(email, code) {
   let url = 'https://jwt-node-mongodb.onrender.com/verifyCode';
