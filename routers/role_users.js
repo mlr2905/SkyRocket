@@ -85,23 +85,22 @@ router.post('/validation', async (request, response) => {
 
 router.post('/login', async (request, response) => {
     try {
-
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
-        const datas = await bl.login(email, password)
-        if (datas.e === "yes") {
-            response.status(409).json({"e":"yes", "error":`${user.error}` });
+        const datas = await bl.login(email, password);
 
-        }
-        else {
+        if (datas.e === "yes") {
+            response.status(409).json({"e":"yes", "error": datas.error });
+        } else {
             console.log("t",datas.jwt);
-         const token =datas.jwt
-         response.cookie('sky', token, { 
-            httpOnly: true, 
-            sameSite: 'strict', 
-            maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-        });
+            const token = datas.jwt;
+            response.cookie('sky', token, { 
+                httpOnly: true, 
+                sameSite: 'strict', 
+                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+            });
+            
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
 
@@ -109,8 +108,7 @@ router.post('/login', async (request, response) => {
             response.status(200).json({ datas, swaggerUrl });
         }
 
-    }
-    catch (error) {
+    } catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 });
