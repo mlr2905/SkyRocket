@@ -22,16 +22,14 @@ async function authcode(email) {
   };
 
   try {
-    console.log(requestOptions);
-    const user = await fetch(url, requestOptions);
-
-    const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("data_mongo", data_mongo);
-    const err = data_mongo.e
-    if (data_mongo.e === "yes") {
-      return { "e": "yes", "error": data_mongo.error };
+    const datas = await fetch(url, requestOptions);
+    const data = await datas.json(); // או כל פעולה אחרת לקריאת הנתונים
+    console.log("data_mongo", data);
+    const err = data.e
+    if (data.e === "yes") {
+      return { "e": "yes", "error": data.error };
     } else {
-      return { "e": "no", "code": data_mongo.code };
+      return { "e": "no", "code": data.code };
     }
 
   } catch (error) {
