@@ -68,7 +68,7 @@ async function login_code(email, code) {
       return {"e":"yes","error": user.errors.email};
     }
     else{
-    return {"e":"no","user": user}
+    return {"e":"no", user}
 
     }
 
