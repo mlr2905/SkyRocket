@@ -105,7 +105,7 @@ router.post('/login', async (request, response) => {
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
 
             // הפניה לדף Swagger בתגובה המוחזרת
-            response.status(200).json({ "e":datas.e,"jwt":datas.jwt, swaggerUrl });
+            response.status(200).json({ "e":datas.e,"jwt":datas.jwt,"swaggerUrl" :swaggerUrl });
         }
 
     } catch (error) {
