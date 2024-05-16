@@ -65,7 +65,9 @@ router.post('/validation', async (request, response) => {
         else {
         console.log("r user",datas.token);
 
-         response.cookie('sky',  datas.token, { 
+    
+         const token =datas.jwt
+         response.cookie('sky', token, { 
             httpOnly: true, 
             sameSite: 'strict', 
             maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
@@ -96,7 +98,7 @@ router.post('/login', async (request, response) => {
 
         }
         else {
-         const token =user.token
+         const token =user.jwt
          response.cookie('sky', token, { 
             httpOnly: true, 
             sameSite: 'strict', 
