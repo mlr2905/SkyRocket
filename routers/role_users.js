@@ -62,12 +62,13 @@ router.post('/validation', async (request, response) => {
         const email = Query.email;
         const code = Query.code;
         const data = await bl.login_code(email, code)
+        console.log("r data",data);
         if (data.user.e === "yes") {
             response.status(409).json({"e":"yes", "error":`${user.error}` });
 
         }
         else {
-            console.log("r user",data.user.token);
+        console.log("r user",data.user.token);
          const token =data.user.token
          console.log("token",token);
          response.cookie('sky', token, { 
