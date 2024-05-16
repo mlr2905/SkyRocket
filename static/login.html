@@ -141,8 +141,8 @@
                 })
             })
                 .then(response => response.json())
-                .then(data => {
-                    console.log(data);
+                .then(datas => {
+                    const data = datas
                     if (data.code == "succeeded") {
                         const codeInput = document.getElementById('verification-code-input');
                         const change = document.getElementById('toggle-auth-type');
