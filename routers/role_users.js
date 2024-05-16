@@ -67,7 +67,7 @@ router.post('/validation', async (request, response) => {
 
         }
         else {
-            
+            console.log("r user"),user;
          const token =user.token
          console.log("token",token);
          response.cookie('sky', token, { 
