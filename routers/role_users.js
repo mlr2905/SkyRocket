@@ -68,8 +68,10 @@ router.post('/validation', async (request, response) => {
 
         }
         else {
-        console.log("r user",data.user.token);
-         const token =data.user.token
+        let data =data.user
+        console.log("r user",data.token);
+
+         const token =data.token
          console.log("token",token);
          response.cookie('sky', token, { 
             httpOnly: true, 
@@ -78,7 +80,6 @@ router.post('/validation', async (request, response) => {
         });
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
-            let data =data.user
 
             // הפניה לדף Swagger בתגובה המוחזרת
             response.status(200).json({ data, swaggerUrl });
