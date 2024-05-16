@@ -63,7 +63,8 @@ async function login_code(email, code) {
     const data = await fetch(url, requestOptions);
     const user = await data.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("bl user",user);
-    if (user.errors) {
+    const err =user.errors
+    if (err.email !== '') {
       return {"e":"yes","error": user.errors.email};
     }
     else{

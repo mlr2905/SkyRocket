@@ -47,7 +47,7 @@ router.post('/authcode', async (request, response) => {
             if (user.code !== undefined) {
     
                 // הפניה לדף login בתגובה המוחזרת
-                response.status(200).json({"e":"no", "code": "success" });
+                response.status(200).json({"e":"no", "code": "The code has been sent successfully!" });
             }
         }
     }
