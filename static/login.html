@@ -180,8 +180,9 @@
             })
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data);
                     if (data.swaggerUrl) {
-                        console.log();
+                        console.log(data);
                         // שמירת פרטי המשתמש באיחסון המקומיn
                         localStorage.setItem('sky', JSON.stringify(data.datas.token));
 

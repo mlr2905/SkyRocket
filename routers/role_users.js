@@ -65,9 +65,7 @@ router.post('/validation', async (request, response) => {
         else {
         console.log("r user",datas.token);
 
-         const token = datas.token
-         console.log("token",token);
-         response.cookie('sky', token, { 
+         response.cookie('sky',  datas.token, { 
             httpOnly: true, 
             sameSite: 'strict', 
             maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
