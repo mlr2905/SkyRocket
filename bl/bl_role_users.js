@@ -63,7 +63,8 @@ async function login_code(email, code) {
       return {"e":"yes","errors": user.error};
     }
     else{
-    return {"e":"no", user}
+      console.log("bls",user);
+    return  user
 
     }
 
@@ -72,6 +73,7 @@ async function login_code(email, code) {
     return false;
   }
 }
+
 async function login(email, password) {
   let url = 'https://jwt-node-mongodb.onrender.com/login';
 

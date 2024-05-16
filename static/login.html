@@ -183,11 +183,11 @@
                     if (data.swaggerUrl) {
                         console.log();
                         // שמירת פרטי המשתמש באיחסון המקומיn
-                        localStorage.setItem('sky', JSON.stringify(data.data.token));
+                        localStorage.setItem('sky', JSON.stringify(data.datas.token));
 
                         // הודעת הצלחה
                         var successMessage = document.getElementById('success-message');
-                        successMessage.textContent = data.data.code;
+                        successMessage.textContent = data.datas.code;
 
                         // הפניה לדף Swagger
                         window.location.href = data.swaggerUrl;;

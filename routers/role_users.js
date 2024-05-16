@@ -57,17 +57,15 @@ router.post('/validation', async (request, response) => {
         const email = Query.email;
         const code = Query.code;
         const datas = await bl.login_code(email, code)
-        console.log("r data",data);
-        const data = datas.user
-        const err = datas.e
-        if (err === "yes") {
-            response.status(409).json({"e":"yes", "error":`${user.error}` });
+        console.log("r data",datas);
+        if (datas.e === "yes") {
+            response.status(409).json({"e":"yes", "error":`${datas.error}` });
 
         }
         else {
-        console.log("r user",data.token);
+        console.log("r user",datas.token);
 
-         const token = data.token
+         const token = datas.token
          console.log("token",token);
          response.cookie('sky', token, { 
             httpOnly: true, 
@@ -78,7 +76,7 @@ router.post('/validation', async (request, response) => {
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
 
             // הפניה לדף Swagger בתגובה המוחזרת
-            response.status(200).json({ data, swaggerUrl });
+            response.status(200).json({datas, swaggerUrl });
         }
 
     }
