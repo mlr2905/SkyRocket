@@ -264,12 +264,14 @@
                 Verification.style.display = 'block'
                 passwordInput.style.display = 'none'
                 passwordInputpass.style.display = 'none'
+                toggleButton.textContent = "Enter a password"
                 submitButton.textContent = 'Submit Verification Code';
                 document.getElementById('submit-button').removeAttribute('onclick');
                 document.getElementById('submit-button').addEventListener('click', validation);
             } else {
 document.getElementById('submit-button').removeAttribute('onclick');
                 document.getElementById('submit-button').addEventListener('click', login);
+                toggleButton.textContent = "code by email"
                 Verification.style.display = 'none'
                 passwordInput.style.display = 'block';
                 submitButton.textContent = 'Submit';
