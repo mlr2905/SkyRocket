@@ -89,40 +89,38 @@
 
     <script>
         function authcode() {
-            const verificationCodeButton = document.getElementById('request-verification-code');
-            const verificationCodeInput = document.getElementById('verification-code-input');
-            verificationCodeButton.addEventListener('click', function () {
-                fetch('https://skyrocket.onrender.com/authcode', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: email
-                    })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.code === 'success') {
-                            verificationCodeInput.style.display = 'block';
-                        } else {
-                            // טיפול בכישלון בקבלת הקוד האימות
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // טיפול בשגיאה
-                    });
-            });
+            const email = document.getElementById('email').value;
 
+            fetch('https://skyrocket.onrender.com/role_users/authcode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 'success') {
+                        verificationCodeInput.style.display = 'block';
+                    } else {
+                        // טיפול בכישלון בקבלת הקוד האימות
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // טיפול בשגיאה
+                });
         }
+
+
         function validation() {
-            document.getElementById('login-form').addEventListener('submit', function (event) {
-                event.preventDefault();
+           
                 const email = document.getElementById('email').value;
                 const code = document.getElementById('verification-code').value;
 
-                fetch('https://skyrocket.onrender.com/validation', {
+                fetch('https://skyrocket.onrender.com/role_users/validation', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -133,16 +131,25 @@
                     })
                 })
                     .then(response => response.json())
-                    .then(data => {
-                        // טיפול בתגובה מהשרת לאחר אימות
+                    .then(data => {    if (data.swaggerUrl) {
+                            // שמירת פרטי המשתמש באיחסון המקומיn
+                            localStorage.setItem('sky', JSON.stringify(data.token));
+
+                            // הודעת הצלחה
+                            var successMessage = document.getElementById('success-message');
+                            successMessage.textContent = data.code;
+
+                            // הפניה לדף Swagger
+                            window.location.href = data.swaggerUrl;;
+                        }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         // טיפול בשגיאה
                     });
-            });
+            }
 
-        }
+        
         document.addEventListener("DOMContentLoaded", function () {
             // קריאת כתובת המייל מפרמטר ה-URL
             const urlParams = new URLSearchParams(window.location.search);
@@ -196,38 +203,7 @@
                 .catch(error => console.error('Error:', error));
         });
 
-        document.getElementById('request-verification-code').addEventListener('click', function () {
-            const email = document.getElementById('email').value;
-            fetch('https://skyrocket.onrender.com/authcode', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.code === 'success') {
-                        const verificationCodeInput = document.getElementById('verification-code-input');
-                        verificationCodeInput.innerHTML = `
-                            <div class="form-group">
-                                <label for="verification-code">Verification Code:</label>
-                                <input type="text" id="verification-code" name="verification-code" required>
-                            </div>`;
-                        const submitButton = document.getElementById('submit-button');
-                        submitButton.innerHTML = `<button type="submit" id="submit-button" onclick="validation()>Submit Verification Code</button>`;
-                    } else {
-                        // טיפול בשגיאה בקבלת הקוד האימות
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // טיפול בשגיאה
-                });
-        });
-
+       
         function toggleAuthType() {
             const verificationCodeInput = document.getElementById('verification-code-input');
             const passwordInput = document.getElementById('password');
@@ -239,6 +215,8 @@
                 passwordInput.style.display = 'none';
                 toggleButton.textContent = 'Enter Password';
                 submitButton.textContent = 'Submit Verification Code';
+                document.getElementById('submit-button').addEventListener('click', validation);
+
             } else {
                 verificationCodeInput.style.display = 'none';
                 passwordInput.style.display = 'block';

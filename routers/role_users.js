@@ -35,12 +35,15 @@ router.post('/authcode', async (request, response) => {
     try {
         const Query = request.body;
         const email = Query.email;
+        console.log(Query.email);
         const user = await bl.authcode(email)
+        console.log(user);
         if (user.err === "yes") {
-            response.status(409).json({"err":"yes", "error":`${user.error}`,"loginUrl": loginUrl });
+            response.status(409).json({"err":"yes", "error":`${user.error}`});
 
         }
         else{
+            console.log(user.code !== undefined);
             if (user.code !== undefined) {
     
                 // הפניה לדף login בתגובה המוחזרת

@@ -4,9 +4,11 @@ const dal_4 = require('../dals/dal_table_customers')
 const dal_5 = require('../dals/dal_table_flights')
 const dal_6 = require('../dals/dal_table_tickets')
 const dal_7 = require('../dals/dal_table_passengers')
+const { log } = require('winston')
 
-async function authcode(email, password) {
-  let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
+async function authcode(email) {
+  console.log(email);
+  let url= 'https://jwt-node-mongodb.onrender.com/authcode';
   const data = {
     email: email
   };
@@ -20,14 +22,16 @@ async function authcode(email, password) {
   };
 
   try {
-    const user = await fetch(url_node_mongo, requestOptions);
+    console.log(requestOptions);
+    const user = await fetch(url, requestOptions);
+    
     const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("data_mongo",data_mongo);
     if (data_mongo.errors) {
       return {"err":"yes","error": data_mongo.errors};
     }
     else{
-      return {"err":"no","error": data_mongo.code};
+      return {"err":"no","code": data_mongo.code};
 
     }
     
@@ -60,7 +64,7 @@ async function login_code(email, code) {
     const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("user",user);
     if (user.errors) {
-      return {"err":"yes","error": user.errors.email ? user.errors.email : user.errors.password};
+      return {"err":"yes","error": user.errors.email};
     }
     else{
     return {"err":"no","user": user}
@@ -93,7 +97,7 @@ async function login(email, password) {
     const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
     console.log("user",user);
     if (user.errors) {
-      return {"err":"yes","error": user.errors.email ? user.errors.email : user.errors.password};
+      return {"err":"yes","error": user.errors.email };
     }
     else{
     return {"err":"no","user": user}
