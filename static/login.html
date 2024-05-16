@@ -139,6 +139,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 'success') {
+                        const verificationCodeInput = document.getElementById('verification-code-input');
                         verificationCodeInput.style.display = 'none';
                         var successMessage = document.getElementById('success-message');
                             successMessage.textContent = data.code;
