@@ -98,7 +98,7 @@ async function login(email, password) {
       return {"e":"yes","error": user.errors.email };
     }
     else{
-    return {"e":"no","user": user}
+    return {"e":"no", jwt:user.jwt}
 
     }
 
