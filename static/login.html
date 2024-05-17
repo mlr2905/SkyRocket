@@ -88,6 +88,34 @@
             font-size: 14px;
             margin-left: 2%
         }
+
+        .timer {
+            margin-left: 2%
+        }
+
+        #timer,
+        #resend-message {
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+
+        #resend-message {
+            display: none;
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            margin-left: 2%;
+            width: 20%;
+        }
+
+        #resend-message:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
@@ -96,7 +124,10 @@
         <h1>LOGIN</h1>
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <p><input type="email" placeholder="E-mail..." oninput="validateEmail(this)"
+                onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" name="email"  id="email"></p>
+        <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
+        <p style="color: green; display: none;" id="email_">valid email.</p>
         </div>
         <div class="form-group">
             <label for="password" id="pass">Password:</label>
@@ -116,20 +147,36 @@
                 <div style="display: flex;">
                     <label for="verification-code">Enter a code:</label>
                     <input type="number" id="verification-code" name="verification-code" required readonly>
+                    <div class="timer" id="timer"></div>
+                    <div id="resend-message" style="display: none;" onclick="authcode()">send again</div>
 
                 </div>
 
             </div>
         </div>
+        <div style="display: flex;">
+            <div id="success-message" style="display: none;"></div>
+            <div class="timer" id="timer_"></div>
+        </div>
         <br />
+
         <button type="submit" id="submit-button" onclick="login()">Submit</button>
-        <p id="success-message"></p><br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here
-            ...</a>
+        <br />
+        <br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here...</a>
     </form>
 
     <script>
+let interval
         function authcode() {
             const email = document.getElementById('email').value;
+            const successMessage = document.getElementById('success-message');
+            const timerElement = document.getElementById('timer');
+            let timerDiv = document.getElementById('timer_');
+
+            const resendMessageElement = document.getElementById('resend-message');
+            // הסתרת הודעת השליחה החוזרת והצגת הטיימר
+            resendMessageElement.style.display = 'none';
+
 
             fetch('https://skyrocket.onrender.com/role_users/authcode', {
                 method: 'POST',
@@ -142,25 +189,78 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    
+                    const codeInput = document.getElementById('verification-code-input');
+                    const change = document.getElementById('toggle-auth-type');
                     if (data.datas.code == "succeeded") {
-                        const codeInput = document.getElementById('verification-code-input');
-                        const change = document.getElementById('toggle-auth-type');
+                        Verification.style.display = 'none'
+
                         codeInput.style.display = 'block';
                         change.style.display = 'none';
 
-                        var successMessage = document.getElementById('success-message');
-                        successMessage.textContent = "The code has been sent successfully";
+                        successMessage.textContent = "Code sent successfully! will expire in : ";
                         document.getElementById("verification-code").removeAttribute("readonly");
+                        successMessage.style.display = 'block'
+                        if (interval !== undefined) {
+                            clearInterval(interval);
+                        timerDiv.textContent = '';
+                        }
+                       
 
+                        let totalSeconds = 5 * 60; // 5 דקות בשניות
+                         interval = setInterval(function () {
+                            let minutes = parseInt(totalSeconds / 60, 10);
+                            let seconds = parseInt(totalSeconds % 60, 10);
+
+                            minutes = minutes < 10 ? "0" + minutes : minutes;
+                            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                            timerDiv.textContent = minutes + ":" + seconds;
+
+                            if (--totalSeconds < 0) {
+                                clearInterval(interval);
+                                timerDiv.textContent = "Expired";
+                            }
+                        }, 1000);
+
+                        startTimer(1 * 30, timerElement, resendMessageElement);
+                        timerElement.style.display = 'block';
                     } else {
-                        // טיפול בכישלון בקבלת הקוד האימות
+                        successMessage.textContent = "Failed to send code. Please try again.";
                     }
                 })
                 .catch(error => {
                     successMessage.textContent = `Try again! error:${error}`;
                 });
         }
+
+
+         
+
+        function startTimer(duration, display, resendDisplay) {
+            let timer = duration, minutes, seconds;
+            const interval = setInterval(() => {
+
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.textContent = minutes + ":" + seconds;
+
+
+                if (--timer < 0) {
+
+
+                    clearInterval(interval);
+                    display.style.display = 'none';
+                    resendDisplay.style.display = 'block';
+                }
+
+
+            }, 1000);
+        }
+
+
 
 
         function validation() {
@@ -269,7 +369,7 @@
                 document.getElementById('submit-button').removeAttribute('onclick');
                 document.getElementById('submit-button').addEventListener('click', validation);
             } else {
-document.getElementById('submit-button').removeAttribute('onclick');
+                document.getElementById('submit-button').removeAttribute('onclick');
                 document.getElementById('submit-button').addEventListener('click', login);
                 toggleButton.textContent = "code by email"
                 Verification.style.display = 'none'
@@ -278,6 +378,24 @@ document.getElementById('submit-button').removeAttribute('onclick');
             }
         }
 
+        function validateEmail(input) {
+            const email = input.value.trim();
+            const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+            if (emailRegex.test(email)) {
+                input.className = '';
+                document.getElementById("email_").style.display = "block";
+                document.getElementById("email_error").style.display = "none";
+
+
+            } else {
+                input.className = 'invalid';
+                document.getElementById("email_error").style.display = "block";
+                document.getElementById("email_").style.display = "none";
+
+
+            }
+        }
+        
         function showNotification() {
             let timerInterval;
             const fiveMinutes = 5 * 60 * 1000;
