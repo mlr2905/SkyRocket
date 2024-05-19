@@ -98,7 +98,7 @@ router.post('/login', async (request, response) => {
         if (datas.e === "yes") {
             response.status(409).json({"e":"yes", "error": datas.error });
         } else {
-            console.log("t",datas.jwt);
+            console.log("router",datas.jwt);
             const token = datas.jwt;
             response.cookie('sky', token, { 
                 httpOnly: true, 

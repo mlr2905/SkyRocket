@@ -96,7 +96,7 @@ async function login(email, password,ip,userAgent) {
   try {
     const response = await fetch(url, requestOptions);
     const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("user",user);
+    console.log("bl response",user);
     if (user.errors) {
       return {"e":"yes","error": user.errors.email };
     }
