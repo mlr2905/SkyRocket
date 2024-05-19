@@ -37,19 +37,6 @@ app.listen(3000, () => {
 app.get('*', async (req, res, next) => {
     try {
         
-        const ip1 = req.headers['x-forwarded-for'] // קבלת כתובת ה-IP של הלקוח מהכותרת
-        const forwardedFor = req.headers['x-forwarded-for'];
-        const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
-        const firstIPAddress = clientIPs[0];
-        console.log("דד",ip1);
-        console.log("s",forwardedFor);
-        console.log("ss",clientIPs);
-        console.log("sss",firstIPAddress);
-        
-
-
-
-
 
         if (req.path === '/login.html') {
             return next()
