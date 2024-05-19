@@ -38,12 +38,14 @@ app.listen(3000, () => {
     // כתובת ה-IP של המשתמש
     app.get('/your-endpoint', (req, res) => {
         // קבלת פרטים מהבקשה
-        const deviceType = req.headers['Sec-Ch-Ua-Mobile'] === "?1" ? "Smart phone/tablet" : "Laptop/desktop computer";
-        const operatingSystem = req.headers['Sec-Ch-Ua-Platform'];
-        const acceptLanguage = req.headers['accept-language'];
-        const deviceId = req.headers['device-id'];
+        const headers = req.headers
+        const deviceType = headers['Sec-Ch-Ua-Mobile'] === "?1" ? "Smart phone/tablet" : "Laptop/desktop computer";
+        const operatingSystem = headers['sec-ch-ua-platform'];
+        const acceptLanguage = headers['accept-language'];
+        const deviceId = headers['device-id'];
         const languages = acceptLanguage.split(',').map(lang => lang.trim().split(','))[0];
-        const forwardedFor = req.headers['x-forwarded-for'];
+        const cf_ipcountry = headers['cf-ipcountry'];
+
 
         // כל הפרטים מאוחדים באובייקט responseData
         const responseData = {
@@ -51,8 +53,8 @@ app.listen(3000, () => {
             operatingSystem: operatingSystem,
             deviceId: deviceId,
             languages: languages[0],
-            headers:req.headers,
-            ips :forwardedFor
+            ips :forwardedFor,
+            cf_ipcountry:cf_ipcountry
         };
     
         // שליחת התשובה ללקוח
