@@ -317,6 +317,8 @@ let interval
             // שליחת בקשה POST לשרת
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const code = document.getElementById('verification-code').value;
+
             fetch('/role_users/login', {
                 method: 'POST',
                 headers: {
