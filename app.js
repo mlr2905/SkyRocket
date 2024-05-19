@@ -43,7 +43,7 @@ app.listen(3000, () => {
         const acceptLanguage = req.headers['accept-language'];
         const deviceId = req.headers['device-id'];
         const languages = acceptLanguage.split(',').map(lang => lang.trim().split(','))[0];
-        const forwardedFor = request.headers['x-forwarded-for'];
+        const forwardedFor = req.headers['x-forwarded-for'];
 
         // כל הפרטים מאוחדים באובייקט responseData
         const responseData = {
