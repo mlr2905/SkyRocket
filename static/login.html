@@ -125,9 +125,9 @@
         <div class="form-group">
             <label for="email">Email:</label>
             <p><input type="email" placeholder="E-mail..." oninput="validateEmail(this)"
-                onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" name="email"  id="email"></p>
-        <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
-        <p style="color: green; display: none;" id="email_">valid email.</p>
+                    onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" name="email" id="email"></p>
+            <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
+            <p style="color: green; display: none;" id="email_">valid email.</p>
         </div>
         <div class="form-group">
             <label for="password" id="pass">Password:</label>
@@ -166,7 +166,18 @@
     </form>
 
     <script>
-let interval
+        document.addEventListener("DOMContentLoaded", function () {
+            // קריאת כתובת המייל מפרמטר ה-URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+
+            // הצבת כתובת המייל בשדה המייל בטופס
+            if (email) {
+                document.getElementById('email').value = email;
+            }
+        });
+
+        let interval
         function authcode() {
             const email = document.getElementById('email').value;
             const successMessage = document.getElementById('success-message');
@@ -176,7 +187,6 @@ let interval
             const resendMessageElement = document.getElementById('resend-message');
             // הסתרת הודעת השליחה החוזרת והצגת הטיימר
             resendMessageElement.style.display = 'none';
-
 
             fetch('https://skyrocket.onrender.com/role_users/authcode', {
                 method: 'POST',
@@ -202,20 +212,15 @@ let interval
                         successMessage.style.display = 'block'
                         if (interval !== undefined) {
                             clearInterval(interval);
-                        timerDiv.textContent = '';
+                            timerDiv.textContent = '';
                         }
-                       
-
                         let totalSeconds = 5 * 60; // 5 דקות בשניות
-                         interval = setInterval(function () {
+                        interval = setInterval(function () {
                             let minutes = parseInt(totalSeconds / 60, 10);
                             let seconds = parseInt(totalSeconds % 60, 10);
-
                             minutes = minutes < 10 ? "0" + minutes : minutes;
                             seconds = seconds < 10 ? "0" + seconds : seconds;
-
                             timerDiv.textContent = minutes + ":" + seconds;
-
                             if (--totalSeconds < 0) {
                                 clearInterval(interval);
                                 timerDiv.textContent = "Expired";
@@ -233,36 +238,21 @@ let interval
                 });
         }
 
-
-         
-
         function startTimer(duration, display, resendDisplay) {
             let timer = duration, minutes, seconds;
             const interval = setInterval(() => {
-
                 minutes = parseInt(timer / 60, 10);
                 seconds = parseInt(timer % 60, 10);
-
                 minutes = minutes < 10 ? "0" + minutes : minutes;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
                 display.textContent = minutes + ":" + seconds;
-
-
                 if (--timer < 0) {
-
-
                     clearInterval(interval);
                     display.style.display = 'none';
                     resendDisplay.style.display = 'block';
                 }
-
-
             }, 1000);
         }
-
-
-
-
         function validation() {
 
             const email = document.getElementById('email').value;
@@ -287,7 +277,7 @@ let interval
                         localStorage.setItem('sky', JSON.stringify(data.datas.jwt));
 
                         // הודעת הצלחה
-                        var successMessage = document.getElementById('success-message');
+                        const successMessage = document.getElementById('success-message');
                         successMessage.textContent = data.datas.code;
 
                         // הפניה לדף Swagger
@@ -300,68 +290,47 @@ let interval
                 });
         }
 
-
-        document.addEventListener("DOMContentLoaded", function () {
-            // קריאת כתובת המייל מפרמטר ה-URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const email = urlParams.get('email');
-
-            // הצבת כתובת המייל בשדה המייל בטופס
-            if (email) {
-                document.getElementById('email').value = email;
-            }
-        });
-
         async function login() {
-    // שליחת בקשה POST לשרת
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+            // שליחת בקשה POST לשרת
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-    try {
-        const response = await fetch('/role_users/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        });
+            try {
+                const response = await fetch('/role_users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
 
-        const data = await response.json();
+                const data = await response.json();
 
-        console.log(data);
+                console.log(data);
 
-        if (data.e === "yes") {
-            const successMessage = document.getElementById('success-message');
-            successMessage.textContent = data.error;
-        } else {
-            // הודעת הצלחה
-            if (data.swaggerUrl) {
-                // שמירת פרטי המשתמש באיחסון המקומיn
-                localStorage.setItem('sky', JSON.stringify(data.jwt));
-
-                // הודעת הצלחה
-                var successMessage = document.getElementById('success-message');
-                successMessage.textContent = 'Login successful!';
-
-                // הפניה לדף Swagger
-                window.location.href = data.swaggerUrl;
+                if (data.e === "no") {
+                    localStorage.setItem('sky', JSON.stringify(data.jwt));
+                    const successMessage = document.getElementById('success-message');
+                    successMessage.textContent = 'Login successful!';
+                    window.location.href = data.swaggerUrl;
+                } else {
+                    const successMessage = document.getElementById('success-message');
+                    successMessage.textContent = data.error;
+                }
+            } catch (error) {
+                const successMessage = document.getElementById('success-message');
+                successMessage.textContent = error;
             }
         }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
 
         function toggleAuthType() {
             const passwordInput = document.getElementById('password');
             const passwordInputpass = document.getElementById('pass');
             const toggleButton = document.getElementById('toggle-auth-type');
             const submitButton = document.getElementById('submit-button');
-
             if (passwordInput.style.display === 'block') {
                 Verification.style.display = 'block'
                 passwordInput.style.display = 'none'
@@ -387,17 +356,13 @@ let interval
                 input.className = '';
                 document.getElementById("email_").style.display = "block";
                 document.getElementById("email_error").style.display = "none";
-
-
             } else {
                 input.className = 'invalid';
                 document.getElementById("email_error").style.display = "block";
                 document.getElementById("email_").style.display = "none";
-
-
             }
         }
-        
+
         function showNotification() {
             let timerInterval;
             const fiveMinutes = 5 * 60 * 1000;
@@ -430,7 +395,6 @@ let interval
                 }
             });
         }
-
         setTimeout(showNotification, 10 * 60 * 1000);
     </script>
 </body>

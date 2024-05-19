@@ -41,9 +41,6 @@ app.get('*', async (req, res, next) => {
         if (req.path === '/login.html') {
             return next()
         }
-        if (!req.headers.cookie) {
-            return redirectToLogin(req, res);
-        }
         const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
         const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
         if (!skyToken) {
