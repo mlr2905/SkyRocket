@@ -75,12 +75,14 @@ async function login_code(email, code) {
   }
 }
 
-async function login(email, password) {
+async function login(email, password,ip,userAgent) {
   let url = 'https://jwt-node-mongodb.onrender.com/login';
 
   const data = {
     email: email,
-    password: password
+    password: password,
+    ip:ip,
+    userAgent:userAgent
   };
 
   const requestOptions = {

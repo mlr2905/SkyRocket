@@ -85,10 +85,15 @@ router.post('/validation', async (request, response) => {
 
 router.post('/login', async (request, response) => {
     try {
+        const forwardedFor = request.headers['x-forwarded-for'];
+        const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
+        const ip =clientIPs[0]
+        const userAgent = request.headers['user-agent'];
+
         const Query = request.body;
         const email = Query.email;
         const password = Query.password;
-        const datas = await bl.login(email, password);
+        const datas = await bl.login(email, password,ip,userAgent);
 
         if (datas.e === "yes") {
             response.status(409).json({"e":"yes", "error": datas.error });
