@@ -38,66 +38,25 @@ app.listen(3000, () => {
     // כתובת ה-IP של המשתמש
     app.get('/your-endpoint', (req, res) => {
         // קבלת פרטים מהבקשה
-        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        const userAgent = req.headers['user-agent'];
-        const host = req.headers['host'];
-        const referer = req.headers['referer'];
+        const deviceType = req.headers['Sec-Ch-Ua-Mobile'] === "?1" ? "Smart phone/tablet" : "Laptop/desktop computer";
+        const operatingSystem = req.headers['Sec-Ch-Ua-Platform'];
         const acceptLanguage = req.headers['accept-language'];
-        const queryParameter = req.query.paramName;
-        const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-        const requestMethod = req.method;
-        const cookies = req.cookies;
-        const uploadedFile = req.file; // במקרה של קובץ יחיד
-        const uploadedFiles = req.files; // במקרה של מספר קבצים
-        const httpVersion = req.httpVersion;
-        const rawHeaders = req.rawHeaders;
-        const originalUrl = req.originalUrl;
-        const baseUrl = req.baseUrl;
-        const path = req.path;
-        const hostname = req.hostname;
-        const userCountry = req.headers['x-country'];
-        const userCity = req.headers['x-city'];
-        const userGPS = req.headers['x-gps'];
-        const device = req.headers['user-agent'];
-        const browserLanguage = req.headers['accept-language'];
-        const browserVersion = req.headers['user-agent'];
-        const deviceType = req.headers['user-agent'];
-        const operatingSystem = req.headers['user-agent'];
-      
-        // כל הפרטים מאוחדים באובייקט
+        const deviceId = req.headers['device-id'];
+        const languages = acceptLanguage.split(',').map(lang => lang.trim().split(',')[0]);
+    
+        // כל הפרטים מאוחדים באובייקט responseData
         const responseData = {
-            "IP Address": ipAddress,
-            "User Agent": userAgent,
-            "Host": host,
-            "Referer": referer,
-            "Accept Language": acceptLanguage,
-            "Query Parameter": queryParameter,
-            "Full URL": fullUrl,
-            "Request Method": requestMethod,
-            "Cookies": cookies,
-            "Uploaded File": uploadedFile, // במקרה של קובץ יחיד
-            "Uploaded Files": uploadedFiles, // במקרה של מספר קבצים
-            "HTTP Version": httpVersion,
-            "Raw Headers": rawHeaders,
-            "Original URL": originalUrl,
-            "Base URL": baseUrl,
-            "Path": path,
-            "Hostname": hostname,
-            "User Country": userCountry,
-            "User City": userCity,
-            "User GPS Coordinates": userGPS,
-            "Device": device,
-            "Browser Language": browserLanguage,
-            "Browser Version": browserVersion,
-            "Device Type": deviceType,
-            "Operating System": operatingSystem
-          };
-        
-      
+            deviceType: deviceType,
+            operatingSystem: operatingSystem,
+            acceptLanguage: acceptLanguage,
+            deviceId: deviceId,
+            languages: languages
+        };
+    
         // שליחת התשובה ללקוח
         res.json(responseData);
-      });
-      
+    });
+    
   
 
 app.get('/sss', async (req, res, next) => {
