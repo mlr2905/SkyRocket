@@ -13,6 +13,9 @@ const role_admins = require('./routers/role_admins')
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 const app = express()
+const multer = require('multer');
+const upload = multer(); // להגדרת multer עבור קבצים
+
 
 
 logger.info('==== System start =======')
@@ -32,7 +35,60 @@ app.listen(3000, () => {
 
 
 
+app.post('/your-endpoint', upload.single('file'), (req, res) => {
+    // כתובת ה-IP של המשתמש
+    console.log('IP Address:', req.headers['x-forwarded-for'] || req.connection.remoteAddress);
 
+  
+    // כותרות
+    console.log('User Agent:', req.headers['user-agent']);
+    console.log('Host:', req.headers['host']);
+    console.log('Referer:', req.headers['referer']);
+    console.log('Accept Language:', req.headers['accept-language']);
+  
+    // נתוני השאילתה
+    console.log('Query Parameter:', req.query.paramName);
+  
+    // פרטי המסלול
+    console.log('Route Parameter:', req.params.paramName);
+  
+    // כתובת ה-URL המלאה של הבקשה
+    console.log('Full URL:', req.protocol + '://' + req.get('host') + req.originalUrl);
+  
+    // שיטת הבקשה
+    console.log('Request Method:', req.method);
+  
+    // Cookies
+    console.log('Cookies:', req.cookies);
+  
+    // נתוני הקבצים המצורפים
+    console.log('Uploaded File:', req.file); // במקרה של קובץ יחיד
+    console.log('Uploaded Files:', req.files); // במקרה של מספר קבצים
+  
+    // HTTP Version
+    console.log('HTTP Version:', req.httpVersion);
+  
+    // Raw Headers
+    console.log('Raw Headers:', req.rawHeaders);
+  
+    // Original URL
+    console.log('Original URL:', req.originalUrl);
+  
+    // Base URL
+    console.log('Base URL:', req.baseUrl);
+  
+    // Path
+    console.log('Path:', req.path);
+  
+    // Hostname
+    console.log('Hostname:', req.hostname);
+  
+    // שליחת תגובה ללקוח
+    res.json({
+      message: 'Data has been logged to console.'
+    });
+  });
+  
 
 app.get('*', async (req, res, next) => {
     try {
