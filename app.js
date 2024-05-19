@@ -35,7 +35,7 @@ app.listen(3000, () => {
 
 
 
-app.post('/your-endpoint', upload.single('file'), (req, res) => {
+app.get('/your-endpoint', upload.single('file'), (req, res) => {
     // כתובת ה-IP של המשתמש
     console.log('IP Address:', req.headers['x-forwarded-for'] || req.connection.remoteAddress);
 
@@ -90,7 +90,7 @@ app.post('/your-endpoint', upload.single('file'), (req, res) => {
   });
   
 
-app.get('*', async (req, res, next) => {
+app.get('/sss', async (req, res, next) => {
     try {
         
 
