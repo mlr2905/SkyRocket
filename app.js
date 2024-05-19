@@ -66,32 +66,33 @@ app.listen(3000, () => {
       
         // כל הפרטים מאוחדים באובייקט
         const responseData = {
-          ipAddress,
-          userAgent,
-          host,
-          referer,
-          acceptLanguage,
-          queryParameter,
-          fullUrl,
-          requestMethod,
-          cookies,
-          uploadedFile,
-          uploadedFiles,
-          httpVersion,
-          rawHeaders,
-          originalUrl,
-          baseUrl,
-          path,
-          hostname,
-          userCountry,
-          userCity,
-          userGPS,
-          device,
-          browserLanguage,
-          browserVersion,
-          deviceType,
-          operatingSystem
-        };
+            "IP Address": ipAddress,
+            "User Agent": userAgent,
+            "Host": host,
+            "Referer": referer,
+            "Accept Language": acceptLanguage,
+            "Query Parameter": queryParameter,
+            "Full URL": fullUrl,
+            "Request Method": requestMethod,
+            "Cookies": cookies,
+            "Uploaded File": uploadedFile, // במקרה של קובץ יחיד
+            "Uploaded Files": uploadedFiles, // במקרה של מספר קבצים
+            "HTTP Version": httpVersion,
+            "Raw Headers": rawHeaders,
+            "Original URL": originalUrl,
+            "Base URL": baseUrl,
+            "Path": path,
+            "Hostname": hostname,
+            "User Country": userCountry,
+            "User City": userCity,
+            "User GPS Coordinates": userGPS,
+            "Device": device,
+            "Browser Language": browserLanguage,
+            "Browser Version": browserVersion,
+            "Device Type": deviceType,
+            "Operating System": operatingSystem
+          };
+        
       
         // שליחת התשובה ללקוח
         res.json(responseData);
