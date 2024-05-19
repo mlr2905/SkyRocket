@@ -312,48 +312,48 @@ let interval
             }
         });
 
-        function login() {
+        async function login() {
+    // שליחת בקשה POST לשרת
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-            // שליחת בקשה POST לשרת
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const code = document.getElementById('verification-code').value;
-
-            fetch('/role_users/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: `{
-                    "email": "${email}",
-                    "password": "${password}"
-                }`
+    try {
+        const response = await fetch('/role_users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
+        });
 
-                    if (data.e === "yes") {
-                        const successMessage = document.getElementById('success-message');
-                        successMessage.textContent = data.error;
+        const data = await response.json();
 
-                    } else {
-                        // הודעת הצלחה
-                        if (data.swaggerUrl) {
-                            // שמירת פרטי המשתמש באיחסון המקומיn
-                            localStorage.setItem('sky', JSON.stringify(data.jwt));
+        console.log(data);
 
-                            // הודעת הצלחה
-                            var successMessage = document.getElementById('success-message');
-                            successMessage.textContent = 'Login successful!';
+        if (data.e === "yes") {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = data.error;
+        } else {
+            // הודעת הצלחה
+            if (data.swaggerUrl) {
+                // שמירת פרטי המשתמש באיחסון המקומיn
+                localStorage.setItem('sky', JSON.stringify(data.jwt));
 
-                            // הפניה לדף Swagger
-                            window.location.href = data.swaggerUrl;;
-                        }
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+                // הודעת הצלחה
+                var successMessage = document.getElementById('success-message');
+                successMessage.textContent = 'Login successful!';
+
+                // הפניה לדף Swagger
+                window.location.href = data.swaggerUrl;
+            }
         }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 
 
         function toggleAuthType() {
