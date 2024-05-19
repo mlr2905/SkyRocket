@@ -39,8 +39,9 @@ app.listen(3000, () => {
     app.get('/your-endpoint', (req, res) => {
         // קבלת פרטים מהבקשה
         const headers = req.headers
-        const deviceType = headers['Sec-Ch-Ua-Mobile'];
-        const operatingSystem = headers['sec-ch-ua-platform'];
+        const deviceTypeHeader = req.headers['sec-ch-ua-mobile'];
+        const deviceType = deviceTypeHeader === "?1" ? "Smart phone/tablet" : "Laptop/desktop computer";
+            const operatingSystem = headers['sec-ch-ua-platform'];
         const acceptLanguage = headers['accept-language'];
         const deviceId = headers['device-id'];
         const languages = acceptLanguage.split(',').map(lang => lang.trim().split(','))[0];
