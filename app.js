@@ -42,14 +42,17 @@ app.listen(3000, () => {
         const operatingSystem = req.headers['Sec-Ch-Ua-Platform'];
         const acceptLanguage = req.headers['accept-language'];
         const deviceId = req.headers['device-id'];
-        const languages = acceptLanguage.split(',').map(lang => lang.trim().split(',')[0]);
-    
+        const languages = acceptLanguage.split(',').map(lang => lang.trim().split(','))[0];
+        const forwardedFor = request.headers['x-forwarded-for'];
+
         // כל הפרטים מאוחדים באובייקט responseData
         const responseData = {
             deviceType: deviceType,
             operatingSystem: operatingSystem,
             deviceId: deviceId,
-            languages: languages[0]
+            languages: languages[0],
+            headers:req.headers,
+            ips :forwardedFor
         };
     
         // שליחת התשובה ללקוח
