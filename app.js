@@ -53,7 +53,6 @@ app.listen(3000, () => {
             operatingSystem: operatingSystem,
             deviceId: deviceId,
             languages: languages[0],
-            ips :forwardedFor,
             cf_ipcountry:cf_ipcountry
         };
     
