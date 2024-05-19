@@ -35,59 +35,68 @@ app.listen(3000, () => {
 
 
 
-app.get('/your-endpoint', upload.single('file'), (req, res) => {
     // כתובת ה-IP של המשתמש
-    console.log('IP Address:', req.headers['x-forwarded-for'] || req.connection.remoteAddress);
-
-  
-    // כותרות
-    console.log('User Agent:', req.headers['user-agent']);
-    console.log('Host:', req.headers['host']);
-    console.log('Referer:', req.headers['referer']);
-    console.log('Accept Language:', req.headers['accept-language']);
-  
-    // נתוני השאילתה
-    console.log('Query Parameter:', req.query.paramName);
-  
-    // פרטי המסלול
-    console.log('Route Parameter:', req.params.paramName);
-  
-    // כתובת ה-URL המלאה של הבקשה
-    console.log('Full URL:', req.protocol + '://' + req.get('host') + req.originalUrl);
-  
-    // שיטת הבקשה
-    console.log('Request Method:', req.method);
-  
-    // Cookies
-    console.log('Cookies:', req.cookies);
-  
-    // נתוני הקבצים המצורפים
-    console.log('Uploaded File:', req.file); // במקרה של קובץ יחיד
-    console.log('Uploaded Files:', req.files); // במקרה של מספר קבצים
-  
-    // HTTP Version
-    console.log('HTTP Version:', req.httpVersion);
-  
-    // Raw Headers
-    console.log('Raw Headers:', req.rawHeaders);
-  
-    // Original URL
-    console.log('Original URL:', req.originalUrl);
-  
-    // Base URL
-    console.log('Base URL:', req.baseUrl);
-  
-    // Path
-    console.log('Path:', req.path);
-  
-    // Hostname
-    console.log('Hostname:', req.hostname);
-  
-    // שליחת תגובה ללקוח
-    res.json({
-      message: 'Data has been logged to console.'
-    });
-  });
+    app.get('/your-endpoint', (req, res) => {
+        // קבלת פרטים מהבקשה
+        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const userAgent = req.headers['user-agent'];
+        const host = req.headers['host'];
+        const referer = req.headers['referer'];
+        const acceptLanguage = req.headers['accept-language'];
+        const queryParameter = req.query.paramName;
+        const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+        const requestMethod = req.method;
+        const cookies = req.cookies;
+        const uploadedFile = req.file; // במקרה של קובץ יחיד
+        const uploadedFiles = req.files; // במקרה של מספר קבצים
+        const httpVersion = req.httpVersion;
+        const rawHeaders = req.rawHeaders;
+        const originalUrl = req.originalUrl;
+        const baseUrl = req.baseUrl;
+        const path = req.path;
+        const hostname = req.hostname;
+        const userCountry = req.headers['x-country'];
+        const userCity = req.headers['x-city'];
+        const userGPS = req.headers['x-gps'];
+        const device = req.headers['user-agent'];
+        const browserLanguage = req.headers['accept-language'];
+        const browserVersion = req.headers['user-agent'];
+        const deviceType = req.headers['user-agent'];
+        const operatingSystem = req.headers['user-agent'];
+      
+        // כל הפרטים מאוחדים באובייקט
+        const responseData = {
+          ipAddress,
+          userAgent,
+          host,
+          referer,
+          acceptLanguage,
+          queryParameter,
+          fullUrl,
+          requestMethod,
+          cookies,
+          uploadedFile,
+          uploadedFiles,
+          httpVersion,
+          rawHeaders,
+          originalUrl,
+          baseUrl,
+          path,
+          hostname,
+          userCountry,
+          userCity,
+          userGPS,
+          device,
+          browserLanguage,
+          browserVersion,
+          deviceType,
+          operatingSystem
+        };
+      
+        // שליחת התשובה ללקוח
+        res.json(responseData);
+      });
+      
   
 
 app.get('/sss', async (req, res, next) => {
