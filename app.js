@@ -48,9 +48,8 @@ app.listen(3000, () => {
         const responseData = {
             deviceType: deviceType,
             operatingSystem: operatingSystem,
-            acceptLanguage: acceptLanguage,
             deviceId: deviceId,
-            languages: languages
+            languages: languages[0]
         };
     
         // שליחת התשובה ללקוח
