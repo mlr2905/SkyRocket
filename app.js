@@ -15,7 +15,8 @@ const swaggerUi = require('swagger-ui-express')
 const app = express()
 const multer = require('multer');
 const upload = multer(); // להגדרת multer עבור קבצים
-
+const geoip = require('geoip-lite');
+const moment = require('moment-timezone');
 
 
 logger.info('==== System start =======')
@@ -33,33 +34,23 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 });
 
-const maxmind = require('maxmind');
-const { findTimeZone, getZonedTime } = require('timezone-support');
 
-// נתיב למאגר הנתונים שהורדתם
-const databasePath = 'path/to/GeoLite2-City.mmdb';
-
-// פונקציה שמחזירה את אזור הזמן לפי כתובת IP
-async function getTimeZoneByIP(ip) {
-    // פתיחת מאגר הנתונים
-    const lookup = await maxmind.open(databasePath);
-
+function getTimeZoneByIP(ip) {
     // חיפוש המידע לפי כתובת IP
-    const geoData = lookup.get(ip);
+    const geo = geoip.lookup(ip);
 
-    if (!geoData || !geoData.location) {
+    if (!geo) {
         throw new Error('Could not find geo data for IP');
     }
 
     // שליפת קואורדינטות
-    const { latitude, longitude } = geoData.location;
+    const { ll: [latitude, longitude] } = geo;
 
-    // מציאת אזור הזמן לפי קואורדינטות
-    const timezone = findTimeZone({ lat: latitude, lon: longitude });
+    // שימוש ב-moment-timezone כדי לקבל את אזור הזמן
+    const timezone = moment.tz.guess({ lat: latitude, lon: longitude });
 
     return timezone;
 }
-
 // כתובת ה-IP של המשתמש
 app.get('/your-endpoint', (req, res) => {
     // קבלת פרטים מהבקשה
@@ -74,8 +65,9 @@ app.get('/your-endpoint', (req, res) => {
     const forwardedFor = req.headers['x-forwarded-for'];
     const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
     const ip =clientIPs[0]
-    const timezone =  getTimeZoneByIP(ip);
+    const timezone = getTimeZoneByIP(ip);
 
+    
 
     // כל הפרטים מאוחדים באובייקט responseData
     const responseData = {
@@ -83,7 +75,7 @@ app.get('/your-endpoint', (req, res) => {
         System: System[1],
         languages: languages[0],
         Country: Country,
-        name:`Timezone for IP ${ip}: ${timezone.lat} ${timezone.lon}`
+        name:`Timezone for IP ${ip}: ${timezone}`
     };
 
     // שליחת התשובה ללקוח
