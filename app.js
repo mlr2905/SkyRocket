@@ -33,20 +33,9 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 });
 
-
 function getTimeZoneByIP(ip) {
-    // חיפוש המידע לפי כתובת IP
-    const geo = geoip.lookup(ip);
-
-    if (!geo) {
-        throw new Error('Could not find geo data for IP');
-    }
-
-    // שליפת קואורדינטות
-    const { ll: [latitude, longitude] } = geo;
-
-    // שימוש ב-moment-timezone כדי לקבל את אזור הזמן
-    const timezone = moment.tz.guess({ lat: latitude, lon: longitude });
+    // מציאת אזור הזמן באמצעות moment-timezone
+    const timezone = moment.tz.guess(true,{ ipAddress: ip });
 
     return timezone;
 }
