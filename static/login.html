@@ -116,11 +116,90 @@
         #resend-message:hover {
             background-color: #0056b3;
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f1f1f1;
+        }
+
+        #regForm {
+            background-color: #ffffff;
+            margin: 100px auto;
+            font-family: Raleway;
+            padding: 40px;
+            width: 70%;
+            min-width: 300px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            font-size: 17px;
+            font-family: Raleway;
+            border: 1px solid #aaaaaa;
+        }
+
+        /* Mark input boxes that gets an error on validation: */
+        input.invalid {
+            background-color: #ffdddd;
+        }
+
+        /* Hide all steps by default: */
+        .tab {
+            display: none;
+        }
+
+        button {
+            background-color: #04AA6D;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 17px;
+            font-family: Raleway;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #prevBtn {
+            background-color: #bbbbbb;
+        }
+
+        /* Make circles that indicate the steps of the form: */
+        .step {
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbbbbb;
+            border: none;
+            border-radius: 50%;
+            display: inline-block;
+            opacity: 0.5;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        /* Mark the steps that are finished and valid: */
+        .step.finish {
+            background-color: #04AA6D;
+        }
     </style>
 </head>
 
 <body>
-    <img id="loading-icon" src="/loading.gif" alt="Loading..." style="display: block; width: 250px; height: 250px; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+    <img id="loading-icon" src="/loading.gif" alt="Loading..."
+        style="display: block; width: 250px; height: 250px; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
 
     <form class="LOGIN-form" id="login-form">
         <h1>LOGIN</h1>
@@ -132,8 +211,10 @@
             <p style="color: green; display: none;" id="email_">valid email.</p>
         </div>
         <div class="form-group">
-            <label for="password" id="pass">Password:</label>
-            <input type="password" id="password" name="password" required minlength="6" style="display: block;">
+            <label for="password" id="pass" placeholder="password...">Password:</label>
+            <input type="password" id="password" name="password" style="display: block;" oninput="validatePassword(this)" onkeypress="if(this.value.length >= 9) return false;">
+            <p style="color: red; display: none;" id="password_error">Weak password: one capital letter and one special character (!@$?*) and 8 characters long.</p>
+            <p style="color: green; display: none;" id="password_">valid email.</p>
         </div>
 
         <div style="display: flex;">
@@ -146,16 +227,18 @@
 
         <div id="verification-code-input" style="display: none;">
             <div class="form-group">
+                <label for="verification-code" placeholder="Enter a code..." >Code:</label>
+
                 <div style="display: flex;">
-                    <label for="verification-code">Enter a code:</label>
-                    <input type="number" id="verification-code" name="verification-code" required readonly>
+                    <input type="text" id="verification-code" placeholder="Enter a code..." name="verification-code" pattern="[0-9]{1,6}"
+                        maxlength="6" required oninput="validateCode(this)">
                     <div class="timer" id="timer"></div>
                     <div id="resend-message" style="display: none;" onclick="authcode()">send again</div>
-
                 </div>
-
             </div>
         </div>
+        <p style="color: red; display: none;" id="code_error">Invalid code. Please enter a valid code.</p>
+        <p style="color: green; display: none;" id="code_">valid code.</p>
         <div style="display: flex;">
             <div id="success-message" style="display: none;"></div>
             <div class="timer" id="timer_"></div>
@@ -168,10 +251,10 @@
     </form>
 
     <script>
-           window.addEventListener('load', function() {
-        // Hide the loading icon when the page is fully loaded
-        document.getElementById('loading-icon').style.display = 'none';
-    });
+        window.addEventListener('load', function () {
+            // Hide the loading icon when the page is fully loaded
+            document.getElementById('loading-icon').style.display = 'none';
+        });
         let interval;
 
         function authcode() {
@@ -325,12 +408,12 @@
                         successMessage.textContent = data.error;
                     }
                 }
-                else{
+                else {
                     document.getElementById('loading-icon').style.display = 'none';
 
                     const successMessage = document.getElementById('success-message');
-                successMessage.textContent = error.message;  // יש לשנות את ההודעה לשגיאה באופן ידידותי למשתמש
-           
+                    successMessage.textContent = error.message;  // יש לשנות את ההודעה לשגיאה באופן ידידותי למשתמש
+
                 }
             } catch (error) {
                 document.getElementById('loading-icon').style.display = 'none';
@@ -377,7 +460,55 @@
                 document.getElementById("email_").style.display = "none";
             }
         }
+  
+function validateCode(input) {
+    // מסנן רק מספרים ומקטין ל-6 תווים בלבד
+    input.value = input.value.replace(/\D/g, '').slice(0, 6);
 
+    const code = input.value.trim();
+    const codeRegex = /^[0-9]{6}$/;
+    
+    if (codeRegex.test(code)) {
+        input.classList.remove('invalid');
+        document.getElementById("code_").style.display = "block";
+        document.getElementById("code_error").style.display = "none";
+    } else {
+        input.classList.add('invalid');
+        document.getElementById("code_error").style.display = "block";
+        document.getElementById("code_").style.display = "none";
+    }
+}
+
+function validatePassword(input) {
+    const password = input.value.trim();
+    const lengthRegex = /^.{8,}$/; // בודק אורך של לפחות 8 תווים
+    const uppercaseRegex = /[A-Z]/; // בודק האם קיימת אות רישית
+    const specialCharRegex = /[@$!%*?&]/; // בודק האם קיים תו מיוחד
+    
+    let errorMessage = "";
+
+    if (!lengthRegex.test(password)) {
+        errorMessage += "<p><b>must be at least 8 characters long.</b></P>"
+    }
+
+    if (!uppercaseRegex.test(password)) {
+        errorMessage += "<p><b>must contain at least one uppercase letter.</b></p>";
+    }
+
+    if (!specialCharRegex.test(password)) {
+        errorMessage += "<p><b>must contain at least one special character (!@$?*).</b></p>";
+    }
+
+    if (errorMessage === "") {
+        input.classList.remove('invalid');
+        document.getElementById("password_error").style.display = "none";
+    } else {
+
+        input.classList.add('invalid');
+        document.getElementById("password_error").innerHTML  = errorMessage;
+        document.getElementById("password_error").style.display = "block";
+    }
+}
         function showNotification() {
             let timerInterval;
             const fiveMinutes = 5 * 60 * 1000;
@@ -410,6 +541,7 @@
                 }
             });
         }
+
         setTimeout(showNotification, 10 * 60 * 1000);
     </script>
 </body>
