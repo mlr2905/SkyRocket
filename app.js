@@ -71,7 +71,7 @@ app.get('/your-endpoint', (req, res) => {
     const acceptLanguage = headers['accept-language'];
     const languages = acceptLanguage.split(',').map(lang => lang.trim().split(','))[0];
     const Country = headers['cf-ipcountry'];
-    const forwardedFor = request.headers['x-forwarded-for'];
+    const forwardedFor = req.headers['x-forwarded-for'];
     const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
     const ip =clientIPs[0]
     const timezone =  getTimeZoneByIP(ip);
