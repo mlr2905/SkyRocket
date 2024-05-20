@@ -33,39 +33,68 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 });
 
+const maxmind = require('maxmind');
+const { findTimeZone, getZonedTime } = require('timezone-support');
+
+// נתיב למאגר הנתונים שהורדתם
+const databasePath = 'path/to/GeoLite2-City.mmdb';
+
+// פונקציה שמחזירה את אזור הזמן לפי כתובת IP
+async function getTimeZoneByIP(ip) {
+    // פתיחת מאגר הנתונים
+    const lookup = await maxmind.open(databasePath);
+
+    // חיפוש המידע לפי כתובת IP
+    const geoData = lookup.get(ip);
+
+    if (!geoData || !geoData.location) {
+        throw new Error('Could not find geo data for IP');
+    }
+
+    // שליפת קואורדינטות
+    const { latitude, longitude } = geoData.location;
+
+    // מציאת אזור הזמן לפי קואורדינטות
+    const timezone = findTimeZone({ lat: latitude, lon: longitude });
+
+    return timezone;
+}
+
+// כתובת ה-IP של המשתמש
+app.get('/your-endpoint', (req, res) => {
+    // קבלת פרטים מהבקשה
+    const headers = req.headers
+    const deviceTypeHeader = req.headers['sec-ch-ua-mobile'];
+    const deviceType = deviceTypeHeader === "?1" ? "Mobile" : "PC";
+    const operatingSystem = headers['sec-ch-ua-platform'];
+    let System = operatingSystem.split('"');
+    const acceptLanguage = headers['accept-language'];
+    const languages = acceptLanguage.split(',').map(lang => lang.trim().split(','))[0];
+    const Country = headers['cf-ipcountry'];
+    const forwardedFor = request.headers['x-forwarded-for'];
+    const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
+    const ip =clientIPs[0]
+    const timezone =  getTimeZoneByIP(ip);
 
 
-    // כתובת ה-IP של המשתמש
-    app.get('/your-endpoint', (req, res) => {
-        // קבלת פרטים מהבקשה
-        const headers = req.headers
-        const deviceTypeHeader = req.headers['sec-ch-ua-mobile'];
-        const deviceType = deviceTypeHeader === "?1" ? "Smart phone/tablet" : "Laptop/desktop computer";
-            const operatingSystem = headers['sec-ch-ua-platform'];
-        const acceptLanguage = headers['accept-language'];
-        const deviceId = headers['device-id'];
-        const languages = acceptLanguage.split(',').map(lang => lang.trim().split(','))[0];
-        const cf_ipcountry = headers['cf-ipcountry'];
+    // כל הפרטים מאוחדים באובייקט responseData
+    const responseData = {
+        deviceType: deviceType,
+        System: System[1],
+        languages: languages[0],
+        Country: Country,
+        name:`Timezone for IP ${ip}: ${timezone}`
+    };
+
+    // שליחת התשובה ללקוח
+    res.json(responseData);
+});
 
 
-        // כל הפרטים מאוחדים באובייקט responseData
-        const responseData = {
-            deviceType: deviceType,
-            operatingSystem: operatingSystem,
-            deviceId: deviceId,
-            languages: languages[0],
-            cf_ipcountry:cf_ipcountry
-        };
-    
-        // שליחת התשובה ללקוח
-        res.json(responseData);
-    });
-    
-  
 
 app.get('/sss', async (req, res, next) => {
     try {
-        
+
 
         if (req.path === '/login.html') {
             return next()

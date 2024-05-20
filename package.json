@@ -25,6 +25,7 @@
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.0.1",
+    "maxmind": "^4.3.19",
     "mocha": "^10.2.0",
     "moment-timezone": "^0.5.45",
     "multer": "^1.4.5-lts.1",
@@ -33,6 +34,7 @@
     "should": "^13.2.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
+    "timezone-support": "^3.1.0",
     "winston": "^3.11.0"
   }
 }
