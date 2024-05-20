@@ -16,7 +16,6 @@ const app = express()
 const multer = require('multer');
 const upload = multer(); // להגדרת multer עבור קבצים
 const geoip = require('geoip-lite');
-const moment = require('moment-timezone');
 
 
 logger.info('==== System start =======')
