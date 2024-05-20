@@ -37,14 +37,11 @@ app.listen(3000, () => {
     console.log('Express server is running ....');
 });
 
-const geoip = require('geoip-lite');
-
-// פונקציה לקבלת אזור הזמן עבור כתובת ה-IP
 function getTimeZoneByIP(ip) {
     try {
-        const geo = geoip.lookup(ip);
-        if(geo) {
-            return geo.timezone;
+        const ipInfo = ip2locationDatabase.get_all(ip);
+        if(ipInfo) {
+            return ipInfo.timezone;
         } else {
             return null; // לא נמצא מידע עבור ה-IP
         }
@@ -53,6 +50,7 @@ function getTimeZoneByIP(ip) {
         return null;
     }
 }
+
 // כתובת ה-IP של המשתמש
 app.get('/your-endpoint', (req, res) => {
     // קבלת פרטים מהבקשה
@@ -67,7 +65,7 @@ app.get('/your-endpoint', (req, res) => {
     const forwardedFor = req.headers['x-forwarded-for'];
     const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
     const ip =clientIPs[0]
-    const timezone = getTimeZoneByIP(ip);
+    const timezone = getTimeZoneByIP(' 2a01:73c0:94b:8976:388d:f63d:94bb:f536');
     const timezones = moment.tz.names();
 
     
