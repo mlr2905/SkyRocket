@@ -83,7 +83,7 @@ app.get('/your-endpoint', (req, res) => {
         System: System[1],
         languages: languages[0],
         Country: Country,
-        name:`Timezone for IP ${ip}: ${timezone}`
+        name:`Timezone for IP ${ip}: ${timezone.lat} ${timezone.lon}`
     };
 
     // שליחת התשובה ללקוח
