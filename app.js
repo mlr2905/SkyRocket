@@ -15,7 +15,11 @@ const swaggerUi = require('swagger-ui-express')
 const app = express()
 const multer = require('multer');
 const upload = multer(); // להגדרת multer עבור קבצים
-const geoip = require('geoip-lite');
+const ip2location = require("ip2location-nodejs");
+const IP2Location = ip2location.IP2Location;
+
+// טען את מסד הנתונים של IP2Location
+const ip2locationDatabase = new IP2Location("./IP2LOCATION-LITE-DB11.BIN", "IP2LOCATION_SHARED_MEMORY");
 
 
 logger.info('==== System start =======')
@@ -34,11 +38,19 @@ app.listen(3000, () => {
 });
 
 function getTimeZoneByIP(ip) {
-    // מציאת אזור הזמן באמצעות moment-timezone
-    const timezone = moment.tz.guess(true,{ ipAddress: ip });
-
-    return timezone;
+    try {
+        const ipInfo = ip2locationDatabase.get_all(ip);
+        if(ipInfo) {
+            return ipInfo.timezone;
+        } else {
+            return null; // לא נמצא מידע עבור ה-IP
+        }
+    } catch (error) {
+        console.error('Error finding timezone by IP:', error);
+        return null;
+    }
 }
+
 // כתובת ה-IP של המשתמש
 app.get('/your-endpoint', (req, res) => {
     // קבלת פרטים מהבקשה
