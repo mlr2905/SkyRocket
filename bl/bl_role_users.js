@@ -75,41 +75,48 @@ async function login_code(email, code) {
   }
 }
 
-async function login(email, password,ip,userAgent) {
-  let url = 'https://jwt-node-mongodb.onrender.com/login';
+async function login(email, password, ip, userAgent) {
+  const url = 'https://jwt-node-mongodb.onrender.com/login';
 
   const data = {
-    email: email,
-    password: password,
-    ip:ip,
-    userAgent:userAgent
+      email: email,
+      password: password,
+      ip: ip,
+      userAgent: userAgent
   };
 
   const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
   };
 
   try {
-    const response = await fetch(url, requestOptions);
-    const user = await response.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("bl response",user);
-    if (user.errors) {
-      return {"e":"yes","error": user.errors.email };
-    }
-    else{
-    return {"e":"no", jwt:user.jwt}
+      const response = await fetch(url, requestOptions);
+      const user = await response.json();
 
-    }
+      // בדיקת התגובה מהשרת
+      if (!response.ok) {
+          throw new Error('Failed to login: ' + user.message);
+      }
+
+      // בדיקת תגובת השרת לשגיאות
+      if (user.errors) {
+          throw new Error('Failed to login: ' + user.errors.email);
+      }
+
+      // החזרת נתוני המשתמש או השגיאה במקרה של שגיאה
+      return { e: "no", jwt: user.jwt };
 
   } catch (error) {
-    console.error('Error:', error);
-    return false;
+      console.error('Error:', error.message);
+      // החזרת נתוני השגיאה במקרה של שגיאה
+      return { e: "yes", error: error.message };
   }
 }
+
 
 async function signup(email, password) {
   let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';

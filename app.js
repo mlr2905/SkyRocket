@@ -52,38 +52,6 @@ function getTimeZoneByIP(ip) {
 }
 
 // כתובת ה-IP של המשתמש
-app.get('/your-endpoint', (req, res) => {
-    // קבלת פרטים מהבקשה
-    const headers = req.headers
-    const deviceTypeHeader = req.headers['sec-ch-ua-mobile'];
-    const deviceType = deviceTypeHeader === "?1" ? "Mobile" : "PC";
-    const operatingSystem = headers['sec-ch-ua-platform'];
-    let System = operatingSystem.split('"');
-    const acceptLanguage = headers['accept-language'];
-    const languages = acceptLanguage.split(',').map(lang => lang.trim().split(','))[0];
-    const Country = headers['cf-ipcountry'];
-    const forwardedFor = req.headers['x-forwarded-for'];
-    const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
-    const ip =clientIPs[0]
-    const timezone = getTimeZoneByIP(' 2a01:73c0:94b:8976:388d:f63d:94bb:f536');
-    const timezones = moment.tz.names();
-
-    
-
-    // כל הפרטים מאוחדים באובייקט responseData
-    const responseData = {
-        deviceType: deviceType,
-        System: System[1],
-        languages: languages[0],
-        Country: Country,
-        name:`Timezone for IP ${ip}: ${timezone}`,
-        timezones: timezones
-
-    };
-
-    // שליחת התשובה ללקוח
-    res.json(responseData);
-});
 
 
 

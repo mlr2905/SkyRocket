@@ -166,26 +166,15 @@
     </form>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // קריאת כתובת המייל מפרמטר ה-URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const email = urlParams.get('email');
+        let interval;
 
-            // הצבת כתובת המייל בשדה המייל בטופס
-            if (email) {
-                document.getElementById('email').value = email;
-            }
-        });
-
-        let interval
         function authcode() {
             const email = document.getElementById('email').value;
             const successMessage = document.getElementById('success-message');
             const timerElement = document.getElementById('timer');
-            let timerDiv = document.getElementById('timer_');
-
+            const timerDiv = document.getElementById('timer_');
             const resendMessageElement = document.getElementById('resend-message');
-            // הסתרת הודעת השליחה החוזרת והצגת הטיימר
+
             resendMessageElement.style.display = 'none';
 
             fetch('https://skyrocket.onrender.com/role_users/authcode', {
@@ -201,20 +190,21 @@
                 .then(data => {
                     const codeInput = document.getElementById('verification-code-input');
                     const change = document.getElementById('toggle-auth-type');
-                    if (data.datas.code == "succeeded") {
-                        Verification.style.display = 'none'
-
+                    if (data.datas.code === "succeeded") {
+                        document.getElementById('Verification').style.display = 'none';
                         codeInput.style.display = 'block';
                         change.style.display = 'none';
 
-                        successMessage.textContent = "Code sent successfully! will expire in : ";
+                        successMessage.textContent = "Code sent successfully! Will expire in: ";
                         document.getElementById("verification-code").removeAttribute("readonly");
-                        successMessage.style.display = 'block'
+                        successMessage.style.display = 'block';
+
                         if (interval !== undefined) {
                             clearInterval(interval);
                             timerDiv.textContent = '';
                         }
-                        let totalSeconds = 5 * 60; // 5 דקות בשניות
+
+                        let totalSeconds = 5 * 60; // 5 minutes in seconds
                         interval = setInterval(function () {
                             let minutes = parseInt(totalSeconds / 60, 10);
                             let seconds = parseInt(totalSeconds % 60, 10);
@@ -234,7 +224,7 @@
                     }
                 })
                 .catch(error => {
-                    successMessage.textContent = `Try again! error:${error}`;
+                    successMessage.textContent = `Try again! Error: ${error}`;
                 });
         }
 
@@ -253,8 +243,8 @@
                 }
             }, 1000);
         }
-        function validation() {
 
+        function validation() {
             const email = document.getElementById('email').value;
             const code = document.getElementById('verification-code').value;
 
@@ -270,28 +260,19 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
                     if (data.swaggerUrl) {
-                        console.log(data);
-                        // שמירת פרטי המשתמש באיחסון המקומיn
                         localStorage.setItem('sky', JSON.stringify(data.datas.jwt));
-
-                        // הודעת הצלחה
                         const successMessage = document.getElementById('success-message');
                         successMessage.textContent = data.datas.code;
-
-                        // הפניה לדף Swagger
-                        window.location.href = data.swaggerUrl;;
+                        window.location.href = data.swaggerUrl;
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    // טיפול בשגיאה
                 });
         }
 
         async function login() {
-            // שליחת בקשה POST לשרת
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             try {
@@ -321,7 +302,7 @@
                 }
             } catch (error) {
                 const successMessage = document.getElementById('success-message');
-                successMessage.textContent = error;
+                successMessage.textContent = error.message;  // יש לשנות את ההודעה לשגיאה באופן ידידותי למשתמש
             }
         }
 
@@ -330,19 +311,20 @@
             const passwordInputpass = document.getElementById('pass');
             const toggleButton = document.getElementById('toggle-auth-type');
             const submitButton = document.getElementById('submit-button');
+
             if (passwordInput.style.display === 'block') {
-                Verification.style.display = 'block'
-                passwordInput.style.display = 'none'
-                passwordInputpass.style.display = 'none'
-                toggleButton.textContent = "Enter a password"
+                document.getElementById('Verification').style.display = 'block';
+                passwordInput.style.display = 'none';
+                passwordInputpass.style.display = 'none';
+                toggleButton.textContent = "Enter a password";
                 submitButton.textContent = 'Submit Verification Code';
-                document.getElementById('submit-button').removeAttribute('onclick');
-                document.getElementById('submit-button').addEventListener('click', validation);
+                submitButton.removeAttribute('onclick');
+                submitButton.addEventListener('click', validation);
             } else {
-                document.getElementById('submit-button').removeAttribute('onclick');
-                document.getElementById('submit-button').addEventListener('click', login);
-                toggleButton.textContent = "code by email"
-                Verification.style.display = 'none'
+                submitButton.removeAttribute('onclick');
+                submitButton.addEventListener('click', login);
+                toggleButton.textContent = "code by email";
+                document.getElementById('Verification').style.display = 'none';
                 passwordInput.style.display = 'block';
                 submitButton.textContent = 'Submit';
             }
@@ -399,3 +381,5 @@
 </body>
 
 </html>
+
+

@@ -35,13 +35,13 @@ router.post('/authcode', async (request, response) => {
         const email = Query.email;
         console.log(Query.email);
         const datas = await bl.authcode(email)
-        console.log("rl",datas);
+        console.log("rl", datas);
         if (datas.e === "yes") {
-            response.status(409).json({"e":"yes", "errors":`${datas.error}`});
+            response.status(409).json({ "e": "yes", "errors": `${datas.error}` });
         } else {
             console.log(datas.code !== undefined);
             if (datas.code !== undefined) {
-                response.status(200).json({datas});
+                response.status(200).json({ datas });
             }
         }
     } catch (error) {
@@ -55,26 +55,26 @@ router.post('/validation', async (request, response) => {
         const email = Query.email;
         const code = Query.code;
         const datas = await bl.login_code(email, code)
-        console.log("r data",datas);
+        console.log("r data", datas);
         if (datas.e === "yes") {
-            response.status(409).json({"e":"yes", "error":`${datas.error}` });
+            response.status(409).json({ "e": "yes", "error": `${datas.error}` });
 
         }
         else {
-        console.log("r user",datas.token);
+            console.log("r user", datas.token);
 
-    
-         const token =datas.jwt
-         response.cookie('sky', token, { 
-            httpOnly: true, 
-            sameSite: 'strict', 
-            maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-        });
+
+            const token = datas.jwt
+            response.cookie('sky', token, {
+                httpOnly: true,
+                sameSite: 'strict',
+                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+            });
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
 
             // הפניה לדף Swagger בתגובה המוחזרת
-            response.status(200).json({datas, swaggerUrl });
+            response.status(200).json({ datas, swaggerUrl });
         }
 
     }
@@ -84,38 +84,48 @@ router.post('/validation', async (request, response) => {
 });
 
 router.post('/login', async (request, response) => {
-    try {
-        const forwardedFor = request.headers['x-forwarded-for'];
-        const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
-        const ip =clientIPs[0]
-        const userAgent = request.headers['user-agent'];
 
-        const Query = request.body;
-        const email = Query.email;
-        const password = Query.password;
-        const datas = await bl.login(email, password,ip,userAgent);
+    const forwardedFor = request.headers['x-forwarded-for'];
+    const clientIPs = forwardedFor ? forwardedFor.split(',').map(ip => ip.trim()) : [];
+    const ip = clientIPs.length > 0 ? clientIPs[0] : undefined;
+    const userAgent = request.headers['user-agent'];
+    const query = request.body;
+    const email = query.email;
+    const password = query.password;
+
+    try {
+        // בדיקת תקינות קלט
+        if (!email || !password) {
+            throw new Error('Invalid email or password');
+        }
+
+        // קריאה לשירות חיצוני עם נתונים המקושרים לקלט
+        const datas = await bl.login(email, password, ip, userAgent);
 
         if (datas.e === "yes") {
-            response.status(409).json({"e":"yes", "error": datas.error });
+            // החזרת תגובת שגיאה במקרה של שגיאה מהשירות החיצוני
+            response.status(409).json({ "e": "yes", "error": datas.error });
         } else {
-            console.log("router",datas.jwt);
+            // הגדרת טוקן ושליחתו בעוגיה
             const token = datas.jwt;
-            response.cookie('sky', token, { 
-                httpOnly: true, 
-                sameSite: 'strict', 
+            response.cookie('sky', token, {
+                httpOnly: true,
+                sameSite: 'strict',
                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
             });
-            
+
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
 
             // הפניה לדף Swagger בתגובה המוחזרת
-            response.status(200).json({ "e":datas.e,"jwt":datas.jwt,"swaggerUrl" :swaggerUrl });
+            response.status(200).json({ "e": datas.e, "jwt": datas.jwt, "swaggerUrl": swaggerUrl });
         }
 
     } catch (error) {
-        response.status(503).json({ 'error': 'The request failed, try again later', error });
+        // טיפול בשגיאה במידה והיא מתרחשת
+        response.status(503).json({ 'error': 'The request failed, try again later', error: error.message });
     }
+
 });
 
 router.post('/signup', async (request, response) => {
@@ -126,14 +136,14 @@ router.post('/signup', async (request, response) => {
         const loginUrl = 'https://skyrocket.onrender.com/login.html';
         const user = await bl.signup(email, password)
         if (user.e === "yes") {
-            response.status(409).json({"e":"yes", "error":`${user.error}`,"loginUrl": loginUrl });
+            response.status(409).json({ "e": "yes", "error": `${user.error}`, "loginUrl": loginUrl });
 
         }
-        else{
+        else {
             if (user.response.mongo_id !== undefined) {
-    
+
                 // הפניה לדף login בתגובה המוחזרת
-                response.status(200).json({"e":"no", "loginUrl": loginUrl });
+                response.status(200).json({ "e": "no", "loginUrl": loginUrl });
             }
         }
     }
