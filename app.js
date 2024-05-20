@@ -54,6 +54,7 @@ app.get('/your-endpoint', (req, res) => {
     const clientIPs = forwardedFor.split(',').map(ip => ip.trim());
     const ip =clientIPs[0]
     const timezone = getTimeZoneByIP(ip);
+    const timezones = moment.tz.names();
 
     
 
@@ -63,7 +64,9 @@ app.get('/your-endpoint', (req, res) => {
         System: System[1],
         languages: languages[0],
         Country: Country,
-        name:`Timezone for IP ${ip}: ${timezone}`
+        name:`Timezone for IP ${ip}: ${timezone}`,
+        timezones: timezones
+
     };
 
     // שליחת התשובה ללקוח
