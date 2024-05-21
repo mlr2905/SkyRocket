@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
     <title>Login Page</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Varela Round', sans-serif;
+
             background-color: #f4f4f4;
             display: flex;
             justify-content: center;
@@ -17,6 +20,7 @@
             height: 100vh;
             margin: 0;
         }
+   
 
         .LOGIN-form {
             background-color: #fff;
@@ -28,7 +32,9 @@
         }
 
         .form-group {
+            font-family: 'Varela Round', sans-serif;
             margin-bottom: 15px;
+            
         }
 
         label {
@@ -38,6 +44,8 @@
 
         input[type=email],
         input[type=password] {
+            font-family: 'Varela Round', sans-serif;
+
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -194,6 +202,15 @@
         .step.finish {
             background-color: #04AA6D;
         }
+
+
+        .form-group img {
+            width: 35px;
+            cursor: pointer;
+        }
+        #Change{
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -202,25 +219,38 @@
         style="display: block; width: 250px; height: 250px; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
 
     <form class="LOGIN-form" id="login-form">
-        <h1>LOGIN</h1>
+        <h2>Log in to your account</h2>
+
+        <p class="css-18pc7rp e5i1odf4">Don't have an account?<a href="https://skyrocket.onrender.com/signup.html">&nbsp;Sign Up</a></p>
+      
         <div class="form-group">
-            <label for="email">Email:</label>
-            <p><input type="email" placeholder="E-mail..." oninput="validateEmail(this)"
-                    onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" name="email" id="email"></p>
+            <label for="email" style="font-family: 'Varela Round', sans-serif;">Email:</label>
+            <div style="position: relative;">
+                <input type="email" placeholder="example@example.com" 
+                       oninput="validateEmail(this)"
+                       onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" 
+                       name="email" id="email">
+                <a id="Change" onclick="changeText()"  style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);color: blue; display: none">Change</a>
+            </div>
             <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
-            <p style="color: green; display: none;" id="email_">valid email.</p>
+            <p style="color: rgb(10, 179, 49); display: none;" id="email_">valid email.</p>
         </div>
         <div class="form-group" id="pass" style="display: block">
-            <label for="password" placeholder="password..." >Password:</label>
-            <input type="password" id="password" name="password" style="display: block;"
-                oninput="validatePassword(this)" onkeypress="if(this.value.length >= 9) return false;" disabled >
-            <p style="color: red; display: none;" id="password_error">Weak password: one capital letter and one special
-                character (!@$?*) and 8 characters long.</p>
-            <p style="color: green; display: none;" id="password_">valid email.</p>
+            <label for="password" style="font-family: 'Varela Round', sans-serif;">Password</label>
+
+            <div style="position: relative;">
+                <input type="password" id="password" placeholder="example: Aa12345@" name="password" style="display: block;" oninput="validatePassword(this)" onkeypress="if(this.value.length >= 9) return false;" aria-checked="false" disabled>
+                <img src="/eye.gif" alt="" id="eyeicon" style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+            </div>
+            
+            <p style="color: rgb(230, 34, 34); display: none; font-family: 'Varela Round', sans-serif;" id="password_error">Must: 8
+                characters-[A-Z]-[a-z]/[0-9]-[!/@/$/?/*]</p>
+            <p style="color: rgb(10, 179, 49); display: none;" id="password_"></p>
         </div>
 
         <div style="display: flex;">
-            <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()" disabled>code by email</button>
+            <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()"  disabled>code by
+                email</button>
             <button type="button" class="Send" id="Verification" style="display: none;" onclick="authcode()">Send code
                 to email</button>
 
@@ -235,24 +265,49 @@
                     <input type="text" id="verification-code" placeholder="Enter a code..." name="verification-code"
                         pattern="[0-9]{1,6}" maxlength="6" required oninput="validateCode(this)">
                     <div class="timer" id="timer"></div>
-                    <div id="resend-message" style="display: none;" onclick="authcode()">send again</div>
+                    <div id="resend-message" style="display: none; font-family: 'Varela Round', sans-serif;" onclick="authcode()">send again</div>
                 </div>
             </div>
         </div>
         <p style="color: red; display: none;" id="code_error">Invalid code. Please enter a valid code.</p>
-        <p style="color: green; display: none;" id="code_">valid code.</p>
+        <p style="color: rgb(10, 179, 49); display: none;" id="code_">valid code.</p>
         <div style="display: flex;">
             <div id="success-message" style="display: none;"></div>
             <div class="timer" id="timer_"></div>
         </div>
         <br />
 
-        <button type="submit" id="submit-button" onclick="connect()" disabled>Submit</button>
+        <button type="submit" id="submit-button" onclick="connect()" disabled>Connect</button>
         <br />
-        <br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here...</a>
     </form>
 
     <script>
+        function changeText(){
+            document.getElementById("email").disabled = false;
+            document.getElementById('Change').style.display = 'none';
+        }
+        let eyeicon = document.getElementById("eyeicon");
+        let password = document.getElementById("password");
+
+        eyeicon.addEventListener("click", () => {
+            if (password.type == "password") {
+                password.type = "text";
+                eyeicon.src = "/eye.png";
+            } else {
+                password.type = "password";
+                eyeicon.src = "/eye.gif";
+
+            }
+        })
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        }
+
         window.addEventListener('load', function () {
             // Hide the loading icon when the page is fully loaded
             document.getElementById('loading-icon').style.display = 'none';
@@ -370,7 +425,7 @@
                 })
                 .catch(error => {
                     const successMessage = document.getElementById('success-message');
-                        successMessage.textContent = data.datas.code;
+                    successMessage.textContent = data.datas.code;
                     console.error('Error:', error);
                 });
         }
@@ -460,6 +515,8 @@
                 document.getElementById("email_").style.display = "block";
                 document.getElementById("email_error").style.display = "none";
                 document.getElementById("password").disabled = false;
+                document.getElementById("password_error").style.display = "block";
+
                 document.getElementById("toggle-auth-type").disabled = false;
 
 
@@ -496,36 +553,35 @@
 
         function validatePassword(input) {
             const password = input.value.trim();
-            const lengthRegex = /^.{8,}$/; // בודק אורך של לפחות 8 תווים
-            const uppercaseRegex = /[A-Z]/; // בודק האם קיימת אות רישית
-            const specialCharRegex = /[@$!%*?&]/; // בודק האם קיים תו מיוחד
-
+            const lengthRegex = /^.{8,}$/;
+            const uppercaseRegex = /[A-Z]/;
+            const specialCharRegex = /[@$!%*?&]/;
             let errorMessage = "";
+            let successMessage = "";
+            document.getElementById("email").disabled = true;
+            document.getElementById('Change').style.display = 'block';
 
-            if (!lengthRegex.test(password)) {
-                errorMessage += "<p><b>must be at least 8 characters long.</b></P>"
-            }
 
-            if (!uppercaseRegex.test(password)) {
-                errorMessage += "<p><b>must contain at least one uppercase letter.</b></p>";
-            }
+            const check = (regex, message) => {
+                if (!regex.test(password)) errorMessage += `<p>❌<b>${message}</b></p>`;
+                else successMessage += `<p>✅<b>${message}</b></p>`;
+            };
 
-            if (!specialCharRegex.test(password)) {
-                errorMessage += "<p><b>must contain at least one special character (!@$?*).</b></p>";
-            }
+            check(lengthRegex, "At least 8 chars.");
+            check(uppercaseRegex, "One uppercase letter.");
+            check(specialCharRegex, "One special char (!@$?*).");
 
-            if (errorMessage === "") {
-                input.classList.remove('invalid');
-                document.getElementById("password_error").style.display = "none";
-                document.getElementById("submit-button").disabled = false;
-
-            } else {
-                document.getElementById("submit-button").disabled = true;
-                input.classList.add('invalid');
-                document.getElementById("password_error").innerHTML = errorMessage;
-                document.getElementById("password_error").style.display = "block";
-            }
+            input.classList.toggle('invalid', errorMessage !== "");
+            document.getElementById("password_error").innerHTML = errorMessage;
+            document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
+            document.getElementById("password_").innerHTML = successMessage;
+            document.getElementById("password_").style.display = successMessage ? "block" : "none";
+            document.getElementById("submit-button").disabled = !!errorMessage;
         }
+
+
+
+
         function showNotification() {
             let timerInterval;
             const fiveMinutes = 5 * 60 * 1000;
