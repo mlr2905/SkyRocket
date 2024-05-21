@@ -129,80 +129,8 @@
             box-sizing: border-box;
         }
 
-        body {
-            background-color: #f1f1f1;
-        }
-
-        #regForm {
-            background-color: #ffffff;
-            margin: 100px auto;
-            font-family: Raleway;
-            padding: 40px;
-            width: 70%;
-            min-width: 300px;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        input {
-            padding: 10px;
-            width: 100%;
-            font-size: 17px;
-            font-family: Raleway;
-            border: 1px solid #aaaaaa;
-        }
-
-        /* Mark input boxes that gets an error on validation: */
-        input.invalid {
-            background-color: #ffdddd;
-        }
-
         /* Hide all steps by default: */
-        .tab {
-            display: none;
-        }
-
-        button {
-            background-color: #04AA6D;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 17px;
-            font-family: Raleway;
-            cursor: pointer;
-        }
-
-        button:hover {
-            opacity: 0.8;
-        }
-
-        #prevBtn {
-            background-color: #bbbbbb;
-        }
-
-        /* Make circles that indicate the steps of the form: */
-        .step {
-            height: 15px;
-            width: 15px;
-            margin: 0 2px;
-            background-color: #bbbbbb;
-            border: none;
-            border-radius: 50%;
-            display: inline-block;
-            opacity: 0.5;
-        }
-
-        .step.active {
-            opacity: 1;
-        }
-
-        /* Mark the steps that are finished and valid: */
-        .step.finish {
-            background-color: #04AA6D;
-        }
-
+        
 
         .form-group img {
             width: 35px;
@@ -239,8 +167,12 @@
             <label for="password" style="font-family: 'Varela Round', sans-serif;">Password</label>
 
             <div style="position: relative;">
-                <input type="password" id="password" placeholder="example: Aa12345@" name="password" style="display: block;" oninput="validatePassword(this)" onkeypress="if(this.value.length >= 9) return false;" aria-checked="false" disabled>
-                <img src="/eye.gif" alt="" id="eyeicon" style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                <input type="password" id="password" placeholder="example: Aa12345@" name="password" 
+                style="display: block;" oninput="validatePassword(this)" 
+                pattern="[a-zA-Z0-9@$!%*?&]+" 
+                onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;" 
+                aria-checked="false" disabled>
+                         <img src="/eye.gif" alt="" id="eyeicon" style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
             </div>
             
             <p style="color: rgb(230, 34, 34); display: none; font-family: 'Varela Round', sans-serif;" id="password_error">Must: 8
@@ -516,16 +448,13 @@
                 document.getElementById("email_error").style.display = "none";
                 document.getElementById("password").disabled = false;
                 document.getElementById("password_error").style.display = "block";
-
                 document.getElementById("toggle-auth-type").disabled = false;
 
 
             } else {
                 input.className = 'invalid';
                 document.getElementById("toggle-auth-type").disabled = true;
-
                 document.getElementById("password").disabled = true;
-
                 document.getElementById("email_error").style.display = "block";
                 document.getElementById("email_").style.display = "none";
             }
@@ -552,32 +481,35 @@
         }
 
         function validatePassword(input) {
-            const password = input.value.trim();
-            const lengthRegex = /^.{8,}$/;
-            const uppercaseRegex = /[A-Z]/;
-            const specialCharRegex = /[@$!%*?&]/;
-            let errorMessage = "";
-            let successMessage = "";
-            document.getElementById("email").disabled = true;
-            document.getElementById('Change').style.display = 'block';
+    const password = input.value.trim();
+    const lengthRegex = /^.{8,}$/;
+    const uppercaseRegex = /[A-Z]/;
+    const specialCharRegex = /[@$!%*?&]/;
+    // התבנית הבאה מייחסת רק לתווים באנגלית
+    const englishOnlyRegex = /^[a-zA-Z0-9@$!%*?&]*$/;
+    let errorMessage = "";
+    let successMessage = "";
+    document.getElementById("email").disabled = true;
+    document.getElementById('Change').style.display = 'block';
 
+    const check = (regex, message) => {
+        if (!regex.test(password)) errorMessage += `<p>❌<b>${message}</b></p>`;
+        else successMessage += `<p>✅<b>${message}</b></p>`;
+    };
 
-            const check = (regex, message) => {
-                if (!regex.test(password)) errorMessage += `<p>❌<b>${message}</b></p>`;
-                else successMessage += `<p>✅<b>${message}</b></p>`;
-            };
+    check(lengthRegex, "At least 8 chars.");
+    check(uppercaseRegex, "One uppercase letter.");
+    check(specialCharRegex, "One special char (!@$?*).");
+    // הוסף את הבדיקה של התבנית הרגולרית של התווים באנגלית
+    check(englishOnlyRegex, "English letters and special characters only.");
 
-            check(lengthRegex, "At least 8 chars.");
-            check(uppercaseRegex, "One uppercase letter.");
-            check(specialCharRegex, "One special char (!@$?*).");
-
-            input.classList.toggle('invalid', errorMessage !== "");
-            document.getElementById("password_error").innerHTML = errorMessage;
-            document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
-            document.getElementById("password_").innerHTML = successMessage;
-            document.getElementById("password_").style.display = successMessage ? "block" : "none";
-            document.getElementById("submit-button").disabled = !!errorMessage;
-        }
+    input.classList.toggle('invalid', errorMessage !== "");
+    document.getElementById("password_error").innerHTML = errorMessage;
+    document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
+    document.getElementById("password_").innerHTML = successMessage;
+    document.getElementById("password_").style.display = successMessage ? "block" : "none";
+    document.getElementById("submit-button").disabled = !!errorMessage;
+}
 
 
 

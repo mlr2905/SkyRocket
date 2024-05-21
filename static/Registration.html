@@ -9,27 +9,41 @@
 
     body {
         background-color: #f1f1f1;
+        font-family: 'Varela Round', sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
     }
 
-    #regForm {
-        background-color: #ffffff;
-        margin: 100px auto;
-        font-family: Raleway;
-        padding: 40px;
-        width: 70%;
-        min-width: 300px;
+    .signup-form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
     }
 
     h1 {
         text-align: center;
     }
 
-    input {
-        padding: 10px;
+
+    input[type=email],
+    input[type=password],
+    input[type=text],
+    input[type=number] {
+        font-family: 'Varela Round', sans-serif;
+
         width: 100%;
-        font-size: 17px;
-        font-family: Raleway;
-        border: 1px solid #aaaaaa;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        /* Makes sure padding does not affect overall width */
     }
 
     /* Mark input boxes that gets an error on validation: */
@@ -42,23 +56,25 @@
         display: none;
     }
 
-    button {
-        background-color: #04AA6D;
-        color: #ffffff;
+    button[type=button] {
+        padding: 10px;
         border: none;
-        padding: 10px 20px;
-        font-size: 17px;
-        font-family: Raleway;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: white;
         cursor: pointer;
+        font-size: 16px;
     }
 
-    button:hover {
-        opacity: 0.8;
+    button[type=button]:hover {
+        background-color: #0056b3;
     }
 
-    #prevBtn {
-        background-color: #bbbbbb;
+
+    button[type=button]:hover {
+        background-color: #0056b3;
     }
+
 
     /* Make circles that indicate the steps of the form: */
     .step {
@@ -80,34 +96,85 @@
     .step.finish {
         background-color: #04AA6D;
     }
+
+    .button-container {
+        overflow: auto;
+        position: relative;
+        padding: 10px;
+    }
+
+    #backBtn {
+        float: left;
+    }
+
+    #nextBtn {
+        float: right;
+    }
+
+    .form-group img {
+        width: 35px;
+        cursor: pointer;
+    }
 </style>
 
 <body>
 
-    <form id="regForm" action="/action_page.php">
+    <form class="signup-form" id="login-form">
         <h1>Register:</h1>
         <!-- One "tab" for each step in the form: -->
         <div class="tab">Name:
-            <p><input type="text" placeholder="First name..." oninput="this.className = ''" name="fname" maxlength="30"
-                    pattern="[a-z]{1,30}" title="Please enter up to 30 lowercase letters"></p>
-            <p><input type="text" placeholder="Last name..." oninput="this.className = ''" name="lname" maxlength="30"
-                    pattern="[a-z]{1,30}" title="Please enter up to 30 lowercase letters"></p>
-            <p><input placeholder="E-mail..." oninput="validateEmail(this)"
-                    onkeypress="return /^[a-z@.]+$/.test(event.key)" name="email"></p>
-            <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
-            <p style="color: green; display: none;" id="email_">valid email.</p>
+            <div class="form-group">
+                <p><input type="text" placeholder="First name..." oninput="this.className = ''" name="fname"
+                        maxlength="30" pattern="[a-z]{1,30}" title="Please enter up to 30 lowercase letters"></p>
+                <p><input type="text" placeholder="Last name..." oninput="this.className = ''" name="lname"
+                        maxlength="30" pattern="[a-z]{1,30}" title="Please enter up to 30 lowercase letters"></p>
+                <p><input type="email" placeholder="example@example.com" oninput="validateEmail(this)"
+                        onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" name="email" id="email"></p>
+                <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
+                <p style="color: green; display: none;" id="email_">valid email.</p>
+                <div class="form-group" id="pass" style="display: block">
+                    <label for="password" style="font-family: 'Varela Round', sans-serif;">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="password" placeholder="example: Aa12345@" name="password"
+                            style="display: block;" oninput="validatePassword(this)" pattern="[a-zA-Z0-9@$!%*?&]+"
+                            onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
+                            aria-checked="false" disabled>
+
+                        <img src="/eye.gif" alt="" id="eyeicon"
+                            style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                    </div>
+
+                    </br>
+                <div style="position: relative;display: none;" id="pass2">
+                    <label for="password" style="font-family: 'Varela Round', sans-serif;">Confirm Password</label>
+                    <input type="password" id="password2" placeholder="example: Aa12345@" name="password"
+                         oninput="Checking_passwords(this)"
+                        onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
+                        onpaste="return false;"
+                        aria-checked="false" disabled>
+                        <img src="/eye.gif" alt="" id="eyeicon2"
+                            style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                    </div>
+                    <p style="color: rgb(230, 34, 34); display: none; font-family: 'Varela Round', sans-serif;"
+                        id="password_error">Must: 8
+                        characters-[A-Z]-[a-z]/[0-9]-[!/@/$/?/*]</p>
+                    <p style="color: rgb(10, 179, 49); display: none;" id="password_"></p>
+                </div>
+            </div>
         </div>
 
         <div class="tab">Contact Info:
 
-            <p><input placeholder="Phone..." pattern="05\d{8}"
+            <p><input type="text" placeholder="Phone..." pattern="05\d{8}"
                     title="Please enter a valid phone number starting with '05'" maxlength="10"
                     oninput="validatePhone(this)" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                     name="phone"></p>
             <p style="color: red; display: none;" id="phone_error">Invalid phone. Please enter a valid phone number.</p>
             <p style="color: green; display: none;" id="phone_">valid ID number.</p>
 
-            <p><input type="text" placeholder="ID Number..." name="id_number" oninput="validateIdNumber(this)"  onkeypress="return event.charCode >= 48 && event.charCode <= 57" pattern="[0-9]{9}" minlength="9" maxlength="9"></p>
+            <p><input type="text" placeholder="ID Number..." name="id_number" oninput="validateIdNumber(this)"
+                    onkeypress="return event.charCode >= 48 && event.charCode <= 57" pattern="[0-9]{9}" minlength="9"
+                    maxlength="9"></p>
             <p style="color: red; display: none;" id="id_number_error">Invalid ID number. Please enter a valid ID
                 number.</p>
             <p style="color: green; display: none;" id="id_number">valid ID number.</p>
@@ -130,11 +197,11 @@
             <p><input placeholder="Username..." oninput="this.className = ''" name="uname"></p>
             <p><input placeholder="Password..." oninput="this.className = ''" name="pword" type="password"></p>
         </div>
-        <div style="overflow:auto;">
-            <div style="float:right;">
-                <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-                <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
-            </div>
+        <div class="button-container">
+
+            <button type="button" id="backBtn" onclick="nextPrev(-1)">Back</button>
+            <button type="button" id="nextBtn" onclick="nextPrev(1)" style="display: none;">Next</button>
+        </div>
         </div>
         <!-- Circles which indicates the steps of the form: -->
         <div style="text-align:center;margin-top:40px;">
@@ -146,6 +213,30 @@
     </form>
 
     <script>
+        let eyeicon = document.getElementById("eyeicon");
+        let eyeicon2 = document.getElementById("eyeicon2");
+
+        let password = document.getElementById("password");
+        let password2 = document.getElementById("password2");
+
+
+        eyeicon.addEventListener("click", () => {
+            if (password.type == "password") {
+                password.type = "text";
+                password2.type = "text";
+                eyeicon.src = "/eye.png";
+                eyeicon2.src = "/eye.png";
+
+
+            } else {
+                password.type = "password";
+                password2.type = "password";
+                eyeicon.src = "/eye.gif";
+                eyeicon2.src = "/eye.gif";
+
+
+            }
+        })
         var currentTab = 0; // Current tab is set to be the first tab (0)
         showTab(currentTab); // Display the current tab
 
@@ -153,11 +244,11 @@
             // This function will display the specified tab of the form...
             var x = document.getElementsByClassName("tab");
             x[n].style.display = "block";
-            //... and fix the Previous/Next buttons:
+            //... and fix the Back/Next buttons:
             if (n == 0) {
-                document.getElementById("prevBtn").style.display = "none";
+                document.getElementById("backBtn").style.display = "none";
             } else {
-                document.getElementById("prevBtn").style.display = "inline";
+                document.getElementById("backBtn").style.display = "inline";
             }
             if (n == (x.length - 1)) {
                 document.getElementById("nextBtn").innerHTML = "Submit";
@@ -180,7 +271,7 @@
             // if you have reached the end of the form...
             if (currentTab >= x.length) {
                 // ... the form gets submitted:
-                document.getElementById("regForm").submit();
+                document.getElementById("signup-form").submit();
                 return false;
             }
             // Otherwise, display the correct tab:
@@ -260,28 +351,28 @@
 
         // פונקציה שמתבצעת כאשר מתבצעת הקלטה בשדה
         function validateIdNumber(input) {
-    // קבלת הערך של ה-ID number מהשדה
-    let inputNumber = input.value.trim();
+            // קבלת הערך של ה-ID number מהשדה
+            let inputNumber = input.value.trim();
 
-    // בדיקה האם הערך תקין
-    if (/^\d{9}$/.test(inputNumber)) {
-        // התראה על תוקף המספר
-        if (checkIdNumber(inputNumber)) {
-            input.className = '';
-            document.getElementById("id_number_error").style.display = "none";
-            document.getElementById("id_number").style.display = "block";
-        } else {
-            input.className = 'invalid';
-            document.getElementById("id_number_error").style.display = "block";
-            document.getElementById("phone_").style.display = "none";
+            // בדיקה האם הערך תקין
+            if (/^\d{9}$/.test(inputNumber)) {
+                // התראה על תוקף המספר
+                if (checkIdNumber(inputNumber)) {
+                    input.className = '';
+                    document.getElementById("id_number_error").style.display = "none";
+                    document.getElementById("id_number").style.display = "block";
+                } else {
+                    input.className = 'invalid';
+                    document.getElementById("id_number_error").style.display = "block";
+                    document.getElementById("phone_").style.display = "none";
+                }
+            } else {
+                input.className = 'invalid';
+                // התראה על אורך לא תקין או תווים לא תקינים
+                document.getElementById("id_number_error").style.display = "block";
+                document.getElementById("phone_").style.display = "none";
+            }
         }
-    } else {
-        input.className = 'invalid';
-        // התראה על אורך לא תקין או תווים לא תקינים
-        document.getElementById("id_number_error").style.display = "block";
-        document.getElementById("phone_").style.display = "none";
-    }
-}
         // הוספת אירוע 'change' לשדה ה-ID number
         document.getElementsByName("id_number")[0].addEventListener("change", validateIdNumber);
 
@@ -302,25 +393,75 @@
 
             }
         }
-
         function validateEmail(input) {
             const email = input.value.trim();
-            const emailRegex = /^[a-z]+@[a-z]+\.[a-z]+$/;
+            const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
             if (emailRegex.test(email)) {
                 input.className = '';
                 document.getElementById("email_").style.display = "block";
                 document.getElementById("email_error").style.display = "none";
+                document.getElementById("password").disabled = false;
+                document.getElementById("password2").disabled = false;
+                document.getElementById("password_error").style.display = "block";
+                document.getElementById("toggle-auth-type").disabled = false;
 
 
             } else {
                 input.className = 'invalid';
+                document.getElementById("password").disabled = true;
+                document.getElementById("password2").disabled = true;
                 document.getElementById("email_error").style.display = "block";
                 document.getElementById("email_").style.display = "none";
-
-
             }
         }
 
+        function validatePassword(input) {
+            const password = input.value.trim();
+            const lengthRegex = /^.{8,}$/;
+            const uppercaseRegex = /[A-Z]/;
+            const specialCharRegex = /[@$!%*?&]/;
+            let errorMessage = "";
+            let successMessage = "";
+            document.getElementById("email").disabled = true;
+            const check = (regex, message) => {
+                if (!regex.test(password)) errorMessage += `<p>❌<b>${message}</b></p>`;
+                else successMessage += `<p>✅<b>${message}</b></p>`;
+            };
+
+            check(lengthRegex, "At least 8 chars.");
+            check(uppercaseRegex, "One uppercase letter.");
+            check(specialCharRegex, "One special char (!@$?*).");
+
+            input.classList.toggle('invalid', errorMessage !== "");
+            document.getElementById("password_error").innerHTML = errorMessage;
+            document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
+            document.getElementById("password_").innerHTML = successMessage;
+            document.getElementById("password_").style.display = successMessage ? "block" : "none";
+            document.getElementById("pass2").style.display = errorMessage ? "none" : "block";
+
+          
+        }
+        function Checking_passwords() {
+            
+            
+            const password = document.getElementById('password').value;
+            const password2 = document.getElementById('password2').value;
+            
+            if (password === password2) {
+                document.getElementById("password_").innerHTML = `<p>✅<b>The passwords are the same</b></p>`;
+                document.getElementById("password_error").style.display = "block" ? "none" : "none";
+                document.getElementById("password_").style.display = "none" ? "block" : "none";
+                document.getElementById("nextBtn").style.display = "none" ? "block" : "none";
+
+
+
+            } else {
+                document.getElementById("password_error").innerHTML = `<p>❌<b>The passwords are not the same</b></p>`;
+                document.getElementById("password_error").style.display = "none" ? "block" : "none";
+                document.getElementById("password_").style.display = "block" ? "none" : "none";
+            }
+
+        }
         function checkCreditCardValidity(input) {
             let CardNumber = input.value.trim();
 

@@ -55,7 +55,7 @@ function getTimeZoneByIP(ip) {
 
 
 
-app.get('*', async (req, res, next) => {
+app.get('/ss', async (req, res, next) => {
     try {
 
 
