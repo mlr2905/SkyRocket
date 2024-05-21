@@ -63,7 +63,9 @@ router.post('/validation', async (request, response) => {
         else {
             console.log("r user", datas.token);
 
-
+if (condition) {
+    
+}
             const token = datas.jwt
             response.cookie('sky', token, {
                 httpOnly: true,

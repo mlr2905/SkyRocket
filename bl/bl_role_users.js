@@ -69,9 +69,9 @@ async function login_code(email, code) {
 
     }
 
-  } catch (error) {
-    console.error('Error:', error);
-    return false;
+  } catch (e) {
+    console.error({"e":"yes","error" :e});
+    return {"e":"yes","error" :e};
   }
 }
 
