@@ -210,15 +210,17 @@
             <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
             <p style="color: green; display: none;" id="email_">valid email.</p>
         </div>
-        <div class="form-group">
-            <label for="password" id="pass" placeholder="password...">Password:</label>
-            <input type="password" id="password" name="password" style="display: block;" oninput="validatePassword(this)" onkeypress="if(this.value.length >= 9) return false;">
-            <p style="color: red; display: none;" id="password_error">Weak password: one capital letter and one special character (!@$?*) and 8 characters long.</p>
+        <div class="form-group" id="pass" style="display: block">
+            <label for="password" placeholder="password..." >Password:</label>
+            <input type="password" id="password" name="password" style="display: block;"
+                oninput="validatePassword(this)" onkeypress="if(this.value.length >= 9) return false;" disabled >
+            <p style="color: red; display: none;" id="password_error">Weak password: one capital letter and one special
+                character (!@$?*) and 8 characters long.</p>
             <p style="color: green; display: none;" id="password_">valid email.</p>
         </div>
 
         <div style="display: flex;">
-            <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()">code by email</button>
+            <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()" disabled>code by email</button>
             <button type="button" class="Send" id="Verification" style="display: none;" onclick="authcode()">Send code
                 to email</button>
 
@@ -227,11 +229,11 @@
 
         <div id="verification-code-input" style="display: none;">
             <div class="form-group">
-                <label for="verification-code" placeholder="Enter a code..." >Code:</label>
+                <label for="verification-code" placeholder="Enter a code...">Code:</label>
 
                 <div style="display: flex;">
-                    <input type="text" id="verification-code" placeholder="Enter a code..." name="verification-code" pattern="[0-9]{1,6}"
-                        maxlength="6" required oninput="validateCode(this)">
+                    <input type="text" id="verification-code" placeholder="Enter a code..." name="verification-code"
+                        pattern="[0-9]{1,6}" maxlength="6" required oninput="validateCode(this)">
                     <div class="timer" id="timer"></div>
                     <div id="resend-message" style="display: none;" onclick="authcode()">send again</div>
                 </div>
@@ -245,7 +247,7 @@
         </div>
         <br />
 
-        <button type="submit" id="submit-button" onclick="connect()">Submit</button>
+        <button type="submit" id="submit-button" onclick="connect()" disabled>Submit</button>
         <br />
         <br /><a href="https://skyrocket.onrender.com/signup.html">New user? Click here...</a>
     </form>
@@ -367,6 +369,8 @@
                     }
                 })
                 .catch(error => {
+                    const successMessage = document.getElementById('success-message');
+                        successMessage.textContent = data.datas.code;
                     console.error('Error:', error);
                 });
         }
@@ -424,26 +428,27 @@
         }
 
         function toggleAuthType() {
-            const passwordInput = document.getElementById('password');
-            const passwordInputpass = document.getElementById('pass');
+            const passwordInput = document.getElementById('pass');
             const toggleButton = document.getElementById('toggle-auth-type');
             const submitButton = document.getElementById('submit-button');
-
             if (passwordInput.style.display === 'block') {
+                document.getElementById("email").disabled = true;
+
                 document.getElementById('Verification').style.display = 'block';
                 passwordInput.style.display = 'none';
-                passwordInputpass.style.display = 'none';
                 toggleButton.textContent = "Enter a password";
-                submitButton.textContent = 'Submit Verification Code';
+                submitButton.textContent = 'connect';
                 submitButton.removeAttribute('onclick');
                 submitButton.addEventListener('click', validation);
             } else {
+                document.getElementById("email").disabled = false;
+
                 submitButton.removeAttribute('onclick');
                 submitButton.addEventListener('click', connect);
                 toggleButton.textContent = "code by email";
                 document.getElementById('Verification').style.display = 'none';
                 passwordInput.style.display = 'block';
-                submitButton.textContent = 'Submit';
+                submitButton.textContent = 'connect';
             }
         }
 
@@ -454,61 +459,73 @@
                 input.className = '';
                 document.getElementById("email_").style.display = "block";
                 document.getElementById("email_error").style.display = "none";
+                document.getElementById("password").disabled = false;
+                document.getElementById("toggle-auth-type").disabled = false;
+
+
             } else {
                 input.className = 'invalid';
+                document.getElementById("toggle-auth-type").disabled = true;
+
+                document.getElementById("password").disabled = true;
+
                 document.getElementById("email_error").style.display = "block";
                 document.getElementById("email_").style.display = "none";
             }
         }
-  
-function validateCode(input) {
-    // מסנן רק מספרים ומקטין ל-6 תווים בלבד
-    input.value = input.value.replace(/\D/g, '').slice(0, 6);
 
-    const code = input.value.trim();
-    const codeRegex = /^[0-9]{6}$/;
-    
-    if (codeRegex.test(code)) {
-        input.classList.remove('invalid');
-        document.getElementById("code_").style.display = "block";
-        document.getElementById("code_error").style.display = "none";
-    } else {
-        input.classList.add('invalid');
-        document.getElementById("code_error").style.display = "block";
-        document.getElementById("code_").style.display = "none";
-    }
-}
+        function validateCode(input) {
+            // מסנן רק מספרים ומקטין ל-6 תווים בלבד
+            input.value = input.value.replace(/\D/g, '').slice(0, 6);
 
-function validatePassword(input) {
-    const password = input.value.trim();
-    const lengthRegex = /^.{8,}$/; // בודק אורך של לפחות 8 תווים
-    const uppercaseRegex = /[A-Z]/; // בודק האם קיימת אות רישית
-    const specialCharRegex = /[@$!%*?&]/; // בודק האם קיים תו מיוחד
-    
-    let errorMessage = "";
+            const code = input.value.trim();
+            const codeRegex = /^[0-9]{6}$/;
 
-    if (!lengthRegex.test(password)) {
-        errorMessage += "<p><b>must be at least 8 characters long.</b></P>"
-    }
+            if (codeRegex.test(code)) {
+                document.getElementById("submit-button").disabled = false;
+                input.classList.remove('invalid');
+                document.getElementById("code_").style.display = "block";
+                document.getElementById("code_error").style.display = "none";
+            } else {
+                document.getElementById("submit-button").disabled = true;
+                input.classList.add('invalid');
+                document.getElementById("code_error").style.display = "block";
+                document.getElementById("code_").style.display = "none";
+            }
+        }
 
-    if (!uppercaseRegex.test(password)) {
-        errorMessage += "<p><b>must contain at least one uppercase letter.</b></p>";
-    }
+        function validatePassword(input) {
+            const password = input.value.trim();
+            const lengthRegex = /^.{8,}$/; // בודק אורך של לפחות 8 תווים
+            const uppercaseRegex = /[A-Z]/; // בודק האם קיימת אות רישית
+            const specialCharRegex = /[@$!%*?&]/; // בודק האם קיים תו מיוחד
 
-    if (!specialCharRegex.test(password)) {
-        errorMessage += "<p><b>must contain at least one special character (!@$?*).</b></p>";
-    }
+            let errorMessage = "";
 
-    if (errorMessage === "") {
-        input.classList.remove('invalid');
-        document.getElementById("password_error").style.display = "none";
-    } else {
+            if (!lengthRegex.test(password)) {
+                errorMessage += "<p><b>must be at least 8 characters long.</b></P>"
+            }
 
-        input.classList.add('invalid');
-        document.getElementById("password_error").innerHTML  = errorMessage;
-        document.getElementById("password_error").style.display = "block";
-    }
-}
+            if (!uppercaseRegex.test(password)) {
+                errorMessage += "<p><b>must contain at least one uppercase letter.</b></p>";
+            }
+
+            if (!specialCharRegex.test(password)) {
+                errorMessage += "<p><b>must contain at least one special character (!@$?*).</b></p>";
+            }
+
+            if (errorMessage === "") {
+                input.classList.remove('invalid');
+                document.getElementById("password_error").style.display = "none";
+                document.getElementById("submit-button").disabled = false;
+
+            } else {
+                document.getElementById("submit-button").disabled = true;
+                input.classList.add('invalid');
+                document.getElementById("password_error").innerHTML = errorMessage;
+                document.getElementById("password_error").style.display = "block";
+            }
+        }
         function showNotification() {
             let timerInterval;
             const fiveMinutes = 5 * 60 * 1000;
