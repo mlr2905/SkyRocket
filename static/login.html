@@ -20,7 +20,7 @@
             height: 100vh;
             margin: 0;
         }
-   
+
 
         .LOGIN-form {
             background-color: #fff;
@@ -34,7 +34,7 @@
         .form-group {
             font-family: 'Varela Round', sans-serif;
             margin-bottom: 15px;
-            
+
         }
 
         label {
@@ -72,6 +72,15 @@
 
         button[type=button]:hover {
             background-color: #0056b3;
+        }
+
+        #Verification {
+            background-color: #20acc1;
+
+        }
+
+        #Verification:hover {
+            background-color: rgb(54, 113, 84);
         }
 
         .change {
@@ -130,14 +139,60 @@
         }
 
         /* Hide all steps by default: */
-        
+
 
         .form-group img {
             width: 35px;
             cursor: pointer;
         }
-        #Change{
+
+        #Change {
             cursor: pointer;
+        }
+
+        .green-text {
+            color: rgb(54, 113, 84);
+        }
+
+        .green-v {
+            color: rgb(60, 120, 85);
+            font-size: 16px;
+        }
+
+        .red-x {
+            color: rgb(222, 0, 45);
+            font-size: 20px;
+
+        }
+
+        .red-text {
+            color: rgb(222, 0, 45);
+        }
+
+        .reduced-line-height p {
+            line-height: 6px;
+            /* Adjust this value to change the line spacing in pixels */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .button-container button {
+            font-family: 'Varela Round', sans-serif;
+        }
+        div:disabled,
+        button:disabled,
+        input:disabled{
+            cursor: not-allowed;
+        }
+
+        /* לעצב אלמנטים שנראים כמו disabled div אך אין להם מאפיין disabled */
+        .disabled {
+            cursor: not-allowed;
+            pointer-events: none; /* לבטל אינטראקציה */
+            opacity: 0.6; /* אופציונלי: להראות שהאלמנט מנוטרל */
         }
     </style>
 </head>
@@ -149,43 +204,54 @@
     <form class="LOGIN-form" id="login-form">
         <h2>Log in to your account</h2>
 
-        <p class="css-18pc7rp e5i1odf4">Don't have an account?<a href="https://skyrocket.onrender.com/signup.html">&nbsp;Sign Up</a></p>
-      
+        <p class="css-18pc7rp e5i1odf4">Don't have an account?<a
+                href="https://skyrocket.onrender.com/signup.html">&nbsp;Sign Up</a></p>
+
         <div class="form-group">
-            <label for="email" style="font-family: 'Varela Round', sans-serif;">Email:</label>
+            <label for="email" style="font-family: 'Varela Round', sans-serif;">Email</label>
             <div style="position: relative;">
-                <input type="email" placeholder="example@example.com" 
-                       oninput="validateEmail(this)"
-                       onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" 
-                       name="email" id="email">
-                <a id="Change" onclick="changeText()"  style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);color: blue; display: none">Change</a>
+                <input type="email" placeholder="example@example.com" oninput="validateEmail(this)"
+                    onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" name="email" id="email">
+                <a id="Change" onclick="changeText()"
+                    style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);color: blue; display: none">Change</a>
             </div>
-            <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
-            <p style="color: rgb(10, 179, 49); display: none;" id="email_">valid email.</p>
+            <p style="display: none;" id="email_error"><b class="red-x">&#10006;</b>
+                <spam class="red-text">Invalid email. Please enter a valid email.</spam>
+            </p>
+            <p style="display: none;" id="email_"><b class="green-v">&#10004;</b>
+                <spam class="green-text">valid email.</spam>
+            </p>
+
         </div>
         <div class="form-group" id="pass" style="display: block">
             <label for="password" style="font-family: 'Varela Round', sans-serif;">Password</label>
 
             <div style="position: relative;">
-                <input type="password" id="password" placeholder="example: Aa12345@" name="password" 
-                style="display: block;" oninput="validatePassword(this)" 
-                pattern="[a-zA-Z0-9@$!%*?&]+" 
-                onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;" 
-                aria-checked="false" disabled>
-                         <img src="/eye.gif" alt="" id="eyeicon" style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                <input type="password" id="password" placeholder="example: Aa12345@" name="password"
+                    style="display: block;" oninput="validatePassword(this)" pattern="[a-zA-Z0-9@$!%*?&]+"
+                    onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
+                    aria-checked="false" disabled>
+                <img src="/eye.gif" alt="" id="eyeicon"
+                    style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
             </div>
-            
-            <p style="color: rgb(230, 34, 34); display: none; font-family: 'Varela Round', sans-serif;" id="password_error">Must: 8
-                characters-[A-Z]-[a-z]/[0-9]-[!/@/$/?/*]</p>
-            <p style="color: rgb(10, 179, 49); display: none;" id="password_"></p>
+
+            <div class="reduced-line-height">
+                <p style="color: rgb(222, 0, 45); display: none; font-family: 'Varela Round', sans-serif;"
+                    id="password_error">Must: 8
+                    characters-[A-Z]-[a-z]/[0-9]-[!/@/$/?/*]</p>
+                <p style="display: none;" id="password_"></p>
+
+            </div>
         </div>
 
-        <div style="display: flex;">
-            <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()"  disabled>code by
+        <div class="button-container">
+            <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()" disabled>code by
                 email</button>
+            <p style="display: none;" id="pass_">
+                <a id="forgot-password-link" href="#">&nbsp;Forgot Password?</a>
+            </p>
             <button type="button" class="Send" id="Verification" style="display: none;" onclick="authcode()">Send code
                 to email</button>
-
         </div>
         <br />
 
@@ -197,24 +263,28 @@
                     <input type="text" id="verification-code" placeholder="Enter a code..." name="verification-code"
                         pattern="[0-9]{1,6}" maxlength="6" required oninput="validateCode(this)">
                     <div class="timer" id="timer"></div>
-                    <div id="resend-message" style="display: none; font-family: 'Varela Round', sans-serif;" onclick="authcode()">send again</div>
+                    <div id="resend-message" style="display: none; font-family: 'Varela Round', sans-serif;"
+                        onclick="authcode()">send again</div>
                 </div>
             </div>
         </div>
-        <p style="color: red; display: none;" id="code_error">Invalid code. Please enter a valid code.</p>
-        <p style="color: rgb(10, 179, 49); display: none;" id="code_">valid code.</p>
+        <p style=" display: none;" id="code_error"><b class="red-x">&#10006;</b>
+            <spam class="red-text">Invalid code. Please enter a valid code.</spam>
+        </p>
+        <p style="display: none;" id="code_"><b class="green-v">&#10004;</b>
+            <spam class="green-text">valid code.</spam>
+        </p>
         <div style="display: flex;">
             <div id="success-message" style="display: none;"></div>
             <div class="timer" id="timer_"></div>
         </div>
-        <br />
 
         <button type="submit" id="submit-button" onclick="connect()" disabled>Connect</button>
-        <br />
+
     </form>
 
     <script>
-        function changeText(){
+        function changeText() {
             document.getElementById("email").disabled = false;
             document.getElementById('Change').style.display = 'none';
         }
@@ -415,12 +485,13 @@
         }
 
         function toggleAuthType() {
+            document.getElementById("email_").style.display = "none";
             const passwordInput = document.getElementById('pass');
             const toggleButton = document.getElementById('toggle-auth-type');
             const submitButton = document.getElementById('submit-button');
             if (passwordInput.style.display === 'block') {
                 document.getElementById("email").disabled = true;
-
+                document.getElementById("pass_").style.display = "none";
                 document.getElementById('Verification').style.display = 'block';
                 passwordInput.style.display = 'none';
                 toggleButton.textContent = "Enter a password";
@@ -429,6 +500,7 @@
                 submitButton.addEventListener('click', validation);
             } else {
                 document.getElementById("email").disabled = false;
+                document.getElementById("pass_").style.display = "block";
 
                 submitButton.removeAttribute('onclick');
                 submitButton.addEventListener('click', connect);
@@ -440,10 +512,16 @@
         }
 
         function validateEmail(input) {
+            const emailInput = document.getElementById('email');
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const emailhref = encodeURIComponent(emailInput.value);
             const email = input.value.trim();
             const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
             if (emailRegex.test(email)) {
                 input.className = '';
+                document.getElementById("pass_").style.display = "block";
+
+                forgotPasswordLink.href = `https://skyrocket.onrender.com/password?email=${emailhref}`;
                 document.getElementById("email_").style.display = "block";
                 document.getElementById("email_error").style.display = "none";
                 document.getElementById("password").disabled = false;
@@ -452,6 +530,8 @@
 
 
             } else {
+                forgotPasswordLink.href = "#";
+                document.getElementById("pass_").style.display = "none";
                 input.className = 'invalid';
                 document.getElementById("toggle-auth-type").disabled = true;
                 document.getElementById("password").disabled = true;
@@ -481,35 +561,42 @@
         }
 
         function validatePassword(input) {
-    const password = input.value.trim();
-    const lengthRegex = /^.{8,}$/;
-    const uppercaseRegex = /[A-Z]/;
-    const specialCharRegex = /[@$!%*?&]/;
-    // התבנית הבאה מייחסת רק לתווים באנגלית
-    const englishOnlyRegex = /^[a-zA-Z0-9@$!%*?&]*$/;
-    let errorMessage = "";
-    let successMessage = "";
-    document.getElementById("email").disabled = true;
-    document.getElementById('Change').style.display = 'block';
+            document.getElementById("email_").style.display = "none";
 
-    const check = (regex, message) => {
-        if (!regex.test(password)) errorMessage += `<p>❌<b>${message}</b></p>`;
-        else successMessage += `<p>✅<b>${message}</b></p>`;
-    };
+            const password = input.value.trim();
+            const lengthRegex = /^.{8,}$/;
+            const LowerCase = /[a-z]/;
+            const uppercaseRegex = /[A-Z]/;
+            const Numbers = /[0-9]/
+            const specialCharRegex = /[@$!%*?&]/;
 
-    check(lengthRegex, "At least 8 chars.");
-    check(uppercaseRegex, "One uppercase letter.");
-    check(specialCharRegex, "One special char (!@$?*).");
-    // הוסף את הבדיקה של התבנית הרגולרית של התווים באנגלית
-    check(englishOnlyRegex, "English letters and special characters only.");
+            // התבנית הבאה מייחסת רק לתווים באנגלית
+            const englishOnlyRegex = /^[a-zA-Z0-9@$!%*?&]*$/;
+            let errorMessage = "";
+            let successMessage = "";
+            document.getElementById("email").disabled = true;
+            document.getElementById('Change').style.display = 'block';
 
-    input.classList.toggle('invalid', errorMessage !== "");
-    document.getElementById("password_error").innerHTML = errorMessage;
-    document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
-    document.getElementById("password_").innerHTML = successMessage;
-    document.getElementById("password_").style.display = successMessage ? "block" : "none";
-    document.getElementById("submit-button").disabled = !!errorMessage;
-}
+            const check = (regex, message) => {
+                if (!regex.test(password)) errorMessage += `<p><b class="red-x">&#10006;</b> <spam class ="red-text">${message}</spam></P>`;
+                else successMessage += `<p><b class="green-v">&#10004;</b> <spam class ="green-text">${message}</spam></P>`;
+            };
+
+            check(lengthRegex, "At least 8 characters");
+            check(LowerCase, "LowerCase letters (a-z)");
+            check(uppercaseRegex, "Upper case letters (A-Z)");
+            check(Numbers, "Numbers (0-9)");
+            check(specialCharRegex, "Special characters (!@$?*)");
+
+            // הוסף את הבדיקה של התבנית הרגולרית של התווים באנגלית
+
+            input.classList.toggle('invalid', errorMessage !== "");
+            document.getElementById("password_error").innerHTML = errorMessage;
+            document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
+            document.getElementById("password_").innerHTML = successMessage;
+            document.getElementById("password_").style.display = successMessage ? "block" : "none";
+            document.getElementById("submit-button").disabled = !!errorMessage;
+        }
 
 
 
