@@ -8,18 +8,21 @@
     }
 
     body {
-        background-color: #f1f1f1;
-        font-family: 'Varela Round', sans-serif;
-        background-color: #f4f4f4;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
+            font-family: 'Varela Round', sans-serif;
+            background-image: url("plane.jpg");
+            background-repeat: no-repeat;
+            background-size: 99.9% 99.9%;
+            background-position: center;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
     .signup-form {
-        background-color: #fff;
+        background-color: #cbe3f5c1;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -115,6 +118,21 @@
         width: 35px;
         cursor: pointer;
     }
+
+    div:disabled,
+    button:disabled,
+    input:disabled {
+        cursor: not-allowed;
+    }
+
+    /* לעצב אלמנטים שנראים כמו disabled div אך אין להם מאפיין disabled */
+    .disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+        /* לבטל אינטראקציה */
+        opacity: 0.6;
+        /* אופציונלי: להראות שהאלמנט מנוטרל */
+    }
 </style>
 
 <body>
@@ -145,20 +163,21 @@
                     </div>
 
                     </br>
-                <div style="position: relative;display: none;" id="pass2">
-                    <label for="password" style="font-family: 'Varela Round', sans-serif;">Confirm Password</label>
-                    <input type="password" id="password2" placeholder="example: Aa12345@" name="password"
-                         oninput="Checking_passwords(this)"
-                        onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
-                        onpaste="return false;"
-                        aria-checked="false" disabled>
+                    <div style="position: relative;display: none;" id="pass2">
+                        <label for="password" style="font-family: 'Varela Round', sans-serif;">Confirm Password</label>
+                        <input type="password" id="password2" placeholder="example: Aa12345@" name="password"
+                            oninput="Checking_passwords(this)"
+                            onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
+                            onpaste="return false;" aria-checked="false" disabled>
                         <img src="/eye.gif" alt="" id="eyeicon2"
                             style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
                     </div>
-                    <p style="color: rgb(230, 34, 34); display: none; font-family: 'Varela Round', sans-serif;"
-                        id="password_error">Must: 8
-                        characters-[A-Z]-[a-z]/[0-9]-[!/@/$/?/*]</p>
-                    <p style="color: rgb(10, 179, 49); display: none;" id="password_"></p>
+                    <div class="reduced-line-height">
+                        <p style="color: rgb(222, 0, 45); display: none; font-family: 'Varela Round', sans-serif;"
+                            id="password_error">Must: 8
+                            characters-[A-Z]-[a-z]/[0-9]-[!/@/$/?/*]</p>
+                        <p style="display: none;" id="password_"></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -416,37 +435,50 @@
         }
 
         function validatePassword(input) {
+            function validatePassword(input) {
+            document.getElementById("email_").style.display = "none";
             const password = input.value.trim();
             const lengthRegex = /^.{8,}$/;
+            const LowerCase = /[a-z]/;
             const uppercaseRegex = /[A-Z]/;
+            const Numbers = /[0-9]/
             const specialCharRegex = /[@$!%*?&]/;
+
+            // התבנית הבאה מייחסת רק לתווים באנגלית
+            const englishOnlyRegex = /^[a-zA-Z0-9@$!%*?&]*$/;
             let errorMessage = "";
             let successMessage = "";
             document.getElementById("email").disabled = true;
+            document.getElementById('Change').style.display = 'block';
+
             const check = (regex, message) => {
-                if (!regex.test(password)) errorMessage += `<p>❌<b>${message}</b></p>`;
-                else successMessage += `<p>✅<b>${message}</b></p>`;
+                if (!regex.test(password)) errorMessage += `<p><b class="red-x">&#10006;</b> <spam class ="red-text">${message}</spam></P>`;
+                else successMessage += `<p><b class="green-v">&#10004;</b> <spam class ="green-text">${message}</spam></P>`;
             };
 
-            check(lengthRegex, "At least 8 chars.");
-            check(uppercaseRegex, "One uppercase letter.");
-            check(specialCharRegex, "One special char (!@$?*).");
+            check(lengthRegex, "At least 8 characters");
+            check(LowerCase, "LowerCase letters (a-z)");
+            check(uppercaseRegex, "Upper case letters (A-Z)");
+            check(Numbers, "Numbers (0-9)");
+            check(specialCharRegex, "Special characters (!@$?*)");
+
+            // הוסף את הבדיקה של התבנית הרגולרית של התווים באנגלית
 
             input.classList.toggle('invalid', errorMessage !== "");
             document.getElementById("password_error").innerHTML = errorMessage;
             document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
             document.getElementById("password_").innerHTML = successMessage;
             document.getElementById("password_").style.display = successMessage ? "block" : "none";
-            document.getElementById("pass2").style.display = errorMessage ? "none" : "block";
+            document.getElementById("submit-button").disabled = !!errorMessage;
+        }
 
-          
         }
         function Checking_passwords() {
-            
-            
+
+
             const password = document.getElementById('password').value;
             const password2 = document.getElementById('password2').value;
-            
+
             if (password === password2) {
                 document.getElementById("password_").innerHTML = `<p>✅<b>The passwords are the same</b></p>`;
                 document.getElementById("password_error").style.display = "block" ? "none" : "none";
