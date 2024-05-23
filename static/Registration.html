@@ -36,7 +36,6 @@
 
     input {
         font-family: 'Varela Round', sans-serif;
-
         width: 100%;
         padding: 10px;
         border: 1px solid #ddd;
@@ -184,9 +183,15 @@
             gap: 5px;
         }
         .extra-inputs input {
-            width: 50px; /* Adjust width as needed */
+            width: 70px; /* Adjust width as needed */
             text-align: center;
-        }
+            /* border: none; 
+            outline: none; */
+            height: 30px; /* Ensure consistent height */
+
+            padding: 0; /* Remove padding for alignment */
+            box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+                }
 </style>
 
 <body>
@@ -263,9 +268,10 @@
                        pattern="\d{16}" maxlength="16" minlength="16" name="credit_card"
                        onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                     <div class="extra-inputs">
-                        <input type="text" id="expiry_date" name="expiry_date" placeholder="MMYY" 
-                               pattern="\d{4}" maxlength="4" minlength="4" required
-                               onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                        <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" 
+                        pattern="\d{4}" maxlength="4" minlength="4" required
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+
                         <input type="text" id="cvv" name="cvv" placeholder="CVV" 
                                pattern="\d{3}" maxlength="3" minlength="3" required
                                onkeypress="return event.charCode >= 48 && event.charCode <= 57">
@@ -308,6 +314,7 @@
     </form>
 
     <script>
+        
         let eyeicon = document.getElementById("eyeicon");
         let eyeicon2 = document.getElementById("eyeicon2");
 
