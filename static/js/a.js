@@ -190,7 +190,7 @@ function toggleAuthType() {
     document.getElementById("email_").style.display = "none";
     const passwordInput = document.getElementById('pass');
     const toggleButton = document.getElementById('toggle-auth-type');
-    const submitButton = document.getElementById('submit-button');
+    const submitButton = document.getElementById('connect-button');
     if (passwordInput.style.display === 'block') {
         document.getElementById("email").disabled = true;
         document.getElementById("pass_").style.display = "none";
@@ -200,10 +200,11 @@ function toggleAuthType() {
         submitButton.textContent = 'connect';
         submitButton.removeAttribute('onclick');
         submitButton.addEventListener('click', validation);
+        document.getElementById('connect-button').className =  'connect';
+
     } else {
         document.getElementById("email").disabled = false;
         document.getElementById("pass_").style.display = "block";
-
         submitButton.removeAttribute('onclick');
         submitButton.addEventListener('click', connect);
         toggleButton.textContent = "code by email";
@@ -221,24 +222,23 @@ function validateEmail(input) {
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
     if (emailRegex.test(email)) {
         input.className = '';
+        document.getElementById('toggle-auth-type').className = 'change2';
         document.getElementById("pass_").style.display = "block";
-
         forgotPasswordLink.href = `https://skyrocket.onrender.com/password?email=${emailhref}`;
         document.getElementById("email_").style.display = "block";
         document.getElementById("email_error").style.display = "none";
         document.getElementById("password").disabled = false;
         document.getElementById("password_error").style.display = "block";
         document.getElementById("toggle-auth-type").disabled = false;
-
-
     } else {
+        document.getElementById('toggle-auth-type').className = 'change';
         forgotPasswordLink.href = "#";
         document.getElementById("pass_").style.display = "none";
         input.className = 'invalid';
         document.getElementById("toggle-auth-type").disabled = true;
         document.getElementById("password").disabled = true;
         document.getElementById("email_error").style.display = "block";
-        document.getElementById("email_").style.display = "none";
+        document.getElementById("email_").style.display = "none"
     }
 }
 
@@ -250,12 +250,16 @@ function validateCode(input) {
     const codeRegex = /^[0-9]{6}$/;
 
     if (codeRegex.test(code)) {
-        document.getElementById("submit-button").disabled = false;
+        document.getElementById("connect-button").disabled = false;
         input.classList.remove('invalid');
         document.getElementById("code_").style.display = "block";
         document.getElementById("code_error").style.display = "none";
+        document.getElementById('connect-button').className = 'connect2';
+
+
     } else {
-        document.getElementById("submit-button").disabled = true;
+        document.getElementById('connect-button').className = 'connect';
+        document.getElementById("connect-button").disabled = true;
         input.classList.add('invalid');
         document.getElementById("code_error").style.display = "block";
         document.getElementById("code_").style.display = "none";
@@ -299,7 +303,11 @@ function validatePassword(input) {
     document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
     document.getElementById("password_").innerHTML = successMessage;
     document.getElementById("password_").style.display = successMessage ? "block" : "none";
-    document.getElementById("submit-button").disabled = !!errorMessage;
+    document.getElementById("connect-button").disabled = !!errorMessage;
+    document.getElementById('connect-button').className = !!errorMessage ? 'connect' : 'connect2';
+
+
+
 }
 
 

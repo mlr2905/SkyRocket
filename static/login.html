@@ -14,201 +14,248 @@
     <!-- class -->
     <script src="js/a.js"></script>
 </head>
-    <style>
-        body {
-            font-family: 'Varela Round', sans-serif;
-            background-image: url("plane.jpg");
-            background-repeat: no-repeat;
-            background-size: 99.9% 99.9%;
-            background-position: center;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+<style>
+    body {
+        font-family: 'Varela Round', sans-serif;
+        background-image: url("plane.jpg");
+        background-repeat: no-repeat;
+        background-size: 99.9% 99.9%;
+        background-position: center;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
 
 
-        .LOGIN-form {
-            background-color: #cbe3f5c1;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
+    .LOGIN-form {
+        background-color: #cbe3f5c1;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
 
-        .form-group {
-            font-family: 'Varela Round', sans-serif;
-            margin-bottom: 15px;
+    .form-group {
+        font-family: 'Varela Round', sans-serif;
+        margin-bottom: 15px;
 
-        }
+    }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
 
-        input[type=email],
-        input[type=text],
-        input[type=password] {
-            font-family: 'Varela Round', sans-serif;
+    input[type=email],
+    input[type=text],
+    input[type=password] {
+        font-family: 'Varela Round', sans-serif;
 
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            /* Makes sure padding does not affect overall width */
-        }
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        /* Makes sure padding does not affect overall width */
+    }
 
-        button[type=submit] {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    .connect {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #b0b6bd;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
 
-        button[type=submit]:hover {
-            background-color: #0056b3;
-        }
+    .connect:hover {
+        background-color: rgb(222, 0, 45);
+    }
 
-
-        button[type=button]:hover {
-            background-color: #0056b3;
-        }
-
-        #Verification {
-            background-color: #20acc1;
-
-        }
-
-        #Verification:hover {
-            background-color: rgb(54, 113, 84);
-        }
-
-        .change {
-            width: 30%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            background-color: #b0b6bd;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .Send {
-            width: 40%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            background-color: #b0b6bd;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 2%
-        }
-
-        .timer {
-            margin-left: 2%
-        }
-
-        #timer,
-        #resend-message {
-            font-size: 1.5em;
-            margin-top: 10px;
-        }
-
-        #resend-message {
-            display: none;
-            padding: 5px 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 16px;
-            margin-left: 2%;
-            width: 20%;
-        }
-
-        #resend-message:hover {
-            background-color: #0056b3;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        /* Hide all steps by default: */
+    .connect2 {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
 
 
-        .form-group img {
-            width: 35px;
-            cursor: pointer;
-        }
+    .connect2:hover {
+        background-color: #0056b3;
+    }
 
-        #Change {
-            cursor: pointer;
-        }
 
-        .green-text {
-            color: rgb(54, 113, 84);
-        }
 
-        .green-v {
-            color: rgb(60, 120, 85);
-            font-size: 16px;
-        }
 
-        .red-x {
-            color: rgb(222, 0, 45);
-            font-size: 20px;
+    #Verification {
+        background-color: #20acc1;
 
-        }
+    }
 
-        .red-text {
-            color: rgb(222, 0, 45);
-        }
+    #Verification:hover {
+        background-color: rgb(54, 113, 84);
+    }
 
-        .reduced-line-height p {
-            line-height: 6px;
-            /* Adjust this value to change the line spacing in pixels */
-        }
+    .change {
+        width: 30%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #b0b6bd;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+    }
 
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-        }
+    .change:hover {
+        background-color: rgb(222, 0, 45);
+    }
 
-        .button-container button {
-            font-family: 'Varela Round', sans-serif;
-        }
-        div:disabled,
-        button:disabled,
-        input:disabled{
-            cursor: not-allowed;
-        }
+    .change2 {
+        width: 30%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #186bcb;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+    }
 
-        /* לעצב אלמנטים שנראים כמו disabled div אך אין להם מאפיין disabled */
-        .disabled {
-            cursor: not-allowed;
-            pointer-events: none; /* לבטל אינטראקציה */
-            opacity: 0.6; /* אופציונלי: להראות שהאלמנט מנוטרל */
-        }
-    </style>
+    .change2:hover {
+        background-color: #0056b3;
+    }
+
+    .Send {
+        width: 40%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #b0b6bd;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 2%
+    }
+
+    .timer {
+        margin-left: 2%
+    }
+
+    #timer,
+    #resend-message {
+        font-size: 1.5em;
+        margin-top: 10px;
+    }
+
+    #resend-message {
+        display: none;
+        padding: 5px 10px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 16px;
+        margin-left: 2%;
+        width: 20%;
+    }
+
+    #resend-message:hover {
+        background-color: #0056b3;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Hide all steps by default: */
+
+
+    .form-group img {
+        width: 35px;
+        cursor: pointer;
+    }
+
+
+
+    #Change {
+        cursor: pointer;
+    }
+
+    .green-text {
+        color: rgb(54, 113, 84);
+    }
+
+    .green-v {
+        color: rgb(60, 120, 85);
+        font-size: 16px;
+    }
+
+    .red-x {
+        color: rgb(222, 0, 45);
+        font-size: 20px;
+
+    }
+
+    .red-text {
+        color: rgb(222, 0, 45);
+    }
+
+    .reduced-line-height p {
+        line-height: 6px;
+        /* Adjust this value to change the line spacing in pixels */
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button-container button {
+        font-family: 'Varela Round', sans-serif;
+    }
+
+    div:c,
+    button:disabled,
+    input:disabled {
+        cursor:  not-allowed;
+    }
+
+    c
+
+    #loading-icon {
+        display: block;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        /* ערך גבוה כדי להבטיח שהתמונה תהיה מעל כולם */
+    }
+  
+
+
+</style>
 
 
 <body>
-    <img id="loading-icon" src="/loading.gif" alt="Loading..."
-        style="display: block; width: 250px; height: 250px; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+
+    <img id="loading-icon" src="/loading.gif" alt="Loading...">
 
     <form class="LOGIN-form" id="login-form">
         <h2>Log in to your account</h2>
@@ -236,8 +283,10 @@
             <label for="password" style="font-family: 'Varela Round', sans-serif;">Password</label>
 
             <div style="position: relative;">
-                <input type="password" id="password" placeholder="example: Aa12345@" name="password" style="display: block;" oninput="validatePassword(this)" pattern="^[^#%&+]+$" onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/) || event.key === '#' || event.key === '%' || event.key === '&' || event.key === '+' || event.key === '\\' || event.key === '/'  || event.key === ',' || event.key === '`'|| event.key === '`' || event.key === '.'|| event.key === '[' || event.key === ']' || event.key === '{' || event.key === '}' || event.key === '<' || event.key === '>') return false;" aria-checked="false" disabled>
-
+                <input type="password" id="password" placeholder="example: Aa12345@" name="password"
+                    style="display: block;" oninput="validatePassword(this)" pattern="^[^#%&+]+$"
+                    onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/) || event.key === '#' || event.key === '%' || event.key === '&' || event.key === '+' || event.key === '\\' || event.key === '/'  || event.key === ',' || event.key === '`'|| event.key === '`' || event.key === '.'|| event.key === '[' || event.key === ']' || event.key === '{' || event.key === '}' || event.key === '<' || event.key === '>') return false;"
+                    aria-checked="false" disabled>
                 <img src="/eye.gif" alt="" id="eyeicon"
                     style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
             </div>
@@ -285,12 +334,12 @@
             <div class="timer" id="timer_"></div>
         </div>
 
-        <button type="submit" id="submit-button" onclick="connect()" disabled>Connect</button>
+        <button class="connect" type="submit" id="connect-button" onclick="connect()" disabled>Connect</button>
 
     </form>
 
     <script>
-       let eyeicon = document.getElementById("eyeicon");
+        let eyeicon = document.getElementById("eyeicon");
         let password = document.getElementById("password");
 
         eyeicon.addEventListener("click", () => {
@@ -304,7 +353,7 @@
             }
         })
 
-       
+
 
         setTimeout(showNotification, 10 * 60 * 1000);
     </script>

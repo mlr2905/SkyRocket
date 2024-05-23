@@ -8,18 +8,18 @@
     }
 
     body {
-            font-family: 'Varela Round', sans-serif;
-            background-image: url("plane.jpg");
-            background-repeat: no-repeat;
-            background-size: 99.9% 99.9%;
-            background-position: center;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+        font-family: 'Varela Round', sans-serif;
+        background-image: url("plane.jpg");
+        background-repeat: no-repeat;
+        background-size: 99.9% 99.9%;
+        background-position: center;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
 
     .signup-form {
         background-color: #cbe3f5c1;
@@ -34,11 +34,7 @@
         text-align: center;
     }
 
-
-    input[type=email],
-    input[type=password],
-    input[type=text],
-    input[type=number] {
+    input {
         font-family: 'Varela Round', sans-serif;
 
         width: 100%;
@@ -59,24 +55,38 @@
         display: none;
     }
 
-    button[type=button] {
+    .nextBtn {
         padding: 10px;
         border: none;
         border-radius: 4px;
-        background-color: #007bff;
+        background-color: #b0b6bd;
         color: white;
         cursor: pointer;
         font-size: 16px;
     }
 
-    button[type=button]:hover {
+    .nextBtn:hover {
+        background-color: rgb(222, 0, 45);
+        ;
+    }
+
+    .backBtn,
+    .nextBtn2 {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+    }
+
+    .backBtn,
+    .nextBtn2:hover {
         background-color: #0056b3;
     }
 
 
-    button[type=button]:hover {
-        background-color: #0056b3;
-    }
+
 
 
     /* Make circles that indicate the steps of the form: */
@@ -133,6 +143,50 @@
         opacity: 0.6;
         /* אופציונלי: להראות שהאלמנט מנוטרל */
     }
+
+    .green-text {
+        color: rgb(54, 113, 84);
+    }
+
+    .green-v {
+        color: rgb(60, 120, 85);
+        font-size: 16px;
+    }
+
+    .red-x {
+        color: rgb(222, 0, 45);
+        font-size: 20px;
+
+    }
+
+    .red-text {
+        color: rgb(222, 0, 45);
+    }
+
+    .reduced-line-height p {
+        line-height: 6px;
+        /* Adjust this value to change the line spacing in pixels */
+    }
+
+    .card-input-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .card-input {
+            flex: 1;
+            padding-right: 140px; /* Adjust according to the size of the added fields */
+        }
+        .extra-inputs {
+            position: absolute;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        .extra-inputs input {
+            width: 50px; /* Adjust width as needed */
+            text-align: center;
+        }
 </style>
 
 <body>
@@ -140,7 +194,7 @@
     <form class="signup-form" id="login-form">
         <h1>Register:</h1>
         <!-- One "tab" for each step in the form: -->
-        <div class="tab">Name:
+        <div class="tab">user information:
             <div class="form-group">
                 <p><input type="text" placeholder="First name..." oninput="this.className = ''" name="fname"
                         maxlength="30" pattern="[a-z]{1,30}" title="Please enter up to 30 lowercase letters"></p>
@@ -148,14 +202,18 @@
                         maxlength="30" pattern="[a-z]{1,30}" title="Please enter up to 30 lowercase letters"></p>
                 <p><input type="email" placeholder="example@example.com" oninput="validateEmail(this)"
                         onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" name="email" id="email"></p>
-                <p style="color: red; display: none;" id="email_error">Invalid email. Please enter a valid email.</p>
-                <p style="color: green; display: none;" id="email_">valid email.</p>
+                <p style="display: none;" id="email_error"><b class="red-x">&#10006;</b>
+                    <spam class="red-text">Invalid email. Please enter a valid email.</spam>
+                </p>
+                <p style="display: none;" id="email_"><b class="green-v">&#10004;</b>
+                    <spam class="green-text">valid email.</spam>
+                </p>
                 <div class="form-group" id="pass" style="display: block">
                     <label for="password" style="font-family: 'Varela Round', sans-serif;">Password</label>
                     <div style="position: relative;">
                         <input type="password" id="password" placeholder="example: Aa12345@" name="password"
-                            style="display: block;" oninput="validatePassword(this)" pattern="[a-zA-Z0-9@$!%*?&]+"
-                            onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
+                            style="display: block;" oninput="validatePassword(this)" pattern="^[^#%&+]+$"
+                            onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/) || event.key === '#' || event.key === '%' || event.key === '&' || event.key === '+' || event.key === '\\' || event.key === '/'  || event.key === ',' || event.key === '`'|| event.key === '`' || event.key === '.'|| event.key === '[' || event.key === ']' || event.key === '{' || event.key === '}' || event.key === '<' || event.key === '>') return false;"
                             aria-checked="false" disabled>
 
                         <img src="/eye.gif" alt="" id="eyeicon"
@@ -163,15 +221,18 @@
                     </div>
 
                     </br>
-                    <div style="position: relative;display: none;" id="pass2">
+                    <div style="position: relative;">
                         <label for="password" style="font-family: 'Varela Round', sans-serif;">Confirm Password</label>
-                        <input type="password" id="password2" placeholder="example: Aa12345@" name="password"
-                            oninput="Checking_passwords(this)"
-                            onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
-                            onpaste="return false;" aria-checked="false" disabled>
-                        <img src="/eye.gif" alt="" id="eyeicon2"
-                            style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                        <div style="position: relative;">
+                            <input type="password" id="password2" placeholder="example: Aa12345@" name="password"
+                                oninput="Checking_passwords(this)"
+                                onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
+                                onpaste="return false;" aria-checked="false" disabled>
+                            <img src="/eye.gif" alt="" id="eyeicon2"
+                                style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                        </div>
                     </div>
+
                     <div class="reduced-line-height">
                         <p style="color: rgb(222, 0, 45); display: none; font-family: 'Varela Round', sans-serif;"
                             id="password_error">Must: 8
@@ -197,36 +258,51 @@
             <p style="color: red; display: none;" id="id_number_error">Invalid ID number. Please enter a valid ID
                 number.</p>
             <p style="color: green; display: none;" id="id_number">valid ID number.</p>
-            <p><input type="text" placeholder="Credit Card Number..." oninput="checkCreditCardValidity(this)"
-                    pattern="\d{16}" maxlength="16" minlength="16" name="credit_card"
-                    onkeypress="return event.charCode >= 48 && event.charCode <= 57"></p>
-
+            <div class="card-input-wrapper">
+                <input type="text" class="card-input" placeholder="Credit Card Number..."
+                       pattern="\d{16}" maxlength="16" minlength="16" name="credit_card"
+                       onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                    <div class="extra-inputs">
+                        <input type="text" id="expiry_date" name="expiry_date" placeholder="MMYY" 
+                               pattern="\d{4}" maxlength="4" minlength="4" required
+                               onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                        <input type="text" id="cvv" name="cvv" placeholder="CVV" 
+                               pattern="\d{3}" maxlength="3" minlength="3" required
+                               onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                    </div>
             <p style="color: red; display: none;" id="card_error">Invalid ID number. Please enter a valid ID number.</p>
             <p style="color: green; display: none;" id="card_">valid ID number.</p>
-
-
-
-        </div>
-        <div class="tab">
+            </div>
             <label for="birthday">Birthday:</label>
             <input type="date" id="birthday" name="birthday">
+
+
         </div>
 
-        <div class="tab">Login Info:
-            <p><input placeholder="Username..." oninput="this.className = ''" name="uname"></p>
-            <p><input placeholder="Password..." oninput="this.className = ''" name="pword" type="password"></p>
+        <div class="tab">:
+            <p>Congratulations on your decision to register on our flights website! Becoming a registered user will
+                enable you to enjoy a wide range of benefits.</p>
+            <p>Not only will you be able to discover lucrative deals and exclusive offers, but you'll also receive
+                notifications about fluctuating flight prices, view flight statuses, and compare different options to
+                find the best one for you.</p>
+            <p>Additionally, as a member of our community, you'll receive personalized advice from our experts, share
+                experiences, and participate in engaging discussions and competitions.</p>
+            <p>And that's not all! Every time you book your flights through the website, you'll accumulate points and
+                perks that will make your travel experience even more enjoyable.</p>
+            <p>So, what are you waiting for? Join now and start enjoying the amazing benefits of being a registered user
+                on our flights website!</p>
         </div>
+
+
         <div class="button-container">
-
-            <button type="button" id="backBtn" onclick="nextPrev(-1)">Back</button>
-            <button type="button" id="nextBtn" onclick="nextPrev(1)" style="display: none;">Next</button>
+            <button type="button" class="backBtn" id="backBtn" onclick="nextPrev(-1)">Back</button>
+            <button type="button" class="nextBtn" id="nextBtn" onclick="nextPrev(1)" disabled>Next</button>
         </div>
         </div>
         <!-- Circles which indicates the steps of the form: -->
         <div style="text-align:center;margin-top:40px;">
             <span class="step"></span>
-            <span class="step"></span>
-            <span class="step"></span>
+
             <span class="step"></span>
         </div>
     </form>
@@ -260,6 +336,9 @@
         showTab(currentTab); // Display the current tab
 
         function showTab(n) {
+
+            document.getElementById("nextBtn").disabled = true
+            document.getElementById('nextBtn').className = 'nextBtn';
             // This function will display the specified tab of the form...
             var x = document.getElementsByClassName("tab");
             x[n].style.display = "block";
@@ -270,7 +349,7 @@
                 document.getElementById("backBtn").style.display = "inline";
             }
             if (n == (x.length - 1)) {
-                document.getElementById("nextBtn").innerHTML = "Submit";
+                document.getElementById("nextBtn").innerHTML = "finish";
             } else {
                 document.getElementById("nextBtn").innerHTML = "Next";
             }
@@ -290,13 +369,54 @@
             // if you have reached the end of the form...
             if (currentTab >= x.length) {
                 // ... the form gets submitted:
-                document.getElementById("signup-form").submit();
-                return false;
+                const submitButton = document.getElementById('nextBtn');
+
+                submitButton.textContent = 'connect';
+                submitButton.removeAttribute('onclick');
+                submitButton.addEventListener('click', Registration);
+                document.getElementById('nextBtn').className = 'nextBtn2';
             }
             // Otherwise, display the correct tab:
             showTab(currentTab);
         }
+     async   function Registration() {
+            event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
+            try {
+                const response = await fetch('/role_users/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                handleResponse(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function handleResponse(data) {
+            console.log("data.err", data.err);
+            console.log("data loginUrl", data.loginUrl);
+
+            const successMessage = document.getElementById('success-message');
+            if (data.err === "yes") {
+                successMessage.textContent = data.error;
+                window.location.href = data.loginUrl;
+            } else if (data.loginUrl) {
+                successMessage.textContent = 'Signup successful!';
+                window.location.href = data.loginUrl;
+            }
+        }
         function validateForm() {
             // This function deals with validation of the form fields
             var x, y, i, valid = true;
@@ -420,39 +540,38 @@
                 document.getElementById("email_").style.display = "block";
                 document.getElementById("email_error").style.display = "none";
                 document.getElementById("password").disabled = false;
-                document.getElementById("password2").disabled = false;
                 document.getElementById("password_error").style.display = "block";
-                document.getElementById("toggle-auth-type").disabled = false;
 
 
             } else {
                 input.className = 'invalid';
                 document.getElementById("password").disabled = true;
-                document.getElementById("password2").disabled = true;
                 document.getElementById("email_error").style.display = "block";
                 document.getElementById("email_").style.display = "none";
             }
         }
 
         function validatePassword(input) {
-            function validatePassword(input) {
             document.getElementById("email_").style.display = "none";
             const password = input.value.trim();
             const lengthRegex = /^.{8,}$/;
             const LowerCase = /[a-z]/;
             const uppercaseRegex = /[A-Z]/;
             const Numbers = /[0-9]/
-            const specialCharRegex = /[@$!%*?&]/;
-
+            const specialCharRegex = /[~!@$^*?=_-]/;
+            const forbidden_characters = /["|'()]/;
             // התבנית הבאה מייחסת רק לתווים באנגלית
             const englishOnlyRegex = /^[a-zA-Z0-9@$!%*?&]*$/;
             let errorMessage = "";
             let successMessage = "";
             document.getElementById("email").disabled = true;
-            document.getElementById('Change').style.display = 'block';
 
             const check = (regex, message) => {
                 if (!regex.test(password)) errorMessage += `<p><b class="red-x">&#10006;</b> <spam class ="red-text">${message}</spam></P>`;
+                else successMessage += `<p><b class="green-v">&#10004;</b> <spam class ="green-text">${message}</spam></P>`;
+            };
+            const check2 = (regex, message) => {
+                if (regex.test(password)) errorMessage += `<p><b class="red-x">&#10006;</b> <span class="red-text">${message}</span></p>`;
                 else successMessage += `<p><b class="green-v">&#10004;</b> <spam class ="green-text">${message}</spam></P>`;
             };
 
@@ -460,7 +579,8 @@
             check(LowerCase, "LowerCase letters (a-z)");
             check(uppercaseRegex, "Upper case letters (A-Z)");
             check(Numbers, "Numbers (0-9)");
-            check(specialCharRegex, "Special characters (!@$?*)");
+            check(specialCharRegex, "Special characters [~!@$^*?=_-]");
+            check2(forbidden_characters, `Forbidden characters [ " ' ()]`);
 
             // הוסף את הבדיקה של התבנית הרגולרית של התווים באנגלית
 
@@ -469,10 +589,12 @@
             document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
             document.getElementById("password_").innerHTML = successMessage;
             document.getElementById("password_").style.display = successMessage ? "block" : "none";
-            document.getElementById("submit-button").disabled = !!errorMessage;
-        }
+            document.getElementById("password2").disabled = errorMessage ? true : false
+
 
         }
+
+
         function Checking_passwords() {
 
 
@@ -480,15 +602,22 @@
             const password2 = document.getElementById('password2').value;
 
             if (password === password2) {
-                document.getElementById("password_").innerHTML = `<p>✅<b>The passwords are the same</b></p>`;
+
+                document.getElementById("password_").innerHTML = `<p><b class="green-v">&#10004;</b>
+                <spam class="green-text">The passwords are the same</spam></p>`;
                 document.getElementById("password_error").style.display = "block" ? "none" : "none";
                 document.getElementById("password_").style.display = "none" ? "block" : "none";
-                document.getElementById("nextBtn").style.display = "none" ? "block" : "none";
+                document.getElementById("nextBtn").disabled = false
+                document.getElementById('nextBtn').className = 'nextBtn2';
+
 
 
 
             } else {
-                document.getElementById("password_error").innerHTML = `<p>❌<b>The passwords are not the same</b></p>`;
+                document.getElementById("nextBtn").disabled = true
+                document.getElementById('nextBtn').className = 'nextBtn';
+                document.getElementById("password_error").innerHTML = `<p><b class="red-x">&#10006;;</b>
+                <spam class="red-text">The passwords are not the same</spam></p>`;
                 document.getElementById("password_error").style.display = "none" ? "block" : "none";
                 document.getElementById("password_").style.display = "block" ? "none" : "none";
             }
