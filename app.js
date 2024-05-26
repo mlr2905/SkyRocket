@@ -1,4 +1,5 @@
 const express = require('express')
+const paypal = require('@paypal/checkout-server-sdk');
 const moment = require('moment-timezone');
 const logger = require('./logger/my_logger')
 const path = require('path')
@@ -36,7 +37,47 @@ app.listen(3000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 });
+let environment = new paypal.core.SandboxEnvironment(
+    'AT4O6B5Ls009Bq5USh7BjgwpVQBNE5jMYHlpEtrpM-QTm0hwuT35fUMKBee3vGPzNIwKlzCumQ6a7oPi',
+    'EKEs7XywH_Hi0cEwf9haEd3RJhm7y1ZtHJPia4zbJP8Y-Uafen1QlRAsljcWts8eeT0eKNrcA-32EUyo'
+  );
+  
+  let client = new paypal.core.PayPalHttpClient(environment);
+  ;
+  app.post('/creauthorization', async (req, res) => {
+    console.log("req.body",req.body);
 
+    let request = new paypal.orders.OrdersCreateRequest();
+    request.requestBody({
+      intent: 'AUTHORIZE',
+      purchase_units: [{
+        amount: {
+          currency_code: 'ILS', // שקלים חדשים
+          value: '1.00'
+        }
+      }],
+      payment_source: {
+        card: {
+          number: req.body.number,
+          expiry: req.body.expiry,
+          security_code: req.body.security_code,
+          card_type: req.body.card_type,
+          name: req.body.name,
+         
+        }
+      }
+    });
+  
+    try {
+      let response = await client.execute(request);
+      console.log("response",response);
+      let authorizationId = response.result.purchase_units[0].payments.authorizations[0].id;
+      res.status(201).json({ authorizationId });
+    } catch (error) {
+      res.status(500).send(error.toString());
+    }
+  });
+  
 function getTimeZoneByIP(ip) {
     try {
         const ipInfo = ip2locationDatabase.get_all(ip);

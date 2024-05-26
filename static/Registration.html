@@ -34,15 +34,20 @@
         text-align: center;
     }
 
-    input {
+     input[type="text"],
+   [type="email"],
+   [type="password"],
+   [type="number"],
+   [type="tel"],
+   [type="date"] {
         font-family: 'Varela Round', sans-serif;
         width: 100%;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
         box-sizing: border-box;
-        /* Makes sure padding does not affect overall width */
     }
+
 
     /* Mark input boxes that gets an error on validation: */
     input.invalid {
@@ -168,30 +173,46 @@
     }
 
     .card-input-wrapper {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        .card-input {
-            flex: 1;
-            padding-right: 140px; /* Adjust according to the size of the added fields */
-        }
-        .extra-inputs {
-            position: absolute;
-            right: 10px;
-            display: flex;
-            gap: 5px;
-        }
-        .extra-inputs input {
-            width: 70px; /* Adjust width as needed */
-            text-align: center;
-            /* border: none; 
-            outline: none; */
-            height: 30px; /* Ensure consistent height */
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
 
-            padding: 0; /* Remove padding for alignment */
-            box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
-                }
+    .card-input {
+        flex: 1;
+        padding-right: 140px;
+        /* Adjust according to the size of the added fields */
+    }
+
+    .extra-inputs {
+        position: absolute;
+        right: 10px;
+        display: flex;
+        gap: 5px;
+    }
+
+    .extra-inputs input {
+        width: 70px;
+        /* Adjust width as needed */
+        text-align: center;
+        /* border: none; 
+            outline: none; */
+        height: 30px;
+        /* Ensure consistent height */
+
+        padding: 0;
+        /* Remove padding for alignment */
+        box-sizing: border-box;
+        /* Ensure padding and border are included in the element's total width and height */
+    }
+
+    .link {
+        text-decoration: none;
+        /* להסיר קו תחתון מהקישור */
+        color: #007bff;
+        /* צבע טקסט */
+
+    }
 </style>
 
 <body>
@@ -246,6 +267,8 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
 
         <div class="tab">Contact Info:
@@ -264,20 +287,21 @@
                 number.</p>
             <p style="color: green; display: none;" id="id_number">valid ID number.</p>
             <div class="card-input-wrapper">
-                <input type="text" class="card-input" placeholder="Credit Card Number..."
-                       pattern="\d{16}" maxlength="16" minlength="16" name="credit_card"
-                       onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                    <div class="extra-inputs">
-                        <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" 
-                        pattern="\d{4}" maxlength="4" minlength="4" required
-                        onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <input type="text" class="card-input" placeholder="Credit Card Number..." pattern="\d{16}"
+                    maxlength="16" minlength="16" name="credit_card"
+                    onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <div class="extra-inputs">
+                    <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" pattern="\d{4}"
+                        maxlength="5" minlength="5" required
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                        oninput="formatExpiryDate(this)">
 
-                        <input type="text" id="cvv" name="cvv" placeholder="CVV" 
-                               pattern="\d{3}" maxlength="3" minlength="3" required
-                               onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                    </div>
-            <p style="color: red; display: none;" id="card_error">Invalid ID number. Please enter a valid ID number.</p>
-            <p style="color: green; display: none;" id="card_">valid ID number.</p>
+                    <input type="text" id="cvv" name="cvv" placeholder="CVV" pattern="\d{3}" maxlength="3" minlength="3"
+                        required onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                </div>
+                <p style="color: red; display: none;" id="card_error">Invalid ID number. Please enter a valid ID number.
+                </p>
+                <p style="color: green; display: none;" id="card_">valid ID number.</p>
             </div>
             <label for="birthday">Birthday:</label>
             <input type="date" id="birthday" name="birthday">
@@ -285,7 +309,7 @@
 
         </div>
 
-        <div class="tab">:
+        <div class="tab">
             <p>Congratulations on your decision to register on our flights website! Becoming a registered user will
                 enable you to enjoy a wide range of benefits.</p>
             <p>Not only will you be able to discover lucrative deals and exclusive offers, but you'll also receive
@@ -297,6 +321,15 @@
                 perks that will make your travel experience even more enjoyable.</p>
             <p>So, what are you waiting for? Join now and start enjoying the amazing benefits of being a registered user
                 on our flights website!</p>
+            <br>
+            <div style="display: flex;">
+                <input type="checkbox" name="vehicle3" value="Boat" checked>
+                <a class="link"
+                    href="https://drive.usercontent.google.com/u/0/uc?id=1UX1K70Da2xmJ2LShUVEFoiO4lup-zXx7&export=download">Terms
+                    and Conditions
+                </a>
+            </div>
+
         </div>
 
 
@@ -311,10 +344,55 @@
 
             <span class="step"></span>
         </div>
+
     </form>
 
     <script>
-        
+
+
+
+        function formatExpiryDate(input) {
+
+            var value = input.value.replace(/\D/g, ''); // Remove all non-digit characters
+            var formattedValue = '';
+
+            if (value.length >= 1) {
+                // Validate and format the month
+                var month = value.substring(0, 2);
+                if (month.length == 1) {
+                    if (month > '1') {
+                        month = '0' + month;
+                    }
+                } else if (month.length == 2) {
+                    if (month > '12') {
+                        month = '12';
+                    }
+                }
+                formattedValue = month;
+            }
+
+            if (value.length > 2) {
+                formattedValue += '/';
+                // Validate and format the year
+                var year = value.substring(2, 4);
+                if (year.length == 1) {
+                    if (year < '2') {
+                        year = '2' + year;
+                    }
+                } else if (year.length == 2) {
+                    if (year < '24') {
+                        year = '24';
+                    } else if (year > '31') {
+                        year = '31';
+                    }
+                }
+                formattedValue += year;
+            }
+
+            input.value = formattedValue;
+
+        }
+
         let eyeicon = document.getElementById("eyeicon");
         let eyeicon2 = document.getElementById("eyeicon2");
 
@@ -386,7 +464,7 @@
             // Otherwise, display the correct tab:
             showTab(currentTab);
         }
-     async   function Registration() {
+        async function Registration() {
             event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
