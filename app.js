@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(path.join('.', '/static/')))
-app.listen(3000, () => {
+app.listen(9999, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 });
