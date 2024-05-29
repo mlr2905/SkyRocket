@@ -561,3 +561,8 @@ function checkboxv(input) {
         document.getElementById('nextBtn').className = 'nextBtn';
     }
 }
+window.addEventListener('load', function () {
+    // Hide the loading icon when the page is fully loaded
+    document.getElementById('loading-icon').style.display = 'none';
+});
+let interval;
