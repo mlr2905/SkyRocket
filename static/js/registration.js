@@ -214,9 +214,12 @@ function registration(id){
                     successMessage.textContent = 'signup successful!';
                     window.location.href = data.signupUrl;
                 }
+                else{
+                    document.getElementById('loading-icon').style.display = 'none';
+
+                }
             }
         })
-        document.getElementById('loading-icon').style.display = 'none';
 
         .catch(error => console.error('Error:', error));
 }
