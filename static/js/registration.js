@@ -146,6 +146,7 @@ function showTab(n) {
 }
 function signup(){
     event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
+    document.getElementById('loading-icon').style.display = 'block';
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -201,21 +202,22 @@ function registration(id){
         }`})
         .then(response => response.json())
         .then(data => {
-            console.log("data.err", data.err);
-            console.log("data loginUrl", data.loginUrl);
-            if (data.err === "yes") {
+            document.getElementById('loading-icon').style.display = 'none';
+            if (data.e === "yes") {
                 const successMessage = document.getElementById('success-message');
                 successMessage.textContent = data.error;
             }
             else {
                 // הודעת הצלחה
-                if (data.loginUrl) {
+                if (data.signupUrl) {
                     const successMessage = document.getElementById('success-message');
                     successMessage.textContent = 'signup successful!';
                     window.location.href = data.signupUrl;
                 }
             }
         })
+        document.getElementById('loading-icon').style.display = 'none';
+
         .catch(error => console.error('Error:', error));
 }
 

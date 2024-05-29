@@ -257,9 +257,23 @@
         margin-top: 20px;
         text-transform: uppercase;
     }
+    #loading-icon {
+        display: block;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        /* ערך גבוה כדי להבטיח שהתמונה תהיה מעל כולם */
+    }
+  
 </style>
 
 <body>
+    <img id="loading-icon" src="/loading.gif" alt="Loading...">
 
     <form class="signup-form" id="login-form">
         <h1 style="display: none;" id="h1">Register:</h1>
