@@ -159,6 +159,7 @@ async function signup(email, password) {
       return {"e":"no","response":response}
 
     }
+    
   }
   catch (error) {
     console.error('Error:', error);

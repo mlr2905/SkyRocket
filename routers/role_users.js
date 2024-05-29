@@ -145,7 +145,7 @@ router.post('/signup', async (request, response) => {
             if (user.response.mongo_id !== undefined) {
 
                 // הפניה לדף login בתגובה המוחזרת
-                response.status(200).json({ "e": "no", "loginUrl": loginUrl });
+                response.status(200).json({ "e": "no", "id": user.response.id });
             }
         }
     }
@@ -288,13 +288,15 @@ router.get('/customers/:id', async (request, response) => {
 
 // POST
 router.post('/customers', async (request, response) => {
+    const signupUrl = 'https://skyrocket.onrender.com/login.html';
+
     const new_user = request.body
-    const result = await bl.new_customer(new_user)
+    const user = await bl.new_customer(new_user)
     if (user) {
-        response.status(201).json(user)
+        response.status(201).json({"e": "no","signupUrl":signupUrl})
     }
     else {
-        response.status(409).json({ "error": `There is a customer with the details I mentioned` })
+        response.status(409).json({"e": "yes", "error": `There is a customer with the details I mentioned` })
     }
 })
 
