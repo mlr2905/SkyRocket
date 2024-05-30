@@ -143,41 +143,42 @@ function showTab(n) {
     }
     //... and run a function that will display the correct step indicator:
     fixStepIndicator(n)
-}
-function signup(){
+}async function signup(event) {
     event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
     document.getElementById('loading-icon').style.display = 'block';
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    fetch('/role_users/signup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: `{
-            "email": "${email}",
-            "password": "${password}"
-        }`})
-        .then(response => response.json())
-        .then(data => {
-            if (data.e === "yes") {
-                const successMessage = document.getElementById('success-message');
-                successMessage.textContent = data.error;
-                window.location.href = data.loginUrl;
+
+    try {
+        const response = await fetch('/role_users/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.e === "yes") {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = data.error;
+            window.location.href = data.loginUrl;
+        } else {
+            if (data.id) {
+                await registration(data.id);
             }
-            else {
-                // הודעת הצלחה
-                if (data.id) {
-                
-                   return registration(data.id)
-                  
-                }
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
-function registration(id){
+
+async function registration(id) {
     event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
 
     const first_name = document.getElementById('first_name').value;
@@ -186,42 +187,42 @@ function registration(id){
     const credit_card = document.getElementById('credit_card').value;
     const expiry_date = document.getElementById('expiry_date').value;
     const cvv = document.getElementById('CVV').value;
-    fetch('https://skyrocket.onrender.com/role_users/customers', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: `{
-            "first_name":"${first_name}", 
-            "last_name":"${last_name}",  
-            "phone":"${phone}", 
-            "credit_card":"${credit_card}", 
-            "expiry_date":"${expiry_date}", 
-            "cvv":"${cvv}", 
-            "user_id":"${id}"
-        }`})
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('loading-icon').style.display = 'none';
-            if (data.e === "yes") {
+
+    try {
+        const response = await fetch('https://skyrocket.onrender.com/role_users/customers', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                first_name: first_name,
+                last_name: last_name,
+                phone: phone,
+                credit_card: credit_card,
+                expiry_date: expiry_date,
+                cvv: cvv,
+                user_id: id
+            })
+        });
+
+        const data = await response.json();
+        document.getElementById('loading-icon').style.display = 'none';
+
+        if (data.e === "yes") {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = data.error;
+        } else {
+            if (data.signupUrl) {
                 const successMessage = document.getElementById('success-message');
-                successMessage.textContent = data.error;
+                successMessage.textContent = 'signup successful!';
+                window.location.href = data.signupUrl;
+            } else {
+                document.getElementById('loading-icon').style.display = 'none';
             }
-            else {
-                // הודעת הצלחה
-                if (data.signupUrl) {
-                    const successMessage = document.getElementById('success-message');
-                    successMessage.textContent = 'signup successful!';
-                    window.location.href = data.signupUrl;
-                }
-                else{
-                    document.getElementById('loading-icon').style.display = 'none';
-
-                }
-            }
-        })
-
-        .catch(error => console.error('Error:', error));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 function nextPrev(n) {
