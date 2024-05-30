@@ -169,7 +169,7 @@ function showTab(n) {
             window.location.href = data.loginUrl;
         } else {
             if (data.id) {
-                await registration(data.id);
+                return registration(data.id);
             }
         }
     } catch (error) {
