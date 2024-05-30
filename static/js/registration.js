@@ -189,7 +189,7 @@ async function registration(id) {
     const cvv = document.getElementById('CVV').value;
 
     try {
-        const response = await fetch('https://skyrocket.onrender.com/role_users/customers', {
+        const response = await fetch('/role_users/customers', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
