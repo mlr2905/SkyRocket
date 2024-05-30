@@ -184,7 +184,7 @@ async function registration(id) {
     const phone = document.getElementById('phone').value;
     const credit_card = document.getElementById('credit_card').value;
     const expiry_date = document.getElementById('expiry_date').value;
-    const cvv = document.getElementById('CVV').value;
+    const cvv = document.getElementById('cvv').value;
 
     try {
         const response = await fetch('/role_users/customers', {
