@@ -143,8 +143,7 @@ function showTab(n) {
     }
     //... and run a function that will display the correct step indicator:
     fixStepIndicator(n)
-}async function signup(event) {
-    event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
+}async function signup() {
     document.getElementById('loading-icon').style.display = 'block';
 
     const email = document.getElementById('email').value;
@@ -179,7 +178,6 @@ function showTab(n) {
 }
 
 async function registration(id) {
-    event.preventDefault(); // עצירת ההתנהגות הרגילה של הטופס
 
     const first_name = document.getElementById('first_name').value;
     const last_name = document.getElementById('last_name').value;
