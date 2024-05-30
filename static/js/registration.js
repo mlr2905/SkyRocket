@@ -28,15 +28,27 @@ document.getElementById('phone').addEventListener('input', function () {
     // עדכן את התוכן של ה-input להיות רק מספרים ולא להכיל מספרים יותר מהמספר ב-placeholder
     this.value = numbersOnly;
 });
+countryCode()
+function countryCode() {
+    const input = document.querySelector("#phone");
+    let Country = "en"
+    fetch('https://skyrocket.onrender.com/role_users/ip')
+        .then(response => response.json())
+        .then(data => {
+
+            Country = data; // הקוד של המדינה
+        })
+        .catch(error => {
+            console.error('Error fetching IP information:', error);
+        });
+
+    const iti = window.intlTelInput(input, { initialCountry: Country, });
+    window.iti = iti;
+}
 
 
-const input = document.querySelector("#phone");
-const iti = window.intlTelInput(input, {
 
-    initialCountry: "il",
 
-});
-window.iti = iti;
 
 function cardcvv(input) {
     input.classList.remove('invalid');
@@ -143,7 +155,7 @@ function showTab(n) {
     }
     //... and run a function that will display the correct step indicator:
     fixStepIndicator(n)
-}async function signup() {
+} async function signup() {
     document.getElementById('loading-icon').style.display = 'block';
 
     const email = document.getElementById('email').value;
@@ -388,7 +400,7 @@ async function validateEmail(input) {
 
     if (!emailRegex.test(email)) {
         updateUI('invalid', true, "Invalid email format", false);
-        document.getElementById("login-button").style.display= "none"
+        document.getElementById("login-button").style.display = "none"
         document.getElementById('loading-icon').style.display = 'none';
         return;
     }
@@ -399,15 +411,15 @@ async function validateEmail(input) {
         if (data === "ok") {
             updateUI('invalid', true, "The email already exists", false);
             document.getElementById('loading-icon').style.display = 'none';
-        
+
         } else {
             updateUI('', false, "", true);
             document.getElementById('loading-icon').style.display = 'none';
-            document.getElementById("login-button").style.display= "none"
+            document.getElementById("login-button").style.display = "none"
         }
     } catch (error) {
         updateUI('invalid', true, "An error occurred", false);
-        document.getElementById("login-button").style.display= "none"
+        document.getElementById("login-button").style.display = "none"
         document.getElementById('loading-icon').style.display = 'none';
 
 
@@ -417,7 +429,8 @@ async function validateEmail(input) {
 
 
 function updateUI(inputClass, passwordDisabled, emailErrorMessage, passwordValid) {
-    input.className = inputClass;
+    document.getElementById('email').className = inputClass;
+
     document.getElementById("password").disabled = passwordDisabled;
 
     const emailErrorElement = document.getElementById("email_error");

@@ -89,9 +89,12 @@ router.get('/ip', async (request, response) => {
     const forwardedFor = request.headers['x-forwarded-for'];
     const clientIPs = forwardedFor ? forwardedFor.split(',').map(ip => ip.trim()) : [];
     const ip = clientIPs.length > 0 ? clientIPs[0] : undefined;
-    const country = request.headers['cf-ipcountry'];
-
-    response.status(200).json({ country});
+    let country = request.headers['cf-ipcountry'];
+    console.log(country);
+    if (country === undefined) {
+        country = "il"
+    }
+    response.status(200).json({ country });
 
 
 });
