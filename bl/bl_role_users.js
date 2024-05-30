@@ -201,8 +201,8 @@ async function get_by_id_user(email) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-
-    if (data && data.role_id === 1) {
+console.log("bl data",data);
+    if (data.status === undefined) {
       return "ok";
     } else {
       return 'Postponed';

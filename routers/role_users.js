@@ -63,9 +63,9 @@ router.post('/validation', async (request, response) => {
         else {
             console.log("r user", datas.token);
 
-if (condition) {
-    
-}
+            if (condition) {
+
+            }
             const token = datas.jwt
             response.cookie('sky', token, {
                 httpOnly: true,
@@ -83,6 +83,16 @@ if (condition) {
     catch (error) {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
+});
+router.post('/ip', async (request, response) => {
+
+    const forwardedFor = request.headers['x-forwarded-for'];
+    const clientIPs = forwardedFor ? forwardedFor.split(',').map(ip => ip.trim()) : [];
+    const ip = clientIPs.length > 0 ? clientIPs[0] : undefined;
+
+    response.status(200).json({ "ip": ip });
+
+
 });
 
 router.post('/login', async (request, response) => {
@@ -158,7 +168,9 @@ router.post('/signup', async (request, response) => {
 
 // GET by search
 router.get('/users/search', async (request, response) => {
+
     const query = request.query
+    console.log("query", query);
     const email = query.email
     // const username = query.username
     // const password = query.password
@@ -168,12 +180,13 @@ router.get('/users/search', async (request, response) => {
 
     try {
         const user = await bl.get_by_id_user(email)
+        console.log("user", user);
         if (user) {
             if (user !== 'Postponed') {
                 response.status(200).json(user)
             }
             else {
-                response.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${search}'` })
+                response.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${email}'` })
             }
         }
         else {
@@ -293,10 +306,10 @@ router.post('/customers', async (request, response) => {
     const new_user = request.body
     const user = await bl.new_customer(new_user)
     if (user) {
-        response.status(201).json({"e": "no","signupUrl":signupUrl})
+        response.status(201).json({ "e": "no", "signupUrl": signupUrl })
     }
     else {
-        response.status(409).json({"e": "yes", "error": `There is a customer with the details I mentioned` })
+        response.status(409).json({ "e": "yes", "error": `There is a customer with the details I mentioned` })
     }
 })
 

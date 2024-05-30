@@ -380,45 +380,59 @@ function validatePhone(input) {
 
 
 
-async  function validateEmail(input) {
+async function validateEmail(input) {
+    document.getElementById('loading-icon').style.display = 'block';
+
     const email = input.value.trim();
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-    if (emailRegex.test(email)) {
-    
-        try {
-            const response = await fetch(`/users/search?email=${email}`);
 
-            const data = await response.json();
-    
-            if (data.status === "yes") {
-                const successMessage = document.getElementById('success-message');
-                successMessage.textContent = data.error;
-                window.location.href = data.loginUrl;
-            } else {
-                if (data.id) {
-                    return registration(data.id);
-                }
-            }
-        } catch (error) {
-            document.getElementById('loading-icon').style.display = 'none';
-            console.error('Error:', error);
-        }
-        if (condition) {
-            
-        }
-        input.className = '';
-        document.getElementById("email_").style.display = "block";
-        document.getElementById("email_error").style.display = "none";
-        document.getElementById("password").disabled = false;
-        document.getElementById("password_error").style.display = "block";
-
-
-    } else {
-        input.className = 'invalid';
-        document.getElementById("password").disabled = true;
-        document.getElementById("email_error").style.display = "block";
-        document.getElementById("email_").style.display = "none";
+    if (!emailRegex.test(email)) {
+        updateUI('invalid', true, "Invalid email format", false);
+        document.getElementById("login-button").style.display= "none"
+        document.getElementById('loading-icon').style.display = 'none';
+        return;
     }
+
+    try {
+        const response = await fetch(`role_users/users/search?email=${email}`);
+        const data = await response.json();
+        if (data === "ok") {
+            updateUI('invalid', true, "The email already exists", false);
+            document.getElementById('loading-icon').style.display = 'none';
+        
+        } else {
+            updateUI('', false, "", true);
+            document.getElementById('loading-icon').style.display = 'none';
+            document.getElementById("login-button").style.display= "none"
+        }
+    } catch (error) {
+        updateUI('invalid', true, "An error occurred", false);
+        document.getElementById("login-button").style.display= "none"
+        document.getElementById('loading-icon').style.display = 'none';
+
+
+
+    }
+}
+
+
+function updateUI(inputClass, passwordDisabled, emailErrorMessage, passwordValid) {
+    input.className = inputClass;
+    document.getElementById("password").disabled = passwordDisabled;
+
+    const emailErrorElement = document.getElementById("email_error");
+    const emailValidElement = document.getElementById("email_");
+
+    if (emailErrorMessage) {
+        emailErrorElement.style.display = "block";
+        emailErrorElement.querySelector("spam").textContent = emailErrorMessage;
+        emailValidElement.style.display = "none";
+    } else {
+        emailErrorElement.style.display = "none";
+        emailValidElement.style.display = "block";
+    }
+
+    document.getElementById("password_error").style.display = passwordValid ? "block" : "none";
 }
 
 function validatePassword(input) {
@@ -580,8 +594,10 @@ function validateCreditCard(input) {
 function checkboxv(input) {
     if (input.checked) {
         document.getElementById('nextBtn').className = 'nextBtn2';
+        document.getElementById('nextBtn').disabled = false;
     } else {
         document.getElementById('nextBtn').className = 'nextBtn';
+        document.getElementById('nextBtn').disabled = true;
     }
 }
 window.addEventListener('load', function () {
