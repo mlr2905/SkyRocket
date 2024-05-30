@@ -186,7 +186,7 @@ function registration(id){
     const credit_card = document.getElementById('credit_card').value;
     const expiry_date = document.getElementById('expiry_date').value;
     const cvv = document.getElementById('CVV').value;
-    fetch('/role_users/customers', {
+    fetch('https://skyrocket.onrender.com/role_users/customers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
