@@ -160,14 +160,14 @@ router.post('/signup', async (request, response) => {
 router.get('/users/search', async (request, response) => {
     const query = request.query
     const email = query.email
-    const username = query.username
-    const password = query.password
-    const id = query.id
-    let search = email ? email : username ? username : password ? password : id;
-    let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
+    // const username = query.username
+    // const password = query.password
+    // const id = query.id
+    // let search = email ? email : username ? username : password ? password : id;
+    // let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
 
     try {
-        const user = await bl.get_by_id_user(type, search)
+        const user = await bl.get_by_id_user(email)
         if (user) {
             if (user !== 'Postponed') {
                 response.status(200).json(user)

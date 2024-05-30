@@ -380,10 +380,32 @@ function validatePhone(input) {
 
 
 
-function validateEmail(input) {
+async  function validateEmail(input) {
     const email = input.value.trim();
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
     if (emailRegex.test(email)) {
+    
+        try {
+            const response = await fetch(`/users/search?email=${email}`);
+
+            const data = await response.json();
+    
+            if (data.status === "yes") {
+                const successMessage = document.getElementById('success-message');
+                successMessage.textContent = data.error;
+                window.location.href = data.loginUrl;
+            } else {
+                if (data.id) {
+                    return registration(data.id);
+                }
+            }
+        } catch (error) {
+            document.getElementById('loading-icon').style.display = 'none';
+            console.error('Error:', error);
+        }
+        if (condition) {
+            
+        }
         input.className = '';
         document.getElementById("email_").style.display = "block";
         document.getElementById("email_error").style.display = "none";

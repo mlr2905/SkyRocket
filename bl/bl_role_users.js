@@ -159,7 +159,7 @@ async function signup(email, password) {
       return {"e":"no","response":response}
 
     }
-    
+
   }
   catch (error) {
     console.error('Error:', error);
@@ -189,29 +189,29 @@ async function create_user(uesr) {
   }
 }
 
-// async function get_by_id_user(type, id) {
-//   let url = null;
+async function get_by_id_user(email) {
+  let url = null;
 
-//   if (id === undefined) {
-//     url = `https://spring-a.onrender.com/${id}`;
-//   } else {
-//     url = `https://node-mongodb-rest.onrender.com/api/users/search/${id}`;
-//   }
+  // if (id === undefined) {
+  //   url = `https://spring-a.onrender.com/${id}`;
+  // } else {
+    url = `https://jwt-node-mongodb.onrender.com/search?email=${email}`;
+  
 
-//   try {
-//     const response = await fetch(url);
-//     const data = await response.json();
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
 
-//     if (data && data.role_id === 1) {
-//       return data;
-//     } else {
-//       return 'Postponed';
-//     }
-//   } catch (error) {
-//     console.error('Error:', error);
-//     return false;
-//   }
-// }
+    if (data && data.role_id === 1) {
+      return "ok";
+    } else {
+      return 'Postponed';
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return false;
+  }
+}
 
 
 async function get_qr(id) {
@@ -388,7 +388,7 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  authcode,login_code,login, signup, purchase_ticket, create_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
+  authcode,login_code,login, signup, purchase_ticket, create_user,get_by_id_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }
