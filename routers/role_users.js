@@ -84,13 +84,14 @@ router.post('/validation', async (request, response) => {
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 });
-router.post('/ip', async (request, response) => {
+router.get('/ip', async (request, response) => {
 
     const forwardedFor = request.headers['x-forwarded-for'];
     const clientIPs = forwardedFor ? forwardedFor.split(',').map(ip => ip.trim()) : [];
     const ip = clientIPs.length > 0 ? clientIPs[0] : undefined;
+    const userAgent = request.headers
 
-    response.status(200).json({ "ip": ip });
+    response.status(200).json( {userAgent});
 
 
 });
