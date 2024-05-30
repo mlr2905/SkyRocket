@@ -28,27 +28,33 @@ document.getElementById('phone').addEventListener('input', function () {
     // עדכן את התוכן של ה-input להיות רק מספרים ולא להכיל מספרים יותר מהמספר ב-placeholder
     this.value = numbersOnly;
 });
-countryCode()
-function countryCode() {
+
+
+function initializeIntlTelInput(countryCode) {
     const input = document.querySelector("#phone");
-    let Country = "en"
-    fetch('https://skyrocket.onrender.com/role_users/ip')
-        .then(response => response.json())
-        .then(data => {
-
-            Country = data; // הקוד של המדינה
-        })
-        .catch(error => {
-            console.error('Error fetching IP information:', error);
-        });
-
-    const iti = window.intlTelInput(input, { initialCountry: Country, });
+    const iti = window.intlTelInput(input, { initialCountry: countryCode });
     window.iti = iti;
 }
 
+async function countryCode() {
+    let country = "en"; // במקרה שה-fetching נכשל, נשאיר את הערך הנוכחי כ"en"
+    try {
+        const response = await fetch('https://skyrocket.onrender.com/role_users/ip');
+        const data = await response.json();
+         country = String.prototype.toLowerCase.call(data.country);
 
+        return initializeIntlTelInput(country);
 
+    } catch (error) {
+        console.error('Error fetching IP information:', error);
+        return initializeIntlTelInput(country);
 
+    }
+
+}
+countryCode()
+
+// הפעלת הפונקציה עם קוד מדינה כפרמטר
 
 function cardcvv(input) {
     input.classList.remove('invalid');
