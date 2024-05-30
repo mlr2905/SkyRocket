@@ -173,6 +173,7 @@ function showTab(n) {
             }
         }
     } catch (error) {
+        document.getElementById('loading-icon').style.display = 'none';
         console.error('Error:', error);
     }
 }
@@ -219,6 +220,7 @@ async function registration(id) {
             }
         }
     } catch (error) {
+        document.getElementById('loading-icon').style.display = 'none';
         console.error('Error:', error);
     }
 }
