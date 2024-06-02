@@ -52,42 +52,44 @@ passport.use(new GoogleStrategy({
 },
 
 
-  async  function (accessToken, refreshToken, profile,cb) {
-    let email = profile.emails[0].value;
-    let password = accessToken; // ניתן לשנות את זה בהתאם לצורך
+    async function (accessToken, refreshToken, profile, cb) {
+        let email = profile.emails[0].value;
+        let password = accessToken; // ניתן לשנות את זה בהתאם לצורך
 
-    try {
-        console.log("ll", email);
-        const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
-        const data = Check.data;
+        try {
+            console.log("ll", email);
+            const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
+            const data = Check.data;
 
-        let loginResponse;
-        if (data.e === "no") {
-            // אם המייל קיים, בצע login
-            loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-                email: email,
-                password: password
-            });
-        } else {
-            // אם המייל לא קיים, בצע signup ואז login
-            await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-                email: email,
-                password: password
-            });
+            let loginResponse;
+            if (data.e === "no") {
+                // אם המייל קיים, בצע login
+                loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                    email: email,
+                    password: password
+                });
+            } if (data.e === "yes") {
+                // אם המייל לא קיים, בצע signup ואז login
+                const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                    email: email,
+                    password: password
+                });
+                if (signup.e === "no") {
+                    loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                        email: email,
+                        password: password
+                    });
+                }
 
-            loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-                email: email,
-                password: password
-            });
+            }
+
+            console.log("emailCheckResponse", loginResponse.data);
+            return cb(null, profile);
+        } catch (error) {
+            console.error('Error during signup or login:', error);
+            return cb(error, null);
         }
-
-        console.log("emailCheckResponse", loginResponse.data);
-        return cb(null, profile);
-    } catch (error) {
-        console.error('Error during signup or login:', error);
-        return cb(error, null);
-    }
-}));
+    }));
 
 
 // מספר הצעדים עבור האימות הוא 2
@@ -103,8 +105,8 @@ passport.deserializeUser(function (obj, cb) {
 
 app.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
-   async function (req, res) {
-   }
+    async function (req, res) {
+    }
 );
 
 
