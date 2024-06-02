@@ -73,13 +73,10 @@ app.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
 );
 
-app.use(require('express-session')({ 
-    secret: SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true
-  }));
-app.get('/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
+
+
+passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }
+,
     async function (req, res) {
         const { profile, accessToken } = req.user;
         let email = profile.emails[0].value;
@@ -126,6 +123,11 @@ app.get('/google/callback',
         }
     }
 );
+app.use(require('express-session')({ 
+    secret: SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true
+  }));
 
 
 
