@@ -66,10 +66,12 @@ passport.use(new GoogleStrategy({
             if (data.e === "no") {
                 console.log("aaa");
                 // אם המייל קיים, בצע login
-                return loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                 loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
                     password: password
                 });
+                console.log("loginResponse",loginResponse);
+                return loginResponse
             } if (data.e === "noo") {
                 console.log("aa");
                 // אם המייל לא קיים, בצע signup ואז login
