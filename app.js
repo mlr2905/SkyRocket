@@ -44,7 +44,6 @@ app.listen(9000, () => {
 
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
-
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
@@ -52,24 +51,24 @@ passport.use(new GoogleStrategy({
 },
 
 
-    function (accessToken, refreshToken, profile) {
+    function (accessToken, refreshToken, profile,cb) {
         console.log(accessToken); // הדפסת הפרופיל שקיבלת מ-Google
         console.log(refreshToken); // הדפסת הפרופיל שקיבלת מ-Google
         console.log(profile); // הדפסת הפרופיל שקיבלת מ-Google
 
-        return  profile;
+        return cb(null, profile);
     }
 ));
 
 // מספר הצעדים עבור האימות הוא 2
 // בשלב זה אנו מניחים שיש רק דרך אימות אחת
-// passport.serializeUser(function (user, cb) {
-//     cb(null, user);
-// });
+passport.serializeUser(function (user, cb) {
+    cb(null, user);
+});
 
-// passport.deserializeUser(function (obj, cb) {
-//     cb(null, obj);
-// });
+passport.deserializeUser(function (obj, cb) {
+    cb(null, obj);
+});
 
 
 app.get('/google',
