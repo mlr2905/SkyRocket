@@ -190,7 +190,9 @@ router.get('/users/search', async (request, response) => {
                 response.status(200).json({"e":"no","status":user})
             }
             else {
-                response.status(403).json({ "e":"yes", "err": `Access denied, you do not have permission to access the requested Id '${email}'` })
+                response.status(200).json({"e":"noo","status":"ok"})
+
+                // response.status(403).json({ "e":"yes", "err": `Access denied, you do not have permission to access the requested Id '${email}'` })
             }
         }
         else {
