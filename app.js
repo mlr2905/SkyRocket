@@ -49,28 +49,29 @@ passport.use(new GoogleStrategy({
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "https://skyrocket.onrender.com/google/callback"
 },
+
   async function(accessToken, refreshToken, profile, cb) {
         try {
             console.log(profile);
             const email = profile.emails[0].value;
 
-            const emailCheckResponse = await axios.get(`https://your-api-domain.com/role_users/email?email=${email}`);
+            const emailCheckResponse = await axios.get(`https://skyrocket.onrender.com/role_users/email?email=${email}`);
             console.log("emailCheckResponse", emailCheckResponse);
             if (emailCheckResponse.data.status === "valid") {
                 // אם המייל קיים, בצע login
-                const loginResponse = await axios.post('https://your-api-domain.com/role_users/login', {
+                const loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
                     password: accessToken
                 });
                 return cb(null, loginResponse.data);
             } else {
                 // אם המייל לא קיים, בצע signup ואז login
-                await axios.post('https://your-api-domain.com/role_users/signup', {
+                await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                     email: email,
                     password: accessToken
                 });
 
-                const loginResponse = await axios.post('https://your-api-domain.com/role_users/login', {
+                const loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
                     password: accessToken
                 });
