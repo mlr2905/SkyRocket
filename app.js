@@ -100,7 +100,7 @@ app.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
     function (req, res) {
         // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
-        res.redirect('/logim.html');
+        res.redirect('/login.html');
     }
 );
 
