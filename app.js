@@ -80,7 +80,7 @@ passport.use(new GoogleStrategy({
 
         } catch (error) {
             console.error('Error during signup or login:', error);
-            return cb(error, null);
+            return error, null;
         }
     }
 ));
