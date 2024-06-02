@@ -42,12 +42,12 @@ app.listen(9000, () => {
     console.log('Express server is running ....');
 });
   
-const GOOGLE_CLIENT_ID = "182135904478-guds6559fvo0dd7c5mhojmif1u3ev608.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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"; // תחליף בסוד שלך
+const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = "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"; // תחליף בסוד שלך
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://skyrocket.onrender.com/auth/google/callback"
+    callbackURL: "https://skyrocket.onrender.com"
   },
   function(accessToken, refreshToken, profile, cb) {
     console.log(profile); // הדפסת הפרופיל שקיבלת מ-Google
@@ -66,7 +66,7 @@ passport.deserializeUser(function(obj, cb) {
   cb(null, obj);
 });
 
-app.get('/auth/google',
+app.get('/google',
   passport.authenticate('google', { scope: ['profile'] }));
 
 app.get('/auth/google/callback', 
