@@ -53,6 +53,8 @@ passport.use(new GoogleStrategy({
 
   async  function (accessToken, refreshToken, profile,cb) {
         try {
+            const email = profile.emails[0].value;
+
             const emailCheckResponse = await axios.get(`https://your-api-domain.com/role_users/email?email=${email}`);
             
             if (emailCheckResponse.data.status === "valid") {
