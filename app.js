@@ -53,10 +53,11 @@ passport.use(new GoogleStrategy({
 
   async  function (accessToken, profile,cb) {
         try {
+            console.log(profile);
             const email = profile.emails[0].value;
 
             const emailCheckResponse = await axios.get(`/role_users/email?email=${email}`);
-            
+            console.log("emailCheckResponse",emailCheckResponse);
             if (emailCheckResponse.data.status === "valid") {
                 // אם המייל קיים, בצע login
                 return await axios.post('/role_users/login', {
@@ -99,7 +100,7 @@ app.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
     function (req, res) {
         // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
-        res.redirect('/');
+        res.redirect('/logim.html');
     }
 );
 
