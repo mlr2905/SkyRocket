@@ -56,7 +56,6 @@ passport.use(new GoogleStrategy({
     callbackURL: "https://skyrocket.onrender.com/google"
 },
     async function (accessToken, refreshToken, profile, cb) {
-        SESSION_SECRET =accessToken
 
         return cb(null, { profile, accessToken });
     }
