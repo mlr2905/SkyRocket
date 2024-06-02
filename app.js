@@ -47,46 +47,43 @@ const GOOGLE_CLIENT_SECRET = "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";
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://skyrocket.onrender.com/google"
+    callbackURL: "https://skyrocket.onrender.com/google/callback"
 },
-
-
-  async  function (accessToken, profile,cb) {
+  async function(accessToken, refreshToken, profile, cb) {
         try {
             console.log(profile);
             const email = profile.emails[0].value;
 
-            const emailCheckResponse = await axios.get(`/role_users/email?email=${email}`);
-            console.log("emailCheckResponse",emailCheckResponse);
+            const emailCheckResponse = await axios.get(`https://your-api-domain.com/role_users/email?email=${email}`);
+            console.log("emailCheckResponse", emailCheckResponse);
             if (emailCheckResponse.data.status === "valid") {
                 // אם המייל קיים, בצע login
-                return await axios.post('/role_users/login', {
+                const loginResponse = await axios.post('https://your-api-domain.com/role_users/login', {
                     email: email,
                     password: accessToken
                 });
+                return cb(null, loginResponse.data);
             } else {
                 // אם המייל לא קיים, בצע signup ואז login
-                await axios.post('/role_users/signup', {
+                await axios.post('https://your-api-domain.com/role_users/signup', {
                     email: email,
                     password: accessToken
                 });
 
-               return await axios.post('/role_users/login', {
+                const loginResponse = await axios.post('https://your-api-domain.com/role_users/login', {
                     email: email,
                     password: accessToken
                 });
+                return cb(null, loginResponse.data);
             }
-
 
         } catch (error) {
             console.error('Error during signup or login:', error);
-            return error, null;
+            return cb(error, null);
         }
     }
 ));
 
-// מספר הצעדים עבור האימות הוא 2
-// בשלב זה אנו מניחים שיש רק דרך אימות אחת
 passport.serializeUser(function (user, cb) {
     cb(null, user);
 });
@@ -95,14 +92,20 @@ passport.deserializeUser(function (obj, cb) {
     cb(null, obj);
 });
 
+// Route to start Google authentication
+app.get('/google', 
+    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
+);
 
-app.get('/google',
-    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
+// Route for Google callback
+app.get('/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/login' }),
     function (req, res) {
         // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
-        res.redirect('/login.html');
+        res.redirect('/');
     }
-);
+)
+
 
 
 
