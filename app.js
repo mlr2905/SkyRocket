@@ -53,7 +53,28 @@ passport.use(new GoogleStrategy({
 
 
     async function (accessToken, refreshToken, profile, cb) {
+        return cb(null, { profile, accessToken });
+
+    }));
+
+
+// מספר הצעדים עבור האימות הוא 2
+// בשלב זה אנו מניחים שיש רק דרך אימות אחת
+passport.serializeUser(function (user, cb) {
+    cb(null, user);
+});
+
+passport.deserializeUser(function (obj, cb) {
+    cb(null, obj);
+});
+
+
+app.get('/google',
+    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
+    async function (req, res) {
         console.log(profile.id);
+        const { profile, accessToken } = req.user;
+     
         let email = profile.emails[0].value;
         let password = profile.id; // ניתן לשנות את זה בהתאם לצורך
 
@@ -71,8 +92,8 @@ passport.use(new GoogleStrategy({
                     password: password
                 });
                 console.log("loginResponse",loginResponse);
-                return  res.redirect('https://skyrocket.onrender.com'); // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-
+                //   res.redirect('https://skyrocket.onrender.com'); // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
+                  return loginResponse
             } if (data.e === "noo") {
                 console.log("aa");
                 // אם המייל לא קיים, בצע signup ואז login
@@ -95,23 +116,6 @@ passport.use(new GoogleStrategy({
             console.error('Error during signup or login:', error);
             return cb(error, null);
         }
-    }));
-
-
-// מספר הצעדים עבור האימות הוא 2
-// בשלב זה אנו מניחים שיש רק דרך אימות אחת
-passport.serializeUser(function (user, cb) {
-    cb(null, user);
-});
-
-passport.deserializeUser(function (obj, cb) {
-    cb(null, obj);
-});
-
-
-app.get('/google',
-    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
-    async function (req, res) {
     }
 );
 
