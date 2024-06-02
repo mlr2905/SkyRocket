@@ -41,53 +41,51 @@ app.listen(9000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 });
-  
+
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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"; // תחליף בסוד שלך
+const GOOGLE_CLIENT_SECRET = "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";
+
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "https://skyrocket.onrender.com/google"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    console.log(accessToken); // הדפסת הפרופיל שקיבלת מ-Google
-    console.log(refreshToken); // הדפסת הפרופיל שקיבלת מ-Google
-    console.log(profile); // הדפסת הפרופיל שקיבלת מ-Google
+},
 
-    return cb(null, profile);
-  }
+
+    function (accessToken, refreshToken, profile) {
+        console.log(accessToken); // הדפסת הפרופיל שקיבלת מ-Google
+        console.log(refreshToken); // הדפסת הפרופיל שקיבלת מ-Google
+        console.log(profile); // הדפסת הפרופיל שקיבלת מ-Google
+
+        return  profile;
+    }
 ));
 
 // מספר הצעדים עבור האימות הוא 2
 // בשלב זה אנו מניחים שיש רק דרך אימות אחת
-passport.serializeUser(function(user, cb) {
-  cb(null, user);
-});
+// passport.serializeUser(function (user, cb) {
+//     cb(null, user);
+// });
 
-passport.deserializeUser(function(obj, cb) {
-  cb(null, obj);
-});
+// passport.deserializeUser(function (obj, cb) {
+//     cb(null, obj);
+// });
 
 
 app.get('/google',
-  passport.authenticate('google', { scope: ['profile','email','openid'] }),
-  function(req, res) {
-    // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
-    res.redirect('/login');
-  }
+    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
+    function (req, res) {
+        // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
+        res.redirect('/login');
+    }
 );
 
-app.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
-    // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
-    res.redirect('/');
-  });
+
 
 function getTimeZoneByIP(ip) {
     try {
         const ipInfo = ip2locationDatabase.get_all(ip);
-        if(ipInfo) {
+        if (ipInfo) {
             return ipInfo.timezone;
         } else {
             return null; // לא נמצא מידע עבור ה-IP
