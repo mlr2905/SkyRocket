@@ -50,7 +50,8 @@ passport.use(new GoogleStrategy({
     callbackURL: "https://skyrocket.onrender.com/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
-    // אפשר לבצע פה פעולות נוספות, כמו לאתחל או לעדכן רשומה בבסיס הנתונים
+    console.log(profile); // הדפסת הפרופיל שקיבלת מ-Google
+
     return cb(null, profile);
   }
 ));
