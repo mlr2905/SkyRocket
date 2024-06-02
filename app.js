@@ -47,7 +47,7 @@ const GOOGLE_CLIENT_SECRET = "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";
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://skyrocket.onrender.com/google/callback"
+    callbackURL: "https://skyrocket.onrender.com/google"
 },
 
   async function(accessToken, refreshToken, profile, cb) {
