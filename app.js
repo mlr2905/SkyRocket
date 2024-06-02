@@ -67,7 +67,7 @@ passport.deserializeUser(function(obj, cb) {
 });
 
 app.get('/google',
-  passport.authenticate('google', { scope: ['profile'] }));
+  passport.authenticate('google', { scope: ['profile','email','openid'] }));
 
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
