@@ -55,15 +55,15 @@ passport.use(new GoogleStrategy({
             console.log(profile);
             const email = profile.emails[0].value;
 
-            const emailCheckResponse = await axios.get(`https://skyrocket.onrender.com/role_users/email?email=${email}`);
+            const emailCheckResponse = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
             console.log("emailCheckResponse", emailCheckResponse);
-            if (emailCheckResponse.data.status === "valid") {
+            if (emailCheckResponse.data.status === "ok") {
                 // אם המייל קיים, בצע login
-                const loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+               
+                return   loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
                     password: accessToken
                 });
-                return cb(null, loginResponse.data);
             } else {
                 // אם המייל לא קיים, בצע signup ואז login
                 await axios.post('https://skyrocket.onrender.com/role_users/signup', {
@@ -71,11 +71,11 @@ passport.use(new GoogleStrategy({
                     password: accessToken
                 });
 
-                const loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+               
+                return loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
                     password: accessToken
                 });
-                return cb(null, loginResponse.data);
             }
 
         } catch (error) {
