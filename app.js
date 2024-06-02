@@ -75,7 +75,7 @@ passport.use(new GoogleStrategy({
                     password: password
                 });
                 if (signup.e === "no") {
-                    loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                    return loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                         email: email,
                         password: password
                     });
