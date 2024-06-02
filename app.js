@@ -18,6 +18,10 @@ const multer = require('multer');
 const upload = multer(); // להגדרת multer עבור קבצים
 const ip2location = require("ip2location-nodejs");
 const IP2Location = ip2location.IP2Location;
+const passport = require('passport');
+
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 
 // טען את מסד הנתונים של IP2Location
 const ip2locationDatabase = new IP2Location("./IP2LOCATION-LITE-DB11.BIN", "IP2LOCATION_SHARED_MEMORY");
@@ -37,47 +41,39 @@ app.listen(9000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 });
-let environment = new paypal.core.SandboxEnvironment(
-    'AT4O6B5Ls009Bq5USh7BjgwpVQBNE5jMYHlpEtrpM-QTm0hwuT35fUMKBee3vGPzNIwKlzCumQ6a7oPi',
-    'EKEs7XywH_Hi0cEwf9haEd3RJhm7y1ZtHJPia4zbJP8Y-Uafen1QlRAsljcWts8eeT0eKNrcA-32EUyo'
-  );
   
-  let client = new paypal.core.PayPalHttpClient(environment);
-  ;
-  app.post('/creauthorization', async (req, res) => {
-    console.log("req.body",req.body);
+const GOOGLE_CLIENT_ID = "182135904478-guds6559fvo0dd7c5mhojmif1u3ev608.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = "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"; // תחליף בסוד שלך
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "https://skyrocket.onrender.com/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    // אפשר לבצע פה פעולות נוספות, כמו לאתחל או לעדכן רשומה בבסיס הנתונים
+    return cb(null, profile);
+  }
+));
 
-    let request = new paypal.orders.OrdersCreateRequest();
-    request.requestBody({
-      intent: 'AUTHORIZE',
-      purchase_units: [{
-        amount: {
-          currency_code: 'ILS', // שקלים חדשים
-          value: '1.00'
-        }
-      }],
-      payment_source: {
-        card: {
-          number: req.body.number,
-          expiry: req.body.expiry,
-          security_code: req.body.security_code,
-          card_type: req.body.card_type,
-          name: req.body.name,
-         
-        }
-      }
-    });
-  
-    try {
-      let response = await client.execute(request);
-      console.log("response",response);
-      let authorizationId = response.result.purchase_units[0].payments.authorizations[0].id;
-      res.status(201).json({ authorizationId });
-    } catch (error) {
-      res.status(500).send(error.toString());
-    }
+// מספר הצעדים עבור האימות הוא 2
+// בשלב זה אנו מניחים שיש רק דרך אימות אחת
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
+    res.redirect('/');
   });
-  
 function getTimeZoneByIP(ip) {
     try {
         const ipInfo = ip2locationDatabase.get_all(ip);
