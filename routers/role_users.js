@@ -187,10 +187,10 @@ router.get('/users/search', async (request, response) => {
         const user = await bl.get_by_id_user(email)
         if (user) {
             if (user !== 'Postponed') {
-                response.status(200).json(user)
+                response.status(200).json({"e":"no","status":user})
             }
             else {
-                response.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${email}'` })
+                response.status(403).json({ "e":"yes", "err": `Access denied, you do not have permission to access the requested Id '${email}'` })
             }
         }
         else {

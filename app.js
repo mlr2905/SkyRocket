@@ -57,7 +57,7 @@ passport.use(new GoogleStrategy({
 
             const emailCheckResponse = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
             console.log("emailCheckResponse", emailCheckResponse);
-            if (emailCheckResponse.data.status === "ok") {
+            if (emailCheckResponse.data.e === "no") {
                 // אם המייל קיים, בצע login
                
                 return   loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
