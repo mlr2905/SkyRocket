@@ -59,7 +59,7 @@ passport.use(new GoogleStrategy({
             
             if (emailCheckResponse.data.status === "valid") {
                 // אם המייל קיים, בצע login
-                await axios.post('/role_users/login', {
+                return await axios.post('/role_users/login', {
                     email: email,
                     password: accessToken
                 });
@@ -70,7 +70,7 @@ passport.use(new GoogleStrategy({
                     password: accessToken
                 });
 
-                await axios.post('/role_users/login', {
+               return await axios.post('/role_users/login', {
                     email: email,
                     password: accessToken
                 });
@@ -81,7 +81,6 @@ passport.use(new GoogleStrategy({
             console.error('Error during signup or login:', error);
             return cb(error, null);
         }
-        return cb(null, profile);
     }
 ));
 
