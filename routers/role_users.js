@@ -98,6 +98,22 @@ router.get('/ip', async (request, response) => {
 
 
 });
+router.get('/email', async (request, response) => {
+    const query = request.query
+    const email = query.email
+    try {
+        const check = await bl.valid_email(email)
+      
+            response.status(200).json(check)
+
+        
+    }
+
+    catch (error) {
+        response.status(503).json({ "e": "yes", "status": e })
+    }
+
+});
 
 router.post('/login', async (request, response) => {
 

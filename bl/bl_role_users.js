@@ -28,7 +28,7 @@ async function authcode(email) {
     if (responseData.e === "yes") {
       return false; // או כל ערך שאתה רוצה להחזיר במקרה של שגיאה
     } else {
-      console.log("bl",responseData);
+      console.log("bl", responseData);
       return responseData; // או כל ערך שאתה רוצה להחזיר במקרה של הצלחה
     }
 
@@ -59,19 +59,19 @@ async function login_code(email, code) {
   try {
     const data = await fetch(url, requestOptions);
     const user = await data.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("bl user",user);
+    console.log("bl user", user);
     if (user.e === "yes") {
-      return {"e":"yes","error": user.error};
+      return { "e": "yes", "error": user.error };
     }
-    else{
-      console.log("bls",user);
-    return  user
+    else {
+      console.log("bls", user);
+      return user
 
     }
 
   } catch (e) {
-    console.error({"e":"yes","error" :e});
-    return {"e":"yes","error" :e};
+    console.error({ "e": "yes", "error": e });
+    return { "e": "yes", "error": e };
   }
 }
 
@@ -79,41 +79,41 @@ async function login(email, password, ip, userAgent) {
   const url = 'https://jwt-node-mongodb.onrender.com/login';
 
   const data = {
-      email: email,
-      password: password,
-      ip: ip,
-      userAgent: userAgent
+    email: email,
+    password: password,
+    ip: ip,
+    userAgent: userAgent
   };
 
   const requestOptions = {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
   };
 
   try {
-      const response = await fetch(url, requestOptions);
-      const user = await response.json();
+    const response = await fetch(url, requestOptions);
+    const user = await response.json();
 
-      // בדיקת התגובה מהשרת
-      if (!response.ok) {
-          throw new Error('Failed to login: ' + user.message);
-      }
+    // בדיקת התגובה מהשרת
+    if (!response.ok) {
+      throw new Error('Failed to login: ' + user.message);
+    }
 
-      // בדיקת תגובת השרת לשגיאות
-      if (user.errors) {
-          throw new Error('Failed to login: ' + user.errors.email);
-      }
+    // בדיקת תגובת השרת לשגיאות
+    if (user.errors) {
+      throw new Error('Failed to login: ' + user.errors.email);
+    }
 
-      // החזרת נתוני המשתמש או השגיאה במקרה של שגיאה
-      return { e: "no", jwt: user.jwt };
+    // החזרת נתוני המשתמש או השגיאה במקרה של שגיאה
+    return { e: "no", jwt: user.jwt };
 
   } catch (error) {
-      console.error('Error:', error.message);
-      // החזרת נתוני השגיאה במקרה של שגיאה
-      return { e: "yes", error: error.message };
+    console.error('Error:', error.message);
+    // החזרת נתוני השגיאה במקרה של שגיאה
+    return { e: "yes", error: error.message };
   }
 }
 
@@ -137,11 +137,11 @@ async function signup(email, password) {
   try {
     const user = await fetch(url_node_mongo, requestOptions);
     const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("data_mongo",data_mongo);
+    console.log("data_mongo", data_mongo);
     if (data_mongo.errors) {
-      return {"e":"yes","error": data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password};
+      return { "e": "yes", "error": data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password };
     }
-    
+
     if (data_mongo.mongo_id !== undefined) {
       data_mongo.role_id = 1
 
@@ -156,7 +156,7 @@ async function signup(email, password) {
       const create_user = await fetch(url_spring, requestOptions);
       const response = await create_user.json(); // או כל פעולה אחרת לקריאת הנתונים
 
-      return {"e":"no","response":response}
+      return { "e": "no", "response": response }
 
     }
 
@@ -189,19 +189,35 @@ async function create_user(uesr) {
   }
 }
 
+async function valid_email(email) {
+
+  let url = `https://api.hunter.io/v2/email-verifier?email=${email}&api_key=e8bd134c4c84943911d41d9e219f107527b2ad90`;
+
+  try {
+    const response = await fetch(url);
+    const check = await response.json();
+    const status= check.data.status
+    return {"e":"no","status":status}
+
+  }
+  catch (e) {
+    return { "e": "yes", "err": e }
+  }
+}
+
 async function get_by_id_user(email) {
   let url = null;
 
   // if (id === undefined) {
   //   url = `https://spring-a.onrender.com/${id}`;
   // } else {
-    url = `https://jwt-node-mongodb.onrender.com/search?email=${email}`;
-  
+  url = `https://jwt-node-mongodb.onrender.com/search?email=${email}`;
+
 
   try {
     const response = await fetch(url);
     const data = await response.json();
-console.log("bl data",data);
+    console.log("bl data", data);
     if (data.status === undefined) {
       return "ok";
     } else {
@@ -388,7 +404,7 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  authcode,login_code,login, signup, purchase_ticket, create_user,get_by_id_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
+  valid_email, authcode, login_code, login, signup, purchase_ticket, create_user, get_by_id_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }

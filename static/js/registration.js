@@ -402,8 +402,8 @@ async function validateEmail(input) {
     document.getElementById('loading-icon').style.display = 'block';
 
     const email = input.value.trim();
-    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/;
+    
     if (!emailRegex.test(email)) {
         updateUI('invalid', true, "Invalid email format", false);
         document.getElementById("login-button").style.display = "none"
@@ -419,9 +419,36 @@ async function validateEmail(input) {
             document.getElementById('loading-icon').style.display = 'none';
 
         } else {
-            updateUI('', false, "", true);
-            document.getElementById('loading-icon').style.display = 'none';
-            document.getElementById("login-button").style.display = "none"
+            let [name, domain] = email.split('@');
+
+            const response = await fetch(`role_users/email?email=${email}`);
+            const check = await response.json();
+            if (check.e === "no") {
+                if (check.status === "disposable") {
+                    updateUI('invalid', true, `'${domain}' does not exist `, false);
+                    document.getElementById('loading-icon').style.display = 'none';
+                    document.getElementById("login-button").style.display = "none"        
+                }
+                if (check.status === "invalid") {
+                    updateUI('invalid', true, ` '${name}' not exist in '${domain}' `, false);
+                    document.getElementById('loading-icon').style.display = 'none';
+                    document.getElementById("login-button").style.display = "none"        
+                }
+                if (check.status === "valid") {
+                    updateUI('', false, "", true);
+                    document.getElementById('loading-icon').style.display = 'none';
+                    document.getElementById("login-button").style.display = "none"        
+                }
+               
+            }
+            if (check.e === "yes") {
+                
+                updateUI('invalid', true, `errer:'${check.status}' `, false);
+                document.getElementById('loading-icon').style.display = 'none';
+                document.getElementById("login-button").style.display = "none"
+            }
+          
+         
         }
     } catch (error) {
         updateUI('invalid', true, "An error occurred", false);
