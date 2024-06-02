@@ -52,28 +52,27 @@ passport.use(new GoogleStrategy({
 
   async function(accessToken, refreshToken, profile, cb) {
         try {
-            console.log(profile);
             const email = profile.emails[0].value;
 
-            const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
+            const Check = await axios.get(`/role_users/users/search?email=${email}`);
             const data = await Check.join()
             console.log("emailCheckResponse", data);
             if (data.data.e === "no") {
                 // אם המייל קיים, בצע login
                
-                return   loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                return   loginResponse = await axios.post('/role_users/login', {
                     email: email,
                     password: accessToken
                 });
             } else {
                 // אם המייל לא קיים, בצע signup ואז login
-                await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                await axios.post('/role_users/signup', {
                     email: email,
                     password: accessToken
                 });
 
                
-                return loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                return loginResponse = await axios.post('/role_users/login', {
                     email: email,
                     password: accessToken
                 });
@@ -96,17 +95,13 @@ passport.deserializeUser(function (obj, cb) {
 
 // Route to start Google authentication
 app.get('/google', 
-    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
-);
-
-// Route for Google callback
-app.get('/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/login' }),
+    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
     function (req, res) {
         // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
-        res.redirect('/');
+        res.redirect('/login');
     }
-)
+
+);
 
 
 
