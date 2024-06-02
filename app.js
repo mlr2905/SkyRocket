@@ -66,6 +66,7 @@ passport.deserializeUser(function(obj, cb) {
   cb(null, obj);
 });
 
+
 app.get('/google',
   passport.authenticate('google', { scope: ['profile','email','openid'] }));
 
