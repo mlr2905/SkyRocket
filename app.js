@@ -47,7 +47,7 @@ const GOOGLE_CLIENT_SECRET = "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"; // תחלי�
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://skyrocket.onrender.com"
+    callbackURL: "https://skyrocket.onrender.com/google"
   },
   function(accessToken, refreshToken, profile, cb) {
     console.log(profile); // הדפסת הפרופיל שקיבלת מ-Google
