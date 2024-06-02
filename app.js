@@ -45,19 +45,18 @@ app.listen(9000, () => {
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
-let SESSION_SECRET ; // יש להגדיר סוד קבוע ולא ה-accessToken
-
+let SESSION_SECRET;
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "/google"
+    callbackURL: "https://skyrocket.onrender.com/google"
 },
     async function (accessToken, refreshToken, profile, cb) {
         SESSION_SECRET =accessToken
+
         return cb(null, { profile, accessToken });
     }
 ));
-
 
 // מספר הצעדים עבור האימות הוא 2
 // בשלב זה אנו מניחים שיש רק דרך אימות אחת
@@ -69,13 +68,10 @@ passport.deserializeUser(function (obj, cb) {
     cb(null, obj);
 });
 
+
+
 app.get('/google',
-    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
-);
-
-
-
-passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }
+passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
 ,
     async function (req, res) {
         const { profile, accessToken } = req.user;
@@ -84,35 +80,35 @@ passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }
 
         try {
             console.log("ll", email);
-            const Check = await axios.get(`/role_users/users/search?email=${email}`);
+            const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
             const data = Check.data;
 
             let loginResponse;
             if (data.e === "no") {
                 console.log("aaa");
                 // אם המייל קיים, בצע login
-                loginResponse = await axios.post('/role_users/login', {
+                loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
                     password: password
                 });
                 console.log("loginResponse", loginResponse);
                 // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-                return res.redirect('');
+                return res.redirect('https://skyrocket.onrender.com');
             } else if (data.e === "noo") {
                 console.log("aa");
                 // אם המייל לא קיים, בצע signup ואז login
-                const signup = await axios.post('/role_users/signup', {
+                const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                     email: email,
                     password: password
                 });
                 if (signup.data.e === "no") {
-                    loginResponse = await axios.post('/role_users/login', {
+                    loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                         email: email,
                         password: password
                     });
                     console.log("loginResponse", loginResponse);
                     // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-                    return res.redirect('');
+                    return res.redirect('https://skyrocket.onrender.com');
                 }
             }
 
@@ -123,12 +119,12 @@ passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }
         }
     }
 );
+
 app.use(require('express-session')({ 
     secret: SESSION_SECRET,
     resave: true,
     saveUninitialized: true
   }));
-
 
 
 
@@ -193,7 +189,7 @@ function redirectToLogin(req, res) {
     res.status(200).send(`
         <script>
             document.cookie = 'redirect=${req.originalUrl}; max-age=3600';
-            window.location.href = '/login.html';
+            window.location.href = 'https://skyrocket.onrender.com/login.html';
         </script>
     `);
 }
@@ -211,7 +207,7 @@ const options = {
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
         },
-        servers: [{ url: "/" }],
+        servers: [{ url: "https://skyrocket.onrender.com/" }],
     },
     apis: ["./swagger/*.js"],
 };
