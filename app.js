@@ -109,15 +109,10 @@ passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
                         email: email,
                         password: password
                     });
-                    const token = loginResponse.data.jwt;
                     console.log("loginResponse", loginResponse);
-                    response.cookie('sky', token, {
-                        httpOnly: true,
-                        sameSite: 'strict',
-                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-                    });
+
                     // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-                    return res.redirect('https://skyrocket.onrender.com');
+                    return res.redirect('https://skyrocket.onrender.com/swagger');
                 }
             }
 
@@ -151,7 +146,7 @@ function getTimeZoneByIP(ip) {
 
 
 
-app.get('/ss', async (req, res, next) => {
+app.get('/*', async (req, res, next) => {
     try {
 
 
