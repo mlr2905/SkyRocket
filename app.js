@@ -45,7 +45,11 @@ app.listen(9000, () => {
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
-let SESSION_SECRET;
+app.use(require('express-session')({ 
+    secret: "687678585685",
+    resave: true,
+    saveUninitialized: true
+  }));
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
@@ -120,11 +124,6 @@ passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
     }
 );
 
-app.use(require('express-session')({ 
-    secret: SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true
-  }));
 
 
 
