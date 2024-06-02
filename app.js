@@ -44,7 +44,8 @@ app.listen(9000, () => {
 
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
-let email = null
+let email  ;
+let password;
 
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
@@ -55,6 +56,7 @@ passport.use(new GoogleStrategy({
 
   async  function (accessToken, refreshToken, profile,cb) {
     email = profile.emails[0].value;
+    password =accessToken
         return cb(null, profile);
     }
 ));
@@ -84,19 +86,19 @@ console.log("ll",email);
                
                 return   loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
-                    password: accessToken
+                    password: password
                 });
             } else {
                 // אם המייל לא קיים, בצע signup ואז login
                 await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                     email: email,
-                    password: accessToken
+                    password: password
                 });
 
                
                 return loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
-                    password: accessToken
+                    password: password
                 });
             }
 
