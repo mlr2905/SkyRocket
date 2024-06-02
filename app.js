@@ -1,5 +1,5 @@
 const express = require('express')
-const paypal = require('@paypal/checkout-server-sdk');
+const session = require('express-session');
 const moment = require('moment-timezone');
 const logger = require('./logger/my_logger')
 const path = require('path')
@@ -50,6 +50,8 @@ passport.use(new GoogleStrategy({
     callbackURL: "https://skyrocket.onrender.com/google"
   },
   function(accessToken, refreshToken, profile, cb) {
+    console.log(accessToken); // הדפסת הפרופיל שקיבלת מ-Google
+    console.log(refreshToken); // הדפסת הפרופיל שקיבלת מ-Google
     console.log(profile); // הדפסת הפרופיל שקיבלת מ-Google
 
     return cb(null, profile);
@@ -68,7 +70,12 @@ passport.deserializeUser(function(obj, cb) {
 
 
 app.get('/google',
-  passport.authenticate('google', { scope: ['profile','email','openid'] }));
+  passport.authenticate('google', { scope: ['profile','email','openid'] }),
+  function(req, res) {
+    // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
+    res.redirect('/login');
+  }
+);
 
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
@@ -76,6 +83,7 @@ app.get('/auth/google/callback',
     // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
     res.redirect('/');
   });
+
 function getTimeZoneByIP(ip) {
     try {
         const ipInfo = ip2locationDatabase.get_all(ip);
