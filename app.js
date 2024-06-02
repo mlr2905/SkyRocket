@@ -71,7 +71,8 @@ passport.use(new GoogleStrategy({
                     password: password
                 });
                 console.log("loginResponse",loginResponse);
-                return loginResponse
+                return  res.redirect('https://skyrocket.onrender.com'); // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
+
             } if (data.e === "noo") {
                 console.log("aa");
                 // אם המייל לא קיים, בצע signup ואז login
