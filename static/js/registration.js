@@ -1,3 +1,4 @@
+
 function addDays(date, days) {
     date.setDate(date.getDate() + days);
     return date;
@@ -9,25 +10,7 @@ let minDate = new Date(today.getFullYear() - 120, today.getMonth(), today.getDat
 let maxDate = addDays(new Date(today.getFullYear() - 18, today.getMonth(), today.getDate()), -1);
 
 // הגדרת המינימום והמקסימום
-document.getElementById('birthday').setAttribute('min', minDate.toISOString().split('T')[0]);
-document.getElementById('birthday').setAttribute('max', maxDate.toISOString().split('T')[0]);
 
-document.getElementById('phone').addEventListener('input', function () {
-    // קבל את התוכן של ה-placeholder והסר סימני המקרא
-    var placeholder = this.placeholder.replace(/[()-]/g, '');
-    // עדכן את ה-pattern לפי תוכן ה-placeholder
-    this.pattern = placeholder;
-    // קבל את התוכן של ה-input
-    var inputContent = this.value;
-    // הסר כל תו שאינו מספר
-    var numbersOnly = inputContent.replace(/\D/g, '');
-    // אם המספר הוא ארוך מהמספר ב-placeholder, חתוך אותו
-    if (numbersOnly.length > placeholder.length) {
-        numbersOnly = numbersOnly.slice(0, placeholder.length);
-    }
-    // עדכן את התוכן של ה-input להיות רק מספרים ולא להכיל מספרים יותר מהמספר ב-placeholder
-    this.value = numbersOnly;
-});
 
 
 function initializeIntlTelInput(countryCode) {

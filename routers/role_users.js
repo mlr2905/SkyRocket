@@ -31,15 +31,11 @@ const { log } = require('winston');
 
 router.post('/authcode', async (request, response) => {
     try {
-        const Query = request.body;
-        const email = Query.email;
-        console.log(Query.email);
+        const email = request.body.email;
         const datas = await bl.authcode(email)
-        console.log("rl", datas);
         if (datas.e === "yes") {
             response.status(409).json({ "e": "yes", "errors": `${datas.error}` });
         } else {
-            console.log(datas.code !== undefined);
             if (datas.code !== undefined) {
                 response.status(200).json({ datas });
             }
@@ -51,21 +47,14 @@ router.post('/authcode', async (request, response) => {
 
 router.post('/validation', async (request, response) => {
     try {
-        const Query = request.body;
-        const email = Query.email;
-        const code = Query.code;
+        const email = request.body.email;
+        const code = request.body.code;
         const datas = await bl.login_code(email, code)
-        console.log("r data", datas);
         if (datas.e === "yes") {
             response.status(409).json({ "e": "yes", "error": `${datas.error}` });
 
         }
         else {
-            console.log("r user", datas.token);
-
-            if (condition) {
-
-            }
             const token = datas.jwt
             response.cookie('sky', token, {
                 httpOnly: true,
@@ -90,7 +79,6 @@ router.get('/ip', async (request, response) => {
     const clientIPs = forwardedFor ? forwardedFor.split(',').map(ip => ip.trim()) : [];
     const ip = clientIPs.length > 0 ? clientIPs[0] : undefined;
     let country = request.headers['cf-ipcountry'];
-    console.log(country);
     if (country === undefined) {
         country = "il"
     }
@@ -121,9 +109,8 @@ router.post('/login', async (request, response) => {
     const clientIPs = forwardedFor ? forwardedFor.split(',').map(ip => ip.trim()) : [];
     const ip = clientIPs.length > 0 ? clientIPs[0] : undefined;
     const userAgent = request.headers['user-agent'];
-    const query = request.body;
-    const email = query.email;
-    const password = query.password;
+    const email = request.body.email;
+    const password = request.body.password;
 
     try {
         // בדיקת תקינות קלט
@@ -162,9 +149,8 @@ router.post('/login', async (request, response) => {
 
 router.post('/signup', async (request, response) => {
     try {
-        const Query = request.body;
-        const email = Query.email;
-        const password = Query.password;
+        const email = request.body.email;
+        const password = request.body.password;
         const loginUrl = 'https://skyrocket.onrender.com/login.html';
         const user = await bl.signup(email, password)
         if (user.e === "yes") {
@@ -190,7 +176,6 @@ router.post('/signup', async (request, response) => {
 router.get('/users/search', async (request, response) => {
 
     const query = request.query
-    console.log("query", query);
     const email = query.email
     // const username = query.username
     // const password = query.password
@@ -200,7 +185,6 @@ router.get('/users/search', async (request, response) => {
 
     try {
         const user = await bl.get_by_id_user(email)
-        console.log("user", user);
         if (user) {
             if (user !== 'Postponed') {
                 response.status(200).json(user)

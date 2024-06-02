@@ -7,7 +7,6 @@ const dal_7 = require('../dals/dal_table_passengers')
 const { log } = require('winston')
 
 async function authcode(email) {
-  console.log(email);
   let url = 'https://jwt-node-mongodb.onrender.com/authcode';
   const data = {
     email: email
@@ -28,7 +27,6 @@ async function authcode(email) {
     if (responseData.e === "yes") {
       return false; // או כל ערך שאתה רוצה להחזיר במקרה של שגיאה
     } else {
-      console.log("bl", responseData);
       return responseData; // או כל ערך שאתה רוצה להחזיר במקרה של הצלחה
     }
 
@@ -59,12 +57,10 @@ async function login_code(email, code) {
   try {
     const data = await fetch(url, requestOptions);
     const user = await data.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("bl user", user);
     if (user.e === "yes") {
       return { "e": "yes", "error": user.error };
     }
     else {
-      console.log("bls", user);
       return user
 
     }
@@ -137,7 +133,6 @@ async function signup(email, password) {
   try {
     const user = await fetch(url_node_mongo, requestOptions);
     const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
-    console.log("data_mongo", data_mongo);
     if (data_mongo.errors) {
       return { "e": "yes", "error": data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password };
     }
@@ -217,7 +212,6 @@ async function get_by_id_user(email) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    console.log("bl data", data);
     if (data.status === undefined) {
       return "ok";
     } else {
