@@ -51,11 +51,11 @@ passport.use(new GoogleStrategy({
 },
 
 
-  async  function (accessToken, refreshToken, profile,cb) {
+  async  function (accessToken, profile,cb) {
         try {
             const email = profile.emails[0].value;
 
-            const emailCheckResponse = await axios.get(`https://your-api-domain.com/role_users/email?email=${email}`);
+            const emailCheckResponse = await axios.get(`/role_users/email?email=${email}`);
             
             if (emailCheckResponse.data.status === "valid") {
                 // אם המייל קיים, בצע login
