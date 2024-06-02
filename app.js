@@ -51,11 +51,34 @@ passport.use(new GoogleStrategy({
 },
 
 
-    function (accessToken, refreshToken, profile,cb) {
-        console.log(accessToken); // הדפסת הפרופיל שקיבלת מ-Google
-        console.log(refreshToken); // הדפסת הפרופיל שקיבלת מ-Google
-        console.log(profile); // הדפסת הפרופיל שקיבלת מ-Google
+  async  function (accessToken, refreshToken, profile,cb) {
+        try {
+            const emailCheckResponse = await axios.get(`https://your-api-domain.com/role_users/email?email=${email}`);
+            
+            if (emailCheckResponse.data.status === "valid") {
+                // אם המייל קיים, בצע login
+                await axios.post('/role_users/login', {
+                    email: email,
+                    password: accessToken
+                });
+            } else {
+                // אם המייל לא קיים, בצע signup ואז login
+                await axios.post('/role_users/signup', {
+                    email: email,
+                    password: accessToken
+                });
 
+                await axios.post('/role_users/login', {
+                    email: email,
+                    password: accessToken
+                });
+            }
+
+
+        } catch (error) {
+            console.error('Error during signup or login:', error);
+            return cb(error, null);
+        }
         return cb(null, profile);
     }
 ));
@@ -75,7 +98,7 @@ app.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
     function (req, res) {
         // אם ההתחברות הצליחה, אתה יכול להפנות את המשתמש לדף מתאים
-        res.redirect('/login');
+        res.redirect('/');
     }
 );
 
