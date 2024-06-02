@@ -53,9 +53,9 @@ passport.use(new GoogleStrategy({
 
 
     async function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
+        console.log(profile.id);
         let email = profile.emails[0].value;
-        let password = accessToken; // ניתן לשנות את זה בהתאם לצורך
+        let password = id; // ניתן לשנות את זה בהתאם לצורך
 
         try {
             console.log("ll", email);
