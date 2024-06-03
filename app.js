@@ -148,7 +148,6 @@ passport.use(new GitHubStrategy({
 
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log("profile aaaaa",profile);
     a =profile
     return done(null, profile);
   }
