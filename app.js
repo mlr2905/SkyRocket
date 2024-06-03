@@ -148,7 +148,7 @@ passport.use(new GitHubStrategy({
     callbackURL: "https://skyrocket.onrender.com/git"
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log("profile שש",profile);
+    console.log("profile",profile);
     return done(null, profile);
   }
 ));
@@ -169,7 +169,7 @@ app.use(passport.session());
 
 // ניתוב לאימות באמצעות GitHub
 app.get('/git',
-passport.authenticate('github', { scope: [ 'read:user', 'user:email' ] }),
+passport.authenticate('github', { scope: [ 'read:user', 'user:email', 'user:follow' ] }),
 
 function(req, res){
  
