@@ -110,17 +110,20 @@ passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
                         email: email,
                         password: password
                     });
-                    console.log("loginResponse", loginResponse);
                     const token = loginResponse.data.jwt;
-                    res.cookie('sky', token, {
+                      res.cookie('sky', token, {
                         httpOnly: true,
                         sameSite: 'strict',
                         maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                     });
-        
-                    // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-                     res.redirect('https://skyrocket.onrender.com/swagger');
-                     return
+        console.log("token",token);
+                    return res.cookie('sky', token, {
+                        httpOnly: true,
+                        sameSite: 'strict',
+                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                    }),
+         res.redirect('https://skyrocket.onrender.com/swagger');
+                     
                 }
             }
 
