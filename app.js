@@ -180,6 +180,7 @@ function(req, res){
     console.log("a",email);
     console.log("b",a.emails);
     console.log("c",a.emails[0]);
+    console.log("d",a.emails[0].value);
 
     res.send("Authentication successful");
   });
