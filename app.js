@@ -139,6 +139,7 @@ app.get('/google',
 
 const GITHUB_CLIENT_ID ="Ov23lib9rBqGPaedxi4X"
 const GITHUB_CLIENT_SECRET="49425ccf70d4bd1cab7b4c40f8609b760022c8d0"
+
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
@@ -173,10 +174,10 @@ function(req, res){
     const { profile, accessToken } = req.user;
     console.log(req);
     console.log("aaaaa");
-    console.log(profile);
+    console.log(profile._json);
     
-console.log("profile.id_node",profile.id_node);
-console.log("profile.email",profile.email);
+console.log("profile.id_node",profile._json.id_node);
+console.log("profile.email",profile._json.email);
 
   });
 
