@@ -112,14 +112,15 @@ passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
                     });
                     console.log("loginResponse", loginResponse);
                     const token = loginResponse.data.jwt;
-                    response.cookie('sky', token, {
+                    res.cookie('sky', token, {
                         httpOnly: true,
                         sameSite: 'strict',
                         maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                     });
         
                     // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-                    return res.redirect('https://skyrocket.onrender.com/swagger');
+                     res.redirect('https://skyrocket.onrender.com/swagger');
+                     return
                 }
             }
 

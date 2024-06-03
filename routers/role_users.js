@@ -134,7 +134,7 @@ router.post('/login', async (request, response) => {
             });
 
             // בניית הקישור לדף Swagger
-            const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
+            const swaggerUrl = 'https://skyrocket.onrender.com/swagger';
 
             // הפניה לדף Swagger בתגובה המוחזרת
             response.status(200).json({ "e": datas.e, "jwt": datas.jwt, "swaggerUrl": swaggerUrl });
