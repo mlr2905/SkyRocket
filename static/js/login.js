@@ -139,6 +139,11 @@ function login_google() {
 
 }
 
+function login_git() {
+    window.location.href = "https://skyrocket.onrender.com/git";
+
+}
+
 async function connect() {
     event.preventDefault(); // מונע מהפורמולר לשלוח את הבקשה באופן רגיל, מה שמונע מהדף להתאפס
 

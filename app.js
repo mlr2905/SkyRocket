@@ -103,42 +103,42 @@ app.get('/google',
                     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                 }),
                     res.redirect('https://skyrocket.onrender.com/swagger');
-            // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-        } else if (data.e === "noo") {
-            console.log("aa");
-            // אם המייל לא קיים, בצע signup ואז login
-            const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-                email: email,
-                password: password
-            });
-            if (signup.data.e === "no") {
-                loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
+            } else if (data.e === "noo") {
+                console.log("aa");
+                // אם המייל לא קיים, בצע signup ואז login
+                const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                     email: email,
                     password: password
                 });
+                if (signup.data.e === "no") {
+                    loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                        email: email,
+                        password: password
+                    });
 
-                const token = loginResponse.data.jwt;
+                    const token = loginResponse.data.jwt;
 
-                console.log("token", token);
-                return res.cookie('sky', token, {
-                    httpOnly: true,
-                    sameSite: 'strict',
-                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-                }),
-                    res.redirect('https://skyrocket.onrender.com/swagger');
+                    console.log("token", token);
+                    return res.cookie('sky', token, {
+                        httpOnly: true,
+                        sameSite: 'strict',
+                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                    }),
+                        res.redirect('https://skyrocket.onrender.com/swagger');
 
+                }
             }
-        }
 
-    } catch (error) {
-        console.error('Error during signup or login:', error);
-        res.status(500).send('Error during signup or login');
-    }
+        } catch (error) {
+            console.error('Error during signup or login:', error);
+            res.status(500).send('Error during signup or login');
+        }
     }
 );
 
-const GITHUB_CLIENT_ID ="Ov23lib9rBqGPaedxi4X"
-const GITHUB_CLIENT_SECRET="49425ccf70d4bd1cab7b4c40f8609b760022c8d0"
+const GITHUB_CLIENT_ID = "Ov23lib9rBqGPaedxi4X"
+const GITHUB_CLIENT_SECRET = "49425ccf70d4bd1cab7b4c40f8609b760022c8d0"
 let a;
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
@@ -146,21 +146,21 @@ passport.use(new GitHubStrategy({
     callbackURL: "https://skyrocket.onrender.com/git",
     scope: ['read:user', 'user:email', 'user:read:email']
 
-  },
-  function(accessToken, refreshToken, profile, done) {
-    console.log("profile aaaaa",profile);
-    a =profile
-    return done(null, profile);
-  }
+},
+    function (accessToken, refreshToken, profile, done) {
+        console.log("profile aaaaa", profile);
+        a = profile
+        return done(null, profile);
+    }
 ));
 
 // קבע את השימוש ב-Sessions
-passport.serializeUser(function(user, done) {
-  done(null, user);
+passport.serializeUser(function (user, done) {
+    done(null, user);
 });
 
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
+passport.deserializeUser(function (obj, done) {
+    done(null, obj);
 });
 
 // הגדר את האפליקציה של Express
@@ -170,20 +170,67 @@ app.use(passport.session());
 
 // ניתוב לאימות באמצעות GitHub
 app.get('/git',
-passport.authenticate('github', {    scope: ['read:user', 'user:email', 'user:read:email']}),
-function(req, res){
+    passport.authenticate('github', { scope: ['read:user', 'user:email', 'user:read:email'] }),
+    async function (req, res) {
 
-    // הדפסת המידע מהפרופיל
-    const email = a.emails[0].value;
-    const node_id = a.nodeId
-    console.log(node_id);
-    console.log("a",email);
-    console.log("b",a.emails);
-    console.log("c",a.emails[0]);
-    console.log("d",a.emails[0].value);
+        // הדפסת המידע מהפרופיל
+        const email = a.emails[0].value;
+        const password = a.nodeId
 
-    res.send("Authentication successful");
-  });
+        try {
+            const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
+            const data = Check.data;
+
+            let loginResponse;
+            if (data.e === "no") {
+                // אם המייל קיים, בצע login
+                loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                    email: email,
+                    password: password
+                });
+                const token = loginResponse.data.jwt;
+
+                console.log("token", token);
+                return res.cookie('sky', token, {
+                    httpOnly: true,
+                    sameSite: 'strict',
+                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                }),
+                    res.redirect('https://skyrocket.onrender.com/swagger');
+                // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
+            } else if (data.e === "noo") {
+                console.log("aa");
+                // אם המייל לא קיים, בצע signup ואז login
+                const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                    email: email,
+                    password: password
+                });
+                if (signup.data.e === "no") {
+                    loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                        email: email,
+                        password: password
+                    });
+
+                    const token = loginResponse.data.jwt;
+
+                    console.log("token", token);
+                    return res.cookie('sky', token, {
+                        httpOnly: true,
+                        sameSite: 'strict',
+                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                    }),
+                        res.redirect('https://skyrocket.onrender.com/swagger');
+
+                }
+            }
+
+        } catch (error) {
+            console.error('Error during signup or login:', error);
+            res.status(500).send('Error during signup or login');
+        }
+
+
+    });
 
 
 
