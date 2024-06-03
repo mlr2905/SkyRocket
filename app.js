@@ -139,7 +139,7 @@ app.get('/google',
 
 const GITHUB_CLIENT_ID ="Ov23lib9rBqGPaedxi4X"
 const GITHUB_CLIENT_SECRET="49425ccf70d4bd1cab7b4c40f8609b760022c8d0"
-
+let a;
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
@@ -147,6 +147,7 @@ passport.use(new GitHubStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     console.log("profile aaaaa",profile);
+    a =profile
     return done(null, profile);
   }
 ));
@@ -171,14 +172,13 @@ passport.authenticate('github', { scope: [ 'read:user', 'user:email', 'user:foll
 
 function(req, res){
 
-    const profile = req.user;
-    
+console.log("reqreq",req);    
+console.log("avacv",profile);
     // הדפסת המידע מהפרופיל
     const email = profile.emails && profile.emails[0] && profile.emails[0].value;
     const node_id = profile.node_id;
 
-    console.log("profile.email:", email);
-    console.log("profile.node_id:", node_id);
+    
 
     res.send("Authentication successful");
   });
