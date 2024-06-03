@@ -171,13 +171,16 @@ passport.authenticate('github', { scope: [ 'read:user', 'user:email', 'user:foll
 
 function(req, res){
 
-    const { profile, accessToken } = req.user;
-    console.log(req);
-    console.log("aaaaa");
-    console.log(profile);
+    const profile = req.user;
     
+    // הדפסת המידע מהפרופיל
+    const email = profile.emails && profile.emails[0] && profile.emails[0].value;
+    const node_id = profile.node_id;
 
+    console.log("profile.email:", email);
+    console.log("profile.node_id:", node_id);
 
+    res.send("Authentication successful");
   });
 
 
