@@ -143,7 +143,9 @@ let a;
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "https://skyrocket.onrender.com/git"
+    callbackURL: "https://skyrocket.onrender.com/git",
+    scope: ['read:user', 'user:email']
+
   },
   function(accessToken, refreshToken, profile, done) {
     console.log("profile aaaaa",profile);
@@ -170,7 +172,8 @@ app.use(passport.session());
 app.get('/git',
 passport.authenticate('github', { scope: [ 'read:user', 'user:email', 'user:follow' ] }),
 function(req, res){
-
+    const profile = req.user;
+console.log("dadada",profile);
 console.log("reqreq",req.user);    
 console.log("avacv",a);
     // הדפסת המידע מהפרופיל
