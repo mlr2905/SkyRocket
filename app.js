@@ -169,7 +169,11 @@ app.get('/git',
 passport.authenticate('github', { scope: [ 'read:user', 'user:email', 'user:follow' ] }),
 
 function(req, res){
- 
+    const { profile, accessToken } = req.user;
+    console.log("aaaaa");
+console.log("profile.id_node",profile.id_node);
+console.log("profile.email",profile.email);
+
   });
 
 
