@@ -169,16 +169,14 @@ app.use(passport.session());
 // ניתוב לאימות באמצעות GitHub
 app.get('/git',
 passport.authenticate('github', { scope: [ 'read:user', 'user:email', 'user:follow' ] }),
-
 function(req, res){
 
-console.log("reqreq",req);    
-console.log("avacv",profile);
+console.log("reqreq",req.user);    
+console.log("avacv",a);
     // הדפסת המידע מהפרופיל
-    const email = profile.emails && profile.emails[0] && profile.emails[0].value;
-    const node_id = profile.node_id;
-
-    
+    const email = a;
+    const node_id = a.nodeId
+    console.log(node_id);
 
     res.send("Authentication successful");
   });
