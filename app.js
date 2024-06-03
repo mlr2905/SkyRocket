@@ -172,13 +172,14 @@ app.use(passport.session());
 app.get('/git',
 passport.authenticate('github', {    scope: ['read:user', 'user:email', 'user:read:email']}),
 function(req, res){
-    const profile = req.user;
 
     // הדפסת המידע מהפרופיל
     const email = a.emails[0].value;
     const node_id = a.nodeId
     console.log(node_id);
-    console.log(email);
+    console.log("a",email);
+    console.log("b",a.emails);
+    console.log("c",a.emails[0]);
 
     res.send("Authentication successful");
   });
