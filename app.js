@@ -146,7 +146,7 @@ passport.use(new GitHubStrategy({
     callbackURL: "https://skyrocket.onrender.com/git"
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log("profile",profile);
+    console.log("profile aaaaa",profile);
     return done(null, profile);
   }
 ));
