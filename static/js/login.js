@@ -134,6 +134,11 @@ function validation() {
         });
 }
 
+function login_google() {
+    window.location.href = "https://skyrocket.onrender.com/google";
+
+}
+
 async function connect() {
     event.preventDefault(); // מונע מהפורמולר לשלוח את הבקשה באופן רגיל, מה שמונע מהדף להתאפס
 

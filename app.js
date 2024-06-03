@@ -19,6 +19,8 @@ const upload = multer(); // להגדרת multer עבור קבצים
 const ip2location = require("ip2location-nodejs");
 const IP2Location = ip2location.IP2Location;
 const passport = require('passport');
+const GitHubStrategy = require('passport-github2').Strategy;
+
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
@@ -137,6 +139,41 @@ app.get('/google',
     }
     }
 );
+
+const GITHUB_CLIENT_ID ="Ov23lib9rBqGPaedxi4X"
+const GITHUB_CLIENT_SECRET="49425ccf70d4bd1cab7b4c40f8609b760022c8d0"
+passport.use(new GitHubStrategy({
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    callbackURL: "https://skyrocket.onrender.com/git"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log("profile",profile);
+    return done(null, profile);
+  }
+));
+
+// קבע את השימוש ב-Sessions
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+// הגדר את האפליקציה של Express
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// ניתוב לאימות באמצעות GitHub
+app.get('/git',
+passport.authenticate('github', { scope: [ 'read:user', 'user:email', 'user:follow', 'repo', 'delete_repo', 'notifications' ] }),
+
+function(req, res){
+ 
+  });
 
 
 

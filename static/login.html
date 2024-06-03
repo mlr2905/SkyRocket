@@ -226,13 +226,12 @@
         font-family: 'Varela Round', sans-serif;
     }
 
-    div:disabled
-    button:disabled,
+    div:disabled button:disabled,
     input:disabled {
-        cursor:  not-allowed;
+        cursor: not-allowed;
     }
 
-    
+
 
     #loading-icon {
         display: block;
@@ -246,9 +245,108 @@
         z-index: 9999;
         /* ערך גבוה כדי להבטיח שהתמונה תהיה מעל כולם */
     }
-  
 
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin-top: 5%;
+        color: #00000093;
+margin-bottom: 5%;
+    }
 
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 2px solid #1c1b1b6b;
+    }
+
+    .divider:not(:empty)::before {
+        margin-right: 0.5em;
+    }
+
+    .divider:not(:empty)::after {
+        margin-left: 0.5em;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        /* רווח שווה בין הכפתורים */
+    }
+
+    .rounded-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        max-width: md;
+        background-color: #f4f6f9;
+        /* צבע רקע לכפתור */
+        color: rgb(7, 7, 7);
+        border: none;
+        border-radius: 50px;
+        /* עיגול הכפתור */
+        transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        /* הוספת מעבר */
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .rounded-button:hover {
+        background-color: #374151;
+        /* צבע רקע כאשר מצביעים עם העכבר */
+    }
+
+    .rounded-button:active {
+        transform: scale(0.95);
+        /* תחושת לחיצה */
+    }
+
+    .rounded-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #9ca3af;
+        /* טבעת פוקוס */
+    }
+
+    .button-icon img {
+        width: 20px;
+        /* גודל התמונה */
+        height: 20px;
+        /* גובה התמונה */
+    }
+
+    #face {
+        background-color: #3b5998;
+
+        /* צבע רקע כאשר מצביעים עם העכבר */
+        color: #fff;
+    }
+
+    #face:hover {
+        background-color: #2d4373;
+        /* צבע רקע כאשר מצביעים עם העכבר */
+
+    }
+    #git:hover{
+        background-color: #111111;
+        color: #fff;
+
+    }
+
+    #face:active {
+        transform: scale(0.95);
+        /* תחושת לחיצה */
+    }
+
+    #face:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #9ca3af;
+        /* טבעת פוקוס */
+    }
 </style>
 
 
@@ -335,6 +433,33 @@
         </div>
 
         <button class="connect" type="submit" id="connect-button" onclick="connect()" disabled>Connect</button>
+
+        <div class="divider">Or Log in</div>
+
+
+        <div class="button-container">
+            <button type="button" class="rounded-button" id="git">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" width="20"
+                    height="20" class="button-icon" viewBox="0 0 1792 1792">
+                    <path
+                        d="M896 128q209 0 385.5 103t279.5 279.5 103 385.5q0 251-146.5 451.5t-378.5 277.5q-27 5-40-7t-13-30q0-3 .5-76.5t.5-134.5q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-119-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-85-13.5q-45 113-8 204-79 87-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-39 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 88.5t.5 54.5q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103zm-477 1103q3-7-7-12-10-3-13 2-3 7 7 12 9 6 13-2zm31 34q7-5-2-16-10-9-16-3-7 5 2 16 10 10 16 3zm30 45q9-7 0-19-8-13-17-6-9 5 0 18t17 7zm42 42q8-8-4-19-12-12-20-3-9 8 4 19 12 12 20 3zm57 25q3-11-13-16-15-4-19 7t13 15q15 6 19-6zm63 5q0-13-17-11-16 0-16 11 0 13 17 11 16 0 16-11zm58-10q-2-11-18-9-16 3-14 15t18 8 14-14z">
+                    </path>
+                </svg>
+            </button>
+            <button type="button" id="face" class="rounded-button" >
+                <svg width="20" height="20" fill="currentColor" class="button-icon" viewBox="0 0 1792 1792"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M1343 12v264h-157q-86 0-116 36t-30 108v189h293l-39 296h-254v759h-306v-759h-255v-296h255v-218q0-186 104-288.5t277-102.5q147 0 228 12z">
+                    </path>
+                </svg>
+            </button>
+            <button class="rounded-button" onclick="login_google()">
+                <img class="button-icon" src="https://www.svgrepo.com/show/475656/google-color.svg" width="20"
+                    height="20" loading="lazy" alt="google logo">
+            </button>
+            
+        </div>
 
     </form>
 
