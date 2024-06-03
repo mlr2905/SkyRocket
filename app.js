@@ -47,11 +47,6 @@ app.listen(9000, () => {
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
-app.use(require('express-session')({
-    secret: "687678585685",
-    resave: true,
-    saveUninitialized: true
-}));
 
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
@@ -74,7 +69,9 @@ passport.deserializeUser(function (obj, cb) {
     cb(null, obj);
 });
 
-
+app.use(require('express-session')({ secret: 'keyboard ', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
