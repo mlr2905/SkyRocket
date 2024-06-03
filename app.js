@@ -45,11 +45,11 @@ app.listen(9000, () => {
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
-app.use(require('express-session')({ 
+app.use(require('express-session')({
     secret: "687678585685",
     resave: true,
     saveUninitialized: true
-  }));
+}));
 
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
@@ -75,8 +75,8 @@ passport.deserializeUser(function (obj, cb) {
 
 
 app.get('/google',
-passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
-,
+    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
+    ,
     async function (req, res) {
         const { profile, accessToken } = req.user;
         let email = profile.emails[0].value;
@@ -95,43 +95,46 @@ passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
                     email: email,
                     password: password
                 });
-                console.log("loginResponse", loginResponse);
-                // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-                return res.redirect('https://skyrocket.onrender.com');
-            } else if (data.e === "noo") {
-                console.log("aa");
-                // אם המייל לא קיים, בצע signup ואז login
-                const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                const token = loginResponse.data.jwt;
+
+                console.log("token", token);
+                return res.cookie('sky', token, {
+                    httpOnly: true,
+                    sameSite: 'strict',
+                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                }),
+                    res.redirect('https://skyrocket.onrender.com/swagger');
+            // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
+        } else if (data.e === "noo") {
+            console.log("aa");
+            // אם המייל לא קיים, בצע signup ואז login
+            const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                email: email,
+                password: password
+            });
+            if (signup.data.e === "no") {
+                loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                     email: email,
                     password: password
                 });
-                if (signup.data.e === "no") {
-                    loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-                        email: email,
-                        password: password
-                    });
-                    const token = loginResponse.data.jwt;
-                      res.cookie('sky', token, {
-                        httpOnly: true,
-                        sameSite: 'strict',
-                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-                    });
-        console.log("token",token);
-                    return res.cookie('sky', token, {
-                        httpOnly: true,
-                        sameSite: 'strict',
-                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-                    }),
-         res.redirect('https://skyrocket.onrender.com/swagger');
-                     
-                }
-            }
 
-            console.log("emailCheckResponse", loginResponse.data);
-        } catch (error) {
-            console.error('Error during signup or login:', error);
-            res.status(500).send('Error during signup or login');
+                const token = loginResponse.data.jwt;
+
+                console.log("token", token);
+                return res.cookie('sky', token, {
+                    httpOnly: true,
+                    sameSite: 'strict',
+                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                }),
+                    res.redirect('https://skyrocket.onrender.com/swagger');
+
+            }
         }
+
+    } catch (error) {
+        console.error('Error during signup or login:', error);
+        res.status(500).send('Error during signup or login');
+    }
     }
 );
 
