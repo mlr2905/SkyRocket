@@ -174,10 +174,9 @@ function(req, res){
     const { profile, accessToken } = req.user;
     console.log(req);
     console.log("aaaaa");
-    console.log(profile._json);
+    console.log(profile);
     
-console.log("profile.id_node",profile._json.id_node);
-console.log("profile.email",profile._json.email);
+
 
   });
 
