@@ -144,10 +144,11 @@ passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
     callbackURL: "https://skyrocket.onrender.com/git",
-    scope: ['read:user','user:read:email']
+    scope: ['read:user', 'user:email', 'user:read:email']
 
   },
   function(accessToken, refreshToken, profile, done) {
+    console.log("profile aaaaa",profile);
     a =profile
     return done(null, profile);
   }
@@ -169,18 +170,16 @@ app.use(passport.session());
 
 // ניתוב לאימות באמצעות GitHub
 app.get('/git',
-passport.authenticate('github', {    scope: ['read:user', 'user:read:email']
-}),
+passport.authenticate('github', {    scope: ['read:user', 'user:email', 'user:read:email']}),
 function(req, res){
     const profile = req.user;
 console.log("dadada",profile);
 console.log("reqreq",req.user);    
 console.log("avacv",a);
     // הדפסת המידע מהפרופיל
-    const email = a.emails
+    const email = a;
     const node_id = a.nodeId
     console.log(node_id);
-    console.log(email);
 
     res.send("Authentication successful");
   });
