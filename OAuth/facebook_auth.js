@@ -1,8 +1,9 @@
 const express = require('express');
 const axios = require('axios');
+const passport = require('passport');
+
 const qs = require('qs');
 
-const router = express.Router();
 
 // קונפיגורציה
 const facebook_appId = '1156854418774447';
