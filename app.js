@@ -16,7 +16,8 @@ const ip2location = require("ip2location-nodejs");
 const IP2Location = ip2location.IP2Location;
 const google_auth = require('./OAuth/google_auth');
 const github_auth =require('./OAuth/github_auth')
-const facebook_auth =require('./OAuth/facebook_auth')
+const facebook_auth =require('./OAuth/facebook_auth');
+const tiktok_auth = require('./OAuth/tiktok_auth');
 
 
 const ip2locationDatabase = new IP2Location("./IP2LOCATION-LITE-DB11.BIN", "IP2LOCATION_SHARED_MEMORY");
@@ -38,6 +39,8 @@ app.listen(9000, () => {
 google_auth(app)
 github_auth(app)
 facebook_auth(app)
+tiktok_auth(app)
+
 
 
 
