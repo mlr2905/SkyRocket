@@ -107,9 +107,9 @@ async function login(email, password, ip, userAgent) {
     return { e: "no", jwt: user.jwt };
 
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error:', error);
     // החזרת נתוני השגיאה במקרה של שגיאה
-    return { e: "yes", error: error.message };
+    return { e: "yes",  error };
   }
 }
 
