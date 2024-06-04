@@ -483,7 +483,25 @@ margin-bottom: 5%;
             }
         })
 
-
+window.axeptioSettings = {
+  clientId: "665f85df8c7945efbe23c7b2",
+  cookiesVersion: "skyrocket-en-EU",
+  googleConsentMode: {
+    default: {
+      analytics_storage: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+      wait_for_update: 500
+    }
+  }
+};
+ 
+(function(d, s) {
+  var t = d.getElementsByTagName(s)[0], e = d.createElement(s);
+  e.async = true; e.src = "//static.axept.io/sdk.js";
+  t.parentNode.insertBefore(e, t);
+})(document, "script");
 
         setTimeout(showNotification, 10 * 60 * 1000);
     </script>
