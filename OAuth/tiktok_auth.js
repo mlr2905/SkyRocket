@@ -5,7 +5,7 @@ const qs = require('qs');
 const router = express.Router();
 
 // קונפיגורציה
-const tiktok_clientId = 'awgn3o1nd3bn4bjb';
+const tiktok_clientId = '7376326045954738181';
 const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
 
     // קונפיגורציה
