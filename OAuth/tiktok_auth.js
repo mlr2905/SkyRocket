@@ -9,6 +9,7 @@ const router = express.Router();
 const tiktok_clientId = '7376326045954738181';
 const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
 
+
 const clientId = tiktok_clientId 
 const clientSecret = tiktok_clientSecret 
 const redirectUri = 'https://skyrocket.onrender.com/tiktok';

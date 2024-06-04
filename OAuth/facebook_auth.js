@@ -15,12 +15,12 @@ function facebook_auth(app) {
   passport.use(new FacebookStrategy({
       clientID: facebook_appId,
       clientSecret: facebook_appSecret,
-      callbackURL:'https://skyrocket.onrender.com/facebook',  profileFields:
-       ['id','displayName','name','first_name','last_name','middle_name','short_name','gender',
+      callbackURL:'https://skyrocket.onrender.com/facebook',  
+      profileFields: ['id','displayName','name','first_name','last_name','middle_name','short_name','gender',
         'email','birthday','friends','hometown','location','link','locale','timezone','photos',
         'picture.type(large)','cover','updated_time','verified'
       ]
-    
+
     },
     function(accessToken, refreshToken, profile, done) {
       console.log('User Profile:', profile); // הדפסת המידע בקונסול
