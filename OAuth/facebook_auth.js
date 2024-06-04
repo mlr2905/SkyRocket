@@ -15,10 +15,33 @@ function facebook_auth(app) {
   passport.use(new FacebookStrategy({
       clientID: facebook_appId,
       clientSecret: facebook_appSecret,
-      callbackURL:'https://skyrocket.onrender.com/facebook'
+      callbackURL:'https://skyrocket.onrender.com/facebook',  profileFields: [
+        'id',
+        'displayName',
+        'name',
+        'first_name',
+        'last_name',
+        'middle_name',
+        'short_name',
+        'gender',
+        'email',
+        'birthday',
+        'friends',
+        'hometown',
+        'location',
+        'link',
+        'locale',
+        'timezone',
+        'photos',
+        'picture.type(large)', // or 'small', 'normal', 'album', 'large', etc.
+        'cover',
+        'updated_time',
+        'verified'
+      ]
+    
     },
     function(accessToken, refreshToken, profile, done) {
-      // כאן תוכל לשמור את פרטי המשתמש במסד הנתונים שלך
+      console.log('User Profile:', profile); // הדפסת המידע בקונסול
       return done(null, profile);
     }
   ));
@@ -39,8 +62,9 @@ function facebook_auth(app) {
   app.use(passport.session());
 
   // הגדרת מסלולים לאימות
-  app.get('/facebook', passport.authenticate('facebook'));
-
+  app.get('/facebook', passport.authenticate('facebook', {
+    scope: ['email','user_birthday','user_friends','user_gender','user_hometown','user_location','user_likes','user_photos','user_posts','user_videos']
+  }));
   app.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/' }),
     function(req, res) {
