@@ -15,28 +15,10 @@ function facebook_auth(app) {
   passport.use(new FacebookStrategy({
       clientID: facebook_appId,
       clientSecret: facebook_appSecret,
-      callbackURL:'https://skyrocket.onrender.com/facebook',  profileFields: [
-        'id',
-        'displayName',
-        'name',
-        'first_name',
-        'last_name',
-        'middle_name',
-        'short_name',
-        'gender',
-        'email',
-        'birthday',
-        'friends',
-        'hometown',
-        'location',
-        'link',
-        'locale',
-        'timezone',
-        'photos',
-        'picture.type(large)', // or 'small', 'normal', 'album', 'large', etc.
-        'cover',
-        'updated_time',
-        'verified'
+      callbackURL:'https://skyrocket.onrender.com/facebook',  profileFields:
+       ['id','displayName','name','first_name','last_name','middle_name','short_name','gender',
+        'email','birthday','friends','hometown','location','link','locale','timezone','photos',
+        'picture.type(large)','cover','updated_time','verified'
       ]
     
     },
