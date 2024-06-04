@@ -45,7 +45,8 @@ function facebook_auth(app) {
 
   // הגדרת מסלולים לאימות
   app.get('/facebook', passport.authenticate('facebook', {
-    scope: ['email','user_birthday','user_friends','user_gender','user_hometown','user_location','user_likes','user_photos','user_posts','user_videos']
+    scope: ['email','user_birthday','user_friends','user_gender','user_hometown','user_location','user_likes',
+    'user_photos','user_posts','user_videos']
   }));
   app.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/' }),
