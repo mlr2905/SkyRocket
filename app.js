@@ -18,7 +18,6 @@ const google_auth = require('./OAuth/google_auth');
 const github_auth =require('./OAuth/github_auth')
 const facebook_auth =require('./OAuth/facebook_auth');
 const tiktok_auth = require('./OAuth/tiktok_auth');
-const cookieParser = require('cookie-parser');
 
 
 
@@ -37,10 +36,10 @@ app.listen(9000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
 });
-app.use(cookieParser());
+
 
 // פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
-function getCookieData(req, res) {
+function getCookieData(req) {
     const cookieValue = req.cookies.axeptio_cookies;
 
     if (!cookieValue) {
@@ -58,10 +57,14 @@ function getCookieData(req, res) {
 
 // נתיב לבדיקה של Facebook
 app.get('/face', (req, res) => {
-    const cookieData = getCookieData(req, res);
+    const cookieData = getCookieData(req);
 
     if (!cookieData) {
         return res.status(400).send('Invalid or missing cookie axeptio_cookies');
+    }
+
+    if (cookieData.facebook) {
+        facebook_auth(app);
     }
 
     res.send({ facebook: cookieData.facebook });
@@ -69,10 +72,14 @@ app.get('/face', (req, res) => {
 
 // נתיב לבדיקה של Github
 app.get('/git', (req, res) => {
-    const cookieData = getCookieData(req, res);
+    const cookieData = getCookieData(req);
 
     if (!cookieData) {
         return res.status(400).send('Invalid or missing cookie axeptio_cookies');
+    }
+
+    if (cookieData.github) {
+        github_auth(app);
     }
 
     res.send({ github: cookieData.github });
@@ -80,23 +87,23 @@ app.get('/git', (req, res) => {
 
 // נתיב לבדיקה של Google
 app.get('/goo', (req, res) => {
-    const cookieData = getCookieData(req, res);
+    const cookieData = getCookieData(req);
 
     if (!cookieData) {
         return res.status(400).send('Invalid or missing cookie axeptio_cookies');
     }
 
+    if (cookieData.google) {
+        google_auth(app);
+    }
+
     res.send({ google: cookieData.google });
 });
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-});
-
-google_auth(app)
-github_auth(app)
-facebook_auth(app)
-tiktok_auth(app)
+// google_auth(app)
+// github_auth(app)
+// facebook_auth(app)
+// tiktok_auth(app)
 
 
 
