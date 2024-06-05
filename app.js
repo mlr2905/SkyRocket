@@ -42,7 +42,7 @@ app.listen(9000, () => {
 
 // פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
 function getCookieData(req) {
-    const cookieValue = req.cookies.axeptio_cookies;
+    const cookieValue = req.headers.cookie.axeptio_cookies;
 
     if (!cookieValue) {
         return null;
