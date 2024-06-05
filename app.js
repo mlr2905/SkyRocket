@@ -18,6 +18,8 @@ const google_auth = require('./OAuth/google_auth');
 const github_auth =require('./OAuth/github_auth')
 const facebook_auth =require('./OAuth/facebook_auth');
 const tiktok_auth = require('./OAuth/tiktok_auth');
+const cookieParser = require('cookie-parser');
+
 
 
 const ip2locationDatabase = new IP2Location("./IP2LOCATION-LITE-DB11.BIN", "IP2LOCATION_SHARED_MEMORY");
@@ -34,6 +36,61 @@ app.use(express.static(path.join('.', '/static/')))
 app.listen(9000, () => {
     logger.info('==== Server started =======')
     console.log('Express server is running ....');
+});
+app.use(cookieParser());
+
+// פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
+function getCookieData(req, res) {
+    const cookieValue = req.cookies.axeptio_cookies;
+
+    if (!cookieValue) {
+        return null;
+    }
+
+    const decodedCookie = decodeURIComponent(cookieValue);
+
+    try {
+        return JSON.parse(decodedCookie);
+    } catch (e) {
+        return null;
+    }
+}
+
+// נתיב לבדיקה של Facebook
+app.get('/face', (req, res) => {
+    const cookieData = getCookieData(req, res);
+
+    if (!cookieData) {
+        return res.status(400).send('Invalid or missing cookie axeptio_cookies');
+    }
+
+    res.send({ facebook: cookieData.facebook });
+});
+
+// נתיב לבדיקה של Github
+app.get('/git', (req, res) => {
+    const cookieData = getCookieData(req, res);
+
+    if (!cookieData) {
+        return res.status(400).send('Invalid or missing cookie axeptio_cookies');
+    }
+
+    res.send({ github: cookieData.github });
+});
+
+// נתיב לבדיקה של Google
+app.get('/goo', (req, res) => {
+    const cookieData = getCookieData(req, res);
+
+    if (!cookieData) {
+        return res.status(400).send('Invalid or missing cookie axeptio_cookies');
+    }
+
+    res.send({ google: cookieData.google });
+});
+
+app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
 });
 
 google_auth(app)
