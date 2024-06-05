@@ -1,10 +1,17 @@
 const express = require('express');
 const session = require('express-session');
-
 const axios = require('axios');
 const app = express()
 const passport = require('passport');
+const RedisStore = require('connect-redis')(session);
+const redis = require('redis');
 
+// יצירת חיבור ל-Redis (תחת הנחה שיש לך חשבון ב-Render ופרטי החיבור)
+const redisClient = redis.createClient({
+    host: 'redis://red-cp3i2bo21fec73b7s590.redis-render.services', // כתובת ה-Redis ב-Render
+    port: '6379', // פורט ה-Redis
+    password: '8Ddjtg2LFjxXSqkTNiqi1cm5RU6Y3FOX' // סיסמת ה-Redis, אם יש
+});
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
@@ -32,13 +39,18 @@ passport.deserializeUser(function (obj, cb) {
 });
 
 const google_auth = (app) => {
-    app.use(require('express-session')({ secret: 'keyboard ', resave: true, saveUninitialized: true }));
+    app.use(session({
+        store: new RedisStore({ client: redisClient }),
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: false
+    }));
+
     app.use(passport.initialize());
     app.use(passport.session());
 
     app.get('*',
-        passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
-        ,
+        passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
         async function (req, res) {
             const { profile, accessToken } = req.user;
             let email = profile.emails[0].value;
@@ -65,7 +77,7 @@ const google_auth = (app) => {
                         sameSite: 'strict',
                         maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                     }),
-                        res.redirect('https://skyrocket.onrender.com/swagger');
+                    res.redirect('https://skyrocket.onrender.com/swagger');
                     // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
                 } else if (data.e === "noo") {
                     console.log("aa");
@@ -88,11 +100,9 @@ const google_auth = (app) => {
                             sameSite: 'strict',
                             maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                         }),
-                            res.redirect('https://skyrocket.onrender.com/swagger');
-
+                        res.redirect('https://skyrocket.onrender.com/swagger');
                     }
                 }
-
             } catch (error) {
                 console.error('Error during signup or login:', error);
                 res.status(500).send('Error during signup or login');
