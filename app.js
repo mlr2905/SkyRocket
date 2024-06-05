@@ -43,14 +43,15 @@ app.listen(9000, () => {
 // פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
 function getCookieData(req) {
     const cookieValue = req.headers.cookie.axeptio_cookies;
-
+console.log(cookieValue);
     if (!cookieValue) {
         return null;
     }
 
     const decodedCookie = decodeURIComponent(cookieValue);
-
+console.log(decodedCookie);
     try {
+        console.log(JSON.parse(decodedCookie));
         return JSON.parse(decodedCookie);
     } catch (e) {
         return null;
