@@ -17,7 +17,9 @@ const IP2Location = ip2location.IP2Location;
 const google_auth = require('./OAuth/google_auth');
 const github_auth =require('./OAuth/github_auth')
 const facebook_auth =require('./OAuth/facebook_auth');
-const tiktok_auth = require('./OAuth/tiktok_auth');
+// const tiktok_auth = require('./OAuth/tiktok_auth');
+const cookieParser = require('cookie-parser');
+
 
 
 
@@ -53,7 +55,11 @@ function getCookieData(req) {
     } catch (e) {
         return null;
     }
+
+    
 }
+app.use(cookieParser());
+
 
 // נתיב לבדיקה של Facebook
 app.get('/face', (req, res) => {
