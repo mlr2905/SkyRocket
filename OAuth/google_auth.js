@@ -7,11 +7,8 @@ const RedisStore = require('connect-redis')(session);
 const redis = require('redis');
 
 // יצירת חיבור ל-Redis (תחת הנחה שיש לך חשבון ב-Render ופרטי החיבור)
-const redisClient = redis.createClient({
-    host: 'redis://red-cp3i2bo21fec73b7s590', // כתובת ה-Redis ב-Render
-    port: '6379', // פורט ה-Redis
-    password: '8Ddjtg2LFjxXSqkTNiqi1cm5RU6Y3FOX' // סיסמת ה-Redis, אם יש
-});
+const redisClient = redis.createClient('rediss://red-cp3i2bo21fec73b7s590:8Ddjtg2LFjxXSqkTNiqi1cm5RU6Y3FOX@oregon-redis.render.com:6379');
+
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
