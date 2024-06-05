@@ -8,7 +8,7 @@ const redis = require('redis');
 
 // יצירת חיבור ל-Redis (תחת הנחה שיש לך חשבון ב-Render ופרטי החיבור)
 const redisClient = redis.createClient({
-    host: 'redis://red-cp3i2bo21fec73b7s590.redis-render.services', // כתובת ה-Redis ב-Render
+    host: 'redis://red-cp3i2bo21fec73b7s590', // כתובת ה-Redis ב-Render
     port: '6379', // פורט ה-Redis
     password: '8Ddjtg2LFjxXSqkTNiqi1cm5RU6Y3FOX' // סיסמת ה-Redis, אם יש
 });
