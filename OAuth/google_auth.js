@@ -3,8 +3,9 @@ const session = require('express-session');
 const axios = require('axios');
 const app = express()
 const passport = require('passport');
-const RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis');
 const redis = require('redis');
+const RedisStore = connectRedis(session);
 
 // יצירת חיבור ל-Redis (תחת הנחה שיש לך חשבון ב-Render ופרטי החיבור)
 const redisClient = redis.createClient('rediss://red-cp3i2bo21fec73b7s590:8Ddjtg2LFjxXSqkTNiqi1cm5RU6Y3FOX@oregon-redis.render.com:6379');
