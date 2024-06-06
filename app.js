@@ -45,8 +45,9 @@ app.listen(9000, () => {
 function getCookieData(req) {
 
     const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+    console.log(cookies);
     const skyTokenCookie = cookies.find(cookie => cookie.startsWith('axeptio_cookies='));
-
+console.log(skyTokenCookie);
     if (skyTokenCookie) {
         const skyTokenValue = skyTokenCookie.split('=')[1];
         const decodedSkyToken = decodeURIComponent(skyTokenValue);
@@ -71,10 +72,11 @@ app.use(cookieParser());
 // נתיב לבדיקה של Facebook
 app.get('/facebook', (req, res) => {
     const cookieData = getCookieData(req);
-
+console.log(!cookieData);
     if (!cookieData) {
         return res.status(400).send('Invalid or missing cookie axeptio_cookies');
     }
+    console.log(cookieData.facebook === true);
 
     if (cookieData.facebook === true) {
         facebook_auth(app);
