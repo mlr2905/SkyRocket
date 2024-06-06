@@ -80,7 +80,7 @@ console.log(!cookieData);
 
     if (cookieData.facebook === true) {
         console.log("ok");
-        facebook_auth(app);
+       return facebook_auth(app);
     }
     else {
         return res.status(400).send('The Facebook cookie is not approved by you');
@@ -98,7 +98,7 @@ app.get('/git', (req, res) => {
     }
 
     if (cookieData.github === true) {
-        github_auth(app);
+       return github_auth(app);
     }
     else {
         return res.status(400).send('The github cookie is not approved by you');
@@ -117,7 +117,7 @@ app.get('/google', (req, res) => {
 
     if (cookieData.google === true) {
         console.log("google");
-        google_auth(app);
+        return google_auth(app);
     }
     else {
         return res.status(400).send('The github google is not approved by you');
