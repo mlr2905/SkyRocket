@@ -79,6 +79,7 @@ console.log(!cookieData);
     console.log(cookieData.facebook === true);
 
     if (cookieData.facebook === true) {
+        console.log("ok");
         facebook_auth(app);
     }
     else {
