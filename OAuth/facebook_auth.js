@@ -5,8 +5,8 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const session = require('express-session');
 
 // קונפיגורציה
-const facebook_appId = '343459865170726';
-const facebook_appSecret = 'fb2f818ee3d52cd85b03335b6f3f79ee'; // החלף במפתח הסודי שלך
+const facebook_appId = '1156854418774447';
+const facebook_appSecret = '7bd06b4a0356ba8fba5ef8365f37e718'; // החלף במפתח הסודי שלך
 
 function facebook_auth(app) {
 
