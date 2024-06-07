@@ -19,6 +19,7 @@ const github_auth = require('./OAuth/github_auth')
 const facebook_auth = require('./OAuth/facebook_auth');
 // const tiktok_auth = require('./OAuth/tiktok_auth');
 const cookieParser = require('cookie-parser');
+const { log } = require('winston');
 
 
 
@@ -43,23 +44,30 @@ app.listen(9000, () => {
 
 // פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
 function getCookieData(req) {
-    const cookieValue = req.cookies.axeptio_cookies;
 
-  if (cookieValue) {
-    
-  
-   let  finalString = (cookieValue.replace(/[\d%]/g, '').replace(/C/g, ',').match(/\w+:true/g) || []).join(',');
-console.log("finalString",finalString);
-    return finalString
-  }
-  else{
-    return res.status(400).send('Cookies have not been approved on the site, you must return to the site and register');
+    const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+    console.log(cookies);
+    const skyTokenCookie = cookies.find(cookie => cookie.startsWith('axeptio_cookies='));
+console.log(skyTokenCookie);
+    if (skyTokenCookie) {
+        const skyTokenValue = skyTokenCookie.split('=')[1];
+        const decodedSkyToken = decodeURIComponent(skyTokenValue);
+        const parsedSkyToken = JSON.parse(decodedSkyToken);
 
-  }
+        const githubStatus = parsedSkyToken.github;
+        const googleStatus = parsedSkyToken.google;
+        const facebookStatus = parsedSkyToken.facebook;
+        const Status = { 'gitHub': githubStatus, 'google': googleStatus, 'facebook': facebookStatus }
+        console.log("Status",Status);
+        return Status
+
+    }
+    else{
+        false
+    }
+
+
 }
-
-
-
 app.use(cookieParser());
 
 
