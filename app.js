@@ -20,6 +20,8 @@ const facebook_auth = require('./OAuth/facebook_auth');
 // const tiktok_auth = require('./OAuth/tiktok_auth');
 const cookieParser = require('cookie-parser');
 const { log } = require('winston');
+const cookies = require('./OAuth/cookies');
+
 
 
 
@@ -42,73 +44,14 @@ app.listen(9000, () => {
 
 
 
-// פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
-function getCookieData(req) {
-    const cookies = req.headers.cookie ? req.headers.cookie.split(';').map(cookie => cookie.trim()) : [];
-    const cookieMap = Object.fromEntries(cookies.map(cookie => cookie.split('=')));
-console.log("cookieMap",cookieMap);
-    if (!cookieMap.axeptio_cookies || !cookieMap.axeptio_authorized_vendors || !cookieMap.axeptio_all_vendors) {
-        return { error: "Cookies must be reconfirmed" };
-    }
-
-    try {
-
-        const decodedSkyToken = decodeURIComponent(cookieMap.axeptio_cookies);
-        console.log("decodedSkyToken",decodedSkyToken);
-        const parsedSkyToken = JSON.parse(decodedSkyToken);
-        console.log("parsedSkyToken",parsedSkyToken);
-l
-        return {
-            gitHub: parsedSkyToken.github || false,
-            google: parsedSkyToken.google || false,
-            facebook: parsedSkyToken.facebook || false
-        };
-    } catch (error) {
-        console.error("Error decoding cookie:", error);
-        return { error: "Failed to decode cookie data" };
-    }
+function handleApp(req, res, appName) {
+    const appData = cookies.check(req, appName);
+    return res.status(appData.n).send(appData.send);
 }
 
-
-function check(req,name){
-    console.log("check",req,name);
-    const cookieData = getCookieData(req, (error) => {
-        res.status(500).send('Internal Server Error');
-    });
-
-    if (!cookieData) {
-        return res.status(400).send(error);
-    }
-
-    if (cookieData.name === true) {
-        console.log("ok");
-        return facebook_auth(app);
-    } else {
-        return res.status(400).send(`The ${name} cookie is not approved by you`);
-    }
-
-}
-// נתיב לבדיקה של Github
-app.get('/git', (req, res) => {
-     check(req,"github");
-
-});
-app.get('/google', (req, res) => {
-    check(req,"google");
-
-});app.get('/facebook', (req, res) => {
-    check(req,"facebook");
-
-});
-
-
-
-
-// google_auth(app)
-// github_auth(app)
-// facebook_auth(app)
-// tiktok_auth(app)
-
+app.get('/git', (req, res) => handleApp(req, res, "github"));
+app.get('/google', (req, res) => handleApp(req, res, "google"));
+app.get('/facebook', (req, res) => handleApp(req, res, "facebook"));
 
 
 
