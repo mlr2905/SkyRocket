@@ -43,36 +43,22 @@ app.listen(9000, () => {
 
 // פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
 function getCookieData(req) {
+    const cookieValue = req.cookies.axeptio_cookies;
 
-  
-    let matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([.$?*|{}()[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
-// שליפת ערך העוגיה בשם 'axeptio_cookies'
-let cookieValue = getCookie('axeptio_cookies');
-
-// אם העוגיה קיימת, נפענח אותה
-if (cookieValue) {
-    // המרת JSON מ-URL לאובייקט JavaScript
-    let cookieData = JSON.parse(decodeURIComponent(cookieValue));
+  if (cookieValue) {
     
-    // הצגת ערכי השירותים
-    console.log('Google:', cookieData.google);
-    console.log('Facebook:', cookieData.facebook);
-    console.log('GitHub:', cookieData.github);
-    console.log('TikTok:', cookieData.tiktok);
-    console.log('TikTok:', cookieData.TikTok);
-    return {cookieData}
-} else {
-    console.log('העוגיה axeptio_cookies לא נמצאה');
+    return     finalString = (cookieValue.replace(/[\d%]/g, '').replace(/C/g, ',').match(/\w+:true/g) || []).join(',');
+
+  }
+  else{
+    return res.status(400).send('Cookies have not been approved on the site, you must return to the site and register');
+
+  }
 }
 
 
 
-app.use(cookieParser());
+// app.use(cookieParser());
 
 
 // נתיב לבדיקה של Facebook
