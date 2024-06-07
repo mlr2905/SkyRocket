@@ -52,9 +52,12 @@ console.log("cookieMap",cookieMap);
     }
 
     try {
-        const decodedSkyToken = decodeURIComponent(cookieMap.axeptio_cookies);
-        const parsedSkyToken = JSON.parse(decodedSkyToken);
 
+        const decodedSkyToken = decodeURIComponent(cookieMap.axeptio_cookies);
+        console.log("decodedSkyToken",decodedSkyToken);
+        const parsedSkyToken = JSON.parse(decodedSkyToken);
+        console.log("parsedSkyToken",parsedSkyToken);
+l
         return {
             gitHub: parsedSkyToken.github || false,
             google: parsedSkyToken.google || false,
