@@ -47,8 +47,10 @@ function getCookieData(req) {
 
   if (cookieValue) {
     
-    return     finalString = (cookieValue.replace(/[\d%]/g, '').replace(/C/g, ',').match(/\w+:true/g) || []).join(',');
-
+  
+   let  finalString = (cookieValue.replace(/[\d%]/g, '').replace(/C/g, ',').match(/\w+:true/g) || []).join(',');
+console.log("finalString",finalString);
+    return finalString
   }
   else{
     return res.status(400).send('Cookies have not been approved on the site, you must return to the site and register');
@@ -58,7 +60,7 @@ function getCookieData(req) {
 
 
 
-// app.use(cookieParser());
+app.use(cookieParser());
 
 
 // נתיב לבדיקה של Facebook
