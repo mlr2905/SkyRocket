@@ -44,25 +44,31 @@ app.listen(9000, () => {
 // פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
 function getCookieData(req) {
 
-    const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-    console.log(cookies);
-    const skyTokenCookie = cookies.find(cookie => cookie.startsWith('axeptio_cookies='));
-console.log(skyTokenCookie);
-    if (skyTokenCookie) {
-        const skyTokenValue = skyTokenCookie.split('=')[1];
-        const decodedSkyToken = decodeURIComponent(skyTokenValue);
-        const parsedSkyToken = JSON.parse(decodedSkyToken);
+  
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([.$?*|{}()[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
 
-        const githubStatus = parsedSkyToken.github;
-        const googleStatus = parsedSkyToken.google;
-        const facebookStatus = parsedSkyToken.facebook;
-        const Status = { 'gitHub': githubStatus, 'google': googleStatus, 'facebook': facebookStatus }
-        return Status
+// שליפת ערך העוגיה בשם 'axeptio_cookies'
+let cookieValue = getCookie('axeptio_cookies');
 
-    }
-    else{
-        false
-    }
+// אם העוגיה קיימת, נפענח אותה
+if (cookieValue) {
+    // המרת JSON מ-URL לאובייקט JavaScript
+    let cookieData = JSON.parse(decodeURIComponent(cookieValue));
+    
+    // הצגת ערכי השירותים
+    console.log('Google:', cookieData.google);
+    console.log('Facebook:', cookieData.facebook);
+    console.log('GitHub:', cookieData.github);
+    console.log('TikTok:', cookieData.tiktok);
+    console.log('TikTok:', cookieData.TikTok);
+    return {cookieData}
+} else {
+    console.log('העוגיה axeptio_cookies לא נמצאה');
+}
 
 
 }
@@ -107,14 +113,15 @@ app.get('/git', (req, res) => {
 
 });
 
+
 // נתיב לבדיקה של Google
 app.get('/google', (req, res) => {
     const cookieData = getCookieData(req);
-
+console.log("google cookieData",cookieData);
     if (!cookieData) {
         return res.status(400).send('Invalid or missing cookie axeptio_cookies');
     }
-
+console.log("git ookieData.google");
     if (cookieData.google === true) {
         console.log("google");
         return google_auth(app);
