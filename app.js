@@ -44,85 +44,61 @@ app.listen(9000, () => {
 
 // פונקציה כללית לפענוח העוגיה ולהחזרת הנתונים
 function getCookieData(req) {
+    const cookies = req.headers.cookie ? req.headers.cookie.split(';').map(cookie => cookie.trim()) : [];
+    const cookieMap = Object.fromEntries(cookies.map(cookie => cookie.split('=')));
 
-    const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-    const skyTokenCookie = cookies.find(cookie => cookie.startsWith('axeptio_cookies='));
-    if (skyTokenCookie) {
-        const skyTokenValue = skyTokenCookie.split('=')[1];
-        const decodedSkyToken = decodeURIComponent(skyTokenValue);
+    if (!cookieMap.axeptio_cookies || !cookieMap.axeptio_authorized_vendors || !cookieMap.axeptio_all_vendors) {
+        return { error: "Cookies must be reconfirmed" };
+    }
+
+    try {
+        const decodedSkyToken = decodeURIComponent(cookieMap.axeptio_cookies);
         const parsedSkyToken = JSON.parse(decodedSkyToken);
 
-        const githubStatus = parsedSkyToken.github;
-        const googleStatus = parsedSkyToken.google;
-        const facebookStatus = parsedSkyToken.facebook;
-        return { 'gitHub': githubStatus, 'google': googleStatus, 'facebook': facebookStatus }
-
+        return {
+            gitHub: parsedSkyToken.github || false,
+            google: parsedSkyToken.google || false,
+            facebook: parsedSkyToken.facebook || false
+        };
+    } catch (error) {
+        console.error("Error decoding cookie:", error);
+        return { error: "Failed to decode cookie data" };
     }
-    else{
-        false
-    }
-
-
 }
 
 
-// נתיב לבדיקה של Facebook
-app.get('/facebook', (req, res) => {
-    const cookieData = getCookieData(req);
-console.log(!cookieData);
+function check(req,name){
+    const cookieData = getCookieData(req, (error) => {
+        res.status(500).send('Internal Server Error');
+    });
+
     if (!cookieData) {
-        return res.status(400).send('Invalid or missing cookie axeptio_cookies');
+        return res.status(400).send(error);
     }
-    console.log(cookieData.facebook === true);
 
-    if (cookieData.facebook === true) {
+    if (cookieData.name === true) {
         console.log("ok");
-       return facebook_auth(app);
-    }
-    else {
-        return res.status(400).send('The Facebook cookie is not approved by you');
-
+        return facebook_auth(app);
+    } else {
+        return res.status(400).send(`The ${name} cookie is not approved by you`);
     }
 
-});
-
+}
 // נתיב לבדיקה של Github
 app.get('/git', (req, res) => {
-    const cookieData = getCookieData(req);
-
-    if (!cookieData) {
-        return res.status(400).send('Invalid or missing cookie axeptio_cookies');
-    }
-
-    if (cookieData.github === true) {
-       return github_auth(app);
-    }
-    else {
-        return res.status(400).send('The github cookie is not approved by you');
-
-    }
+     check(req,"github");
 
 });
-
-
-// נתיב לבדיקה של Google
 app.get('/google', (req, res) => {
-    const cookieData = getCookieData(req);
-console.log("google cookieData",cookieData);
-    if (!cookieData) {
-        return res.status(400).send('Invalid or missing cookie axeptio_cookies');
-    }
-console.log("git ookieData.google");
-    if (cookieData.google === true) {
-        console.log("google");
-        return google_auth(app);
-    }
-    else {
-        return res.status(400).send('The github google is not approved by you');
+    check(req,"google");
 
-    }
+});app.get('/facebook', (req, res) => {
+    check(req,"facebook");
 
 });
+
+
+
 
 // google_auth(app)
 // github_auth(app)
