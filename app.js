@@ -71,7 +71,7 @@ if (cookieValue) {
 }
 
 
-}
+
 app.use(cookieParser());
 
 
