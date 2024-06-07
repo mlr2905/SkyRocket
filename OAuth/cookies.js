@@ -1,4 +1,8 @@
-// cookies.js
+const facebook = require('./facebook_auth');
+const github = require('./github_auth');
+const google = require('./google_auth');
+const tiktok = require('./tiktok_auth');
+
 function getCookieData(req) {
     const cookies = req.headers.cookie ? req.headers.cookie.split(';').map(cookie => cookie.trim()) : [];
     const cookieMap = Object.fromEntries(cookies.map(cookie => cookie.split('=')));
@@ -29,11 +33,11 @@ console.log('cookieData',cookieData.name);
         switch (name) {
             case "github":
                 console.log("ok");
-                return github_auth(app);
+                return github.github_auth(app);
             case "google":
-                return google_auth(app);
+                return google.google_auth(app);
             case "facebook":
-                return facebook_auth(app);
+                return facebook.facebook_auth(app);
         }
     } else {
         return { 'send': `The ${name} cookie is not approved by you`, 'n': 400 };

@@ -29,7 +29,7 @@ passport.deserializeUser(function (obj, cb) {
     cb(null, obj);
 });
 
-const google_auth = (app) => {
+const auth = (app) => {
     app.use(require('express-session')({ secret: 'keyboard ', resave: true, saveUninitialized: true }));
     app.use(passport.initialize());
     app.use(passport.session());
@@ -99,4 +99,4 @@ const google_auth = (app) => {
     );
 };
 
-module.exports = google_auth;
+module.exports = auth;

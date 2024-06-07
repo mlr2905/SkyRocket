@@ -15,7 +15,7 @@ const clientSecret = tiktok_clientSecret
 const redirectUri = 'https://skyrocket.onrender.com/tiktok';
 
 
-const tiktok_auth = (app) => {
+const auth = (app) => {
 
     // שלב 1: הכוונת המשתמש לאישור בטיקטוק
     app.get('/tiktok', (req, res) => {
@@ -74,4 +74,4 @@ const tiktok_auth = (app) => {
     });
 };
 
-module.exports = tiktok_auth;
+module.exports = auth;

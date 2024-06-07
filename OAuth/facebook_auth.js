@@ -8,7 +8,7 @@ const session = require('express-session');
 const facebook_appId = '1156854418774447';
 const facebook_appSecret = '7bd06b4a0356ba8fba5ef8365f37e718'; // החלף במפתח הסודי שלך
 
-function facebook_auth(app) {
+function auth(app) {
 
   passport.use(new FacebookStrategy({
       clientID: facebook_appId,
@@ -54,4 +54,4 @@ function facebook_auth(app) {
     });
 }
 
-module.exports = facebook_auth;
+module.exports = auth;

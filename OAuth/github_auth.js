@@ -7,7 +7,6 @@ const passport = require('passport');
 const GITHUB_CLIENT_ID = "Ov23lib9rBqGPaedxi4X"
 const GITHUB_CLIENT_SECRET = "49425ccf70d4bd1cab7b4c40f8609b760022c8d0"
 let a;
-
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
@@ -29,7 +28,7 @@ passport.deserializeUser(function (obj, done) {
     done(null, obj);
 });
 
-const github_auth = (app) => {
+const auth = (app) => {
     app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
     app.use(passport.initialize());
     app.use(passport.session());
@@ -93,4 +92,4 @@ const github_auth = (app) => {
     );
 };
 
-module.exports = github_auth;
+module.exports = auth;
