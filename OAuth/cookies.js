@@ -27,10 +27,10 @@ console.log('cookieData',cookieData);
     const a = name
     console.log('a',a);
 console.log('cookieData',cookieData.name);
-    if (cookieData.name) {
-        console.log("ok");
+    if (cookieData.hasOwnProperty(name)) {
         switch (name) {
             case "github":
+                console.log("ok");
                 return github_auth(app);
             case "google":
                 return google_auth(app);
