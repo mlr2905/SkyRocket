@@ -21,7 +21,7 @@ function getCookieData(req) {
     }
 }
 
-function check(req, name) {
+function check(req, name,app) {
     const cookieData = getCookieData(req);
     if (!cookieData) {
         return { 'send': 'Internal Server Error', 'n': 500 };
