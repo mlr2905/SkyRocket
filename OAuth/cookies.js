@@ -39,6 +39,4 @@ function check(req, name) {
     }
 }
 
-module.exports = {
-    check: check
-};
+module.exports = {check};
