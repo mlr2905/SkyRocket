@@ -28,16 +28,14 @@ function check(req, name) {
     }
     const a = name
     console.log('a',a);
-console.log('cookieData',cookieData.name);
     if (cookieData.hasOwnProperty(name)) {
         switch (name) {
             case "github":
-                console.log("ok");
-                return github.github_auth(app);
+                return github.auth(app);
             case "google":
-                return google.google_auth(app);
+                return google.auth(app);
             case "facebook":
-                return facebook.facebook_auth(app);
+                return facebook.auth(app);
         }
     } else {
         return { 'send': `The ${name} cookie is not approved by you`, 'n': 400 };
