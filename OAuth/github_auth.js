@@ -92,4 +92,4 @@ const auth = (app) => {
     );
 };
 
-module.exports = auth;
+module.exports = {auth};
