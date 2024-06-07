@@ -24,6 +24,8 @@ console.log('cookieData',cookieData);
     if (!cookieData) {
         return { 'send': 'Internal Server Error', 'n': 500 };
     }
+    const a = name
+    console.log('a',a);
 console.log('cookieData',cookieData.name);
     if (cookieData.name) {
         console.log("ok");
