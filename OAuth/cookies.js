@@ -12,11 +12,8 @@ function getCookieData(req) {
         console.log("decodedSkyToken", decodedSkyToken);
         const parsedSkyToken = JSON.parse(decodedSkyToken);
         console.log("parsedSkyToken", parsedSkyToken);
-        return {
-            gitHub: parsedSkyToken.github || false,
-            google: parsedSkyToken.google || false,
-            facebook: parsedSkyToken.facebook || false
-        };
+        return parsedSkyToken 
+           
     } catch (error) {
         console.error("Error decoding cookie:", error);
         return { error: "Failed to decode cookie data" };
@@ -31,7 +28,7 @@ function check(req, name) {
         return { 'send': 'Internal Server Error', 'n': 500 };
     }
 
-    if (cookieData[name]) {
+    if (cookieData.name) {
         console.log("ok");
         switch (name) {
             case "github":
