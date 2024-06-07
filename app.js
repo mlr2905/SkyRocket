@@ -46,9 +46,7 @@ app.listen(9000, () => {
 function getCookieData(req) {
 
     const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-    console.log("cookies",cookies);
     const skyTokenCookie = cookies.find(cookie => cookie.startsWith('axeptio_cookies='));
-console.log("skyTokenCookie",skyTokenCookie);
     if (skyTokenCookie) {
         const skyTokenValue = skyTokenCookie.split('=')[1];
         const decodedSkyToken = decodeURIComponent(skyTokenValue);
@@ -57,9 +55,7 @@ console.log("skyTokenCookie",skyTokenCookie);
         const githubStatus = parsedSkyToken.github;
         const googleStatus = parsedSkyToken.google;
         const facebookStatus = parsedSkyToken.facebook;
-        const Status = { 'gitHub': githubStatus, 'google': googleStatus, 'facebook': facebookStatus }
-        console.log("Status",Status);
-        return Status
+        return { 'gitHub': githubStatus, 'google': googleStatus, 'facebook': facebookStatus }
 
     }
     else{
