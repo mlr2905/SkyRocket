@@ -9,6 +9,7 @@ function getCookieData(req) {
     try {
         const decodedSkyToken = decodeURIComponent(cookieMap.axeptio_cookies);
         const parsedSkyToken = JSON.parse(decodedSkyToken);
+        console.log('parsedSkyToken',parsedSkyToken);
         return parsedSkyToken 
            
     } catch (error) {
@@ -19,11 +20,11 @@ function getCookieData(req) {
 
 function check(req, name) {
     const cookieData = getCookieData(req);
-
+console.log('cookieData',cookieData);
     if (!cookieData) {
         return { 'send': 'Internal Server Error', 'n': 500 };
     }
-
+console.log('cookieData',cookieData.name);
     if (cookieData.name) {
         console.log("ok");
         switch (name) {
