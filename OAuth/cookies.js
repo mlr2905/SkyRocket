@@ -2,16 +2,13 @@
 function getCookieData(req) {
     const cookies = req.headers.cookie ? req.headers.cookie.split(';').map(cookie => cookie.trim()) : [];
     const cookieMap = Object.fromEntries(cookies.map(cookie => cookie.split('=')));
-    console.log("cookieMap", cookieMap);
     if (!cookieMap.axeptio_cookies || !cookieMap.axeptio_authorized_vendors || !cookieMap.axeptio_all_vendors) {
         return { error: "Cookies must be reconfirmed" };
     }
 
     try {
         const decodedSkyToken = decodeURIComponent(cookieMap.axeptio_cookies);
-        console.log("decodedSkyToken", decodedSkyToken);
         const parsedSkyToken = JSON.parse(decodedSkyToken);
-        console.log("parsedSkyToken", parsedSkyToken);
         return parsedSkyToken 
            
     } catch (error) {
@@ -21,7 +18,6 @@ function getCookieData(req) {
 }
 
 function check(req, name) {
-    console.log("check", req, name);
     const cookieData = getCookieData(req);
 
     if (!cookieData) {
