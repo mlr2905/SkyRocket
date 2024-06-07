@@ -46,9 +46,9 @@ app.listen(9000, () => {
 function getCookieData(req) {
 
     const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-    console.log(cookies);
+    console.log("cookies",cookies);
     const skyTokenCookie = cookies.find(cookie => cookie.startsWith('axeptio_cookies='));
-console.log(skyTokenCookie);
+console.log("skyTokenCookie",skyTokenCookie);
     if (skyTokenCookie) {
         const skyTokenValue = skyTokenCookie.split('=')[1];
         const decodedSkyToken = decodeURIComponent(skyTokenValue);
@@ -68,7 +68,6 @@ console.log(skyTokenCookie);
 
 
 }
-app.use(cookieParser());
 
 
 // נתיב לבדיקה של Facebook
