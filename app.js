@@ -258,12 +258,28 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ניתוב לאימות באמצעות TikTok
-app.get('/auth/tiktok',
-    passport.authenticate('tiktok'),
-    function (req, res) {
-        // כאן תוכל להוסיף קוד נוסף אם תרצה
+app.get('/tiktok', passport.authenticate('tiktok'), async function(req, res) {
+    try {
+        const accessToken = req.user.accessToken; // אתה צריך לוודא שיש לך גישה ל-access token של המשתמש
+        const profileResponse = await axios.get('https://api.tiktok.com/user/', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        const user = {
+            user_id: profileResponse.data.user_id,
+            email: req.user.email,
+            profile_image: req.user.profile_image
+        };
+
+        console.log('user', user);
+        return done(null, user);
+    } catch (error) {
+        console.error('Error fetching user profile from TikTok API:', error);
+        return done(error);
     }
-);
+});
 
 function getTimeZoneByIP(ip) {
     try {
