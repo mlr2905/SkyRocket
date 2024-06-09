@@ -223,15 +223,15 @@ app.get('/git',
 
     });
 // קונפיגורציה
-const tiktok_clientId = '7376326045954738181';
+const tiktok_clientId = 'awgn3o1nd3bn4bjb';
 const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
 
 passport.use('tiktok', new OAuth2Strategy({
     authorizationURL: 'https://www.tiktok.com/oauth/authorize',
     tokenURL: 'https://open-api.tiktok.com/oauth/token',
-    clientID: '7376326045954738181',
+    clientID: tiktok_clientId,
     clientSecret: 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj',
-    callbackURL: 'https://skyrocket.onrender.com/tiktok'
+    callbackURL: tiktok_clientSecret
 },
 
     function (accessToken, refreshToken, profile, done) {
@@ -266,7 +266,7 @@ passport.deserializeUser(function (obj, done) {
 });
 
 // מסלול לאימות עם TikTok
-app.get('/auth/tiktok',
+app.get('/tiktok',
     passport.authenticate('tiktok')
 );
 
