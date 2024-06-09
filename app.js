@@ -10,8 +10,7 @@ const body_parser = require('body-parser')
 const all_tables_router = require('./routers/all_tables')
 const role_users = require('./routers/role_users')
 const role_admins = require('./routers/role_admins')
-const role_airlines =  require('./routers/role_airlines')
-
+const role_airlines = require('./routers/role_airlines')
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 const app = express()
@@ -22,9 +21,7 @@ const IP2Location = ip2location.IP2Location;
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-
-
-// טען את מסד הנתונים של IP2Location
+const qs = require('qs');
 const ip2locationDatabase = new IP2Location("./IP2LOCATION-LITE-DB11.BIN", "IP2LOCATION_SHARED_MEMORY");
 
 
@@ -221,6 +218,51 @@ app.get('/git',
 
 
     });
+
+const tiktok_clientId = '7376326045954738181';
+const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
+
+const redirectUri = 'https://skyrocket.onrender.com/tiktok';
+
+// הגדר את האסטרטגיה של TikTok OAuth
+passport.use(new TikTokStrategy({
+    clientID: tiktok_clientId,
+    clientSecret: tiktok_clientSecret,
+    callbackURL: redirectUri,
+    scope: ['user.read', 'email']
+},
+function (accessToken, refreshToken, profile, done) {
+    // פרופיל המשתמש כולל את המייל שלו
+    const user = {
+        user_id: profile.id,
+        email: profile._json.email,
+        profile_image: profile.photos[0].value
+    };
+    console.log('user',user);
+    return done(null, user);
+}));
+
+// קבע את השימוש ב-Sessions
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (obj, done) {
+    done(null, obj);
+});
+
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// ניתוב לאימות באמצעות TikTok
+app.get('/auth/tiktok',
+    passport.authenticate('tiktok'),
+    function (req, res) {
+        // כאן תוכל להוסיף קוד נוסף אם תרצה
+    }
+);
+
 function getTimeZoneByIP(ip) {
     try {
         const ipInfo = ip2locationDatabase.get_all(ip);
