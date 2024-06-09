@@ -1,6 +1,5 @@
 const express = require('express')
 const session = require('express-session');
-const axios = require('axios');
 const moment = require('moment-timezone');
 const logger = require('./logger/my_logger')
 const path = require('path')
