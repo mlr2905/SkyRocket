@@ -229,8 +229,8 @@ const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
 passport.use('tiktok', new OAuth2Strategy({
     authorizationURL: 'https://www.tiktok.com/oauth/authorize',
     tokenURL: 'https://open-api.tiktok.com/oauth/token',
-    clientID: 'awgn3o1nd3bn4bjb',
-    clientSecret: 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj',
+    clientID: '7376326045954738181',
+    clientSecret: 'awgn3o1nd3bn4bjb',
     callbackURL: 'https://skyrocket.onrender.com/tiktok'
 },
 
