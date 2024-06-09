@@ -10,6 +10,8 @@ const body_parser = require('body-parser')
 const all_tables_router = require('./routers/all_tables')
 const role_users = require('./routers/role_users')
 const role_admins = require('./routers/role_admins')
+const role_airlines =  require('./routers/role_airlines')
+
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 const app = express()
