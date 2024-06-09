@@ -1,5 +1,7 @@
 
 
+const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = "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";
 
 const express = require('express');
 const session = require('express-session');
@@ -7,19 +9,12 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const axios = require('axios');
 const app = express();
 const passport = require('passport');
-const connectRedis = require('connect-redis');
-const RedisStore = connectRedis(session);
-const redis = require('redis');
-const dotenv = require('dotenv');
+const RedisStore = require('connect-redis').default;
+const { createClient } = require('redis');
 
-// טעינת משתני סביבה מקובץ .env
-dotenv.config();
-
-const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
 
 // הגדרת פרטי החיבור ל-Redis של Render
-const redisClient = redis.createClient({
+const redisClient = createClient({
     url: 'rediss://red-cp3i2bo21fec73b7s590:8Ddjtg2LFjxXSqkTNiqi1cm5RU6Y3FOX@oregon-redis.render.com:6379',
     tls: {} // הכרחי כדי לאפשר חיבור מאובטח
 });
@@ -31,6 +26,8 @@ redisClient.on('error', (err) => {
 redisClient.on('connect', () => {
     console.log('Connected to Redis');
 });
+
+redisClient.connect().catch(console.error);
 
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
