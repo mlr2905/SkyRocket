@@ -1,4 +1,5 @@
-const express = require('express');
+const express = require('express')
+const app = express()
 const axios = require('axios');
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -8,7 +9,7 @@ const session = require('express-session');
 const facebook_appId = '1156854418774447';
 const facebook_appSecret = '7bd06b4a0356ba8fba5ef8365f37e718'; // החלף במפתח הסודי שלך
 
-function auth(app) {
+function auth() {
 
   passport.use(new FacebookStrategy({
       clientID: facebook_appId,

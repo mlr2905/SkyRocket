@@ -1,3 +1,4 @@
+
 const express = require('express');
 const axios = require('axios');
 const app = express()
@@ -29,7 +30,7 @@ passport.deserializeUser(function (obj, cb) {
     cb(null, obj);
 });
 
-const auth = (app) => {
+const auth = () => {
     app.use(require('express-session')({ secret: 'keyboard ', resave: true, saveUninitialized: true }));
     app.use(passport.initialize());
     app.use(passport.session());

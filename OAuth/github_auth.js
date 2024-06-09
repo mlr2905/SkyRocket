@@ -28,7 +28,7 @@ passport.deserializeUser(function (obj, done) {
     done(null, obj);
 });
 
-const auth = (app) => {
+const auth = () => {
     app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
     app.use(passport.initialize());
     app.use(passport.session());

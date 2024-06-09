@@ -1,4 +1,5 @@
 const express = require('express');
+const app = express()
 const axios = require('axios');
 const qs = require('qs');
 const session = require('express-session');
@@ -15,7 +16,7 @@ const clientSecret = tiktok_clientSecret
 const redirectUri = 'https://skyrocket.onrender.com/tiktok';
 
 
-const auth = (app) => {
+const auth = () => {
 
     // שלב 1: הכוונת המשתמש לאישור בטיקטוק
     app.get('/tiktok', (req, res) => {
