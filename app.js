@@ -21,6 +21,8 @@ const IP2Location = ip2location.IP2Location;
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const TikTokStrategy = require('passport-tiktok').Strategy;
+
 const qs = require('qs');
 const ip2locationDatabase = new IP2Location("./IP2LOCATION-LITE-DB11.BIN", "IP2LOCATION_SHARED_MEMORY");
 
