@@ -51,7 +51,7 @@ passport.deserializeUser(function (obj, cb) {
 const auth = () => {
     app.use(session({
         store: new RedisStore({ client: redisClient }),
-        secret: SESSION_SECRET, // משתמש במפתח הסודי מהסביבה
+        secret: '7585474', // משתמש במפתח הסודי מהסביבה
         resave: false,
         saveUninitialized: false,
         cookie: { secure: false } // set secure to true if using https
