@@ -220,66 +220,69 @@ app.get('/git',
 
 
     });
-
+// קונפיגורציה
 const tiktok_clientId = '7376326045954738181';
 const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
 
+
+const clientId = tiktok_clientId 
+const clientSecret = tiktok_clientSecret 
 const redirectUri = 'https://skyrocket.onrender.com/tiktok';
 
-// הגדר את האסטרטגיה של TikTok OAuth
-passport.use(new TikTokStrategy({
-    clientID: tiktok_clientId,
-    clientSecret: tiktok_clientSecret,
-    callbackURL: redirectUri,
-    scope: ['user.read', 'email']
-}, function (accessToken, refreshToken, profile, done) {
-    const user = {
-        accessToken: accessToken,
-        user_id: profile.id,
-        email: profile._json.email,
-        profile_image: profile.photos[0].value
-    };
-    console.log('user', user);
-    return done(null, user);
-}));
 
-// קבע את השימוש ב-Sessions
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
 
-passport.deserializeUser(function (obj, done) {
-    done(null, obj);
-});
+    // שלב 1: הכוונת המשתמש לאישור בטיקטוק
+   
+    // שלב 2: קבלת קוד האישור וחילופי לקוד גישה
+    app.get('/tiktok', async (req, res) => {
+        const authorizationCode = `https://www.tiktok.com/auth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user.info.basic,user.info.email`;
 
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.session());
 
-// ניתוב לאימות באמצעות TikTok
-app.get('/tiktok', passport.authenticate('tiktok'), async function (req, res) {
-    try {
-        const accessToken = req.user.accessToken; // אתה צריך לוודא שיש לך גישה ל-access token של המשתמש
-        const profileResponse = await axios.get('https://api.tiktok.com/user/', {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
+        if (!authorizationCode) {
+            return res.status(400).send('No authorization code provided');
+        }
+
+        try {
+            const tokenResponse = await axios.post('https://open-api.tiktok.com/oauth/access_token', qs.stringify({
+                client_id: clientId,
+                client_secret: clientSecret,
+                code: authorizationCode,
+                grant_type: 'authorization_code',
+                redirect_uri: redirectUri
+            }), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+
+            const accessToken = tokenResponse.data.data.access_token;
+            if (!accessToken) {
+                throw new Error('Failed to obtain access token');
             }
-        });
 
-        const user = {
-            user_id: profileResponse.data.user_id,
-            email: req.user.email,
-            profile_image: req.user.profile_image
-        };
+            // בקשת מידע על המשתמש
+            const userInfoResponse = await axios.get('https://open-api.tiktok.com/user/info/', {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
 
-        console.log('user', user);
-        return done(null, user);
-    } catch (error) {
-        console.error('Error fetching user profile from TikTok API:', error);
-        return done(error);
-    }
-});
+            const userInfo = userInfoResponse.data.data;
+            const userEmail = userInfo.email || 'לא זמין';
+            const profilePicture = userInfo.avatar || '';
 
+            // הצגת המידע שהתקבל
+            res.send(`
+                <h1>מידע משתמש</h1>
+                <p><strong>אימייל:</strong> ${userEmail}</p>
+                ${profilePicture ? `<p><strong>תמונת פרופיל:</strong> <img src="${profilePicture}" alt="Profile Picture" /></p>` : ''}
+                <p><strong>Access Token:</strong> ${accessToken}</p>
+            `);
+        } catch (error) {
+            console.error('Error fetching access token or user info:', error.response ? error.response.data : error.message);
+            res.status(500).send(`Error: ${error.message}`);
+        }
+    });
 function getTimeZoneByIP(ip) {
     try {
         const ipInfo = ip2locationDatabase.get_all(ip);
