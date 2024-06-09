@@ -223,8 +223,8 @@ app.get('/git',
 
     });
 // קונפיגורציה
-const tiktok_clientId = '7376326045954738181';
-const tiktok_clientSecret = 'awgn3o1nd3bn4bjb';
+const tiktok_clientId = 'awgn3o1nd3bn4bjb';
+const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
 
 passport.use('tiktok', new OAuth2Strategy({
     authorizationURL: 'https://www.tiktok.com/oauth/authorize',
