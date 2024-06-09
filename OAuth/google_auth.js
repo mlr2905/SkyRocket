@@ -1,9 +1,26 @@
 
 const express = require('express');
+const session = require('express-session');
+
 const axios = require('axios');
 const app = express()
 const passport = require('passport');
+const connectRedis = require('connect-redis');
+const RedisStore = connectRedis(session);
+const redis = require('redis');
 
+const redisClient = redis.createClient({
+    url: 'rediss://red-cp3i2bo21fec73b7s590:8Ddjtg2LFjxXSqkTNiqi1cm5RU6Y3FOX@oregon-redis.render.com:6379',
+    tls: {} // הכרחי כדי לאפשר חיבור מאובטח
+});
+
+redisClient.on('error', (err) => {
+    console.error('Could not connect to Redis:', err);
+});
+
+redisClient.on('connect', () => {
+    console.log('Connected to Redis');
+});
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
@@ -31,11 +48,19 @@ passport.deserializeUser(function (obj, cb) {
 });
 
 const auth = () => {
+    app.use(session({
+        store: new RedisStore({ client: redisClient }),
+        secret: 'your secret key',
+        resave: false,
+        saveUninitialized: false,
+        cookie: { secure: false } // set secure to true if using https
+    }));
     app.use(require('express-session')({ secret: 'keyboard ', resave: true, saveUninitialized: true }));
     app.use(passport.initialize());
     app.use(passport.session());
 
     app.get('*',
+
         passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
         ,
         async function (req, res) {
