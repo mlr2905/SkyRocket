@@ -232,15 +232,14 @@ passport.use(new TikTokStrategy({
     clientSecret: tiktok_clientSecret,
     callbackURL: redirectUri,
     scope: ['user.read', 'email']
-},
-function (accessToken, refreshToken, profile, done) {
-    // פרופיל המשתמש כולל את המייל שלו
+}, function (accessToken, refreshToken, profile, done) {
     const user = {
+        accessToken: accessToken,
         user_id: profile.id,
         email: profile._json.email,
         profile_image: profile.photos[0].value
     };
-    console.log('user',user);
+    console.log('user', user);
     return done(null, user);
 }));
 
@@ -258,7 +257,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ניתוב לאימות באמצעות TikTok
-app.get('/tiktok', passport.authenticate('tiktok'), async function(req, res) {
+app.get('/tiktok', passport.authenticate('tiktok'), async function (req, res) {
     try {
         const accessToken = req.user.accessToken; // אתה צריך לוודא שיש לך גישה ל-access token של המשתמש
         const profileResponse = await axios.get('https://api.tiktok.com/user/', {
