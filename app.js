@@ -21,7 +21,9 @@ const IP2Location = ip2location.IP2Location;
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const TikTokStrategy = require('passport-github2').Strategy;
+const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
+
+
 
 const qs = require('qs');
 const ip2locationDatabase = new IP2Location("./IP2LOCATION-LITE-DB11.BIN", "IP2LOCATION_SHARED_MEMORY");
@@ -224,78 +226,50 @@ app.get('/git',
 const tiktok_clientId = '7376326045954738181';
 const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
 
-
-const clientId = tiktok_clientId 
-const clientSecret = tiktok_clientSecret 
-const redirectUri = 'https://skyrocket.onrender.com/tiktok';
-
-
-
-    // שלב 1: הכוונת המשתמש לאישור בטיקטוק
-   
-    // שלב 2: קבלת קוד האישור וחילופי לקוד גישה
-    app.get('/tiktok', async (req, res) => {
-        const authorizationCode = `https://www.tiktok.com/auth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user.info.basic,user.info.email`;
-
-
-        if (!authorizationCode) {
-            return res.status(400).send('No authorization code provided');
-        }
-
-        try {
-            const tokenResponse = await axios.post('https://open-api.tiktok.com/oauth/access_token', qs.stringify({
-                client_id: clientId,
-                client_secret: clientSecret,
-                code: authorizationCode,
-                grant_type: 'authorization_code',
-                redirect_uri: redirectUri
-            }), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
-
-            const accessToken = tokenResponse.data.data.access_token;
-            if (!accessToken) {
-                throw new Error('Failed to obtain access token');
-            }
-
-            // בקשת מידע על המשתמש
-            const userInfoResponse = await axios.get('https://open-api.tiktok.com/user/info/', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-
-            const userInfo = userInfoResponse.data.data;
-            const userEmail = userInfo.email || 'לא זמין';
-            const profilePicture = userInfo.avatar || '';
-
-            // הצגת המידע שהתקבל
-            res.send(`
-                <h1>מידע משתמש</h1>
-                <p><strong>אימייל:</strong> ${userEmail}</p>
-                ${profilePicture ? `<p><strong>תמונת פרופיל:</strong> <img src="${profilePicture}" alt="Profile Picture" /></p>` : ''}
-                <p><strong>Access Token:</strong> ${accessToken}</p>
-            `);
-        } catch (error) {
-            console.error('Error fetching access token or user info:', error.response ? error.response.data : error.message);
-            res.status(500).send(`Error: ${error.message}`);
-        }
+passport.use('tiktok', new OAuth2Strategy({
+    authorizationURL: 'https://www.tiktok.com/oauth/authorize',
+    tokenURL: 'https://open-api.tiktok.com/oauth/token',
+    clientID: '7376326045954738181',
+    clientSecret: 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj',
+    callbackURL: 'https://skyrocket.onrender.com/tiktok'
+  },
+  
+  function(accessToken, refreshToken, profile, done) {
+    // קריאה ל-API של TikTok לקבלת פרטי המשתמש
+    axios.get('https://api.tiktok.com/me', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then(response => {
+      const user = {
+        id: response.data.user.id,
+        email: response.data.user.email,
+        picture: response.data.user.avatar
+      };
+      console.log("user",user);
+      return done(null, user);
+    })
+    .catch(err => {
+      return done(err, false);
     });
-function getTimeZoneByIP(ip) {
-    try {
-        const ipInfo = ip2locationDatabase.get_all(ip);
-        if (ipInfo) {
-            return ipInfo.timezone;
-        } else {
-            return null; // לא נמצא מידע עבור ה-IP
-        }
-    } catch (error) {
-        console.error('Error finding timezone by IP:', error);
-        return null;
-    }
-}
+  }
+));
+
+// סריאליזציה ודסיריאליזציה של המשתמש
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+// מסלול לאימות עם TikTok
+app.get('/auth/tiktok',
+  passport.authenticate('tiktok')
+);
+
 
 // כתובת ה-IP של המשתמש
 
