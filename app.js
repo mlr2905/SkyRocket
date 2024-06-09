@@ -229,49 +229,61 @@ const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
 passport.use('tiktok', new OAuth2Strategy({
     authorizationURL: 'https://www.tiktok.com/oauth/authorize',
     tokenURL: 'https://open-api.tiktok.com/oauth/token',
-    clientID: '7376326045954738181',
+    clientID: 'awgn3o1nd3bn4bjb',
     clientSecret: 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj',
     callbackURL: 'https://skyrocket.onrender.com/tiktok'
-  },
-  
-  function(accessToken, refreshToken, profile, done) {
-    // קריאה ל-API של TikTok לקבלת פרטי המשתמש
-    axios.get('https://api.tiktok.com/me', {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
-    })
-    .then(response => {
-      const user = {
-        id: response.data.user.id,
-        email: response.data.user.email,
-        picture: response.data.user.avatar
-      };
-      console.log("user",user);
-      return done(null, user);
-    })
-    .catch(err => {
-      return done(err, false);
-    });
-  }
+},
+
+    function (accessToken, refreshToken, profile, done) {
+        // קריאה ל-API של TikTok לקבלת פרטי המשתמש
+        axios.get('https://api.tiktok.com/me', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                const user = {
+                    id: response.data.user.id,
+                    email: response.data.user.email,
+                    picture: response.data.user.avatar
+                };
+                console.log("user", user);
+                return done(null, user);
+            })
+            .catch(err => {
+                return done(err, false);
+            });
+    }
 ));
 
 // סריאליזציה ודסיריאליזציה של המשתמש
-passport.serializeUser(function(user, done) {
-  done(null, user);
+passport.serializeUser(function (user, done) {
+    done(null, user);
 });
 
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
+passport.deserializeUser(function (obj, done) {
+    done(null, obj);
 });
 
 // מסלול לאימות עם TikTok
 app.get('/auth/tiktok',
-  passport.authenticate('tiktok')
+    passport.authenticate('tiktok')
 );
 
 
-// כתובת ה-IP של המשתמש
+function getTimeZoneByIP(ip) {
+    try {
+        const ipInfo = ip2locationDatabase.get_all(ip);
+        if (ipInfo) {
+            return ipInfo.timezone;
+        } else {
+            return null; // לא נמצא מידע עבור ה-IP
+        }
+    } catch (error) {
+        console.error('Error finding timezone by IP:', error);
+        return null;
+    }
+}
 
 
 
