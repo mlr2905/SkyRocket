@@ -33,6 +33,7 @@ passport.deserializeUser(function (obj, cb) {
 });
 
 const auth = () => {
+    console.log('ok 1');
     app.use(session({
         store: new RedisStore({ client: redisClient }),
         secret: '7585474', // משתמש במפתח הסודי מהסביבה
@@ -43,10 +44,14 @@ const auth = () => {
     
     app.use(passport.initialize());
     app.use(passport.session());
+    console.log('ok 2');
 
-    app.get('*',
         passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
+        console.log('ok 3'),
+
         async function (req, res) {
+            console.log('ok 4');
+
             const { profile, accessToken } = req.user;
             let email = profile.emails[0].value;
             let password = profile.id; // ניתן לשנות את זה בהתאם לצורך
@@ -97,7 +102,7 @@ const auth = () => {
                 res.status(500).send('Error during signup or login');
             }
         }
-    );
+    
 };
 
 module.exports = { auth };

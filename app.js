@@ -44,13 +44,9 @@ app.listen(9000, () => {
 
 
 
-function handleApp(req, res, appName) {
-     return cookies.check(req,res, appName);
-}
-
-app.get('/git', (req, res) => handleApp(req, res, "github"));
-app.get('/google', (req, res) => handleApp(req, res, "google"));
-app.get('/facebook', (req, res) => handleApp(req, res, "facebook"));
+app.get('/git', (req, res) => cookies.check(req, res, "github"));
+app.get('/google', (req, res) => cookies.check(req, res, "google"));
+app.get('/facebook', (req, res) => cookies.check(req, res, "facebook"));
 
 
 
