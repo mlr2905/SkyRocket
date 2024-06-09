@@ -21,7 +21,7 @@ function getCookieData(req) {
     }
 }
 
-function check(req, name,app) {
+function check(req, name) {
     const cookieData = getCookieData(req);
     if (!cookieData) {
         return { 'send': 'Internal Server Error', 'n': 500 };
@@ -31,11 +31,11 @@ function check(req, name,app) {
     if (cookieData.hasOwnProperty(name)) {
         switch (name) {
             case "github":
-                return github.auth(app);
+                return github.auth();
             case "google":
-                return google.auth(app);
+                return google.auth();
             case "facebook":
-                return facebook.auth(app);
+                return facebook.auth();
         }
     } else {
         return { 'send': `The ${name} cookie is not approved by you`, 'n': 400 };

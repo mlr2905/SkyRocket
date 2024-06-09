@@ -35,7 +35,7 @@ const auth = () => {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.get('',
+    app.get('*',
         passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
         ,
         async function (req, res) {

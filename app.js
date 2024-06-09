@@ -44,14 +44,14 @@ app.listen(9000, () => {
 
 
 
-function handleApp(req, res, appName,app) {
-    const appData = cookies.check(req, appName,app);
+function handleApp(req, res, appName) {
+    const appData = cookies.check(req, appName);
     return res.status(appData.n).send(appData.send);
 }
 
-app.get('/git', (req, res) => handleApp(req, res, "github",app));
-app.get('/google', (req, res) => handleApp(req, res, "google",app));
-app.get('/facebook', (req, res) => handleApp(req, res, "facebook",app));
+app.get('/git', (req, res) => handleApp(req, res, "github"));
+app.get('/google', (req, res) => handleApp(req, res, "google"));
+app.get('/facebook', (req, res) => handleApp(req, res, "facebook"));
 
 
 
