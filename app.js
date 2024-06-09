@@ -45,9 +45,7 @@ app.listen(9000, () => {
 
 
 function handleApp(req, res, appName) {
-    const appData = cookies.check(req, appName);
-    console.log("handleApp",appData);
-    return res.status(appData.n).send(appData.send);
+     return cookies.check(req, appName);
 }
 
 app.get('/git', (req, res) => handleApp(req, res, "github"));

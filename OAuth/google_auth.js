@@ -9,25 +9,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const axios = require('axios');
 const app = express();
 const passport = require('passport');
-const RedisStore = require('connect-redis').default;
-const { createClient } = require('redis');
-
-
-// הגדרת פרטי החיבור ל-Redis של Render
-const redisClient = createClient({
-    url: 'rediss://red-cp3i2bo21fec73b7s590:8Ddjtg2LFjxXSqkTNiqi1cm5RU6Y3FOX@oregon-redis.render.com:6379',
-    tls: {} // הכרחי כדי לאפשר חיבור מאובטח
-});
-
-redisClient.on('error', (err) => {
-    console.error('Could not connect to Redis:', err);
-});
-
-redisClient.on('connect', () => {
-    console.log('Connected to Redis');
-});
-
-redisClient.connect().catch(console.error);
+const RedisStore = require('../redis/default');
 
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
