@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #F7F7F9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            width: 100px;
+            text-align: right;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+        .sublabel {
+            color: gray;
+            margin: 4px;
+            font-size: 11px;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="time"] {
+            padding: 10px;
+            font-size: 14px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #0050A0;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+        }
+        input[type="date"] {
+            position: relative;
+        }
+        input[type="date"]:before {
+            content: attr(placeholder);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            color: rgba(0, 0, 0, 0.65);
+            pointer-events: none;
+            line-height: 1.5;
+            padding: 10px 0.5rem 0 0.5rem;
+        }
+        input[type="date"]:focus:before,
+        input[type="date"]:not([value=""]):before {
+            display: none;
+        }
+        .autocomplete-list {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            width: 200%;
+            margin-left: -100%;
+        }
+        .autocomplete-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .autocomplete-item:hover {
+            background-color: #ddd;
+        }
+
+        </style>
+    </head>
+    <body>
+    <div class="container">
+        <div class="card custom-bg w-75 p-4 d-flex">
+            <div class="row">
+                <div class="pb-3 h3 text-left">Flight Search &#128747;</div>
+            </div>
+            <form id="flight-form" onsubmit="return validateForm()">
+                <div class="row">
+                    <div class="form-group col-md position-relative">
+                        <label for="origin" class="d-inline-flex">From</label>
+                        <input type="text" class="form-control" id="origin" name="origin" value="israel" readonly>
+                    </div>
+                    <div class="form-group col-md position-relative">
+                        <label for="depart" class="d-inline-flex">To</label>
+                        <input type="text" placeholder="City or Airport" class="form-control" id="depart" name="depart"
+                               required>
+                        <div id="depart-list" class="autocomplete-list"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md align-items-start flex-column">
+                        <label for="departure-date" class="d-inline-flex">Depart Date</label>
+                        <input type="date" class="form-control" id="departure-date" name="departure-date"
+                               onkeydown="return false" required>
+                    </div>
+                    <div class="form-group col-md align-items-start flex-column">
+                        <label for="departure-time" class="d-inline-flex">Depart Time</label>
+                        <input type="time" class="form-control" id="departure-time" name="departure-time"
+                               onkeydown="return false" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md align-items-start flex-column">
+                        <label for="return-date" class="d-inline-flex">Return Date</label>
+                        <input type="date" class="form-control" id="return-date" name="return-date"
+                               onkeydown="return false">
+                    </div>
+                    <div class="form-group col-md align-items-start flex-column">
+                        <label for="return-time" class="d-inline-flex">Return Time</label>
+                        <input type="time" class="form-control" id="return-time" name="return-time"
+                               onkeydown="return false">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md align-items-start flex-column">
+                        <label for="tickets-remaining" class="d-inline-flex">Tickets Remaining</label>
+                        <input type="text" class="form-control" id="tickets-remaining" name="tickets-remaining" readonly>
+                    </div>
+                </div>
+                <!-- Hidden fields for storing flight details -->
+                <input type="hidden" id="selected-departure-time" name="selected-departure-time">
+                <input type="hidden" id="selected-landing-time" name="selected-landing-time">
+                <input type="hidden" id="selected-remaining-tickets" name="selected-remaining-tickets">
+                <div class="row">
+                    <div class="text-left col-auto">
+                        <button type="submit" class="btn btn-primary"> next</button>
+                    </div>
+            </form>
+            
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function fetchFlights(query = '') {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://skyrocket.onrender.com/role_users/flights', true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        var filteredFlights = data.filter(function (flight) {
+                            return flight.destination_country_name.toLowerCase().includes(query.toLowerCase());
+                        });
+                        var departList = document.getElementById('depart-list');
+                        departList.innerHTML = '';
+                        if (filteredFlights.length > 0) {
+                            filteredFlights.forEach(function (flight) {
+                                var departureDateTime = new Date(flight.departure_time);
+                                var returnDateTime = new Date(flight.landing_time);
+        
+                                var departureDate = departureDateTime.toISOString().split('T')[0];
+                                var departureTime = departureDateTime.toTimeString().split(' ')[0].substring(0, 5);
+        
+                                var returnDate = returnDateTime.toISOString().split('T')[0];
+                                var returnTime = returnDateTime.toTimeString().split(' ')[0].substring(0, 5);
+        
+                                var remainingTickets = flight.remaining_tickets;
+        
+                                var item = document.createElement('div');
+                                item.className = 'autocomplete-item';
+                                item.setAttribute('data-departure-time', flight.departure_time);
+                                item.setAttribute('data-landing-time', flight.landing_time);
+                                item.setAttribute('data-remaining-tickets', remainingTickets);
+        
+                                // Create a span element for tickets-remaining
+                                var ticketsRemainingSpan = document.createElement('span');
+                                ticketsRemainingSpan.className = 'tickets-remaining';
+                                ticketsRemainingSpan.textContent = ' Tickets Remaining: ' + remainingTickets;
+        
+                                // Append destination and tickets remaining to item
+                                item.textContent = flight.destination_country_name + ' (' + departureDate + ' ' + departureTime + ' - ' + returnDate + ' ' + returnTime + ')';
+                                item.appendChild(ticketsRemainingSpan);
+        
+                                item.addEventListener('click', function () {
+                                    document.getElementById('depart').value = flight.destination_country_name;
+                                    document.getElementById('selected-departure-time').value = flight.departure_time;
+                                    document.getElementById('selected-landing-time').value = flight.landing_time;
+                                    document.getElementById('tickets-remaining').value = remainingTickets;
+        
+                                    document.getElementById('departure-date').value = departureDate;
+                                    document.getElementById('departure-time').value = departureTime;
+                                    document.getElementById('return-date').value = returnDate;
+                                    document.getElementById('return-time').value = returnTime;
+        
+                                    departList.innerHTML = '';
+                                });
+        
+                                departList.appendChild(item);
+                            });
+                        } else {
+                            departList.innerHTML = '<div class="autocomplete-item">No results found</div>';
+                        }
+                    } else {
+                        console.log('Error fetching data: ', xhr.status);
+                    }
+                };
+                xhr.onerror = function () {
+                    console.log('Request failed');
+                };
+                xhr.send();
+            }
+        
+            document.getElementById('depart').addEventListener('focus', function () {
+                fetchFlights();
+            });
+        
+            document.getElementById('depart').addEventListener('input', function () {
+                var query = this.value;
+                fetchFlights(query);
+            });
+        
+            function validateForm() {
+                // Add form validation here if needed
+                return true;
+            }
+        });
+        
+    </script>
+    </body>
+    </html>
+    
