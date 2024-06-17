@@ -291,8 +291,6 @@ function validateForm() {
     return valid; // החזר את סטטוס התקינות
 }
 
-
-
 function fixStepIndicator(n) {
     // This function removes the "active" class of all steps...
     var i, x = document.getElementsByClassName("step");
@@ -366,7 +364,7 @@ function validatePhone(input) {
     // הסרת תווים שאינם מספרים מהטלפון
     const phone = phone_.replace(/\D/g, '');
     // קבלת ה-pattern והסרת התווים "( ) -"
-    const pattern = input.pattern.replace(/[\(\)\-\s]/g, '');
+    const pattern = input.placeholder.replace(/[\(\)\-\s]/g, '');
     // בניית התבנית הרגולרית מה-pattern שלא כוללת את התווים "( ) -"
     if (phone.length === pattern.length) {
         input.classList.remove('invalid');
