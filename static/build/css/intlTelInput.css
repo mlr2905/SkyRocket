@@ -198,36 +198,39 @@
 [dir=rtl] .iti .iti__selected-dial-code {
   margin-left: 0;
   margin-right: 4px;
-}
-.iti--container {
+}.iti--container {
   position: fixed;
   top: -1000px;
   left: -1000px;
   z-index: 1060;
   padding: var(--iti-border-width);
 }
+
 .iti--container:hover {
   cursor: pointer;
 }
 
 .iti--fullscreen-popup.iti--container {
   background-color: rgba(0, 0, 0, 0.5);
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: 50%;
+  left: 50%;
+  width: 20%;
+  height: 30%;
+  transform: translate(-50%, -50%);
   position: fixed;
   padding: var(--iti-mobile-popup-margin);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
+
 .iti--fullscreen-popup .iti__dropdown-content {
   display: flex;
   flex-direction: column;
   max-height: 100%;
   position: relative;
 }
+
 .iti--fullscreen-popup .iti__country {
   padding: 10px 10px;
   line-height: 1.5em;
