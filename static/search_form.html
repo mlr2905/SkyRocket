@@ -609,7 +609,8 @@
         function displayFlights(data) {
             let fromList = document.getElementById('from-list');
             fromList.innerHTML = ''; // Clear previous items
-        
+           const icon = document.getElementById('loading-icon');
+        icon.style.display = 'block'
             for (let i = 0; i < data.length; i++) {
                 let item = document.createElement('div');
                 item.className = 'autocomplete-item';
@@ -622,6 +623,8 @@
                 });
                 fromList.appendChild(item);
             }
+            icon.style.display = 'none'
+
         }
         
 
