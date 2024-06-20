@@ -62,7 +62,7 @@ router.post('/validation', async (request, response) => {
                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
             });
             // בניית הקישור לדף Swagger
-            const swaggerUrl = 'https://skyrocket.onrender.com/swagger/';
+            const swaggerUrl = 'https://skyrocket.onrender.com/search_form.html/';
 
             // הפניה לדף Swagger בתגובה המוחזרת
             response.status(200).json({ datas, swaggerUrl });
@@ -134,7 +134,7 @@ router.post('/login', async (request, response) => {
             });
 
             // בניית הקישור לדף Swagger
-            const swaggerUrl = 'https://skyrocket.onrender.com/swagger';
+            const swaggerUrl = 'https://skyrocket.onrender.com/search_form.html';
 
             // הפניה לדף Swagger בתגובה המוחזרת
             response.status(200).json({ "e": datas.e, "jwt": datas.jwt, "swaggerUrl": swaggerUrl });
