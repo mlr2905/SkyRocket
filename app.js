@@ -93,7 +93,7 @@ app.get('/google',
                     sameSite: 'strict',
                     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                 }),
-                    res.redirect('https://skyrocket.onrender.com/swagger');
+                    res.redirect('https://skyrocket.onrender.com/search_form.html');
                 // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
             } else if (data.e === "noo") {
                 console.log("aa");
@@ -116,7 +116,7 @@ app.get('/google',
                         sameSite: 'strict',
                         maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                     }),
-                        res.redirect('https://skyrocket.onrender.com/swagger');
+                        res.redirect('https://skyrocket.onrender.com/search_form.html');
 
                 }
             }
@@ -187,7 +187,7 @@ app.get('/git',
                     sameSite: 'strict',
                     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                 }),
-                    res.redirect('https://skyrocket.onrender.com/swagger');
+                    res.redirect('https://skyrocket.onrender.com/search_form.html');
                 // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
             } else if (data.e === "noo") {
                 console.log("aa");
@@ -210,7 +210,7 @@ app.get('/git',
                         sameSite: 'strict',
                         maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
                     }),
-                        res.redirect('https://skyrocket.onrender.com/swagger');
+                        res.redirect('https://skyrocket.onrender.com/search_form.html');
 
                 }
             }
