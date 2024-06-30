@@ -108,7 +108,11 @@ function showTab(n) {
     var x = document.getElementsByClassName("tab");
     x[n].style.display = "block";
     //... and fix the Back/Next buttons:
+    if (n === 1) {
+        document.getElementById('search_form').style.maxWidth = '80%';
+    }
     if (n == 0) {
+        document.getElementById('search_form').style.maxWidth = '600';
         document.getElementById("backBtn").style.display = "none";
     } else {
         document.getElementById("backBtn").style.display = "inline";

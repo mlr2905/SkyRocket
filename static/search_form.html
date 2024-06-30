@@ -43,13 +43,13 @@
         margin: 0;
     }
 
-    .signup-form {
+    .search_form {
         background-color: #cbe3f5c1;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 400px;
+        max-width: 550px;
     }
 
     h1 {
@@ -408,71 +408,135 @@
         text-align: center;
     }
 
-    .flight-card {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        margin: 10px;
-        background-color: #f9f9f9;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .flight-card h2 {
-        margin-top: 0;
-    }
-
-    .flight-card p {
-        margin: 5px 0;
-    }
-
-    #flights-container {
-        max-height: 300px;
-        /* Adjust height as needed */
+    #flight-container {
+        max-height: 600px;
+        /* Set the height you prefer */
         overflow-y: auto;
-        border: 1px solid #ccc;
-        /* Optional: Add a border for better visibility */
-        padding: 10px;
-        position: relative;
-        /* Needed for arrow positioning */
+        padding: 16px;
+        box-sizing: border-box;
     }
 
-    #flights-container::-webkit-scrollbar {
-        width: 10px;
+    .flight-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
     }
 
-    #flights-container::-webkit-scrollbar-thumb {
-        background-color: #007bff;
-        border-radius: 10px;
-    }
-    #flights-container::-webkit-scrollbar-thumb :hover {
-        background-color: #0056b3;
-        border-radius: 10px;
-    }
-   
     .flight-card {
-        margin-bottom: 10px;
-        /* Space between cards */
-        padding: 10px;
+        background-color: #f2f6f9;
         border: 1px solid #ddd;
-        border-radius: 5px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        font-family: Arial, sans-serif;
     }
 
-    #scroll-indicator {
-        display: none;
-        /* Hidden by default */
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        font-size: 20px;
-        color: #007bff;
+    .flight-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .price {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+
+
+    .flight-details {
+        margin-top: 16px;
+    }
+
+    .flight-time {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .date {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .time {
+        font-size: 18px;
+        font-weight: bold;
+        margin-left: 8px;
+    }
+
+    .duration {
+        font-size: 14px;
+        color: #888;
+        flex-basis: 100%;
+        text-align: center;
+        margin: 8px 0;
+    }
+
+    .flight-route {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+    }
+
+    .airport {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .arrow {
+        font-size: 24px;
+        color: #888;
+    }
+
+    .airline-logo {
+        display: flex;
+        justify-content: center;
+        margin-top: 16px;
+    }
+
+    .airline-logo img {
+        width: 150px;
+        height: 30px;
+    }
+
+    .select-button {
+
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .select-button:hover {
+        background-color: #0056b3;
+    }
+
+    .main-container {
+        width: 100%;
+        /* Adjust as needed */
+        max-height: 800px;
+        /* Height for 4 cards */
+        overflow-y: auto;
+        padding: 16px;
+        box-sizing: border-box;
     }
 </style>
 
 <body>
     <img id="loading-icon" src="loading.gif" style="display: block;" alt="Loading...">
-    <form class="signup-form" id="login-form">
+    <form class="search_form" id="search_form">
 
-        <div class="tab" >                
+        <div class="tab">
             <div class="pb-3 h3 text-left">Flight Search &#128747;</div>
 
             <div class="form-group">
@@ -504,8 +568,19 @@
         </div>
         <div class="tab">
             <div class="pb-3 h3 text-left">Flight &#128747;</div>
+            <div class="main-container">
 
-            <div id="flights-container"></div>
+                <div id="flights-container"></div>
+            </div>
+
+        </div>
+        <div class="tab">
+            <div class="pb-3 h3 text-left">Flight &#128747;</div>
+            <div class="main-container">
+
+                <div id="flights-container2"></div>
+            </div>
+
         </div>
         <div class="button-container">
             <button type="button" class="backBtn" id="backBtn" onclick="nextPrev(-1)">Back</button>
@@ -523,7 +598,7 @@
             <span class="step"></span>
 
         </div>
-        <div class="tab" >                
+        <div class="tab">
         </div>
     </form>
 
@@ -617,8 +692,8 @@
         function displayFlights(data) {
             let fromList = document.getElementById('from-list');
             fromList.innerHTML = ''; // Clear previous items
-           const icon = document.getElementById('loading-icon');
-        icon.style.display = 'block'
+            const icon = document.getElementById('loading-icon');
+            icon.style.display = 'block'
             for (let i = 0; i < data.length; i++) {
                 let item = document.createElement('div');
                 item.className = 'autocomplete-item';
@@ -634,7 +709,7 @@
             icon.style.display = 'none'
 
         }
-        
+
 
         function displayAllFlights() {
             let flightData = JSON.parse(localStorage.getItem('uniqueCountries'));
@@ -659,7 +734,7 @@
             toList.innerHTML = '';
 
             let flightData = JSON.parse(localStorage.getItem('flightData'));
-            
+
             if (flightData) {
                 let filteredDestinations = flightData.filter(flight => flight.origin_country_name === originCountry);
 
@@ -669,7 +744,8 @@
                     item.textContent = flight.destination_country_name;
                     item.addEventListener('click', function () {
                         document.getElementById('to').value = this.textContent;
-                        createFlightCards()
+                        createOutboundFlightCards()
+                        createReturnFlightCards()
                         toList.innerHTML = '';
                         handleInputChange()
                     });
@@ -704,49 +780,63 @@
         });
     });
 
-
-    function createFlightCards() {
-
+    function createOutboundFlightCards() {
         const icon = document.getElementById('loading-icon');
-        icon.style.display = 'block'
+        icon.style.display = 'block';
 
-        let flightData = JSON.parse(localStorage.getItem('flightData'))
+        let flightData = JSON.parse(localStorage.getItem('flightData'));
         const from = document.getElementById('from').value.toLowerCase();
         const to = document.getElementById('to').value.toLowerCase();
 
         const container = document.getElementById('flights-container');
-
         container.innerHTML = ''; // Clear previous results
 
-        let resultCount = 0;
-        
-        
-        // Append the scroll indicator to the container
+        const outboundContainer = document.createElement('div');
+        outboundContainer.className = 'flight-grid';
 
+        const outboundHeader = document.createElement('h3');
+        outboundHeader.textContent = 'טיסות הלוך';
+
+        container.appendChild(outboundHeader);
+        container.appendChild(outboundContainer);
+
+        let resultCount = 0;
+
+        // Display outbound flights
         for (let i = 0; i < flightData.length; i++) {
             const flight = flightData[i];
-            if (flight.origin_country_name.toLowerCase() === from.toLowerCase() && flight.destination_country_name.toLowerCase() === to.toLowerCase()) {
-                const card = document.createElement('div');
+            if (flight.origin_country_name.toLowerCase() === from && flight.destination_country_name.toLowerCase() === to) {
+                const departureDate = new Date(flight.departure_time).toLocaleDateString();
+                const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const landingDate = new Date(flight.landing_time).toLocaleDateString();
+                const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                card.className = 'flight-card';
-                card.innerHTML = `
-            <h2>
-                <img src="/logo_airlines/${flight.airline_id}.png" width="150" height="30" alt="Airline Logo">
-            </h2>
-            <p><strong>Origin:</strong> ${flight.origin_country_name}</p>
-            <p><strong>Destination:</strong> ${flight.destination_country_name}</p>
-            <p><strong>Departure Time:</strong> ${new Date(flight.departure_time).toLocaleString()}</p>
-            <p><strong>Landing Time:</strong> ${new Date(flight.landing_time).toLocaleString()}</p>
-            <p><strong>Remaining Tickets:</strong> ${flight.remaining_tickets} / ${flight.total_tickets}</p>
-        `;
-                container.appendChild(card);
+                // Calculate duration in milliseconds
+                const departureTimestamp = new Date(flight.departure_time).getTime();
+                const landingTimestamp = new Date(flight.landing_time).getTime();
+                const durationMs = landingTimestamp - departureTimestamp;
+
+                // Convert milliseconds to hours and minutes
+                const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+                const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                // Format duration as HH:mm
+                const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
+
+                // Calculate total minutes
+                const totalMinutes = durationHours * 60 + durationMinutes;
+
+                // Calculate price based on rate per hour (assuming 150 units per hour)
+                const price = Math.ceil(totalMinutes / 60) * 150;
+
+                // Create flight card with corrected price calculation
+                const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
+                outboundContainer.appendChild(card);
                 resultCount++;
             }
         }
 
-        // Optionally hide the loading icon if needed
 
-        // Optionally hide the loading icon if needed
         if (resultCount > 0) {
             icon.style.display = 'none';
         }
@@ -759,6 +849,112 @@
         }
     }
 
+    function createReturnFlightCards() {
+        const icon = document.getElementById('loading-icon');
+        icon.style.display = 'block';
+
+        let flightData = JSON.parse(localStorage.getItem('flightData'));
+        const from = document.getElementById('from').value.toLowerCase();
+        const to = document.getElementById('to').value.toLowerCase();
+
+        const container = document.getElementById('flights-container2');
+
+        const returnContainer = document.createElement('div');
+        returnContainer.className = 'flight-grid';
+
+        const returnHeader = document.createElement('h3');
+        returnHeader.textContent = 'טיסות חזור';
+
+        container.appendChild(returnHeader);
+        container.appendChild(returnContainer);
+
+        let resultCount = 0;
+
+        // Display return flights
+        for (let i = 0; i < flightData.length; i++) {
+            const flight = flightData[i];
+            if (flight.origin_country_name.toLowerCase() === to && flight.destination_country_name.toLowerCase() === from) {
+                const departureDate = new Date(flight.departure_time).toLocaleDateString();
+                const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const landingDate = new Date(flight.landing_time).toLocaleDateString();
+                const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                // Calculate duration in milliseconds
+                const departureTimestamp = new Date(flight.departure_time).getTime();
+                const landingTimestamp = new Date(flight.landing_time).getTime();
+                const durationMs = landingTimestamp - departureTimestamp;
+
+                // Convert milliseconds to hours and minutes
+                const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+                const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                // Format duration as HH:mm
+                const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
+
+                // Calculate total minutes
+                const totalMinutes = durationHours * 60 + durationMinutes;
+
+                // Calculate price based on rate per hour (assuming 150 units per hour)
+                const price = Math.ceil(totalMinutes / 60) * 150;
+
+                // Create flight card with corrected price calculation
+                const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
+                returnContainer.appendChild(card);
+                resultCount++;
+            }
+        }
+
+        if (resultCount > 0) {
+            icon.style.display = 'none';
+        }
+
+        // Set container height based on the number of results
+        if (resultCount <= 2) {
+            container.style.maxHeight = 'none'; // Disable max-height for fewer results
+        } else {
+            container.style.maxHeight = '300px'; // Re-enable max-height for more results
+        }
+    }
+
+    function createFlightCard(id, price, departureDate, departureTime, duration, landingDate, landingTime, origin, destination, airlineId) {
+        const card = document.createElement('div');
+        card.className = 'flight-card';
+        card.innerHTML = `
+            
+             <div class="airline-logo">
+                    <img src="/logo_airlines/${airlineId}.png" alt="Airline Logo">
+                </div>
+            <div class="flight-details">
+                <div class="flight-time">
+                <div>
+    <div class="time">Departure and Landing Time</div>
+    <span class="data">${departureDate}</span>
+    <span class="time">${departureTime}</span>
+    <span class="separator"> - </span> 
+    <span class="data">${landingDate}</span>
+    <span class="time">${landingTime}</span>
+</div>
+
+        
+
+                </div>
+                <div class="flight-route">
+                    <span class="airport">${origin}</span>
+                    <span class="arrow">&#9992;</span>
+                    <span class="airport">${destination}</span>
+                </div>
+               <div class="flight-card-header">
+                <span class="price">$${price}</span>
+                <span class="duration">flight duration:(${duration})</span>
+            </div>
+             <div class="flight-route">
+                <span class="duration">Flight ID:${id}</span>
+            </div>
+            </div>
+            <button class="select-button">בחר</button>
+        `;
+        return card;
+    }
 
 </script>
 <script src="js/search_form.js"></script>
