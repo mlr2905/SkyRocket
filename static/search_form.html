@@ -668,24 +668,24 @@
     document.addEventListener("DOMContentLoaded", function () {
         let timeout = null;
 
-        function fetchDataAndStore() {
-            return fetch('https://skyrocket.onrender.com/role_users/flights')
-                .then(response => response.json())
-                .then(data => {
-                    localStorage.setItem('flightData', JSON.stringify(data));
-
-                    let countrySet = new Set();
-                    data.forEach(flight => {
-                        countrySet.add(flight.origin_country_name);
-                    });
-
-                    let uniqueCountries = Array.from(countrySet);
-                    localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
-                })
-                .catch(error => {
-                    console.error("Error fetching data:", error);
+        async function fetchDataAndStore() {
+            try {
+                let response = await fetch('https://skyrocket.onrender.com/role_users/flights');
+                let data = await response.json();
+                localStorage.setItem('flightData', JSON.stringify(data));
+        
+                let countrySet = new Set();
+                data.forEach(flight => {
+                    countrySet.add(flight.origin_country_name);
                 });
+        
+                let uniqueCountries = Array.from(countrySet);
+                localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
         }
+        
 
         function displayFlights(data) {
             let fromList = document.getElementById('from-list');
