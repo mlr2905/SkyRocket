@@ -665,6 +665,8 @@
 
         update(action);
     }
+
+    let addedItems = {}
     document.addEventListener("DOMContentLoaded", function () {
         let timeout = null;
     
@@ -751,17 +753,23 @@
             const icon = document.getElementById('loading-icon');
             icon.style.display = 'block';
             for (let i = 0; i < data.length; i++) {
-                let item = document.createElement('div');
-                item.className = 'autocomplete-item';
-                item.textContent = data[i];
-                item.addEventListener('click', function () {
-                    document.getElementById('from').value = this.textContent;
-                    handleInputChange();
-                    fromList.innerHTML = ''; // Clear the list after selection
-                    updateDestinationOptions(this.textContent);
-                });
-                fromList.appendChild(item);
+                let itemName = data[i];
+                // Check if item already exists
+                if (!fromList.querySelector(`.autocomplete-item[data-text="${itemName}"]`)) {
+                    let item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    item.textContent = itemName;
+                    item.setAttribute('data-text', itemName); // Set attribute to identify this item
+                    item.addEventListener('click', function () {
+                        document.getElementById('from').value = this.textContent;
+                        handleInputChange();
+                        fromList.innerHTML = ''; // Clear the list after selection
+                        updateDestinationOptions(this.textContent);
+                    });
+                    fromList.appendChild(item);
+                }
             }
+            
             icon.style.display = 'none';
         }
     
@@ -783,30 +791,80 @@
         }
     
         function updateDestinationOptions(originCountry) {
+
             handleInputChange();
             let toList = document.getElementById('to-list');
             toList.innerHTML = '';
-    
+        
             getFlightsFromDB(function(flightData) {
+
                 if (flightData) {
-                    let filteredDestinations = flightData.filter(flight => flight.origin_country_name === originCountry);
-    
-                    filteredDestinations.forEach(flight => {
+                    let toInput = document.getElementById('to');
+            
+                    // Function to create autocomplete items
+                    function createAutocompleteItem(flight) {
                         let item = document.createElement('div');
                         item.className = 'autocomplete-item';
                         item.textContent = flight.destination_country_name;
+                        item.setAttribute('data-text', flight.destination_country_name); // Set attribute to identify this item
                         item.addEventListener('click', function () {
-                            document.getElementById('to').value = this.textContent;
+                            toInput.value = this.textContent;
                             createOutboundFlightCards();
                             createReturnFlightCards();
                             toList.innerHTML = '';
                             handleInputChange();
                         });
+                        return item;
+                    }
+            
+                    // Add input event listener to 'to' input element
+                    toInput.addEventListener('input', function() {
+
+                        let inputValue = this.value.toLowerCase(); // Get current input value and convert to lowercase
+            
+                        // Filter flights based on originCountry and current input value
+                        let filteredDestinations = flightData.filter(flight =>
+                            flight.origin_country_name === originCountry &&
+                            flight.destination_country_name.toLowerCase().includes(inputValue) &&
+                            !toList.querySelector(`.autocomplete-item[data-text="${flight.destination_country_name}"]`)
+                        );
+            
+                        // Clear existing items in toList
+                        toList.innerHTML = '';
+
+                        // Iterate through filtered destinations and create autocomplete items
+                        filteredDestinations.forEach(flight => {
+                            let item = createAutocompleteItem(flight);
+                            let text = item.dataset.text;
+                        
+                            // בדיקה האם הטקסט של הפריט כבר קיים במערך הפריטים שנוספו
+                            if (!addedItems[text]) {
+                                toList.appendChild(item);
+                                addedItems[text] = true; // סימון שהפריט נוסף למערך
+                            }
+                        });
+                        
+                        // מחיקת כל המידע ב-addedItems לאחר סיום הלולאה
+                        addedItems = {};
+
+                    });
+            
+                    // Initial filtering based on originCountry and empty input
+                    let filteredDestinations = flightData.filter(flight =>
+                        flight.origin_country_name === originCountry &&
+                        !toList.querySelector(`.autocomplete-item[data-text="${flight.destination_country_name}"]`)
+                    );
+            
+                    // Create autocomplete items for initial load
+                    filteredDestinations.forEach(flight => {
+                        let item = createAutocompleteItem(flight);
                         toList.appendChild(item);
                     });
                 }
+            
             });
         }
+        
     
         fetchDataAndStore();
     
@@ -823,6 +881,9 @@
             }, 300);
         });
     
+
+
+        
         document.getElementById('from').addEventListener('focus', function () {
             displayAllFlights();
         });
