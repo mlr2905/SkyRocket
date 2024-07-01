@@ -50,6 +50,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         width: 100%;
         max-width: 550px;
+        
     }
 
     h1 {
@@ -426,10 +427,11 @@
         background-color: #f2f6f9;
         border: 1px solid #ddd;
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* גבהה בסף הכרטיס */
         padding: 16px;
         font-family: Arial, sans-serif;
     }
+    
 
     .flight-card-header {
         display: flex;
@@ -450,9 +452,9 @@
 
     .flight-time {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        flex-wrap: wrap;
+        text-align: center;
     }
 
     .date {
@@ -524,12 +526,18 @@
     .main-container {
         width: 100%;
         /* Adjust as needed */
-        max-height: 800px;
-        /* Height for 4 cards */
-        overflow-y: auto;
+        overflow-y:scroll;
         padding: 16px;
         box-sizing: border-box;
     }
+    .flight-card.selected {
+        border: 2px solid #4CAF50; /* צבע ירוק */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* צל */
+        background-color: #f0f8ff; /* צבע רקע קרם בהיר */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* אנימציה */
+    }
+    
+    
 </style>
 
 <body>
@@ -560,9 +568,9 @@
                 <label for="Number_passengers">passengers</label>
 
                 <div class="container" name="Number_passengers">
-                    <button id="button-subtract" class="button-" onclick="subtractNumber()" disabled><b>-</b></button>
+                    <button id="button-subtract" class="button-" onclick="update('subtract')" disabled><b>-</b></button>
                     <span id="number">1</span>
-                    <button id="button-add" class="button-" onclick="addNumber()"><b>+</b></button>
+                    <button id="button-add" class="button-" onclick="update('add')"><b>+</b></button>
                 </div>
             </div>
         </div>
@@ -570,7 +578,7 @@
             <div class="pb-3 h3 text-left">Flight &#128747;</div>
             <div class="main-container">
 
-                <div id="flights-container"></div>
+                <div id="flights-container" style="max-height: 500px;"></div>
             </div>
 
         </div>
@@ -578,7 +586,7 @@
             <div class="pb-3 h3 text-left">Flight &#128747;</div>
             <div class="main-container">
 
-                <div id="flights-container2"></div>
+                <div id="flights-container2" style="max-height: 500px;"></div>
             </div>
 
         </div>
@@ -632,7 +640,6 @@
             opens: 'left'
         }, function (start, end, label) {
             const button = document.getElementById('nextBtn')
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
             button.classList.remove('invalid');
             button.className = 'nextBtn2';
             button.disabled = false
@@ -644,28 +651,19 @@
     const numberElement = document.getElementById('number');
     const subtractButton = document.getElementById('button-subtract');
 
-    function addNumber() {
-        currentNumber++;
-        updateNumber();
-        updateButtonState();
-    }
+    function update(action) {
+        event.preventDefault(); // מונע את ההתנהגות הרגילה של הטופס
 
-    function subtractNumber() {
-        currentNumber--;
-        updateNumber();
-        updateButtonState();
-    }
+        if (action === 'add') currentNumber++;
+        else if (action === 'subtract') currentNumber--;
 
-    function updateNumber() {
         numberElement.textContent = currentNumber;
+        subtractButton.disabled = currentNumber <= 1;
     }
 
-    function updateButtonState() {
-        if (currentNumber <= 1) {
-            subtractButton.disabled = true;
-        } else {
-            subtractButton.disabled = false;
-        }
+    function changeNumber(action) {
+
+        update(action);
     }
     document.addEventListener("DOMContentLoaded", function () {
         let timeout = null;
@@ -837,15 +835,14 @@
         }
 
 
-        if (resultCount > 0) {
-            icon.style.display = 'none';
-        }
+        icon.style.display = 'none';
+
 
         // Set container height based on the number of results
         if (resultCount <= 2) {
             container.style.maxHeight = 'none'; // Disable max-height for fewer results
         } else {
-            container.style.maxHeight = '300px'; // Re-enable max-height for more results
+            container.style.maxHeight = '400px'; // Re-enable max-height for more results
         }
     }
 
@@ -904,9 +901,8 @@
             }
         }
 
-        if (resultCount > 0) {
-            icon.style.display = 'none';
-        }
+        icon.style.display = 'none';
+
 
         // Set container height based on the number of results
         if (resultCount <= 2) {
@@ -922,38 +918,48 @@
         card.innerHTML = `
             
              <div class="airline-logo">
-                    <img src="/logo_airlines/${airlineId}.png" alt="Airline Logo">
-                </div>
-            <div class="flight-details">
-                <div class="flight-time">
-                <div>
-    <div class="time">Departure and Landing Time</div>
-    <span class="data">${departureDate}</span>
-    <span class="time">${departureTime}</span>
-    <span class="separator"> - </span> 
-    <span class="data">${landingDate}</span>
-    <span class="time">${landingTime}</span>
+    <img src="/logo_airlines/${airlineId}.png" alt="Airline Logo">
 </div>
-
-        
-
-                </div>
-                <div class="flight-route">
-                    <span class="airport">${origin}</span>
-                    <span class="arrow">&#9992;</span>
-                    <span class="airport">${destination}</span>
-                </div>
-               <div class="flight-card-header">
-                <span class="price">$${price}</span>
-                <span class="duration">flight duration:(${duration})</span>
-            </div>
-             <div class="flight-route">
-                <span class="duration">Flight ID:${id}</span>
-            </div>
-            </div>
-            <button class="select-button">בחר</button>
+<div class="flight-details">
+    <div class="flight-time">
+        <div class="time">Departure - Landing Time</div>
+        <div class="data">${departureDate}   -   ${landingDate}</div>
+        <div class="time">${departureTime}   -   ${landingTime}</div>
+    </div>
+    <div class="flight-route">
+        <span class="airport">${origin}</span>
+        <span class="arrow">&#9992;</span>
+        <span class="airport">${destination}</span>
+    </div>
+    <div class="flight-card-header">
+        <span class="price">$${price}</span>
+        <span class="duration">Flight duration: ${duration}</span>
+    </div>
+    <div class="flight-route">
+        <span class="duration">Flight ID: ${id}</span>
+    </div>
+</div>
+<button class="select-button">בחר</button>
         `;
+        const selectButton = card.querySelector('.select-button');
+        selectButton.addEventListener('click', function() {
+            const currentlySelected = document.querySelector('.flight-card.selected');
+            if (currentlySelected) {
+                currentlySelected.classList.remove('selected');
+            }
+            card.classList.add('selected');
+            addToSelection(id);
+        });
         return card;
+    }
+    function addToSelection(id) {
+        event.preventDefault(); // מונע את ההתנהגות הרגילה של הטופס
+        const button = document.getElementById('nextBtn')
+        button.classList.remove('invalid');
+        button.className = 'nextBtn2';
+        button.disabled = false
+        // הוסף את ה id למערך או בצורה אחרת לפי הצורך
+        console.log(`Flight ID ${id} has been added to selection.`);
     }
 
 </script>

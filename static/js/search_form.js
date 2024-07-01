@@ -110,6 +110,8 @@ function showTab(n) {
     //... and fix the Back/Next buttons:
     if (n === 1) {
         document.getElementById('search_form').style.maxWidth = '80%';
+        document.getElementById('search_form').style.height = '80%'
+
     }
     if (n == 0) {
         document.getElementById('search_form').style.maxWidth = '600';
