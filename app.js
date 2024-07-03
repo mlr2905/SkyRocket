@@ -311,6 +311,13 @@ app.get('*', async (req, res, next) => {
         if (req.path === '/login.html') {
             return next()
         }
+        
+        if (req.path === '/search_form.html') {
+            return next()
+        }
+        if (req.path === '/registration.html') {
+            return next()
+        }
         const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
         const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
         if (!skyToken) {
