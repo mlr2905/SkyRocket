@@ -304,6 +304,19 @@ app.get('/activation', async (req, res) => {
     }
 });
 
+app.get('/logout', async (req, res) => {
+    try {
+
+        res.clearCookie('sky');
+        return redirectToLogin(req, res);
+
+
+    } catch (e) {
+        return res.status(500).json(e)
+    }
+});
+
+
 app.get('*', async (req, res, next) => {
     try {
 

@@ -676,7 +676,7 @@
                     href="/login.html">Login</a>OR&nbsp;&nbsp;<a class="navbar-brand"
                     href="/Registration.html">signup</a></button>
             <button class="account-button" id="logout-button" style="display: none;"><a class="navbar-brand"
-                    href="/login.html"><span style="color: red;"><b>Logout</b></span></a></button>
+                    href="/logout"><span style="color: red;"><b>Logout</b></span></a></button>
 
         </div>
     </nav>
@@ -754,7 +754,6 @@
 
 <script>
     document.getElementById('logout-button').addEventListener('click', function () {
-        document.cookie = "ske=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         alert("You have been logged out!");
     });
     function checkActivationStatus() {
