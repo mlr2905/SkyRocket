@@ -317,7 +317,7 @@ app.get('/logout', async (req, res) => {
 });
 
 
-app.get('*', async (req, res, next) => {
+app.get('/', async (req, res, next) => {
     try {
 
 
