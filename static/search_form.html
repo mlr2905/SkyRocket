@@ -14,8 +14,11 @@
 
     <!-- Date Range Picker JS -->
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
@@ -58,7 +61,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         width: 100%;
         max-width: 550px;
-        
+
     }
 
     h1 {
@@ -435,11 +438,12 @@
         background-color: #f2f6f9;
         border: 1px solid #ddd;
         border-radius: 8px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* גבהה בסף הכרטיס */
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        /* גבהה בסף הכרטיס */
         padding: 16px;
         font-family: Arial, sans-serif;
     }
-    
+
 
     .flight-card-header {
         display: flex;
@@ -534,114 +538,148 @@
     .main-container {
         width: 100%;
         /* Adjust as needed */
-        overflow-y:scroll;
+        overflow-y: scroll;
         padding: 16px;
         box-sizing: border-box;
     }
+
     .flight-card.selected {
-        border: 2px solid #4CAF50; /* צבע ירוק */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* צל */
-        background-color: #f0f8ff; /* צבע רקע קרם בהיר */
-        transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* אנימציה */
+        border: 2px solid #4CAF50;
+        /* צבע ירוק */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        /* צל */
+        background-color: #f0f8ff;
+        /* צבע רקע קרם בהיר */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        /* אנימציה */
     }
+
     .navbar {
         position: fixed;
         top: 0;
         width: 100%;
-        background-color: #f8f9fa; /* צבע רקע */
+        background-color: #f8f9fa;
+        /* צבע רקע */
         z-index: 1030;
-      }
-      .navbar .container-fluid {
+    }
+
+    .navbar .container-fluid {
         display: flex;
         justify-content: center;
-      }
-      .navbar-nav {
+    }
+
+    .navbar-nav {
         flex-direction: row;
-      }
-      .nav-item {
+    }
+
+    .nav-item {
         margin-left: 10px;
         margin-right: 10px;
-      }
-      .navbar-toggler:hover{
-        background-color: #b0abab;
-      }
-      @media (max-width: 991.98px) {
-        .navbar-toggler {
-          order: -1; /* Move the button to the start */
-        }
-        .navbar-collapse {
-          justify-content: center;
-        }
-        .navbar .container-fluid {
-            justify-content:left;
-            margin-left: 1%;
-          }
-          .navbar-brand{
-            margin-left: 1%;
-          }
-         
-      }
+    }
 
-      .account-button {
-        border-radius: 10px; /* עגולות מראש */
-        padding: 3px 20px; /* הגבהה קצת */
-        border: 2px solid #000; /* שחור מסגרת */
+    .navbar-toggler:hover {
+        background-color: #b0abab;
+    }
+
+    @media (max-width: 991.98px) {
+        .navbar-toggler {
+            order: -1;
+            /* Move the button to the start */
+        }
+
+        .navbar-collapse {
+            justify-content: center;
+        }
+
+        .navbar .container-fluid {
+            justify-content: left;
+            margin-left: 1%;
+        }
+
+        .navbar-brand {
+            margin-left: 1%;
+        }
+
+        .account-button {
+            width: 70%;
+
+        }
+
+    }
+
+    .account-button {
+        border-radius: 10px;
+        /* עגולות מראש */
+        padding: 3px 20px;
+        /* הגבהה קצת */
+        border: 2px solid #000;
+        /* שחור מסגרת */
         background-color: #fff;
         cursor: pointer;
         transition: background-color 0.3s, transform 0.3s;
 
 
-      }
-      .account-button:hover  {
+    }
+
+    .account-button:hover {
         background-color: #b0abab;
-        color: #fff; 
-      }
-      .account-button:active {
+        color: #fff;
+    }
+
+    .account-button:active {
         transform: scale(0.95);
-      }
-      #logout-button{
-        margin-left: 50%; /* ימני */
+    }
 
-      }
-      .account-button a:hover  {
+    #logout-button {
+        margin-left: 50%;
+        /* ימני */
+
+    }
+
+    .account-button a:hover {
         background-color: #decfcf;
-      }
-      #connected{
-        margin-right: 50%; /* ימני */
+    }
 
-      }
-     
+    #connected {
+        margin-right: 50%;
+        /* ימני */
+
+    }
 </style>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/search_form.html">Flight Search</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/search_form.html">Flight Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+            </div>
 
-        <button class="account-button" id="login-button" style="display: none;" ><a class="navbar-brand"  href="/login.html">Login</a>OR&nbsp;&nbsp;<a class="navbar-brand"  href="/Registration.html">signup</a></button>
-       <button class="account-button" id="logout-button" style="display: none;"><a class="navbar-brand" href="/login.html" ><span style="color: red;"><b>Logout</b></span></a></button>
+            <button class="account-button" id="login-button" style="display: none;"><a class="navbar-brand"
+                    href="/login.html">Login</a>OR&nbsp;&nbsp;<a class="navbar-brand"
+                    href="/Registration.html">signup</a></button>
+            <button class="account-button" id="logout-button" style="display: none;"><a class="navbar-brand"
+                    href="/login.html"><span style="color: red;"><b>Logout</b></span></a></button>
 
-  </div>
-</nav>
+        </div>
+    </nav>
     <img id="loading-icon" src="loading.gif" style="display: block;" alt="Loading...">
     <form class="search_form" id="search_form">
 
@@ -715,7 +753,7 @@
 </body>
 
 <script>
-    document.getElementById('logout-button').addEventListener('click', function() {
+    document.getElementById('logout-button').addEventListener('click', function () {
         document.cookie = "ske=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         alert("You have been logged out!");
     });
@@ -725,11 +763,9 @@
                 if (response.status === 404 || response.status === 500) {
                     // אם חזר סטטוס 404 או 500, הצג את כפתור ההתחברות והסתר את כפתור החשבון
                     document.getElementById('login-button').style.display = 'block';
-                    document.getElementById('account-button').style.display = 'none';
                 } else if (response.status === 200) {
                     // אם חזר סטטוס 200, הצג את כפתור החשבון והסתר את כפתור ההתחברות
-                    document.getElementById('account-button').style.display = 'block';
-                    document.getElementById('login-button').style.display = 'none';
+                    document.getElementById('logout-button').style.display = 'block';
                 }
             })
             .catch(error => {
@@ -737,7 +773,7 @@
                 // טיפול בשגיאות כאן, לדוגמה יכול להיות הצגת הודעת שגיאה או פעולה נוספת
             });
     }
-    
+
     // קריאה לפונקציה ברגע שהדף נטען
     checkActivationStatus();
 
@@ -797,84 +833,84 @@
     let addedItems = {}
     document.addEventListener("DOMContentLoaded", function () {
         let timeout = null;
-    
+
         async function fetchDataAndStore() {
             try {
                 let response = await fetch('https://skyrocket.onrender.com/role_users/flights');
                 let data = await response.json();
-    
+
                 // Open IndexedDB
                 let dbRequest = indexedDB.open('FlightDB', 1);
-    
-                dbRequest.onupgradeneeded = function(event) {
+
+                dbRequest.onupgradeneeded = function (event) {
                     let db = event.target.result;
                     if (!db.objectStoreNames.contains('flights')) {
                         db.createObjectStore('flights', { keyPath: 'id', autoIncrement: true });
                     }
                 };
-    
-                dbRequest.onsuccess = function(event) {
+
+                dbRequest.onsuccess = function (event) {
                     let db = event.target.result;
                     let transaction = db.transaction('flights', 'readwrite');
                     let store = transaction.objectStore('flights');
-    
+
                     // Clear previous data
                     store.clear();
-    
+
                     // Add new data
                     data.forEach(flight => {
                         store.add(flight);
                     });
-    
-                    transaction.oncomplete = function() {
+
+                    transaction.oncomplete = function () {
                         console.log('Data stored successfully in IndexedDB');
-    
+
                         // Extract unique countries
                         let countrySet = new Set();
                         data.forEach(flight => {
                             countrySet.add(flight.origin_country_name);
                         });
-    
+
                         let uniqueCountries = Array.from(countrySet);
                         localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
                     };
-    
-                    transaction.onerror = function(event) {
+
+                    transaction.onerror = function (event) {
                         console.error('Transaction error:', event.target.error);
                     };
                 };
-    
-                dbRequest.onerror = function(event) {
+
+                dbRequest.onerror = function (event) {
                     console.error('IndexedDB error:', event.target.error);
                 };
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         }
-    
+
         function getFlightsFromDB(callback) {
             let dbRequest = indexedDB.open('FlightDB', 1);
-    
-            dbRequest.onsuccess = function(event) {
+
+            dbRequest.onsuccess = function (event) {
                 let db = event.target.result;
                 let transaction = db.transaction('flights', 'readonly');
                 let store = transaction.objectStore('flights');
                 let request = store.getAll();
-    
-                request.onsuccess = function(event) {
+
+                request.onsuccess = function (event) {
                     callback(event.target.result);
                 };
-    
-                request.onerror = function(event) {
+
+                request.onerror = function (event) {
                     console.error('Request error:', event.target.error);
                 };
             };
-    
-            dbRequest.onerror = function(event) {
+
+            dbRequest.onerror = function (event) {
                 console.error('IndexedDB error:', event.target.error);
             };
         }
-    
+
         function displayFlights(data) {
             let fromList = document.getElementById('from-list');
             fromList.innerHTML = ''; // Clear previous items
@@ -897,19 +933,19 @@
                     fromList.appendChild(item);
                 }
             }
-            
+
             icon.style.display = 'none';
         }
-    
+
         function displayAllFlights() {
             let uniqueCountries = JSON.parse(localStorage.getItem('uniqueCountries'));
             if (uniqueCountries) {
                 displayFlights(uniqueCountries);
             }
         }
-    
+
         function filterAndDisplayFlights(query) {
-            getFlightsFromDB(function(flightData) {
+            getFlightsFromDB(function (flightData) {
                 if (flightData) {
                     let regex = new RegExp(query, 'i');
                     let filteredFlights = flightData.filter(flight => regex.test(flight.origin_country_name));
@@ -917,18 +953,18 @@
                 }
             });
         }
-    
+
         function updateDestinationOptions(originCountry) {
 
             handleInputChange();
             let toList = document.getElementById('to-list');
             toList.innerHTML = '';
-        
-            getFlightsFromDB(function(flightData) {
+
+            getFlightsFromDB(function (flightData) {
 
                 if (flightData) {
                     let toInput = document.getElementById('to');
-            
+
                     // Function to create autocomplete items
                     function createAutocompleteItem(flight) {
                         let item = document.createElement('div');
@@ -944,19 +980,19 @@
                         });
                         return item;
                     }
-            
+
                     // Add input event listener to 'to' input element
-                    toInput.addEventListener('input', function() {
+                    toInput.addEventListener('input', function () {
 
                         let inputValue = this.value.toLowerCase(); // Get current input value and convert to lowercase
-            
+
                         // Filter flights based on originCountry and current input value
                         let filteredDestinations = flightData.filter(flight =>
                             flight.origin_country_name === originCountry &&
                             flight.destination_country_name.toLowerCase().includes(inputValue) &&
                             !toList.querySelector(`.autocomplete-item[data-text="${flight.destination_country_name}"]`)
                         );
-            
+
                         // Clear existing items in toList
                         toList.innerHTML = '';
 
@@ -964,38 +1000,38 @@
                         filteredDestinations.forEach(flight => {
                             let item = createAutocompleteItem(flight);
                             let text = item.dataset.text;
-                        
+
                             // בדיקה האם הטקסט של הפריט כבר קיים במערך הפריטים שנוספו
                             if (!addedItems[text]) {
                                 toList.appendChild(item);
                                 addedItems[text] = true; // סימון שהפריט נוסף למערך
                             }
                         });
-                        
+
                         // מחיקת כל המידע ב-addedItems לאחר סיום הלולאה
                         addedItems = {};
 
                     });
-            
+
                     // Initial filtering based on originCountry and empty input
                     let filteredDestinations = flightData.filter(flight =>
                         flight.origin_country_name === originCountry &&
                         !toList.querySelector(`.autocomplete-item[data-text="${flight.destination_country_name}"]`)
                     );
-            
+
                     // Create autocomplete items for initial load
                     filteredDestinations.forEach(flight => {
                         let item = createAutocompleteItem(flight);
                         toList.appendChild(item);
                     });
                 }
-            
+
             });
         }
-        
-    
+
+
         fetchDataAndStore();
-    
+
         document.getElementById('from').addEventListener('input', function () {
             clearTimeout(timeout);
             let query = this.value.trim();
@@ -1008,14 +1044,14 @@
                 }
             }, 300);
         });
-    
 
 
-        
+
+
         document.getElementById('from').addEventListener('focus', function () {
             displayAllFlights();
         });
-    
+
         document.getElementById('to').addEventListener('focus', function () {
             let originCountry = document.getElementById('from').value.trim();
             updateDestinationOptions(originCountry);
@@ -1025,35 +1061,35 @@
     function createOutboundFlightCards() {
         const icon = document.getElementById('loading-icon');
         icon.style.display = 'block';
-    
+
         // Open IndexedDB
         const request = indexedDB.open('FlightDB');
-    
-        request.onsuccess = function(event) {
+
+        request.onsuccess = function (event) {
             const db = event.target.result;
-    
+
             // Assuming 'flights' is the object store name
             const transaction = db.transaction(['flights'], 'readonly');
             const objectStore = transaction.objectStore('flights');
-    
+
             const from = document.getElementById('from').value.toLowerCase();
             const to = document.getElementById('to').value.toLowerCase();
-    
+
             const container = document.getElementById('flights-container');
             container.innerHTML = ''; // Clear previous results
-    
+
             const outboundContainer = document.createElement('div');
             outboundContainer.className = 'flight-grid';
-    
+
             const outboundHeader = document.createElement('h3');
             outboundHeader.textContent = 'טיסות הלוך';
-    
+
             container.appendChild(outboundHeader);
             container.appendChild(outboundContainer);
-    
+
             let resultCount = 0;
-    
-            objectStore.openCursor().onsuccess = function(event) {
+
+            objectStore.openCursor().onsuccess = function (event) {
                 const cursor = event.target.result;
                 if (cursor) {
                     const flight = cursor.value;
@@ -1062,25 +1098,25 @@
                         const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                         const landingDate = new Date(flight.landing_time).toLocaleDateString();
                         const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
+
                         // Calculate duration in milliseconds
                         const departureTimestamp = new Date(flight.departure_time).getTime();
                         const landingTimestamp = new Date(flight.landing_time).getTime();
                         const durationMs = landingTimestamp - departureTimestamp;
-    
+
                         // Convert milliseconds to hours and minutes
                         const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
                         const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-    
+
                         // Format duration as HH:mm
                         const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
-    
+
                         // Calculate total minutes
                         const totalMinutes = durationHours * 60 + durationMinutes;
-    
+
                         // Calculate price based on rate per hour (assuming 150 units per hour)
                         const price = Math.ceil(totalMinutes / 60) * 150;
-    
+
                         // Create flight card with corrected price calculation
                         const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
                         outboundContainer.appendChild(card);
@@ -1098,103 +1134,103 @@
                 }
             };
         };
-    
-        request.onerror = function(event) {
+
+        request.onerror = function (event) {
             console.error("Error opening indexedDB: ", event.target.error);
         };
     }
-    
 
-function createReturnFlightCards() {
-    const icon = document.getElementById('loading-icon');
-    icon.style.display = 'block';
 
-    // Open IndexedDB
-    const request = indexedDB.open('FlightDB');
+    function createReturnFlightCards() {
+        const icon = document.getElementById('loading-icon');
+        icon.style.display = 'block';
 
-    request.onsuccess = function(event) {
-        const db = event.target.result;
+        // Open IndexedDB
+        const request = indexedDB.open('FlightDB');
 
-        // Check if 'flights' object store exists
-        if (db.objectStoreNames.contains('flights')) {
-            const transaction = db.transaction(['flights'], 'readonly');
-            const objectStore = transaction.objectStore('flights');
+        request.onsuccess = function (event) {
+            const db = event.target.result;
 
-            const from = document.getElementById('from').value.toLowerCase();
-            const to = document.getElementById('to').value.toLowerCase();
+            // Check if 'flights' object store exists
+            if (db.objectStoreNames.contains('flights')) {
+                const transaction = db.transaction(['flights'], 'readonly');
+                const objectStore = transaction.objectStore('flights');
 
-            const container = document.getElementById('flights-container2');
-            container.innerHTML = ''; // Clear previous results
+                const from = document.getElementById('from').value.toLowerCase();
+                const to = document.getElementById('to').value.toLowerCase();
 
-            const returnContainer = document.createElement('div');
-            returnContainer.className = 'flight-grid';
+                const container = document.getElementById('flights-container2');
+                container.innerHTML = ''; // Clear previous results
 
-            const returnHeader = document.createElement('h3');
-            returnHeader.textContent = 'טיסות חזור';
+                const returnContainer = document.createElement('div');
+                returnContainer.className = 'flight-grid';
 
-            container.appendChild(returnHeader);
-            container.appendChild(returnContainer);
+                const returnHeader = document.createElement('h3');
+                returnHeader.textContent = 'טיסות חזור';
 
-            let resultCount = 0;
+                container.appendChild(returnHeader);
+                container.appendChild(returnContainer);
 
-            objectStore.openCursor().onsuccess = function(event) {
-                const cursor = event.target.result;
-                if (cursor) {
-                    const flight = cursor.value;
-                    if (flight.origin_country_name.toLowerCase() === to && flight.destination_country_name.toLowerCase() === from) {
-                        const departureDate = new Date(flight.departure_time).toLocaleDateString();
-                        const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        const landingDate = new Date(flight.landing_time).toLocaleDateString();
-                        const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                let resultCount = 0;
 
-                        // Calculate duration in milliseconds
-                        const departureTimestamp = new Date(flight.departure_time).getTime();
-                        const landingTimestamp = new Date(flight.landing_time).getTime();
-                        const durationMs = landingTimestamp - departureTimestamp;
+                objectStore.openCursor().onsuccess = function (event) {
+                    const cursor = event.target.result;
+                    if (cursor) {
+                        const flight = cursor.value;
+                        if (flight.origin_country_name.toLowerCase() === to && flight.destination_country_name.toLowerCase() === from) {
+                            const departureDate = new Date(flight.departure_time).toLocaleDateString();
+                            const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            const landingDate = new Date(flight.landing_time).toLocaleDateString();
+                            const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                        // Convert milliseconds to hours and minutes
-                        const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
-                        const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+                            // Calculate duration in milliseconds
+                            const departureTimestamp = new Date(flight.departure_time).getTime();
+                            const landingTimestamp = new Date(flight.landing_time).getTime();
+                            const durationMs = landingTimestamp - departureTimestamp;
 
-                        // Format duration as HH:mm
-                        const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
+                            // Convert milliseconds to hours and minutes
+                            const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+                            const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
 
-                        // Calculate total minutes
-                        const totalMinutes = durationHours * 60 + durationMinutes;
+                            // Format duration as HH:mm
+                            const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
 
-                        // Calculate price based on rate per hour (assuming 150 units per hour)
-                        const price = Math.ceil(totalMinutes / 60) * 150;
+                            // Calculate total minutes
+                            const totalMinutes = durationHours * 60 + durationMinutes;
 
-                        // Create flight card with corrected price calculation
-                        const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
-                        returnContainer.appendChild(card);
-                        resultCount++;
-                    }
-                    cursor.continue();
-                } else {
-                    icon.style.display = 'none';
-                    // Set container height based on the number of results
-                    if (resultCount <= 2) {
-                        container.style.maxHeight = 'none'; // Disable max-height for fewer results
+                            // Calculate price based on rate per hour (assuming 150 units per hour)
+                            const price = Math.ceil(totalMinutes / 60) * 150;
+
+                            // Create flight card with corrected price calculation
+                            const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
+                            returnContainer.appendChild(card);
+                            resultCount++;
+                        }
+                        cursor.continue();
                     } else {
-                        container.style.maxHeight = '300px'; // Re-enable max-height for more results
+                        icon.style.display = 'none';
+                        // Set container height based on the number of results
+                        if (resultCount <= 2) {
+                            container.style.maxHeight = 'none'; // Disable max-height for fewer results
+                        } else {
+                            container.style.maxHeight = '300px'; // Re-enable max-height for more results
+                        }
                     }
-                }
-            };
-        } else {
-            console.error("Object store 'flights' not found in 'FlightDB'.");
-        }
-    };
+                };
+            } else {
+                console.error("Object store 'flights' not found in 'FlightDB'.");
+            }
+        };
 
-    request.onerror = function(event) {
-        console.error("Error opening FlightDB: ", event.target.error);
-    };
-}
+        request.onerror = function (event) {
+            console.error("Error opening FlightDB: ", event.target.error);
+        };
+    }
 
-function createFlightCard(id, price, departureDate, departureTime, duration, landingDate, landingTime, origin, destination, airlineId) {
-    const card = document.createElement('div');
-    card.className = 'flight-card';
-    card.innerHTML = `
+    function createFlightCard(id, price, departureDate, departureTime, duration, landingDate, landingTime, origin, destination, airlineId) {
+        const card = document.createElement('div');
+        card.className = 'flight-card';
+        card.innerHTML = `
         <div class="airline-logo">
             <img src="/logo_airlines/${airlineId}.png" alt="Airline Logo">
         </div>
@@ -1219,19 +1255,19 @@ function createFlightCard(id, price, departureDate, departureTime, duration, lan
         </div>
         <button class="select-button">בחר</button>
     `;
-    
-    const selectButton = card.querySelector('.select-button');
-    selectButton.addEventListener('click', function() {
-        const currentlySelected = document.querySelector('.flight-card.selected');
-        if (currentlySelected) {
-            currentlySelected.classList.remove('selected');
-        }
-        card.classList.add('selected');
-        addToSelection(id);
-    });
 
-    return card;
-}
+        const selectButton = card.querySelector('.select-button');
+        selectButton.addEventListener('click', function () {
+            const currentlySelected = document.querySelector('.flight-card.selected');
+            if (currentlySelected) {
+                currentlySelected.classList.remove('selected');
+            }
+            card.classList.add('selected');
+            addToSelection(id);
+        });
+
+        return card;
+    }
 
     function addToSelection(id) {
         event.preventDefault(); // מונע את ההתנהגות הרגילה של הטופס
