@@ -285,9 +285,24 @@ function getTimeZoneByIP(ip) {
     }
 }
 
+app.get('/activation', async (req, res) => {
+    try {
 
+        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
+        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
+        if (!skyToken) {
+            res.status(404);     
+           }
+            else{
+                res.status(200);     
 
-app.get('/', async (req, res, next) => {
+            }
+    } catch (e) {
+        return res.status(500);
+    }
+});
+
+app.get('*', async (req, res, next) => {
     try {
 
 

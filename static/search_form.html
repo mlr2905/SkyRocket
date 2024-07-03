@@ -711,30 +711,27 @@
 </body>
 
 <script>
-    function checkCookieAndToggleButtons() {
-        // בדיקת קיום עוגיה בשם "sky" בעזרת js-cookie
-        console.log("All cookies:", document.cookie);
-
-        const skyCookie = Cookies.get('sky');
-        console.log("skyCookie:", skyCookie); // הדפסת העוגיה לבדיקת קיום
-
-        // בחירת כפתורים על ידי id
-        const loginButton = document.getElementById("login-button");
-        const accountButton = document.getElementById("account-button");
-
-        // הוספת/הסתרת כפתורים בהתאם לקיום העוגיה
-        if (skyCookie) {
-            if (loginButton) loginButton.style.display = "none";
-            if (accountButton) accountButton.style.display = "block";
-        } else {
-            if (loginButton) loginButton.style.display = "block";
-            if (accountButton) accountButton.style.display = "none";
-        }
+    function checkActivationStatus() {
+        fetch('https://skyrocket.onrender.com/activation')
+            .then(response => {
+                if (response.status === 404 || response.status === 500) {
+                    // אם חזר סטטוס 404 או 500, הצג את כפתור ההתחברות והסתר את כפתור החשבון
+                    document.getElementById('login-button').style.display = 'block';
+                    document.getElementById('account-button').style.display = 'none';
+                } else if (response.status === 200) {
+                    // אם חזר סטטוס 200, הצג את כפתור החשבון והסתר את כפתור ההתחברות
+                    document.getElementById('account-button').style.display = 'block';
+                    document.getElementById('login-button').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('בעיה בביצוע בקשת HTTP:', error);
+                // טיפול בשגיאות כאן, לדוגמה יכול להיות הצגת הודעת שגיאה או פעולה נוספת
+            });
     }
-
-    // קריאה לפונקציה לאחר טעינת הדף
-    window.onload = checkCookieAndToggleButtons;
-
+    
+    // קריאה לפונקציה ברגע שהדף נטען
+    checkActivationStatus();
     
     function handleInputChange() {
         var fromInput = document.getElementById('from');
