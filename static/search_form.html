@@ -713,6 +713,8 @@
 <script>
     function checkCookieAndToggleButtons() {
         // בדיקת קיום עוגיה בשם "sky" בעזרת js-cookie
+        console.log("All cookies:", document.cookie);
+
         const skyCookie = Cookies.get('sky');
         console.log("skyCookie:", skyCookie); // הדפסת העוגיה לבדיקת קיום
 
