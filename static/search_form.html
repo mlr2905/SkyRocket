@@ -600,6 +600,9 @@
         margin-left: 50%; /* ימני */
 
       }
+      .account-button a:hover  {
+        background-color: #decfcf;
+      }
      
 </style>
 
@@ -627,7 +630,8 @@
       </ul>
     </div>
 
-        <button class="account-button" id="account-button"><a class="navbar-brand" href="#">Account</a></button>
+        <button class="account-button" id="login-button" ><a class="navbar-brand" id="link1" href="/login.html">Login</a>OR&nbsp;&nbsp;<a class="navbar-brand"  href="/Registration.html">signup</a></button>
+        <button class="account-button" id="account-button" ><a class="navbar-brand" href="/login.html">account</a></button>
 
   </div>
 </nav>
@@ -704,7 +708,39 @@
 </body>
 
 <script>
-  
+    function checkCookieAndToggleButtons() {
+        // פונקציה לבדיקת קיום עוגיה
+        function getCookie(name) {
+            let cookieArr = document.cookie.split(";");
+            for (let i = 0; i < cookieArr.length; i++) {
+                let cookiePair = cookieArr[i].split("=");
+                if (name === cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+    
+        // בדיקת קיום עוגיה בשם "sky"
+        const skyCookie = getCookie("sky");
+    
+        // בחירת כפתורים על ידי id
+        const loginButton = document.getElementById("login-button");
+        const accountButton = document.getElementById("account-button");
+    
+        // הוספת/הסתרת כפתורים בהתאם לקיום העוגיה
+        if (skyCookie) {
+            if (loginButton) loginButton.style.display = "none";
+            if (accountButton) accountButton.style.display = "block";
+        } else {
+            if (loginButton) loginButton.style.display = "block";
+            if (accountButton) accountButton.style.display = "none";
+        }
+    }
+    
+    // קריאה לפונקציה לאחר טעינת הדף
+    window.onload = checkCookieAndToggleButtons;
+    
     function handleInputChange() {
         var fromInput = document.getElementById('from');
         var toInput = document.getElementById('to');
