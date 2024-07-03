@@ -39,30 +39,136 @@
     }
 
     body {
-        font-family: 'Verdana', sans-serif;
-        color: #666666;
-        line-height: 1.6;
-        background-image: url("plane.jpg");
-        background-repeat: no-repeat;
-        background-size: 99.9% 99.9%;
-        background-position: center;
-        background-color: #f4f4f4;
+        direction: ltr;
+        font-family: Arial, sans-serif;
+        background-color: #10253e;
+        color: white;
+        margin: 0;
+        padding: 20px;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
-        margin: 0;
     }
 
-    .search_form {
-        background-color: #cbe3f5c1;
+    .form-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #1a3a5f;
         padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 550px;
-
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    input[type="text"] {
+        width: 150px;
+        padding: 10px;
+        border: 1px solid #5a9bd3;
+        border-radius: 5px;
+        background-color: #e6f0fa;
+        color: black;
+        outline: none;
+    }
+
+    input[type="text"]:disabled {
+        background-color: #cccccc;
+    }
+
+    .main-container {
+        /* גלילה אנכית במקרה שהתוכן גדול מידי */
+        padding: 16px;
+        /* מרווח פנימי סביב התוכן */
+        margin-top: 20px;
+        /* מרווח מלמעלה */
+        border: 1px solid #ccc;
+        /* גבול דק סביב הקונטיינר */
+        border-radius: 8px;
+        /* פינות מעוגלות */
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        /* צלליית קופסה */
+        background-color: #1a3a5f;
+        /* רקע אפור בהיר */
+    }
+
+    .main-container h2 {
+        margin-top: 0;
+        /* מרווח אפס למעלה מכותרת הקטע */
+        font-size: 1.5em;
+        /* גודל גופן עבור הכותרת */
+        color: #f1e7e7;
+        /* צבע גופן כותרת כהה */
+    }
+    #from-list {
+        max-height: 150px;
+        /* Maximum height for the results list */
+        overflow-y: auto;
+        /* Enable vertical scroll if content exceeds max height */
+        border: 1px solid #ccc;
+        /* Optional: border for the list */
+        background-color: #000;
+        position: absolute;
+        z-index: 1000;
+    }
+
+    #to-list {
+        max-height: 150px;
+        /* Maximum height for the results list */
+        overflow-y: auto;
+        /* Enable vertical scroll if content exceeds max height */
+        border: 1px solid #ccc;
+        /* Optional: border for the list */
+        background-color: #000;
+        position: absolute;
+        z-index: 1000;
+    }
+
+    .passengers-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    button {
+        background-color: #0066ff;
+        color: white;
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: 0 5px;
+    }
+
+    button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    #number {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0 10px;
+    }
+
 
     h1 {
         text-align: center;
@@ -88,52 +194,7 @@
         background-color: #ffdddd;
     }
 
-    /* Hide all steps by default: */
-    .tab {
-        display: none;
-    }
 
-    .nextBtn {
-        padding: 10px;
-        border: none;
-        border-radius: 4px;
-        background-color: #b0b6bd;
-        color: white;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .nextBtn:hover {
-        background-color: rgb(222, 0, 45);
-        ;
-    }
-
-    .backBtn,
-    .nextBtn2 {
-        cursor: pointer;
-        padding: 10px;
-        border: none;
-        border-radius: 4px;
-        background-color: #007bff;
-        color: white;
-        font-size: 16px;
-        transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .backBtn:hover,
-    .nextBtn2:hover {
-        background-color: #0056b3;
-    }
-
-    .backBtn:active,
-    .nextBtn:active,
-    .nextBtn2:active {
-        transform: translateY(2px);
-        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
-    }
 
     .login-button {
         cursor: pointer;
@@ -158,40 +219,8 @@
 
 
 
-    /* Make circles that indicate the steps of the form: */
-    .step {
-        height: 15px;
-        width: 15px;
-        margin: 0 2px;
-        background-color: #bbbbbb;
-        border: none;
-        border-radius: 50%;
-        display: inline-block;
-        opacity: 0.5;
-    }
 
-    .step.active {
-        opacity: 1;
-    }
 
-    /* Mark the steps that are finished and valid: */
-    .step.finish {
-        background-color: #04AA6D;
-    }
-
-    .button-container {
-        overflow: auto;
-        position: relative;
-        padding: 10px;
-    }
-
-    #backBtn {
-        float: left;
-    }
-
-    #nextBtn {
-        float: right;
-    }
 
     .form-group img {
         width: 35px;
@@ -213,25 +242,6 @@
         /* אופציונלי: להראות שהאלמנט מנוטרל */
     }
 
-    .green-text {
-        color: rgb(54, 113, 84);
-    }
-
-    .green-v {
-        color: rgb(60, 120, 85);
-        font-size: 16px;
-    }
-
-    .red-x {
-        color: rgb(222, 0, 45);
-        font-size: 20px;
-
-    }
-
-    .red-text {
-        color: rgb(222, 0, 45);
-    }
-
     .reduced-line-height p {
         line-height: 6px;
         /* Adjust this value to change the line spacing in pixels */
@@ -249,45 +259,10 @@
         /* Adjust according to the size of the added fields */
     }
 
-    .extra-inputs {
-        position: absolute;
-        right: 10px;
-        display: flex;
-        gap: 5px;
-    }
-
-    .extra-inputs input {
-        width: 70px;
-        /* Adjust width as needed */
-        text-align: center;
-        /* border: none; 
-            outline: none; */
-        height: 30px;
-        /* Ensure consistent height */
-
-        padding: 0;
-        /* Remove padding for alignment */
-        box-sizing: border-box;
-        /* Ensure padding and border are included in the element's total width and height */
-    }
-
-    .link {
-        text-decoration: none;
-        /* להסיר קו תחתון מהקישור */
-        color: #007bff;
-        /* צבע טקסט */
-
-    }
 
 
-    .container {
-        background: #ffffff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        text-align: center;
-    }
+
+
 
     h1 {
         font-family: 'Georgia', serif;
@@ -301,22 +276,6 @@
         line-height: 1.6;
     }
 
-    .highlight {
-        color: #e74c3c;
-        font-weight: bold;
-    }
-
-    .cta {
-        background: #e74c3c;
-        color: #ffffff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-top: 20px;
-        text-transform: uppercase;
-    }
 
     #loading-icon {
         display: block;
@@ -331,11 +290,6 @@
         /* ערך גבוה כדי להבטיח שהתמונה תהיה מעל כולם */
     }
 
-    #phone::placeholder {
-        text-align: right;
-        direction: rtl;
-        padding-right: 63%;
-    }
 
     .button- {
         padding: 10px 20px;
@@ -372,36 +326,6 @@
 
     }
 
-    #number {
-        font-size: 24px;
-        font-weight: bold;
-        margin: 0 20px;
-
-    }
-
-    #from-list {
-        max-height: 150px;
-        /* Maximum height for the results list */
-        overflow-y: auto;
-        /* Enable vertical scroll if content exceeds max height */
-        border: 1px solid #ccc;
-        /* Optional: border for the list */
-        background-color: white;
-        position: absolute;
-        z-index: 1000;
-    }
-
-    #to-list {
-        max-height: 150px;
-        /* Maximum height for the results list */
-        overflow-y: auto;
-        /* Enable vertical scroll if content exceeds max height */
-        border: 1px solid #ccc;
-        /* Optional: border for the list */
-        background-color: white;
-        position: absolute;
-        z-index: 1000;
-    }
 
     .autocomplete-item {
         padding: 8px 12px;
@@ -413,42 +337,37 @@
         /* Light gray background on hover */
     }
 
-    .more-results {
-        padding: 8px 12px;
-        color: #999;
-        font-style: italic;
-        text-align: center;
-    }
 
-    #flight-container {
-        max-height: 600px;
-        /* Set the height you prefer */
-        overflow-y: auto;
-        padding: 16px;
-        box-sizing: border-box;
-    }
+
 
     .flight-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+        background-color: #1a3a5f;
+        
     }
-
+ 
+    
     .flight-card {
-        background-color: #f2f6f9;
-        border: 1px solid #ddd;
+        border: 1px solid #ccc;
         border-radius: 8px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-        /* גבהה בסף הכרטיס */
         padding: 16px;
+        margin: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
         font-family: Arial, sans-serif;
+        background-color: #3498db; /* Adjust the background color to match your blue background */
+        color: #fff; /* Text color */
     }
-
+    
 
     .flight-card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 8px;
     }
 
     .price {
@@ -456,54 +375,58 @@
         font-weight: bold;
     }
 
-
-
-    .flight-details {
-        margin-top: 16px;
+    .select-button {
+        background-color: #002f6c;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
     }
 
-    .flight-time {
+    .flight-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .flight-leg {
         display: flex;
         flex-direction: column;
         align-items: center;
-        text-align: center;
-    }
-
-    .date {
-        font-size: 14px;
-        color: #555;
     }
 
     .time {
         font-size: 18px;
         font-weight: bold;
-        margin-left: 8px;
     }
 
-    .duration {
+    .date {
         font-size: 14px;
-        color: #888;
-        flex-basis: 100%;
-        text-align: center;
-        margin: 8px 0;
-    }
-
-    .flight-route {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 8px;
+        color: #666;
     }
 
     .airport {
         font-size: 16px;
-        font-weight: bold;
+        margin-top: 8px;
     }
 
-    .arrow {
-        font-size: 24px;
-        color: #888;
+    .flight-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
+
+    .flight-duration {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .airline-logo img {
+        width: 50px;
+        height: auto;
+    }
+
 
     .airline-logo {
         display: flex;
@@ -511,44 +434,32 @@
         margin-top: 16px;
     }
 
-    .airline-logo img {
-        width: 150px;
-        height: 30px;
-    }
 
-    .select-button {
 
-        display: block;
-        width: 100%;
-        padding: 10px;
-        margin-top: 16px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-        text-align: center;
-    }
 
     .select-button:hover {
         background-color: #0056b3;
     }
 
-    .main-container {
-        width: 100%;
-        /* Adjust as needed */
-        overflow-y: scroll;
-        padding: 16px;
-        box-sizing: border-box;
+
+    #flights-container,
+    #flights-container2 {
+        max-height: 500px;
+        overflow-y: auto;
+        margin-top: 10px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #1a3a5f; /* צבע רקע */
     }
+    
 
     .flight-card.selected {
         border: 2px solid #4CAF50;
         /* צבע ירוק */
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         /* צל */
-        background-color: #f0f8ff;
+        background-color: #023664;
         /* צבע רקע קרם בהיר */
         transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
         /* אנימציה */
@@ -681,73 +592,47 @@
         </div>
     </nav>
     <img id="loading-icon" src="loading.gif" style="display: block;" alt="Loading...">
-    <form class="search_form" id="search_form">
+    <header>
+    <div class="col-3"></div>
+    <div class="form-group">
+        <div class="form-row">
+            <div class="col">
+                <label for="from">From</label>
+                <input type="text" class="form-control" id="from" placeholder="israel..." name="from">
+                <div id="from-list" class="autocomplete-list"></div>
+            </div>
+            <div class="col">
+                <label for="to">To</label>
+                <input type="text" class="form-control" id="to" placeholder="Greece..." name="to" disabled>
+                <div id="to-list" class="autocomplete-list"></div>
+            </div>
+            <div class="col">
+                <label for="daterange">Date </label>
+                <input type="text" id="daterange" name="daterange" placeholder="Select a departure and return date"
+                    disabled>
+            </div>
+            <div class="col">
 
-        <div class="tab">
-            <div class="pb-3 h3 text-left">Flight Search &#128747;</div>
-
-            <div class="form-group">
-                <div class="form-row">
-                    <div class="col">
-                        <label for="from">From</label>
-                        <input type="text" class="form-control mb-2" id="from" placeholder="israel..." name="from"
-                            value>
-                        <div id="from-list" class="autocomplete-list"></div>
-                    </div>
-                    <div class="col">
-                        <label for="to">To</label>
-                        <input type="text" class="form-control mb-2" id="to" value placeholder="Greece..." name="to"
-                            disabled>
-                        <div id="to-list" class="autocomplete-list"></div>
-                    </div>
-                </div>
-                <label for="daterange">Date of departure and return</label>
-                <p><input type="text" id="daterange" name="daterange" placeholder="Select a departure and return date"
-                        value disabled /></p>
-                <label for="Number_passengers">passengers</label>
-
-                <div class="container" name="Number_passengers">
+                <label for="Number_passengers">Passengers</label>
+                <div class="passengers-container" name="Number_passengers">
                     <button id="button-subtract" class="button-" onclick="update('subtract')" disabled><b>-</b></button>
                     <span id="number">1</span>
                     <button id="button-add" class="button-" onclick="update('add')"><b>+</b></button>
                 </div>
             </div>
         </div>
-        <div class="tab">
-            <div class="pb-3 h3 text-left">Flight &#128747;</div>
-            <div class="main-container">
+    </div>
+    
+    <div class="main-container  ">
+        <h2>Outbound Flights</h2>
+        <div id="flights-container" style="max-height: 500px;"></div>
+    
+        <h2>Return Flights</h2>
+        <div id="flights-container2" style="max-height: 500px;"></div>
+    </div>
+    
 
-                <div id="flights-container" style="max-height: 500px;"></div>
-            </div>
 
-        </div>
-        <div class="tab">
-            <div class="pb-3 h3 text-left">Flight &#128747;</div>
-            <div class="main-container">
-
-                <div id="flights-container2" style="max-height: 500px;"></div>
-            </div>
-
-        </div>
-        <div class="button-container">
-            <button type="button" class="backBtn" id="backBtn" onclick="nextPrev(-1)">Back</button>
-            <button type="button" class="nextBtn" id="nextBtn" onclick="nextPrev(1)" disabled>Next</button>
-            <div id="success-message"></div>
-
-        </div>
-        </div>
-        <!-- Circles which indicates the steps of the form: -->
-        <div style="text-align:center;margin-top:40px;">
-            <span class="step"></span>
-            <span class="step"></span>
-            <span class="step"></span>
-            <span class="step"></span>
-            <span class="step"></span>
-
-        </div>
-        <div class="tab">
-        </div>
-    </form>
 
 
 </body>
@@ -802,10 +687,6 @@
         $('input[name="daterange"]').daterangepicker({
             opens: 'left'
         }, function (start, end, label) {
-            const button = document.getElementById('nextBtn')
-            button.classList.remove('invalid');
-            button.className = 'nextBtn2';
-            button.disabled = false
 
         });
     });
@@ -1080,10 +961,8 @@
             const outboundContainer = document.createElement('div');
             outboundContainer.className = 'flight-grid';
 
-            const outboundHeader = document.createElement('h3');
-            outboundHeader.textContent = 'טיסות הלוך';
+         
 
-            container.appendChild(outboundHeader);
             container.appendChild(outboundContainer);
 
             let resultCount = 0;
@@ -1164,10 +1043,7 @@
                 const returnContainer = document.createElement('div');
                 returnContainer.className = 'flight-grid';
 
-                const returnHeader = document.createElement('h3');
-                returnHeader.textContent = 'טיסות חזור';
-
-                container.appendChild(returnHeader);
+               
                 container.appendChild(returnContainer);
 
                 let resultCount = 0;
@@ -1230,30 +1106,29 @@
         const card = document.createElement('div');
         card.className = 'flight-card';
         card.innerHTML = `
-        <div class="airline-logo">
-            <img src="/logo_airlines/${airlineId}.png" alt="Airline Logo">
-        </div>
-        <div class="flight-details">
-            <div class="flight-time">
-                <div class="time">תאריך ושעת יציאה - הנחיתה</div>
-                <div class="data">${departureDate} - ${landingDate}</div>
-                <div class="time">${departureTime} - ${landingTime}</div>
-            </div>
-            <div class="flight-route">
-                <span class="airport">${origin}</span>
-                <span class="arrow">&#9992;</span>
-                <span class="airport">${destination}</span>
-            </div>
-            <div class="flight-card-header">
-                <span class="price">$${price}</span>
-                <span class="duration">משך הטיסה: ${duration}</span>
-            </div>
-            <div class="flight-route">
-                <span class="duration">מזהה טיסה: ${id}</span>
-            </div>
-        </div>
-        <button class="select-button">בחר</button>
-    `;
+         <div class="flight-card-header">
+                    <div class="price">$${price}</div>
+                    <button class="select-button">בחירה</button>
+                </div>
+                <div class="flight-info">
+                    <div class="flight-leg">
+                        <span class="time">${departureTime}</span>
+                        <span class="date">${departureDate}</span>
+                        <span class="airport">${origin}</span>
+                    </div>
+                    <div class="flight-leg">
+                        <span class="time">${landingTime}</span>
+                        <span class="date">${landingDate}</span>
+                        <span class="airport">${destination}</span>
+                    </div>
+                </div>
+                <div class="flight-details">
+                    <div class="flight-duration">${duration}</div>
+                    <div class="airline-logo">
+                        <img src="/logo_airlines/${airlineId}.png" alt="Airline Logo">
+                    </div>
+                </div>
+            `;
 
         const selectButton = card.querySelector('.select-button');
         selectButton.addEventListener('click', function () {
@@ -1270,15 +1145,12 @@
 
     function addToSelection(id) {
         event.preventDefault(); // מונע את ההתנהגות הרגילה של הטופס
-        const button = document.getElementById('nextBtn')
-        button.classList.remove('invalid');
-        button.className = 'nextBtn2';
-        button.disabled = false
+
         // הוסף את ה id למערך או בצורה אחרת לפי הצורך
         console.log(`Flight ID ${id} has been added to selection.`);
     }
 
 </script>
-<script src="js/search_form.js"></script>
+<!-- <script src="js/search_form.js"></script> -->
 
 </html>
