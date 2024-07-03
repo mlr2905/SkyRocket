@@ -633,8 +633,8 @@
       </ul>
     </div>
 
-        <button class="account-button" id="login-button" ><a class="navbar-brand" id="link1" href="/login.html">Login</a>OR&nbsp;&nbsp;<a class="navbar-brand"  href="/Registration.html">signup</a></button>
-        <button class="account-button" id="account-button" ><a class="navbar-brand" href="/login.html">account</a></button>
+        <button class="account-button" id="login-button" style="display: none;" ><a class="navbar-brand" id="link1" href="/login.html">Login</a>OR&nbsp;&nbsp;<a class="navbar-brand"  href="/Registration.html">signup</a></button>
+        <span style="color: #04AA6D;">Connected</span><button class="account-button" id="account-button" style="display: none;"><a class="navbar-brand" href="/login.html">Logout</a></button>
 
   </div>
 </nav>
@@ -732,7 +732,7 @@
     
     // קריאה לפונקציה ברגע שהדף נטען
     checkActivationStatus();
-    
+
     function handleInputChange() {
         var fromInput = document.getElementById('from');
         var toInput = document.getElementById('to');
