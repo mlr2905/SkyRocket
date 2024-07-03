@@ -291,14 +291,16 @@ app.get('/activation', async (req, res) => {
         const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
         const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
         if (!skyToken) {
-            res.status(404);     
+            res.status(404).json('on')  
+            console.log('erre');   
            }
             else{
-                res.status(200);     
+                res.status(200).json('ok');     
+                console.log('ok');   
 
             }
     } catch (e) {
-        return res.status(500);
+        return res.status(500).json(e)
     }
 });
 
