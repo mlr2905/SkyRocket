@@ -106,6 +106,7 @@
         box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
         /* צלליית קופסה */
         background-color: #1a3a5f;
+        margin-top: 5%;
         /* רקע אפור בהיר */
     }
 
@@ -117,6 +118,7 @@
         color: #f1e7e7;
         /* צבע גופן כותרת כהה */
     }
+
     #from-list {
         max-height: 150px;
         /* Maximum height for the results list */
@@ -345,10 +347,10 @@
         grid-template-columns: repeat(6, 1fr);
         gap: 12px;
         background-color: #1a3a5f;
-        
+
     }
- 
-    
+
+
     .flight-card {
         border: 1px solid #ccc;
         border-radius: 8px;
@@ -358,10 +360,12 @@
         flex-direction: column;
         align-items: stretch;
         font-family: Arial, sans-serif;
-        background-color: #3498db; /* Adjust the background color to match your blue background */
-        color: #fff; /* Text color */
+        background-color: #3498db;
+        /* Adjust the background color to match your blue background */
+        color: #fff;
+        /* Text color */
     }
-    
+
 
     .flight-card-header {
         display: flex;
@@ -450,9 +454,10 @@
         padding: 8px;
         border: 1px solid #ddd;
         border-radius: 4px;
-        background-color: #1a3a5f; /* צבע רקע */
+        background-color: #1a3a5f;
+        /* צבע רקע */
     }
-    
+
 
     .flight-card.selected {
         border: 2px solid #4CAF50;
@@ -556,9 +561,25 @@
         /* ימני */
 
     }
+
+    div:disabled,
+    button:disabled,
+    input:disabled {
+        cursor: not-allowed;
+    }
+
+    /* לעצב אלמנטים שנראים כמו disabled div אך אין להם מאפיין disabled */
+    .disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+        /* לבטל אינטראקציה */
+        opacity: 0.6;
+        /* אופציונלי: להראות שהאלמנט מנוטרל */
+    }
 </style>
 
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"></a>
@@ -591,46 +612,62 @@
 
         </div>
     </nav>
-    <img id="loading-icon" src="loading.gif" style="display: block;" alt="Loading...">
-    <header>
-    <div class="col-3"></div>
-    <div class="form-group">
-        <div class="form-row">
-            <div class="col">
-                <label for="from">From</label>
-                <input type="text" class="form-control" id="from" placeholder="israel..." name="from">
-                <div id="from-list" class="autocomplete-list"></div>
-            </div>
-            <div class="col">
-                <label for="to">To</label>
-                <input type="text" class="form-control" id="to" placeholder="Greece..." name="to" disabled>
-                <div id="to-list" class="autocomplete-list"></div>
-            </div>
-            <div class="col">
-                <label for="daterange">Date </label>
-                <input type="text" id="daterange" name="daterange" placeholder="Select a departure and return date"
-                    disabled>
-            </div>
-            <div class="col">
+    <img id="loading-icon" src="loading.gif" style="display: none;" alt="Loading...">
 
-                <label for="Number_passengers">Passengers</label>
-                <div class="passengers-container" name="Number_passengers">
-                    <button id="button-subtract" class="button-" onclick="update('subtract')" disabled><b>-</b></button>
-                    <span id="number">1</span>
-                    <button id="button-add" class="button-" onclick="update('add')"><b>+</b></button>
+    <header>
+        <img   src="logo.gif" width="1000px" height="500px" alt="תיאור תמונה">
+
+        <div class="form-group" style="display: block;">
+
+            <div class="form-row">
+                <div class="col">
+                    <label for="from">From</label>
+                    <input type="text" class="form-control" id="from" placeholder="israel..." name="from">
+                    <div id="from-list" class="autocomplete-list"></div>
                 </div>
+                <div class="col">
+                    <label for="to">To</label>
+                    <input type="text" class="form-control" id="to" placeholder="Greece..." name="to" disabled>
+                    <div id="to-list" class="autocomplete-list"></div>
+                </div>
+                <div class="col">
+                    <label for="daterange">Date </label>
+                    <input type="text" id="daterange" name="daterange" placeholder="Select a departure and return date"
+                        disabled>
+                </div>
+                <div class="col">
+
+                    <label for="Number_passengers">Passengers</label>
+                    <div class="passengers-container" name="Number_passengers">
+                        <button id="button-subtract" class="button-" onclick="update('subtract')"
+                            disabled><b>-</b></button>
+                        <span id="number">1</span>
+                        <button id="button-add" class="button-" onclick="update('add')"><b>+</b></button>
+                    </div>
+
+                </div>
+
+                <button onclick="toggleSearchIcon()" disabled id="search">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path
+                            d="M10.5 4.5a6 6 0 1 0 0 12 6 6 0 0 0 0-12m-9 6a9 9 0 1 1 16.336 5.215l4.225 4.224a1.5 1.5 0 0 1-2.122 2.122l-4.224-4.225A9 9 0 0 1 1.5 10.5">
+                        </path>
+                    </svg>
+                </button>
+
             </div>
         </div>
-    </div>
-    
-    <div class="main-container  ">
-        <h2>Outbound Flights</h2>
-        <div id="flights-container" style="max-height: 500px;"></div>
-    
-        <h2>Return Flights</h2>
-        <div id="flights-container2" style="max-height: 500px;"></div>
-    </div>
-    
+
+        <div class="main-container" style="display: none;">
+            <div id="outbound" style=" display:block;">
+                <h2>Outbound Flights</h2>
+                <div id="flights-container" style="max-height: 500px;"></div>
+            </div>
+            <div id="return" style=" display: none;">
+                <h2>Return Flights</h2>
+                <div id="flights-container2" style="max-height: 500px;"></div>
+            </div>
+        </div>
 
 
 
@@ -638,6 +675,18 @@
 </body>
 
 <script>
+
+    function toggleSearchIcon() {
+
+        const formRow = document.querySelector('.form-group');
+        const flight = document.querySelector('.main-container');
+
+        formRow.style.display = formRow.style.display === 'block' ? 'none' : 'block'
+        flight.style.display = formRow.style.display === 'none' ? 'block' : 'none'
+        createOutboundFlightCards();
+        createReturnFlightCards();
+
+    }
     document.getElementById('logout-button').addEventListener('click', function () {
         alert("You have been logged out!");
     });
@@ -853,9 +902,9 @@
                         item.setAttribute('data-text', flight.destination_country_name); // Set attribute to identify this item
                         item.addEventListener('click', function () {
                             toInput.value = this.textContent;
-                            createOutboundFlightCards();
-                            createReturnFlightCards();
                             toList.innerHTML = '';
+                            document.getElementById("search").disabled = false;
+
                             handleInputChange();
                         });
                         return item;
@@ -961,7 +1010,7 @@
             const outboundContainer = document.createElement('div');
             outboundContainer.className = 'flight-grid';
 
-         
+
 
             container.appendChild(outboundContainer);
 
@@ -1043,7 +1092,7 @@
                 const returnContainer = document.createElement('div');
                 returnContainer.className = 'flight-grid';
 
-               
+
                 container.appendChild(returnContainer);
 
                 let resultCount = 0;
@@ -1144,10 +1193,20 @@
     }
 
     function addToSelection(id) {
-        event.preventDefault(); // מונע את ההתנהגות הרגילה של הטופס
+        document.querySelector('.main-container')
+        const div1 = document.querySelector('#return');
+        const div2 = document.querySelector('#outbound')
+        div2.style.display = 'none'
+
+        if (div2.style.display = 'none') {
+            div1.style.display='block'
+        }
+
+
 
         // הוסף את ה id למערך או בצורה אחרת לפי הצורך
         console.log(`Flight ID ${id} has been added to selection.`);
+        flight
     }
 
 </script>
