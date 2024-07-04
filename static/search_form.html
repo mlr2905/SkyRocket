@@ -457,12 +457,28 @@
         transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
         /* אנימציה */
     }
+  @keyframes colorchange {
+      0% { background-color: #000000; }
+      50% { background-color: #10253e; }
+      1000% { background-color: #000000; }
 
+    }
+
+    /* סגנון ה-Navbar */
+    .navbar {
+      background-color: #000000; /* רקע שחור */
+      animation: colorchange 4s infinite alternate; /* אנימציה על רקע ה-Navbar */
+    }
+
+    /* סגנון עבור ה-Nav-Link */
+    .navbar-nav .nav-link {
+      color: #fff !important; /* צבע טקסט לבן */
+    }
     .navbar {
         position: fixed;
         top: 0;
         width: 100%;
-        background-color: #f8f9fa;
+        background-color: #10253e;
         /* צבע רקע */
         z-index: 1030;
     }
@@ -579,9 +595,8 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -589,19 +604,20 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/search_form.html">Flight Search</a>
+                        <a class="nav-link active" aria-current="page" href="/search_form.html" style="color: #fff;">Flight Search</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">check in</a>
+                        <a class="nav-link" href="#" style="color: #fff;">Check In</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Customer Service</a>
+                        <a class="nav-link" href="#" style="color: #fff;">Customer Service</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="#" style="color: #fff;">About</a>
                     </li>
                 </ul>
             </div>
+            
 
             <button class="account-button" id="login-button" style="display: none;"><a class="navbar-brand"
                     href="/login.html">Login</a>OR&nbsp;&nbsp;<a class="navbar-brand"
