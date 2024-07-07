@@ -1,29 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-   <title>International telephone input</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1" />
-   <link rel="stylesheet" href="styles.css" />
-   <link
-     rel="stylesheet"
-     href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
-   />
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
- </head>
- <body>
-    <div class="container">
-        <form id="login" onsubmit="process(event)">
-          <p>Enter your phone number:</p>
-          <input id="phone" type="tel" name="phone" />
-          <input type="submit" class="btn" value="Verify" />
-        </form>
-       </div>
- </body>
- <script>
-    const phoneInputField = document.querySelector("#phone");
-    const phoneInput = window.intlTelInput(phoneInputField, {
-      utilsScript:
-        "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-    });
-  </script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Map</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .plane {
+            display: grid;
+            grid-template-columns: repeat(7, 40px);
+            gap: 5px;
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+        }
+        .plane::before, .plane::after {
+            content: 'EXIT';
+            position: absolute;
+            background-color: orange;
+            color: white;
+            padding: 5px;
+            font-size: 10px;
+        }
+        .plane::before {
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .plane::after {
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .seat {
+            width: 40px;
+            height: 40px;
+            background-color: blue;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            position: relative;
+        }
+        .seat.occupied {
+            background-color: red;
+        }
+        .aisle {
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+        }
+        .seat-label {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="plane" id="plane"></div>
+
+    <script>
+        // Function to create seats
+        function createSeats(numSeats) {
+            const plane = document.getElementById('plane');
+            plane.innerHTML = '';
+            const rows = Math.ceil(numSeats / 6); // Calculate the number of rows
+            const columns = ['A', 'B', 'C', 'D', 'E', 'F']; // Column labels
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < 7; j++) {
+                    const seat = document.createElement('div');
+                    if (j === 3) {
+                        seat.classList.add('aisle'); // Create an aisle
+                    } else {
+                        seat.classList.add('seat');
+                        if (Math.random() < 0.1) seat.classList.add('occupied'); // Randomly mark some seats as occupied
+                        const seatLabel = document.createElement('div');
+                        seatLabel.classList.add('seat-label');
+                        seatLabel.textContent = `${i + 1}${columns[j > 2 ? j - 1 : j]}`;
+                        seat.appendChild(seatLabel);
+                    }
+                    plane.appendChild(seat);
+                }
+            }
+        }
+
+        // Fetch the remaining tickets from the server
+        fetch('https://skyrocket.onrender.com/role_users/flights/5')
+            .then(response => response.json())
+            .then(data => {
+                const remainingTickets = data.remaining_tickets;
+                const totalSeats = remainingTickets === 144 ? 144 : remainingTickets === 195 ? 195 : 298;
+                createSeats(totalSeats);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
 </html>

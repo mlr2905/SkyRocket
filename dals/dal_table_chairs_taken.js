@@ -32,10 +32,15 @@ async function update_chair(id, updated_chair) {
     return updated_chair
 }
 
-async function get_all() {
+async function get_all_chairs_by_flight(id) {
     // db.run('select * from chairs_taken')
-    const chairs_taken = await connectedKnex.raw(`SELECT get_all_chairs_taken();`)
-    return chairs_taken.rows[0].get_all_chairs_taken
+    const chairs_taken = await connectedKnex.raw(`SELECT id,flight_id,char_id,passenger_id,user_id
+FROM 
+    public.chairs_taken
+WHERE 
+    flight_id = ${ id }`)
+    console.log(chairs_taken);
+    return chairs_taken.rows
 }
 
 async function delete_all() {
@@ -56,4 +61,4 @@ async function set_id(id) {
     }
 }
 
-module.exports = { get_all, get_by_id, new_chair, update_chair, delete_chair, set_id, delete_all }
+module.exports = { get_all_chairs_by_flight, get_by_id, new_chair, update_chair, delete_chair, set_id, delete_all }

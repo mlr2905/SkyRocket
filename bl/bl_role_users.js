@@ -2,8 +2,9 @@ const dal_0 = require('../dals/dal_all_tables')
 const dal_1 = require('../dals/dal_table_users')
 const dal_4 = require('../dals/dal_table_customers')
 const dal_5 = require('../dals/dal_table_flights')
-const dal_6 = require('../dals/dal_table_tickets')
-const dal_7 = require('../dals/dal_table_passengers')
+const dal_6 = require('../dals/dal_table_chairs_taken')
+const dal_7 = require('../dals/dal_table_tickets')
+const dal_8 = require('../dals/dal_table_passengers')
 const { log } = require('winston')
 
 async function authcode(email) {
@@ -309,6 +310,13 @@ async function get_by_id_flights(id) {
     throw error; // מעבירה את השגיאה הלאה
   }
 }
+//chairs
+async function get_all_chairs_by_flight(id) {
+  console.log(id);
+  const user_id = await dal_6.get_all_chairs_by_flight(id);
+
+  return user_id
+}
 
 //tickets
 async function purchase_ticket(new_ticket, test) {
@@ -321,7 +329,7 @@ async function purchase_ticket(new_ticket, test) {
 
           await dal_5.update_remaining_tickets(id);
         }
-        const result = await dal_6.new_ticket(new_ticket);
+        const result = await dal_7.new_ticket(new_ticket);
         return result
       }
       else {
@@ -338,7 +346,7 @@ async function purchase_ticket(new_ticket, test) {
 }
 
 async function get_by_id_ticket(id) {
-  const user_id = await dal_6.get_by_id(id);
+  const user_id = await dal_7.get_by_id(id);
   return user_id
 }
 
@@ -347,7 +355,7 @@ async function get_by_id_ticket(id) {
 async function new_passenger(new_p) {
   try {
 
-    const new_passenger = await dal_7.new_passenger(new_p);
+    const new_passenger = await dal_8.new_passenger(new_p);
     return new_passenger
   }
 
@@ -359,7 +367,7 @@ async function new_passenger(new_p) {
 
 async function get_by_id_passenger(id) {
 
-  const passenger_id = await dal_7.get_by_id_passenger(id);
+  const passenger_id = await dal_8.get_by_id_passenger(id);
   return passenger_id
 
 }
@@ -375,7 +383,7 @@ async function purchase_ticket(new_ticket, test) {
 
           await dal_5.update_remaining_tickets(id);
         }
-        const result = await dal_6.new_ticket(new_ticket);
+        const result = await dal_7.new_ticket(new_ticket);
         return result
       }
       else {
@@ -392,13 +400,13 @@ async function purchase_ticket(new_ticket, test) {
 }
 
 async function get_by_id_ticket(id) {
-  const user_id = await dal_6.get_by_id(id);
+  const user_id = await dal_7.get_by_id(id);
   return user_id
 }
 
 
 module.exports = {
-  valid_email, authcode, login_code, login, signup, purchase_ticket, create_user, get_by_id_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
+  get_all_chairs_by_flight,valid_email, authcode, login_code, login, signup, purchase_ticket, create_user, get_by_id_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }

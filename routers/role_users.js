@@ -362,6 +362,14 @@ router.post('/tickets', async (request, response) => {
     response.status(201).json(result)
 })
 
+//role_users/chairs
+
+router.get('/chairs/:id', async (request, response) => {
+    const id = parseInt(request.params.id)
+    console.log(id);
+    const result = await bl.get_all_chairs_by_flight(id)
+    response.status(201).json(result)
+})
 //role_users/passengers
 
 // POST
