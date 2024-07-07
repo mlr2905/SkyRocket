@@ -73,7 +73,7 @@
 
     <script>
         // Function to create seats
-        function createSeats(numSeats) {
+        function createSeats(numSeats, seatData) {
             const plane = document.getElementById('plane');
             plane.innerHTML = '';
             const rows = Math.ceil(numSeats / 6); // Calculate the number of rows
@@ -86,24 +86,29 @@
                         seat.classList.add('aisle'); // Create an aisle
                     } else {
                         seat.classList.add('seat');
-                        if (Math.random() < 0.1) seat.classList.add('occupied'); // Randomly mark some seats as occupied
                         const seatLabel = document.createElement('div');
                         seatLabel.classList.add('seat-label');
                         seatLabel.textContent = `${i + 1}${columns[j > 2 ? j - 1 : j]}`;
                         seat.appendChild(seatLabel);
+
+                        // Check if seat is occupied
+                        const seatId = `${i}-${j}`;
+                        if (seatData[seatId] && seatData[seatId].passenger_id !== null && seatData[seatId].user_id !== null) {
+                            seat.classList.add('occupied'); // Mark seat as occupied
+                        }
                     }
                     plane.appendChild(seat);
                 }
             }
         }
 
-        // Fetch the remaining tickets from the server
-        fetch('https://skyrocket.onrender.com/role_users/flights/5')
+        // Fetch seat data from the server
+        fetch('https://skyrocket.onrender.com/role_users/chairs/5')
             .then(response => response.json())
             .then(data => {
-                const remainingTickets = data.remaining_tickets;
-                const totalSeats = remainingTickets === 144 ? 144 : remainingTickets === 195 ? 195 : 298;
-                createSeats(totalSeats);
+                const seatData = data.seats;
+                const totalSeats = Object.keys(seatData).length;
+                createSeats(totalSeats, seatData);
             })
             .catch(error => console.error('Error fetching data:', error));
     </script>
