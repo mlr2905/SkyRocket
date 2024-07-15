@@ -13,14 +13,25 @@
             height: 100vh;
             background-color: #f0f0f0;
         }
+        .container {
+            display: flex;
+        }
+        .plane-wrapper {
+            overflow: auto; /* Enable scrolling */
+            height: 80vh; /* Set fixed height */
+            margin-top: 20px; /* Provide spacing */
+            margin-right: 20px; /* Space between plane and legend */
+        }
         .plane {
             display: grid;
-            grid-template-columns: repeat(7, 40px);
-            gap: 5px;
+            grid-template-columns: repeat(7, 50px); /* Adjusted for seats and row number */
+            gap: 10px; /* Adjusted gap between seats */
             background-color: #e0e0e0;
             padding: 20px;
             border-radius: 10px;
             position: relative;
+            width: fit-content; /* Adjust width based on content */
+            margin: 0 auto; /* Center horizontally */
         }
         .plane::before, .plane::after {
             content: 'EXIT';
@@ -41,63 +52,122 @@
             transform: translateX(-50%);
         }
         .seat {
-            width: 40px;
-            height: 40px;
-            background-color: blue;
+            width: 50px; /* Adjusted seat size */
+            height: 50px; /* Adjusted seat size */
             border-radius: 5px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
             cursor: pointer;
             position: relative;
+            font-size: 14px; /* Adjusted font size */
+            color: #fff;
+        }
+        .seat.free {
+            background-color: #8FDBC9; /* Green for free seat */
         }
         .seat.occupied {
-            background-color: red;
+            background-color: #D3D3D3; /* Grey for occupied seat */
         }
         .aisle {
-            width: 40px;
-            height: 40px;
+            width: 50px; /* Adjusted seat size */
+            height: 50px; /* Adjusted seat size */
             background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
         }
         .seat-label {
             position: absolute;
             bottom: 2px;
             right: 2px;
             font-size: 10px;
+            color: #333;
+        }
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+        }
+        .legend-label {
+            font-size: 14px;
+        }
+        .legend-color.green {
+            background-color: #8FDBC9;
+        }
+        .legend-color.grey {
+            background-color: #D3D3D3;
         }
     </style>
 </head>
 <body>
-    <div class="plane" id="plane"></div>
+    <div class="container">
+        <div class="plane-wrapper">
+            <div class="plane" id="plane"></div>
+        </div>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color green"></div>
+                <div class="legend-label">מושב פנוי</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color grey"></div>
+                <div class="legend-label">מושב תפוס</div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Function to create seats
-        function createSeats(numSeats, seatData) {
+        function createSeats(seatsData) {
             const plane = document.getElementById('plane');
             plane.innerHTML = '';
-            const rows = Math.ceil(numSeats / 6); // Calculate the number of rows
+            const rows = Math.ceil(seatsData.length / 7); // Calculate the number of rows
             const columns = ['A', 'B', 'C', 'D', 'E', 'F']; // Column labels
 
             for (let i = 0; i < rows; i++) {
                 for (let j = 0; j < 7; j++) {
-                    const seat = document.createElement('div');
-                    if (j === 3) {
-                        seat.classList.add('aisle'); // Create an aisle
-                    } else {
-                        seat.classList.add('seat');
-                        const seatLabel = document.createElement('div');
-                        seatLabel.classList.add('seat-label');
-                        seatLabel.textContent = `${i + 1}${columns[j > 2 ? j - 1 : j]}`;
-                        seat.appendChild(seatLabel);
+                    const index = i * 7 + j;
+                    if (index < seatsData.length) {
+                        const seat = seatsData[index];
+                        const seatElement = document.createElement('div');
+                        if (j === 3) {
+                            seatElement.classList.add('aisle'); // Create an aisle with row number
+                            seatElement.textContent = i + 1; // Add row number
+                        } else {
+                            seatElement.classList.add('seat');
+                            if (seat.passenger_id === null && seat.user_id === null) {
+                                seatElement.classList.add('free'); // Mark seat as free
+                            } else {
+                                seatElement.classList.add('occupied'); // Mark seat as occupied
+                            }
+                            seatElement.setAttribute('data-id', seat.id); // Add seat ID as a data attribute
 
-                        // Check if seat is occupied
-                        const seatId = `${i}-${j}`;
-                        if (seatData[seatId] && seatData[seatId].passenger_id !== null && seatData[seatId].user_id !== null) {
-                            seat.classList.add('occupied'); // Mark seat as occupied
+                            const seatLabel = document.createElement('div');
+                            seatLabel.classList.add('seat-label');
+                            seatLabel.textContent = `${i + 1}${columns[j > 2 ? j - 1 : j]}`;
+                            seatElement.appendChild(seatLabel);
                         }
+                        plane.appendChild(seatElement);
+                    } else {
+                        // Create empty placeholder divs for remaining columns
+                        const placeholder = document.createElement('div');
+                        placeholder.style.width = '50px'; /* Adjusted seat size */
+                        placeholder.style.height = '50px'; /* Adjusted seat size */
+                        plane.appendChild(placeholder);
                     }
-                    plane.appendChild(seat);
                 }
             }
         }
@@ -106,9 +176,7 @@
         fetch('https://skyrocket.onrender.com/role_users/chairs/5')
             .then(response => response.json())
             .then(data => {
-                const seatData = data.seats;
-                const totalSeats = Object.keys(seatData).length;
-                createSeats(totalSeats, seatData);
+                createSeats(data); // Call function to create seats with fetched data
             })
             .catch(error => console.error('Error fetching data:', error));
     </script>
