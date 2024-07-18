@@ -428,7 +428,7 @@ async function validateEmail(input) {
             }
             if (check.e === "yes") {
                 
-                updateUI('', true, `The email did not go through correctly`,true);
+                updateUI('', true, `The email did not go through correctl`,true);
                 document.getElementById('loading-icon').style.display = 'none';
                 document.getElementById("login-button").style.display = "none"
             }
