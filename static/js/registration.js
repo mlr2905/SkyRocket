@@ -397,7 +397,11 @@ async function validateEmail(input) {
         const data = await response.json();
         if (data.status === "ok") {
             updateUI('invalid', true, "The email already exists", false);
+            document.getElementById('pass').style.display = 'none';
+            document.getElementById('login-button').style.display = 'blok';
             document.getElementById('loading-icon').style.display = 'none';
+
+            
 
         } else {
             let [name, domain] = email.split('@');
