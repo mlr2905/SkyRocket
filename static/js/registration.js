@@ -398,7 +398,7 @@ async function validateEmail(input) {
         if (data.status === "ok") {
             updateUI('invalid', true, "The email already exists", false);
             document.getElementById('pass').style.display = 'none';
-            document.getElementById('login-button').style.display = 'blok';
+            document.getElementById('login-button').style.display = 'block';
             document.getElementById('loading-icon').style.display = 'none';
 
             
