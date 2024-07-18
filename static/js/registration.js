@@ -395,7 +395,7 @@ async function validateEmail(input) {
     try {
         const response = await fetch(`role_users/users/search?email=${email}`);
         const data = await response.json();
-        if (data === "ok") {
+        if (data.status === "ok") {
             updateUI('invalid', true, "The email already exists", false);
             document.getElementById('loading-icon').style.display = 'none';
 
