@@ -428,7 +428,7 @@ async function validateEmail(input) {
             }
             if (check.e === "yes") {
                 
-                updateUI('invalid', true, `errer:'${check.status}' `, false);
+                updateUI('invalid', true, `errer:'${"The email did not go through correctly"}' `, false);
                 document.getElementById('loading-icon').style.display = 'none';
                 document.getElementById("login-button").style.display = "none"
             }
