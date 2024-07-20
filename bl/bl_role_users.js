@@ -187,12 +187,12 @@ async function create_user(uesr) {
 
 async function valid_email(email) {
 
-  let url = `https://api.hunter.io/v2/email-verifier?email=${email}&api_key=e8bd134c4c84943911d41d9e219f107527b2ad90`;
+  let url = `https://www.ipqualityscore.com/api/json/email/goCQBJHwMYjYULVaNcy82xFcdNEhqUIz/${email}`;
 
   try {
     const response = await fetch(url);
     const check = await response.json();
-    const status= check.data.status
+    const status= check.data.valid
     return {"e":"no","status":status}
 
   }
