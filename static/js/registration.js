@@ -409,17 +409,17 @@ async function validateEmail(input) {
             const response = await fetch(`role_users/email?email=${email}`);
             const check = await response.json();
             if (check.e === "no") {
-                if (check.status === "disposable") {
+                if (check.dmarc_record === false) {
                     updateUI('invalid', true, `'${domain}' does not exist `, false);
                     document.getElementById('loading-icon').style.display = 'none';
                     document.getElementById("login-button").style.display = "none"        
                 }
-                if (check.status === "invalid") {
+                if (check.valid === false && check.dmarc_record === true) {
                     updateUI('invalid', true, ` '${name}' not exist in '${domain}' `, false);
                     document.getElementById('loading-icon').style.display = 'none';
                     document.getElementById("login-button").style.display = "none"        
                 }
-                if (check.status === "valid") {
+                if (check.valid === true &&  check.dmarc_record === true) {
                     updateUI('', false, "", true);
                     document.getElementById('loading-icon').style.display = 'none';
                     document.getElementById("login-button").style.display = "none"        
