@@ -194,7 +194,7 @@ async function valid_email(email) {
     const check = await response.json();
     const valid = check.valid
     const dmarc_record = check.dmarc_record
-    return {"e":"no","status":valid,"dmarc_record":dmarc_record}
+    return {"e":"no","valid":valid,"dmarc_record":dmarc_record}
 
   }
   catch (e) {
