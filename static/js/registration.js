@@ -395,7 +395,7 @@ async function validateEmail(input) {
     try {
         const response = await fetch(`role_users/users/search?email=${email}`);
         const data = await response.json();
-        if (data.status === "ok") {
+        if (data.status === true) {
             updateUI('invalid', true, "The email already exists", false);
             document.getElementById('pass').style.display = 'none';
             document.getElementById('login-button').style.display = 'block';
@@ -408,6 +408,7 @@ async function validateEmail(input) {
 
             const response = await fetch(`role_users/email?email=${email}`);
             const check = await response.json();
+        
             if (check.e === "no") {
                 if (check.dmarc_record === false) {
                     updateUI('invalid', true, `'${domain}' does not exist `, false);

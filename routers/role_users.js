@@ -93,7 +93,6 @@ router.get('/email', async (request, response) => {
         const check = await bl.valid_email(email)
       
             response.status(200).json(check)
-
         
     }
 
@@ -185,14 +184,15 @@ router.get('/users/search', async (request, response) => {
 
     try {
         const user = await bl.get_by_id_user(email)
+        console.log("rr",user);
         if (user) {
+            console.log("r",user);
             if (user !== 'Postponed') {
-                response.status(200).json({"e":"no","status":user})
+                response.status(200).json({"e":"no","status":true})
             }
             else {
-                response.status(200).json({"e":"noo","status":"ok"})
+                response.status(200).json({"e":"no","status":"ok"})
 
-                // response.status(403).json({ "e":"yes", "err": `Access denied, you do not have permission to access the requested Id '${email}'` })
             }
         }
         else {
