@@ -424,6 +424,8 @@ async function validateEmail(input) {
                     updateUI('', false, "", true);
                     document.getElementById('loading-icon').style.display = 'none';
                     document.getElementById("login-button").style.display = "none"        
+                    document.getElementById("pass").style.display = "block"        
+
                 }
                
             }
