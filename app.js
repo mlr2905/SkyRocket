@@ -79,7 +79,7 @@ app.get('/google',
 console.log("בדיקה",data);
 
             let loginResponse;
-            if (data.e === "no") {
+            if (data.e === "no"  && data.status == true) {
                 console.log("aaa");
                 // אם המייל קיים, בצע login
                 loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
