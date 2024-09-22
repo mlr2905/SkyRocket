@@ -148,10 +148,14 @@ router.post('/login', async (request, response) => {
 
 router.post('/signup', async (request, response) => {
     try {
+        console.log("tt",request.body);
+        
         const email = request.body.email;
         const password = request.body.password;
         const loginUrl = 'https://skyrocket.onrender.com/login.html';
         const user = await bl.signup(email, password)
+        console.log("2925",user);
+        
         if (user.e === "yes") {
             response.status(409).json({ "e": "yes", "error": `${user.error}`, "loginUrl": loginUrl });
 

@@ -103,6 +103,10 @@ app.get('/google',
                     email: email,
                     password: password
                 });
+                console.log("נרשם בהצלחה",signup);
+                console.log(email,password);
+                
+                
                 if (signup.data.e === "no") {
                     loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                         email: email,
