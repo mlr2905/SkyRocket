@@ -76,6 +76,7 @@ app.get('/google',
             console.log("ll", email);
             const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
             const data = Check.data;
+console.log("בדיקה",data);
 
             let loginResponse;
             if (data.e === "no") {
