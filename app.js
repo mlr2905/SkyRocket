@@ -76,10 +76,10 @@ app.get('/google',
             console.log("ll", email);
             const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
             const data = Check.data;
-console.log("בדיקה",data);
+            console.log("בדיקה", data);
 
             let loginResponse;
-            if (data.e === "no"  && data.status == true) {
+            if (data.e === "no" && data.status == true) {
                 console.log("aaa");
                 // אם המייל קיים, בצע login
                 loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
@@ -96,7 +96,7 @@ console.log("בדיקה",data);
                 }),
                     res.redirect('https://skyrocket.onrender.com/search_form.html');
                 // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-            } else if (data.e === "noo") {
+            } else if (data.e === "no" && data.status == "ok") {
                 console.log("aa");
                 // אם המייל לא קיים, בצע signup ואז login
                 const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
@@ -292,14 +292,14 @@ app.get('/activation', async (req, res) => {
         const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
         const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
         if (!skyToken) {
-            res.status(404).json('on')  
-            console.log('erre');   
-           }
-            else{
-                res.status(200).json('ok');     
-                console.log('ok');   
+            res.status(404).json('on')
+            console.log('erre');
+        }
+        else {
+            res.status(200).json('ok');
+            console.log('ok');
 
-            }
+        }
     } catch (e) {
         return res.status(500).json(e)
     }
@@ -325,7 +325,7 @@ app.get('/', async (req, res, next) => {
         if (req.path === '/login.html') {
             return next()
         }
-        
+
         if (req.path === '/search_form.html') {
             return next()
         }
