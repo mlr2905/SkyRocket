@@ -21,7 +21,7 @@
         font-family: 'Verdana', sans-serif;
         color: #666666;
         line-height: 1.6;
-        background-image: url("plane.jpg");
+        background-image: url("img/plane.jpg");
         background-repeat: no-repeat;
         background-size: 99.9% 99.9%;
         background-position: center;
@@ -314,7 +314,7 @@
 </style>
 
 <body>
-    <img id="loading-icon" src="/loading.gif" alt="Loading...">
+    <img id="loading-icon" src="/img/loading.gif" alt="Loading...">
 
     <form class="signup-form" id="login-form">
         <h1 style="display: none;" id="h1">Register</h1>
@@ -359,7 +359,7 @@
                             style="display: block;" oninput="validatePassword(this)" pattern="^[^#%&+]+$"
                             onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/) || event.key === '#' || event.key === '%' || event.key === '&' || event.key === '+' || event.key === '\\' || event.key === '/'  || event.key === ',' || event.key === '`'|| event.key === '`' || event.key === '.'|| event.key === '[' || event.key === ']' || event.key === '{' || event.key === '}' || event.key === '<' || event.key === '>') return false;"
                             aria-checked="false" disabled>
-                        <img onclick="togglePasswordVisibility(this)" src="/eye.gif" alt="" id="eyeicon"
+                        <img onclick="togglePasswordVisibility(this)" src="/img/eye.gif" alt="" id="eyeicon"
                             style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
                     </div>
                     </br>
@@ -370,7 +370,7 @@
                                 name="password" oninput="Checking_password(this)"
                                 onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/)) return false;"
                                 onpaste="return false;" aria-checked="false" disabled>
-                            <img onclick="togglePasswordVisibility(this)" src="/eye.gif" alt="" id="eyeicon2"
+                            <img onclick="togglePasswordVisibility(this)" src="/img/eye.gif" alt="" id="eyeicon2"
                                 style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
                         </div>
                     </div>

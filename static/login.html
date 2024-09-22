@@ -16,7 +16,7 @@
 <style>
     body {
         font-family: 'Varela Round', sans-serif;
-        background-image: url("plane.jpg");
+        background-image: url("/img/plane.jpg");
         background-repeat: no-repeat;
         background-size: 99.9% 99.9%;
         background-position: center;
@@ -356,7 +356,7 @@ margin-bottom: 5%;
 
 
 <body>
-    <img id="loading-icon" src="/loading.gif" alt="Loading...">
+    <img id="loading-icon" src="/img/loading.gif" alt="Loading...">
 
 
     <form class="LOGIN-form" id="login-form">
@@ -390,7 +390,7 @@ margin-bottom: 5%;
                     style="display: block;" oninput="validatePassword(this)" pattern="^[^#%&+]+$"
                     onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/) || event.key === '#' || event.key === '%' || event.key === '&' || event.key === '+' || event.key === '\\' || event.key === '/'  || event.key === ',' || event.key === '`'|| event.key === '`' || event.key === '.'|| event.key === '[' || event.key === ']' || event.key === '{' || event.key === '}' || event.key === '<' || event.key === '>') return false;"
                     aria-checked="false" disabled>
-                <img src="/eye.gif" alt="" id="eyeicon"
+                <img src="/img/eye.gif" alt="" id="eyeicon"
                     style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
             </div>
 
@@ -495,10 +495,10 @@ margin-bottom: 5%;
         eyeicon.addEventListener("click", () => {
             if (password.type == "password") {
                 password.type = "text";
-                eyeicon.src = "/eye.png";
+                eyeicon.src = "img/eye.png";
             } else {
                 password.type = "password";
-                eyeicon.src = "/eye.gif";
+                eyeicon.src = "img/eye.gif";
 
             }
         })
