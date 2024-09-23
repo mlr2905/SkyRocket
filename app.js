@@ -22,7 +22,6 @@ const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
-const {handleGoogleLogin } = require('./auth/googleAuth');  // ייבוא הפונקציות
 require('dotenv').config();
 
 
@@ -39,110 +38,99 @@ app.listen(9000, () => {
 });
 
 
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "https://skyrocket.onrender.com/google"
+},
+    async function (accessToken, refreshToken, profile, cb) {
 
-app.use(session({ secret: 'keyboard', resave: true, saveUninitialized: true }));
+        return cb(null, { profile, accessToken });
+    }
+));
+
+// מספר הצעדים עבור האימות הוא 2
+// בשלב זה אנו מניחים שיש רק דרך אימות אחת
+passport.serializeUser(function (user, cb) {
+    cb(null, user);
+});
+
+passport.deserializeUser(function (obj, cb) {
+    cb(null, obj);
+});
+
+app.use(require('express-session')({ secret: 'keyboard ', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/google',
-    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
-    handleGoogleLogin  // קריאה לפונקציה שהובאה מ-googleAuth.js
+    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
+    ,
+    async function (req, res) {
+        const { profile, accessToken } = req.user;
+        let email = profile.emails[0].value;
+        let password = profile.id; // ניתן לשנות את זה בהתאם לצורך
+
+        try {
+            console.log("ll", email);
+            const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
+            const data = Check.data;
+            console.log("בדיקה", data);
+
+            let loginResponse;
+            if (data.e === "no" && data.status == true) {
+                console.log("aaa");
+                // אם המייל קיים, בצע login
+                loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                    email: email,
+                    password: password
+                });
+                const token = loginResponse.data.jwt;
+
+                console.log("token", token);
+                return res.cookie('sky', token, {
+                    httpOnly: true,
+                    sameSite: 'strict',
+                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                }),
+                    res.redirect('https://skyrocket.onrender.com/search_form.html');
+                // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
+            } else if (data.e === "no" && data.status == "ok") {
+                console.log("aa");
+                // אם המייל לא קיים, בצע signup ואז login
+                const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                    email: email,
+                    password: password
+                });
+                console.log("נרשם בהצלחה",signup);
+                console.log(email,password);
+                
+                
+                if (signup.data.e === "no") {
+                    loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                        email: email,
+                        password: password
+                    });
+
+                    const token = loginResponse.data.jwt;
+
+                    console.log("token", token);
+                    return res.cookie('sky', token, {
+                        httpOnly: true,
+                        sameSite: 'strict',
+                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                    }),
+                        res.redirect('https://skyrocket.onrender.com/search_form.html');
+
+                }
+            }
+
+        } catch (error) {
+            console.error('Error during signup or login:', error);
+            res.status(500).send('Error during signup or login');
+        }
+    }
 );
-
-
-// passport.use(new GoogleStrategy({
-//     clientID: process.env.GOOGLE_CLIENT_ID,
-//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//     callbackURL: "https://skyrocket.onrender.com/google"
-// },
-//     async function (accessToken, refreshToken, profile, cb) {
-
-//         return cb(null, { profile, accessToken });
-//     }
-// ));
-
-// // מספר הצעדים עבור האימות הוא 2
-// // בשלב זה אנו מניחים שיש רק דרך אימות אחת
-// passport.serializeUser(function (user, cb) {
-//     cb(null, user);
-// });
-
-// passport.deserializeUser(function (obj, cb) {
-//     cb(null, obj);
-// });
-
-// app.use(require('express-session')({ secret: 'keyboard ', resave: true, saveUninitialized: true }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// app.get('/google',
-//     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
-//     ,
-//     async function (req, res) {
-//         const { profile, accessToken } = req.user;
-//         let email = profile.emails[0].value;
-//         let password = profile.id; // ניתן לשנות את זה בהתאם לצורך
-
-//         try {
-//             console.log("ll", email);
-//             const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
-//             const data = Check.data;
-//             console.log("בדיקה", data);
-
-//             let loginResponse;
-//             if (data.e === "no" && data.status == true) {
-//                 console.log("aaa");
-//                 // אם המייל קיים, בצע login
-//                 loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-//                     email: email,
-//                     password: password
-//                 });
-//                 const token = loginResponse.data.jwt;
-
-//                 console.log("token", token);
-//                 return res.cookie('sky', token, {
-//                     httpOnly: true,
-//                     sameSite: 'strict',
-//                     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-//                 }),
-//                     res.redirect('https://skyrocket.onrender.com/search_form.html');
-//                 // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-//             } else if (data.e === "no" && data.status == "ok") {
-//                 console.log("aa");
-//                 // אם המייל לא קיים, בצע signup ואז login
-//                 const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-//                     email: email,
-//                     password: password
-//                 });
-//                 console.log("נרשם בהצלחה",signup);
-//                 console.log(email,password);
-                
-                
-//                 if (signup.data.e === "no") {
-//                     loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-//                         email: email,
-//                         password: password
-//                     });
-
-//                     const token = loginResponse.data.jwt;
-
-//                     console.log("token", token);
-//                     return res.cookie('sky', token, {
-//                         httpOnly: true,
-//                         sameSite: 'strict',
-//                         maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-//                     }),
-//                         res.redirect('https://skyrocket.onrender.com/search_form.html');
-
-//                 }
-//             }
-
-//         } catch (error) {
-//             console.error('Error during signup or login:', error);
-//             res.status(500).send('Error during signup or login');
-//         }
-//     }
-// );
 
 let a;
 passport.use(new GitHubStrategy({
