@@ -84,6 +84,5 @@ const handleGoogleLogin = async (req, res) => {
 };
 
 module.exports = {
-    passport,
     handleGoogleLogin
 };

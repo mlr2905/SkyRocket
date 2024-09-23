@@ -243,7 +243,7 @@ app.get('/git',
             clientID: process.env.TIKTOK_CLIENT_ID,
             clientSecret: process.env.TIKTOK_CLIENT_SECRET,
             callbackURL: "https://skyrocket.onrender.com/tiktok"
-        }),
+        },
         
             function (accessToken, refreshToken, profile, done) {
                 // קריאה ל-API של TikTok לקבלת פרטי המשתמש
