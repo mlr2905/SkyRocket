@@ -46,9 +46,8 @@ app.use(passport.session());
 
 app.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
-    handleGoogleLogin // קריאה לפונקציה מ- googleAuth.js
+    handleGoogleLogin  // קריאה לפונקציה שהובאה מ-googleAuth.js
 );
-
 
 
 // passport.use(new GoogleStrategy({
