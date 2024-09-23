@@ -18,7 +18,7 @@ const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 const { handleGoogleLogin } = require('./auth/Google_Auth');  
-const { handleGitHubLogin } = require('./auth/githubAuth');  // ייבוא הפונקציה
+const { handleGitHubLogin } = require('./auth/Git_Auth');  // ייבוא הפונקציה
 require('dotenv').config();
 app.use(session({ secret: 'keyboard', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
