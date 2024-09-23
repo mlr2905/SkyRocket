@@ -22,7 +22,7 @@ const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
-const { passport, handleGoogleLogin } = require('./auth/googleAuth');  // ייבוא הפונקציות
+const {handleGoogleLogin } = require('./auth/googleAuth');  // ייבוא הפונקציות
 require('dotenv').config();
 
 
