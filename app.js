@@ -225,13 +225,12 @@ app.get('/git',
 
     });
 
-
 passport.use('tiktok', new OAuth2Strategy({
     authorizationURL: 'https://www.tiktok.com/oauth/authorize',
     tokenURL: 'https://open-api.tiktok.com/oauth/token',
-    clientID: process.env.TIKTOK_CLIENTID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.GITHUB_CLIENT_SECRET
+    clientID: process.env.TIKTOK_CLIENT_ID,
+    clientSecret: process.env.TIKTOK_CLIENT_SECRET,
+    callbackURL: process.env.TIKTOK_CLIENT_SECRET
 },
 
     function (accessToken, refreshToken, profile, done) {
