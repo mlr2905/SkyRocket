@@ -4,7 +4,6 @@ const moment = require('moment-timezone');
 const logger = require('./logger/my_logger')
 const path = require('path')
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const body_parser = require('body-parser')
 const all_tables_router = require('./routers/all_tables')
@@ -14,23 +13,17 @@ const role_airlines = require('./routers/role_airlines')
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 const app = express()
-const multer = require('multer');
-const upload = multer(); // להגדרת multer עבור קבצים
-const ip2location = require("ip2location-nodejs");
-const IP2Location = ip2location.IP2Location;
+
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
-const { handleGoogleLogin } = require('./auth/googleAuth');  // ייבוא של הפונקציה בלבד
-
+const { handleGoogleLogin } = require('./auth/Google_Auth');  
+const { handleGitHubLogin } = require('./auth/githubAuth');  // ייבוא הפונקציה
 require('dotenv').config();
+app.use(session({ secret: 'keyboard', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-
-
-
-const qs = require('qs');
-const ip2locationDatabase = new IP2Location("./IP2LOCATION-LITE-DB11.BIN", "IP2LOCATION_SHARED_MEMORY");
 
 
 logger.info('==== System start =======')
@@ -41,62 +34,64 @@ app.listen(9000, () => {
 
 
 
-app.use(session({ secret: 'keyboard', resave: true, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
     handleGoogleLogin  // קריאה לפונקציה שהובאה מ-googleAuth.js
 );
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
 
 
-// passport.use(new GoogleStrategy({
-//     clientID: process.env.GOOGLE_CLIENT_ID,
-//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//     callbackURL: "https://skyrocket.onrender.com/google"
+// ניתוב לאימות GitHub
+app.get('/git',
+    passport.authenticate('github', { scope: ['read:user', 'user:email', 'user:read:email'] }),
+    handleGitHubLogin  
+);
+
+// let a;
+// passport.use(new GitHubStrategy({
+//     clientID: process.env.GITHUB_CLIENT_ID,
+//     clientSecret: process.env.GITHUB_CLIENT_SECRET,
+//     callbackURL: "https://skyrocket.onrender.com/git",
+//     scope: ['read:user', 'user:email', 'user:read:email']
+
 // },
-//     async function (accessToken, refreshToken, profile, cb) {
-
-//         return cb(null, { profile, accessToken });
+//     function (accessToken, refreshToken, profile, done) {
+//         console.log("profile aaaaa", profile);
+//         a = profile
+//         return done(null, profile);
 //     }
 // ));
 
-// // מספר הצעדים עבור האימות הוא 2
-// // בשלב זה אנו מניחים שיש רק דרך אימות אחת
-// passport.serializeUser(function (user, cb) {
-//     cb(null, user);
+// // קבע את השימוש ב-Sessions
+// passport.serializeUser(function (user, done) {
+//     done(null, user);
 // });
 
-// passport.deserializeUser(function (obj, cb) {
-//     cb(null, obj);
+// passport.deserializeUser(function (obj, done) {
+//     done(null, obj);
 // });
 
-// app.use(require('express-session')({ secret: 'keyboard ', resave: true, saveUninitialized: true }));
+// // הגדר את האפליקציה של Express
+// app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 // app.use(passport.initialize());
 // app.use(passport.session());
 
-// app.get('/google',
-//     passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
-//     ,
+// // ניתוב לאימות באמצעות GitHub
+// app.get('/git',
+//     passport.authenticate('github', { scope: ['read:user', 'user:email', 'user:read:email'] }),
 //     async function (req, res) {
-//         const { profile, accessToken } = req.user;
-//         let email = profile.emails[0].value;
-//         let password = profile.id; // ניתן לשנות את זה בהתאם לצורך
+
+//         // הדפסת המידע מהפרופיל
+//         const email = a.emails[0].value;
+//         const password = a.nodeId
 
 //         try {
-//             console.log("ll", email);
 //             const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
 //             const data = Check.data;
-//             console.log("בדיקה", data);
 
 //             let loginResponse;
-//             if (data.e === "no" && data.status == true) {
-//                 console.log("aaa");
+//             if (data.e === "no") {
 //                 // אם המייל קיים, בצע login
 //                 loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
 //                     email: email,
@@ -112,17 +107,13 @@ app.listen(3000, () => {
 //                 }),
 //                     res.redirect('https://skyrocket.onrender.com/search_form.html');
 //                 // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-//             } else if (data.e === "no" && data.status == "ok") {
+//             } else if (data.e === "noo") {
 //                 console.log("aa");
 //                 // אם המייל לא קיים, בצע signup ואז login
 //                 const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
 //                     email: email,
 //                     password: password
 //                 });
-//                 console.log("נרשם בהצלחה",signup);
-//                 console.log(email,password);
-                
-                
 //                 if (signup.data.e === "no") {
 //                     loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
 //                         email: email,
@@ -146,101 +137,9 @@ app.listen(3000, () => {
 //             console.error('Error during signup or login:', error);
 //             res.status(500).send('Error during signup or login');
 //         }
-//     }
-// );
-
-let a;
-passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "https://skyrocket.onrender.com/git",
-    scope: ['read:user', 'user:email', 'user:read:email']
-
-},
-    function (accessToken, refreshToken, profile, done) {
-        console.log("profile aaaaa", profile);
-        a = profile
-        return done(null, profile);
-    }
-));
-
-// קבע את השימוש ב-Sessions
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
-
-passport.deserializeUser(function (obj, done) {
-    done(null, obj);
-});
-
-// הגדר את האפליקציה של Express
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.session());
-
-// ניתוב לאימות באמצעות GitHub
-app.get('/git',
-    passport.authenticate('github', { scope: ['read:user', 'user:email', 'user:read:email'] }),
-    async function (req, res) {
-
-        // הדפסת המידע מהפרופיל
-        const email = a.emails[0].value;
-        const password = a.nodeId
-
-        try {
-            const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
-            const data = Check.data;
-
-            let loginResponse;
-            if (data.e === "no") {
-                // אם המייל קיים, בצע login
-                loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-                    email: email,
-                    password: password
-                });
-                const token = loginResponse.data.jwt;
-
-                console.log("token", token);
-                return res.cookie('sky', token, {
-                    httpOnly: true,
-                    sameSite: 'strict',
-                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-                }),
-                    res.redirect('https://skyrocket.onrender.com/search_form.html');
-                // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-            } else if (data.e === "noo") {
-                console.log("aa");
-                // אם המייל לא קיים, בצע signup ואז login
-                const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-                    email: email,
-                    password: password
-                });
-                if (signup.data.e === "no") {
-                    loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-                        email: email,
-                        password: password
-                    });
-
-                    const token = loginResponse.data.jwt;
-
-                    console.log("token", token);
-                    return res.cookie('sky', token, {
-                        httpOnly: true,
-                        sameSite: 'strict',
-                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-                    }),
-                        res.redirect('https://skyrocket.onrender.com/search_form.html');
-
-                }
-            }
-
-        } catch (error) {
-            console.error('Error during signup or login:', error);
-            res.status(500).send('Error during signup or login');
-        }
 
 
-    });
+//     });
 
         passport.use('tiktok', new OAuth2Strategy({
             authorizationURL: 'https://www.tiktok.com/oauth/authorize',
@@ -363,6 +262,7 @@ app.get('/', async (req, res, next) => {
         return res.status(500).send({ "error": e, "message": 'Internal Server Error' });
     }
 });
+
 
 function redirectToLogin(req, res) {
     res.status(200).send(`
