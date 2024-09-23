@@ -1,5 +1,6 @@
 const knex = require('knex')
-const config = require('config')
+ require('dotenv').config();
+
 
 function connect() {
 
@@ -7,10 +8,10 @@ function connect() {
         client: 'pg',
         version: '15',
         connection: {
-            host: config.db_cloud.host,
-            user: config.db_cloud.user,
-            password: config.db_cloud.password,
-            database: config.db_cloud.database,
+            host: process.env.HOST,
+            user: process.env.USER,
+            password: process.env.PASSEORD,
+            database: process.env.DATABASE,
             ssl: true
         }
     })

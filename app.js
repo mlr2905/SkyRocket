@@ -22,6 +22,8 @@ const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
+require('dotenv').config();
+
 
 
 
@@ -35,13 +37,10 @@ app.listen(9000, () => {
     console.log('Express server is running ....');
 });
 
-const GOOGLE_CLIENT_ID = "806094545534-g0jmjp5j9v1uva73j4e42vche3umt2m0.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
-
 
 passport.use(new GoogleStrategy({
-    clientID: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "https://skyrocket.onrender.com/google"
 },
     async function (accessToken, refreshToken, profile, cb) {
@@ -133,12 +132,10 @@ app.get('/google',
     }
 );
 
-const GITHUB_CLIENT_ID = "Ov23lib9rBqGPaedxi4X"
-const GITHUB_CLIENT_SECRET = "49425ccf70d4bd1cab7b4c40f8609b760022c8d0"
 let a;
 passport.use(new GitHubStrategy({
-    clientID: GITHUB_CLIENT_ID,
-    clientSecret: GITHUB_CLIENT_SECRET,
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: "https://skyrocket.onrender.com/git",
     scope: ['read:user', 'user:email', 'user:read:email']
 
@@ -227,16 +224,14 @@ app.get('/git',
 
 
     });
-// קונפיגורציה
-const tiktok_clientId = 'awgn3o1nd3bn4bjb';
-const tiktok_clientSecret = 'K04uYOnkpIwiVv84vcOAXzqUWG3iTGgj';
+
 
 passport.use('tiktok', new OAuth2Strategy({
     authorizationURL: 'https://www.tiktok.com/oauth/authorize',
     tokenURL: 'https://open-api.tiktok.com/oauth/token',
-    clientID: tiktok_clientId,
-    clientSecret: tiktok_clientSecret,
-    callbackURL: tiktok_clientSecret
+    clientID: process.env.TIKTOK_CLIENTID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: process.env.GITHUB_CLIENT_SECRET
 },
 
     function (accessToken, refreshToken, profile, done) {

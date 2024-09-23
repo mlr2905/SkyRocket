@@ -1,9 +1,0 @@
-{
-    "db_cloud": {
-        "host": "dpg-cm4l7gfqd2ns73ekt5r0-a.oregon-postgres.render.com",
-        "user": "cloud_pgsql_user",
-        "password": "82RLRTti77JTXzJpFWgy1moMgLccs6T3",
-        "database": "cloud_pgsql"
-    }
-}
- 
