@@ -15,7 +15,6 @@ const swaggerUi = require('swagger-ui-express')
 const app = express()
 
 const passport = require('passport');
-const GitHubStrategy = require('passport-github2').Strategy;
 const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 const { handleGoogleLogin } = require('./auth/Google_Auth');  
 const { handleGitHubLogin } = require('./auth/Git_Auth');  // ייבוא הפונקציה
@@ -48,98 +47,6 @@ app.get('/git',
     handleGitHubLogin  
 );
 
-// let a;
-// passport.use(new GitHubStrategy({
-//     clientID: process.env.GITHUB_CLIENT_ID,
-//     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-//     callbackURL: "https://skyrocket.onrender.com/git",
-//     scope: ['read:user', 'user:email', 'user:read:email']
-
-// },
-//     function (accessToken, refreshToken, profile, done) {
-//         console.log("profile aaaaa", profile);
-//         a = profile
-//         return done(null, profile);
-//     }
-// ));
-
-// // קבע את השימוש ב-Sessions
-// passport.serializeUser(function (user, done) {
-//     done(null, user);
-// });
-
-// passport.deserializeUser(function (obj, done) {
-//     done(null, obj);
-// });
-
-// // הגדר את האפליקציה של Express
-// app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// // ניתוב לאימות באמצעות GitHub
-// app.get('/git',
-//     passport.authenticate('github', { scope: ['read:user', 'user:email', 'user:read:email'] }),
-//     async function (req, res) {
-
-//         // הדפסת המידע מהפרופיל
-//         const email = a.emails[0].value;
-//         const password = a.nodeId
-
-//         try {
-//             const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
-//             const data = Check.data;
-
-//             let loginResponse;
-//             if (data.e === "no") {
-//                 // אם המייל קיים, בצע login
-//                 loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-//                     email: email,
-//                     password: password
-//                 });
-//                 const token = loginResponse.data.jwt;
-
-//                 console.log("token", token);
-//                 return res.cookie('sky', token, {
-//                     httpOnly: true,
-//                     sameSite: 'strict',
-//                     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-//                 }),
-//                     res.redirect('https://skyrocket.onrender.com/search_form.html');
-//                 // הפנה לדף הבית או לכל דף אחר לאחר ההתחברות
-//             } else if (data.e === "noo") {
-//                 console.log("aa");
-//                 // אם המייל לא קיים, בצע signup ואז login
-//                 const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-//                     email: email,
-//                     password: password
-//                 });
-//                 if (signup.data.e === "no") {
-//                     loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-//                         email: email,
-//                         password: password
-//                     });
-
-//                     const token = loginResponse.data.jwt;
-
-//                     console.log("token", token);
-//                     return res.cookie('sky', token, {
-//                         httpOnly: true,
-//                         sameSite: 'strict',
-//                         maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
-//                     }),
-//                         res.redirect('https://skyrocket.onrender.com/search_form.html');
-
-//                 }
-//             }
-
-//         } catch (error) {
-//             console.error('Error during signup or login:', error);
-//             res.status(500).send('Error during signup or login');
-//         }
-
-
-//     });
 
         passport.use('tiktok', new OAuth2Strategy({
             authorizationURL: 'https://www.tiktok.com/oauth/authorize',
