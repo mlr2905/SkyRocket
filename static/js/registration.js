@@ -499,16 +499,12 @@ function validatePassword(input) {
     check(specialCharRegex, "Special characters [~!@$^*?=_-]");
     check2(forbidden_characters, `Forbidden characters [ " ' ()]`);
 
-    // הוסף את הבדיקה של התבנית הרגולרית של התווים באנגלית
-
     input.classList.toggle('invalid', errorMessage !== "");
     document.getElementById("password_error").innerHTML = errorMessage;
     document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
     document.getElementById("password_").innerHTML = successMessage;
     document.getElementById("password_").style.display = successMessage ? "block" : "none";
     document.getElementById("password2").disabled = errorMessage ? true : false
-
-
 }
 
 
