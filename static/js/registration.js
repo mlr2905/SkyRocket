@@ -478,7 +478,6 @@ function validatePassword(input) {
     const Numbers = /[0-9]/
     const specialCharRegex = /[~!@$^*?=_-]/;
     const forbidden_characters = /["|'()]/;
-    // התבנית הבאה מייחסת רק לתווים באנגלית
     const englishOnlyRegex = /^[a-zA-Z0-9@$!%*?&]*$/;
     let errorMessage = "";
     let successMessage = "";
