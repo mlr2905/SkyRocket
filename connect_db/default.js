@@ -6,7 +6,7 @@ function connect() {
 
     const connectedKnex = knex({
         client: 'pg',
-        version: '15',
+        version: '16',
         connection: {
             host: process.env.HOST,
             user: process.env.USER,
