@@ -10,7 +10,7 @@ function connect() {
         connection: {
             host: process.env.HOST,
             user: process.env.USER,
-            password: process.env.PASSEORD,
+            password: process.env.PASSWORD,
             database: process.env.DATABASE,
             ssl: true
         }
