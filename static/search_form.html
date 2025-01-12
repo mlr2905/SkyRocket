@@ -704,9 +704,11 @@
         createReturnFlightCards();
 
     }
+
     document.getElementById('logout-button').addEventListener('click', function () {
         alert("You have been logged out!");
     });
+    
     function checkActivationStatus() {
         fetch('https://skyrocket.onrender.com/activation')
             .then(response => {
@@ -781,58 +783,69 @@
         let timeout = null;
 
         async function fetchDataAndStore() {
-            try {
-                let response = await fetch('https://skyrocket.onrender.com/role_users/flights');
-                let data = await response.json();
+    try {
+        let response = await fetch('https://skyrocket.onrender.com/role_users/flights');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        let data = await response.json();
 
-                // Open IndexedDB
-                let dbRequest = indexedDB.open('FlightDB', 1);
+        // Open IndexedDB
+        let dbRequest = indexedDB.open('FlightDB', 1);
 
-                dbRequest.onupgradeneeded = function (event) {
-                    let db = event.target.result;
-                    if (!db.objectStoreNames.contains('flights')) {
-                        db.createObjectStore('flights', { keyPath: 'id', autoIncrement: true });
-                    }
-                };
+        dbRequest.onupgradeneeded = function (event) {
+            let db = event.target.result;
+            if (!db.objectStoreNames.contains('flights')) {
+                db.createObjectStore('flights', { keyPath: 'id' }); // Assuming 'id' exists in data
+            }
+        };
 
-                dbRequest.onsuccess = function (event) {
-                    let db = event.target.result;
-                    let transaction = db.transaction('flights', 'readwrite');
-                    let store = transaction.objectStore('flights');
+        dbRequest.onsuccess = function (event) {
+            let db = event.target.result;
 
-                    // Clear previous data
-                    store.clear();
+            let transaction = db.transaction('flights', 'readwrite');
+            let store = transaction.objectStore('flights');
 
-                    // Add new data
+            // Clear previous data and wait for it to complete
+            let clearRequest = store.clear();
+            clearRequest.onsuccess = function () {
+                console.log('Previous data cleared.');
+
+                // Add new data
+                data.forEach(flight => {
+                    store.add(flight);
+                });
+
+                transaction.oncomplete = function () {
+                    console.log('Data stored successfully in IndexedDB');
+
+                    // Extract unique countries
+                    let countrySet = new Set();
                     data.forEach(flight => {
-                        store.add(flight);
+                        countrySet.add(flight.origin_country_name);
                     });
 
-                    transaction.oncomplete = function () {
-                        console.log('Data stored successfully in IndexedDB');
-
-                        // Extract unique countries
-                        let countrySet = new Set();
-                        data.forEach(flight => {
-                            countrySet.add(flight.origin_country_name);
-                        });
-
-                        let uniqueCountries = Array.from(countrySet);
-                        localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
-                    };
-
-                    transaction.onerror = function (event) {
-                        console.error('Transaction error:', event.target.error);
-                    };
+                    let uniqueCountries = Array.from(countrySet);
+                    localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
                 };
 
-                dbRequest.onerror = function (event) {
-                    console.error('IndexedDB error:', event.target.error);
+                transaction.onerror = function (event) {
+                    console.error('Transaction error:', event.target.error);
                 };
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }
+            };
+
+            clearRequest.onerror = function (event) {
+                console.error('Error clearing data:', event.target.error);
+            };
+        };
+
+        dbRequest.onerror = function (event) {
+            console.error('IndexedDB error:', event.target.error);
+        };
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
 
         function getFlightsFromDB(callback) {
             let dbRequest = indexedDB.open('FlightDB', 1);
