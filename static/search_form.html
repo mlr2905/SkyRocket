@@ -846,29 +846,37 @@
         console.error('Error fetching data:', error);
     }
 }
+function getFlightsFromDB(callback) {
+    let dbRequest = indexedDB.open('FlightDB', 1);
 
-        function getFlightsFromDB(callback) {
-            let dbRequest = indexedDB.open('FlightDB', 1);
+    dbRequest.onsuccess = function (event) {
+        let db = event.target.result;
+        let transaction = db.transaction('flights', 'readonly');
+        let store = transaction.objectStore('flights');
+        let request = store.getAll();
 
-            dbRequest.onsuccess = function (event) {
-                let db = event.target.result;
-                let transaction = db.transaction('flights', 'readonly');
-                let store = transaction.objectStore('flights');
-                let request = store.getAll();
+        request.onsuccess = function (event) {
+            callback(event.target.result); // Pass the results to the callback
+        };
 
-                request.onsuccess = function (event) {
-                    callback(event.target.result);
-                };
+        request.onerror = function (event) {
+            console.error('Request error:', event.target.error);
+        };
 
-                request.onerror = function (event) {
-                    console.error('Request error:', event.target.error);
-                };
-            };
+        transaction.oncomplete = function () {
+            console.log('Transaction completed successfully.');
+        };
 
-            dbRequest.onerror = function (event) {
-                console.error('IndexedDB error:', event.target.error);
-            };
-        }
+        transaction.onerror = function (event) {
+            console.error('Transaction error:', event.target.error);
+        };
+    };
+
+    dbRequest.onerror = function (event) {
+        console.error('IndexedDB error:', event.target.error);
+    };
+}
+
 
         function displayFlights(data) {
             let fromList = document.getElementById('from-list');
