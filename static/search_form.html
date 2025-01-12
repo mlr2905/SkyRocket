@@ -804,27 +804,37 @@
         dbRequest.onsuccess = function (event) {
             let db = event.target.result;
 
-            // יצירת טרנזקציה קריאה וכתיבה
+            // יצירת transaction אחרי פתיחת מסד הנתונים
             let transaction = db.transaction('flights', 'readwrite');
             let store = transaction.objectStore('flights');
 
-            // הוספת הנתונים מ-`data` ל-`objectStore` flights
-            data.forEach(flight => {
-                let addRequest = store.add(flight);
-                addRequest.onsuccess = function () {
-                    console.log(`Flight with ID ${flight.id} added.`);
-                };
-                addRequest.onerror = function (event) {
-                    console.error('Error adding flight:', event.target.error);
-                };
-            });
+            // Clear previous data and add new data
+            let clearRequest = store.clear();
+            clearRequest.onsuccess = function () {
+                console.log('Previous data cleared.');
 
-            transaction.oncomplete = function () {
-                console.log('All data stored successfully in IndexedDB');
+                // Add new data to the store
+                data.forEach(flight => {
+                    let addRequest = store.add(flight);
+                    addRequest.onsuccess = function () {
+                        console.log(`Flight with ID ${flight.id} added.`);
+                    };
+                    addRequest.onerror = function (event) {
+                        console.error('Error adding flight:', event.target.error);
+                    };
+                });
+
+                transaction.oncomplete = function () {
+                    console.log('All data stored successfully in IndexedDB');
+                };
+
+                transaction.onerror = function (event) {
+                    console.error('Transaction error:', event.target.error);
+                };
             };
 
-            transaction.onerror = function (event) {
-                console.error('Transaction error:', event.target.error);
+            clearRequest.onerror = function (event) {
+                console.error('Error clearing previous data:', event.target.error);
             };
         };
 
