@@ -796,7 +796,7 @@
         let data = await response.json();
 
         // פתיחת IndexedDB
-        let dbRequest = indexedDB.open('FlightDB', 1); // ודא שהגרסה תואמת את הגרסה שלך
+        let dbRequest = indexedDB.open('FlightDB', 2); // ודא שהגרסה תואמת את הגרסה שלך
 
         dbRequest.onsuccess = function(event) {
             let db = event.target.result;
@@ -844,7 +844,7 @@
 
 function getFlightsFromIndexedDB(callback) {
     // פותח את IndexedDB
-    let request = indexedDB.open('FlightDB', 1); // ודא שגרסה 1 מתאימה למבנה שלך
+    let request = indexedDB.open('FlightDB', 2); // ודא שגרסה 1 מתאימה למבנה שלך
 
     request.onsuccess = function(event) {
         let db = event.target.result;
@@ -908,7 +908,7 @@ function getFlightsFromIndexedDB(callback) {
 
         function displayAllFlights() {
     // פתיחת IndexedDB
-    let dbRequest = indexedDB.open('FlightDB', 1); // ודא שהגרסה תואמת את הגרסה שלך
+    let dbRequest = indexedDB.open('FlightDB', 2); // ודא שהגרסה תואמת את הגרסה שלך
 
     dbRequest.onsuccess = function(event) {
         let db = event.target.result;
@@ -941,7 +941,7 @@ function getFlightsFromIndexedDB(callback) {
 
 function filterAndDisplayFlights(query) {
     // פתיחת IndexedDB
-    let dbRequest = indexedDB.open('FlightDB', 1); // ודא שהגרסה תואמת את הגרסה שלך
+    let dbRequest = indexedDB.open('FlightDB', 2); // ודא שהגרסה תואמת את הגרסה שלך
 
     dbRequest.onsuccess = function(event) {
         let db = event.target.result;
@@ -1087,7 +1087,7 @@ function filterAndDisplayFlights(query) {
     icon.style.display = 'block';
 
     // פתיחת IndexedDB
-    let dbRequest = indexedDB.open('FlightDB', 1); // ודא שהגרסה תואמת את הגרסה שלך
+    let dbRequest = indexedDB.open('FlightDB', 2); // ודא שהגרסה תואמת את הגרסה שלך
 
     dbRequest.onsuccess = function(event) {
         let db = event.target.result;
@@ -1173,7 +1173,7 @@ function createReturnFlightCards() {
     icon.style.display = 'block';
 
     // פתיחת IndexedDB
-    let dbRequest = indexedDB.open('FlightDB', 1); // ודא שהגרסה תואמת את הגרסה שלך
+    let dbRequest = indexedDB.open('FlightDB', 2); // ודא שהגרסה תואמת את הגרסה שלך
 
     dbRequest.onsuccess = function(event) {
         let db = event.target.result;
