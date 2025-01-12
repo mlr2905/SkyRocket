@@ -795,6 +795,7 @@
 
         dbRequest.onupgradeneeded = function (event) {
             let db = event.target.result;
+            // אם ה-ObjectStore לא קיים, צור אותו
             if (!db.objectStoreNames.contains('flights')) {
                 db.createObjectStore('flights', { keyPath: 'id' }); // Assuming 'id' exists in data
             }
@@ -803,45 +804,27 @@
         dbRequest.onsuccess = function (event) {
             let db = event.target.result;
 
+            // יצירת טרנזקציה קריאה וכתיבה
             let transaction = db.transaction('flights', 'readwrite');
             let store = transaction.objectStore('flights');
 
-            // Clear previous data (if necessary)
-            let clearRequest = store.clear();
-            clearRequest.onsuccess = function () {
-                console.log('Previous data cleared.');
-
-                // Add new data
-                data.forEach(flight => {
-                    let addRequest = store.put(flight); // Change from 'add' to 'put' to handle updates
-                    addRequest.onsuccess = function () {
-                        console.log(`Flight with ID ${flight.id} added/updated.`);
-                    };
-                    addRequest.onerror = function (event) {
-                        console.error('Error adding flight:', event.target.error);
-                    };
-                });
-
-                transaction.oncomplete = function () {
-                    console.log('Data stored successfully in IndexedDB');
-
-                    // Extract unique countries
-                    let countrySet = new Set();
-                    data.forEach(flight => {
-                        countrySet.add(flight.origin_country_name);
-                    });
-
-                    let uniqueCountries = Array.from(countrySet);
-                    localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
+            // הוספת הנתונים מ-`data` ל-`objectStore` flights
+            data.forEach(flight => {
+                let addRequest = store.add(flight);
+                addRequest.onsuccess = function () {
+                    console.log(`Flight with ID ${flight.id} added.`);
                 };
-
-                transaction.onerror = function (event) {
-                    console.error('Transaction error:', event.target.error);
+                addRequest.onerror = function (event) {
+                    console.error('Error adding flight:', event.target.error);
                 };
+            });
+
+            transaction.oncomplete = function () {
+                console.log('All data stored successfully in IndexedDB');
             };
 
-            clearRequest.onerror = function (event) {
-                console.error('Error clearing data:', event.target.error);
+            transaction.onerror = function (event) {
+                console.error('Transaction error:', event.target.error);
             };
         };
 
@@ -852,6 +835,7 @@
         console.error('Error fetching data:', error);
     }
 }
+
 function getFlightsFromDB(callback) {
     let dbRequest = indexedDB.open('FlightDB', 2); // עדכון לגרסה 2 אם שינית את מבנה מסד הנתונים
 
