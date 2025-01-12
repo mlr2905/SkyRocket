@@ -790,90 +790,39 @@
         }
         let data = await response.json();
 
-        // Open IndexedDB
-        let dbRequest = indexedDB.open('FlightDB', 2); // גרסה 2, במקרה שיש שדרוגים
+        // שמירה באחסון מקומי
+        localStorage.setItem('flights', JSON.stringify(data)); // המרת הנתונים ל-JSON ושמירה
 
-        dbRequest.onupgradeneeded = function (event) {
-            let db = event.target.result;
-            // אם ה-ObjectStore לא קיים, צור אותו
-            if (!db.objectStoreNames.contains('flights')) {
-                db.createObjectStore('flights', { keyPath: 'id' }); // Assuming 'id' exists in data
-            }
-        };
+        console.log('Data saved to localStorage');
 
-        dbRequest.onsuccess = function (event) {
-            let db = event.target.result;
+        // אם ברצונך לשמור גם את רשימת המדינות הייחודיות
+        let countrySet = new Set();
+        data.forEach(flight => {
+            countrySet.add(flight.origin_country_name);
+        });
 
-            // יצירת transaction אחרי פתיחת מסד הנתונים
-            let transaction = db.transaction('flights', 'readwrite');
-            let store = transaction.objectStore('flights');
+        let uniqueCountries = Array.from(countrySet);
+        localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
 
-            // Clear previous data and add new data
-            let clearRequest = store.clear();
-            clearRequest.onsuccess = function () {
-                console.log('Previous data cleared.');
-
-                // Add new data to the store
-                data.forEach(flight => {
-                    let addRequest = store.add(flight);
-                    addRequest.onsuccess = function () {
-                        console.log(`Flight with ID ${flight.id} added.`);
-                    };
-                    addRequest.onerror = function (event) {
-                        console.error('Error adding flight:', event.target.error);
-                    };
-                });
-
-                transaction.oncomplete = function () {
-                    console.log('All data stored successfully in IndexedDB');
-                };
-
-                transaction.onerror = function (event) {
-                    console.error('Transaction error:', event.target.error);
-                };
-            };
-
-            clearRequest.onerror = function (event) {
-                console.error('Error clearing previous data:', event.target.error);
-            };
-        };
-
-        dbRequest.onerror = function (event) {
-            console.error('IndexedDB error:', event.target.error);
-        };
+        console.log('Unique countries saved to localStorage');
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 }
 
-function getFlightsFromDB(callback) {
-    let dbRequest = indexedDB.open('FlightDB', 2); // עדכון לגרסה 2 אם שינית את מבנה מסד הנתונים
-
-    dbRequest.onsuccess = function (event) {
-        let db = event.target.result;
-        let transaction = db.transaction('flights', 'readonly');
-        let store = transaction.objectStore('flights');
-        let request = store.getAll();
-
-        request.onsuccess = function (event) {
-            callback(event.target.result); // Pass the results to the callback
-        };
-
-        request.onerror = function (event) {
-            console.error('Request error:', event.target.error);
-        };
-
-        transaction.onerror = function (event) {
-            console.error('Transaction error:', event.target.error);
-        };
-    };
-
-    dbRequest.onerror = function (event) {
-        console.error('IndexedDB error:', event.target.error);
-    };
+function getFlightsFromLocalStorage(callback) {
+    // שלוף את נתוני הטיסות מאחסון מקומי
+    let flightsData = localStorage.getItem('flights');
+    
+    if (flightsData) {
+        // המרת המידע חזרה לאובייקט אם קיים
+        let parsedData = JSON.parse(flightsData);
+        callback(parsedData); // שלח את הנתונים לפונקציה callback
+    } else {
+        console.log('No flights data found in localStorage');
+        callback([]); // אם אין נתונים, שלח מערך ריק
+    }
 }
-
-
         function displayFlights(data) {
             let fromList = document.getElementById('from-list');
             fromList.innerHTML = ''; // Clear previous items
@@ -1022,168 +971,145 @@ function getFlightsFromDB(callback) {
     });
 
     function createOutboundFlightCards() {
-        const icon = document.getElementById('loading-icon');
-        icon.style.display = 'block';
+    const icon = document.getElementById('loading-icon');
+    icon.style.display = 'block';
 
-        // Open IndexedDB
-        const request = indexedDB.open('FlightDB');
-
-        request.onsuccess = function (event) {
-            const db = event.target.result;
-
-            // Assuming 'flights' is the object store name
-            const transaction = db.transaction(['flights'], 'readonly');
-            const objectStore = transaction.objectStore('flights');
-
-            const from = document.getElementById('from').value.toLowerCase();
-            const to = document.getElementById('to').value.toLowerCase();
-
-            const container = document.getElementById('flights-container');
-            container.innerHTML = ''; // Clear previous results
-
-            const outboundContainer = document.createElement('div');
-            outboundContainer.className = 'flight-grid';
-
-
-
-            container.appendChild(outboundContainer);
-
-            let resultCount = 0;
-
-            objectStore.openCursor().onsuccess = function (event) {
-                const cursor = event.target.result;
-                if (cursor) {
-                    const flight = cursor.value;
-                    if (flight.origin_country_name.toLowerCase() === from && flight.destination_country_name.toLowerCase() === to) {
-                        const departureDate = new Date(flight.departure_time).toLocaleDateString();
-                        const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        const landingDate = new Date(flight.landing_time).toLocaleDateString();
-                        const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                        // Calculate duration in milliseconds
-                        const departureTimestamp = new Date(flight.departure_time).getTime();
-                        const landingTimestamp = new Date(flight.landing_time).getTime();
-                        const durationMs = landingTimestamp - departureTimestamp;
-
-                        // Convert milliseconds to hours and minutes
-                        const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
-                        const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-
-                        // Format duration as HH:mm
-                        const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
-
-                        // Calculate total minutes
-                        const totalMinutes = durationHours * 60 + durationMinutes;
-
-                        // Calculate price based on rate per hour (assuming 150 units per hour)
-                        const price = Math.ceil(totalMinutes / 60) * 150;
-
-                        // Create flight card with corrected price calculation
-                        const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
-                        outboundContainer.appendChild(card);
-                        resultCount++;
-                    }
-                    cursor.continue();
-                } else {
-                    icon.style.display = 'none';
-                    // Set container height based on the number of results
-                    if (resultCount <= 2) {
-                        container.style.maxHeight = 'none'; // Disable max-height for fewer results
-                    } else {
-                        container.style.maxHeight = '400px'; // Re-enable max-height for more results
-                    }
-                }
-            };
-        };
-
-        request.onerror = function (event) {
-            console.error("Error opening indexedDB: ", event.target.error);
-        };
+    // שלוף את הנתונים מ-localStorage
+    let flightsData = localStorage.getItem('flights');
+    
+    if (!flightsData) {
+        console.log('No flight data found in localStorage');
+        icon.style.display = 'none';
+        return;
     }
 
+    let flights = JSON.parse(flightsData);
 
-    function createReturnFlightCards() {
-        const icon = document.getElementById('loading-icon');
-        icon.style.display = 'block';
+    const from = document.getElementById('from').value.toLowerCase();
+    const to = document.getElementById('to').value.toLowerCase();
 
-        // Open IndexedDB
-        const request = indexedDB.open('FlightDB');
+    const container = document.getElementById('flights-container');
+    container.innerHTML = ''; // Clear previous results
 
-        request.onsuccess = function (event) {
-            const db = event.target.result;
+    const outboundContainer = document.createElement('div');
+    outboundContainer.className = 'flight-grid';
 
-            // Check if 'flights' object store exists
-            if (db.objectStoreNames.contains('flights')) {
-                const transaction = db.transaction(['flights'], 'readonly');
-                const objectStore = transaction.objectStore('flights');
+    container.appendChild(outboundContainer);
 
-                const from = document.getElementById('from').value.toLowerCase();
-                const to = document.getElementById('to').value.toLowerCase();
+    let resultCount = 0;
 
-                const container = document.getElementById('flights-container2');
-                container.innerHTML = ''; // Clear previous results
+    // Filter flights by origin and destination country
+    flights.forEach(flight => {
+        if (flight.origin_country_name.toLowerCase() === from && flight.destination_country_name.toLowerCase() === to) {
+            const departureDate = new Date(flight.departure_time).toLocaleDateString();
+            const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const landingDate = new Date(flight.landing_time).toLocaleDateString();
+            const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                const returnContainer = document.createElement('div');
-                returnContainer.className = 'flight-grid';
+            // Calculate duration in milliseconds
+            const departureTimestamp = new Date(flight.departure_time).getTime();
+            const landingTimestamp = new Date(flight.landing_time).getTime();
+            const durationMs = landingTimestamp - departureTimestamp;
 
+            // Convert milliseconds to hours and minutes
+            const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+            const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
 
-                container.appendChild(returnContainer);
+            // Format duration as HH:mm
+            const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
 
-                let resultCount = 0;
+            // Calculate total minutes
+            const totalMinutes = durationHours * 60 + durationMinutes;
 
-                objectStore.openCursor().onsuccess = function (event) {
-                    const cursor = event.target.result;
-                    if (cursor) {
-                        const flight = cursor.value;
-                        if (flight.origin_country_name.toLowerCase() === to && flight.destination_country_name.toLowerCase() === from) {
-                            const departureDate = new Date(flight.departure_time).toLocaleDateString();
-                            const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                            const landingDate = new Date(flight.landing_time).toLocaleDateString();
-                            const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // Calculate price based on rate per hour (assuming 150 units per hour)
+            const price = Math.ceil(totalMinutes / 60) * 150;
 
-                            // Calculate duration in milliseconds
-                            const departureTimestamp = new Date(flight.departure_time).getTime();
-                            const landingTimestamp = new Date(flight.landing_time).getTime();
-                            const durationMs = landingTimestamp - departureTimestamp;
+            // Create flight card with corrected price calculation
+            const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
+            outboundContainer.appendChild(card);
+            resultCount++;
+        }
+    });
 
-                            // Convert milliseconds to hours and minutes
-                            const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
-                            const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-
-                            // Format duration as HH:mm
-                            const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
-
-                            // Calculate total minutes
-                            const totalMinutes = durationHours * 60 + durationMinutes;
-
-                            // Calculate price based on rate per hour (assuming 150 units per hour)
-                            const price = Math.ceil(totalMinutes / 60) * 150;
-
-                            // Create flight card with corrected price calculation
-                            const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
-                            returnContainer.appendChild(card);
-                            resultCount++;
-                        }
-                        cursor.continue();
-                    } else {
-                        icon.style.display = 'none';
-                        // Set container height based on the number of results
-                        if (resultCount <= 2) {
-                            container.style.maxHeight = 'none'; // Disable max-height for fewer results
-                        } else {
-                            container.style.maxHeight = '300px'; // Re-enable max-height for more results
-                        }
-                    }
-                };
-            } else {
-                console.error("Object store 'flights' not found in 'FlightDB'.");
-            }
-        };
-
-        request.onerror = function (event) {
-            console.error("Error opening FlightDB: ", event.target.error);
-        };
+    icon.style.display = 'none';
+    // Set container height based on the number of results
+    if (resultCount <= 2) {
+        container.style.maxHeight = 'none'; // Disable max-height for fewer results
+    } else {
+        container.style.maxHeight = '400px'; // Re-enable max-height for more results
     }
+}
+
+
+function createReturnFlightCards() {
+    const icon = document.getElementById('loading-icon');
+    icon.style.display = 'block';
+
+    // שלוף את הנתונים מ-localStorage
+    let flightsData = localStorage.getItem('flights');
+    
+    if (!flightsData) {
+        console.log('No flight data found in localStorage');
+        icon.style.display = 'none';
+        return;
+    }
+
+    let flights = JSON.parse(flightsData);
+
+    const from = document.getElementById('from').value.toLowerCase();
+    const to = document.getElementById('to').value.toLowerCase();
+
+    const container = document.getElementById('flights-container2');
+    container.innerHTML = ''; // Clear previous results
+
+    const returnContainer = document.createElement('div');
+    returnContainer.className = 'flight-grid';
+
+    container.appendChild(returnContainer);
+
+    let resultCount = 0;
+
+    // סינון טיסות לפי מקור ויעד הפוך
+    flights.forEach(flight => {
+        if (flight.origin_country_name.toLowerCase() === to && flight.destination_country_name.toLowerCase() === from) {
+            const departureDate = new Date(flight.departure_time).toLocaleDateString();
+            const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const landingDate = new Date(flight.landing_time).toLocaleDateString();
+            const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // חישוב משך זמן בטיסות
+            const departureTimestamp = new Date(flight.departure_time).getTime();
+            const landingTimestamp = new Date(flight.landing_time).getTime();
+            const durationMs = landingTimestamp - departureTimestamp;
+
+            // המרת מילי שניות לשעות ודקות
+            const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+            const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+
+            // פורמט משך הזמן כ-HH:mm
+            const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
+
+            // חישוב זמן כולל לדקות
+            const totalMinutes = durationHours * 60 + durationMinutes;
+
+            // חישוב מחיר על פי תעריף לשעה (נניח 150 יחידות לשעה)
+            const price = Math.ceil(totalMinutes / 60) * 150;
+
+            // יצירת כרטיס טיסה עם חישוב מחיר מתוקן
+            const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
+            returnContainer.appendChild(card);
+            resultCount++;
+        }
+    });
+
+    icon.style.display = 'none';
+    // קביעת גובה הקונטיינר לפי כמות התוצאות
+    if (resultCount <= 2) {
+        container.style.maxHeight = 'none'; // Disable max-height for fewer results
+    } else {
+        container.style.maxHeight = '300px'; // Re-enable max-height for more results
+    }
+}
 
     function createFlightCard(id, price, departureDate, departureTime, duration, landingDate, landingTime, origin, destination, airlineId) {
         const card = document.createElement('div');
