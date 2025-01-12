@@ -855,16 +855,27 @@ function getFlightsFromLocalStorage(callback) {
                 displayFlights(uniqueCountries);
             }
         }
-
         function filterAndDisplayFlights(query) {
-            getFlightsFromDB(function (flightData) {
-                if (flightData) {
-                    let regex = new RegExp(query, 'i');
-                    let filteredFlights = flightData.filter(flight => regex.test(flight.origin_country_name));
-                    displayFlights(filteredFlights.map(flight => flight.origin_country_name));
-                }
-            });
-        }
+    // שלוף את נתוני הטיסות מ-localStorage
+    let flightsData = localStorage.getItem('flights');
+    
+    if (!flightsData) {
+        console.log('No flight data found in localStorage');
+        return;
+    }
+
+    let flightData = JSON.parse(flightsData);
+
+    if (flightData) {
+        let regex = new RegExp(query, 'i');
+        // סינון הטיסות לפי שם המדינה של המקור
+        let filteredFlights = flightData.filter(flight => regex.test(flight.origin_country_name));
+        
+        // הצגת הטיסות שהן תוצאה של הסינון
+        displayFlights(filteredFlights.map(flight => flight.origin_country_name));
+    }
+}
+
 
         function updateDestinationOptions(originCountry) {
 
