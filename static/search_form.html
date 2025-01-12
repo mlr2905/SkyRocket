@@ -791,7 +791,7 @@
         let data = await response.json();
 
         // Open IndexedDB
-        let dbRequest = indexedDB.open('FlightDB', 1);
+        let dbRequest = indexedDB.open('FlightDB', 2); // גרסה 2, במקרה שיש שדרוגים
 
         dbRequest.onupgradeneeded = function (event) {
             let db = event.target.result;
@@ -806,14 +806,20 @@
             let transaction = db.transaction('flights', 'readwrite');
             let store = transaction.objectStore('flights');
 
-            // Clear previous data and wait for it to complete
+            // Clear previous data (if necessary)
             let clearRequest = store.clear();
             clearRequest.onsuccess = function () {
                 console.log('Previous data cleared.');
 
                 // Add new data
                 data.forEach(flight => {
-                    store.add(flight);
+                    let addRequest = store.put(flight); // Change from 'add' to 'put' to handle updates
+                    addRequest.onsuccess = function () {
+                        console.log(`Flight with ID ${flight.id} added/updated.`);
+                    };
+                    addRequest.onerror = function (event) {
+                        console.error('Error adding flight:', event.target.error);
+                    };
                 });
 
                 transaction.oncomplete = function () {
@@ -847,7 +853,7 @@
     }
 }
 function getFlightsFromDB(callback) {
-    let dbRequest = indexedDB.open('FlightDB', 1);
+    let dbRequest = indexedDB.open('FlightDB', 2); // עדכון לגרסה 2 אם שינית את מבנה מסד הנתונים
 
     dbRequest.onsuccess = function (event) {
         let db = event.target.result;
@@ -861,10 +867,6 @@ function getFlightsFromDB(callback) {
 
         request.onerror = function (event) {
             console.error('Request error:', event.target.error);
-        };
-
-        transaction.oncomplete = function () {
-            console.log('Transaction completed successfully.');
         };
 
         transaction.onerror = function (event) {
