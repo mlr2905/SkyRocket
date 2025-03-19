@@ -35,6 +35,10 @@ const handleGitHubLogin = async (req, res) => {
     try {
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
         const data = Check.data;
+
+        if (data.authProvider !=="github") {
+            res.status(403).send(`Access denied. Please log in using github." `);
+        }
        
 
         let loginResponse;
