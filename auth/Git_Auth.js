@@ -37,7 +37,7 @@ const handleGitHubLogin = async (req, res) => {
         const data = Check.data;
 
         if (data.authProvider !=="github") {
-            res.status(403).send(`Access denied. Please log in using github." `);
+            res.status(403).send(`Access denied. Please log in using ${data.authProvider}." `);
         }
        
 

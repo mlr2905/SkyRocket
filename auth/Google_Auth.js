@@ -33,7 +33,7 @@ const handleGoogleLogin = async (req, res) => {
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
         const data = Check.data;
         if (data.authProvider !=="google") {
-            res.status(403).send(`Access denied. Please log in using google." `);
+            res.status(403).send(`Access denied. Please log in using ${data.authProvider}." `);
         }
         let loginResponse;
         if (data.e === "no" && data.status == true) {
