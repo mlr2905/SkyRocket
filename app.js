@@ -28,6 +28,9 @@ app.use(passport.session());
 logger.info('==== System start =======')
 app.use(cors());
 app.listen(9000, () => {
+    
+    console.log('localhost:9000');
+
     console.log('Express server is running ....');
 });
 
