@@ -115,12 +115,13 @@ async function login(email, password, ip, userAgent) {
 }
 
 
-async function signup(email, password) {
+async function signup(email, password,authProvider) {
   let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
   let url_spring = "https://spring-postgresql.onrender.com"
   const data = {
     email: email,
-    password: password
+    password: password,
+    authProvider:authProvider
   };
 
   let requestOptions = {
