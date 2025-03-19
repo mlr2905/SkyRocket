@@ -35,13 +35,16 @@ const handleGitHubLogin = async (req, res) => {
     try {
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
         const data = Check.data;
+       
 
         let loginResponse;
         if (data.e === "no") {
             // בצע login
             loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                 email: email,
-                password: password
+                password: password,
+                authProvider:'github'
+
             });
             const token = loginResponse.data.jwt;
 

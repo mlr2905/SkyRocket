@@ -217,7 +217,7 @@ async function get_by_id_user(email) {
     const data = await response.json();
     if (data.status === undefined) {
       console.log(data);
-      return "ok";
+      return data.authProvider;
     } else {
       return 'Postponed';
     }

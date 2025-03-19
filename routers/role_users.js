@@ -193,7 +193,7 @@ router.get('/users/search', async (request, response) => {
         if (user) {
             console.log("r",user);
             if (user !== 'Postponed') {
-                response.status(200).json({"e":"no","status":true})
+                response.status(200).json({"e":"no","status":true,"authProvider":user})
             }
             else {
                 response.status(200).json({"e":"no","status":"ok"})
