@@ -50,7 +50,8 @@ const handleGoogleLogin = async (req, res) => {
         } else if (data.e === "no" && data.status == "ok") {
             const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                 email: email,
-                password: password
+                password: password,
+                authProvider:'google'
             });
 
             if (signup.data.e === "no") {
