@@ -188,25 +188,20 @@ router.get('/users/search', async (request, response) => {
     // let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
 
     try {
-        const user = await bl.get_by_id_user(email)
-        console.log("rr",user);
-        if (user) {
-            console.log("r",user);
-            if (user !== 'Postponed') {
-                response.status(200).json({"e":"no","status":true,"authProvider":user})
-            }
-            else {
-                response.status(200).json({"e":"no","status":"ok"})
+        const user = await bl.get_by_email_user(email)
+        if (!user) {
+            return response.status(404).json({ error: `Cannot find user with email: '${email}'` });
+        }
+    
+        
+        return response.status(200).json({ e: "no", status: true, authProvider: user });
 
-            }
-        }
-        else {
-            response.status(404).json({ "error": `cannot find user with id '${search}'` })
-        }
+     
     }
     catch (error) {
-        response.status(503).json({ "error": `The request failed, try again later '${error}'` })
-    }
+        console.error("Error fetching user:", error);
+        response.status(500).json({ error: "Internal Server Error. Please try again later." });
+        }
 })
 
 // GET by ID

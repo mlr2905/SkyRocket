@@ -203,28 +203,31 @@ async function valid_email(email) {
   }
 }
 
-async function get_by_id_user(email) {
+async function get_by_email_user(email) {
   let url = null;
 
   // if (id === undefined) {
   //   url = `https://spring-a.onrender.com/${id}`;
   // } else {
   url = `https://jwt-node-mongodb.onrender.com/search?email=${email}`;
+// }
 
+try {
+  const response = await fetch(url);
 
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.status === undefined) {
-      console.log(data);
+  const data = await response.json();
+
+  if (data && !data.status) {
+      console.log("User data received:", data);
       return data.authProvider;
-    } else {
-      return 'Postponed';
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    return false;
   }
+
+  return null;
+
+} catch (error) {
+  console.error("Error fetching user data:", error.message);
+  return { error: error.message };
+}
 }
 
 
@@ -409,7 +412,7 @@ async function get_by_id_ticket(id) {
 
 
 module.exports = {
-  get_all_chairs_by_flight,valid_email, authcode, login_code, login, signup, purchase_ticket, create_user, get_by_id_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
+  get_all_chairs_by_flight,valid_email, authcode, login_code, login, signup, purchase_ticket, create_user, get_by_email_user, get_by_id_flights, get_all_flights, update_user, delete_account, new_customer
   , get_by_id_customer, update_customer, get_by_id_ticket, get_by_id_passenger, new_passenger, get_qr
 
 }

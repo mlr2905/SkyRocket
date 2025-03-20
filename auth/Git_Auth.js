@@ -36,19 +36,15 @@ const handleGitHubLogin = async (req, res) => {
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
         const data = Check.data;
 
-        if (data.authProvider !=="github") {
-            res.status(403).send(`Access denied. Please log in using ${data.authProvider}." `);
-        }
-       
-
         let loginResponse;
-        if (data.e === "no") {
+        if (data.e === "no" && data.status == true) {
             // בצע login
+            if (data.authProvider !=="github") {
+                res.status(403).send(`Access denied. Please log in using ${data.authProvider}." `);
+            }
             loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                 email: email,
-                password: password,
-                authProvider:'github'
-
+                password: password
             });
             const token = loginResponse.data.jwt;
 
@@ -58,26 +54,14 @@ const handleGitHubLogin = async (req, res) => {
                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
             }),
             res.redirect('https://skyrocket.onrender.com/search_form.html');
-        } else if (data.e === "noo") {
+        } else if (data.status == 404) {
             // בצע signup ואז login
             const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                 email: email,
-                password: password
+                password: password,
+                authProvider:'github'
             });
-            if (signup.data.e === "no") {
-                loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-                    email: email,
-                    password: password
-                });
-                const token = loginResponse.data.jwt;
-
-                return res.cookie('sky', token, {
-                    httpOnly: true,
-                    sameSite: 'strict',
-                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
-                }),
-                res.redirect('https://skyrocket.onrender.com/search_form.html');
-            }
+         
         }
     } catch (error) {
         console.error('Error during signup or login:', error);
