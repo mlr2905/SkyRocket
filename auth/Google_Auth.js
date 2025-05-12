@@ -67,7 +67,7 @@ const handleGoogleLogin = async (req, res) => {
             }),
             res.redirect('https://skyrocket.onrender.com/search_form.html');
         }
-    else if (data.status == 404) {
+    else if (data.status === 404) {
              // בצע signup ואז login
              console.log("הרשמה");
              
@@ -80,7 +80,6 @@ const handleGoogleLogin = async (req, res) => {
           
         }
     } catch (error) {
-        console.log("Check",Check);
 
         res.status(500).json({
             message: 'Error during signup or login',
