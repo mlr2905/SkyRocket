@@ -54,7 +54,9 @@ const handleGoogleLogin = async (req, res) => {
            email: email,
            password: password,
            authProvider:'google'
+           
        });
+       res.redirect('https://skyrocket.onrender.com/search_form.html');
 
      
    }
