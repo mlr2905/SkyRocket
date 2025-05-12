@@ -28,11 +28,12 @@ const handleGoogleLogin = async (req, res) => {
     const { profile, accessToken } = req.user;
     const email = profile.emails[0].value;
     const password = profile.id;
-   
+    console.log("yy",email,password);
     
-
-
+   
     try {
+        console.log("התחלה");
+        
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
         console.log("Check",Check);
 
