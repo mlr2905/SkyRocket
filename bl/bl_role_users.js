@@ -208,13 +208,7 @@ async function valid_email(email) {
 }
 
 async function get_by_email_user(email) {
-  let url = null;
-
-  // if (id === undefined) {
-  //   url = `https://spring-a.onrender.com/${id}`;
-  // } else {
-  url = `https://jwt-node-mongodb.onrender.com/search?email=${email}`;
-// }
+  let url =`https://jwt-node-mongodb.onrender.com/search?email=${email}`;
 
 try {
   const response = await fetch(url);

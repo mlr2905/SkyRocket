@@ -181,6 +181,8 @@ router.get('/users/search', async (request, response) => {
 
     const query = request.query
     const email = query.email
+    console.log("ראטור",query);
+    
     // const username = query.username
     // const password = query.password
     // const id = query.id
@@ -189,6 +191,8 @@ router.get('/users/search', async (request, response) => {
 
     try {
         const user = await bl.get_by_email_user(email)
+        console.log("user",user);
+
         if (!user) {
             return response.status(404).json({ error: `Cannot find user with email: '${email}'` });
         }
