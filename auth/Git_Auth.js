@@ -34,9 +34,18 @@ const handleGitHubLogin = async (req, res) => {
     const password = a.nodeId;
 
     try {
-        const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
+     const Check = await axios.get(
+            `https://skyrocket.onrender.com/role_users/users/search?email=${email}`,
+            {
+                validateStatus: function (status) {
+                    return status < 500; 
+                 }
+            }
+        )
         const data = Check.data;
         if (data.error) {
+            console.log("הרשמה");
+
             // בצע signup ואז login
             const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                 email: email,
