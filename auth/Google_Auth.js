@@ -29,16 +29,14 @@ const handleGoogleLogin = async (req, res) => {
     const email = profile.emails[0].value;
     const password = profile.id;
     console.log(profile);
-    console.log("aa",email);
-    console.log("pp",password);
-    
-    
+   
     
 
 
     try {
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
         const data = Check.data;
+       console.log("data",data);
        
         let loginResponse;
         if (data.e === "no" && data.status == true) {
@@ -63,6 +61,8 @@ const handleGoogleLogin = async (req, res) => {
         }
          else if (data.status == 404) {
              // בצע signup ואז login
+             console.log("הרשמה");
+             
             const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                 email: email,
                 password: password,
