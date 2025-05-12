@@ -46,6 +46,18 @@ const handleGoogleLogin = async (req, res) => {
         const data = Check.data;
        console.log("dtt",data);
        
+       if (data.error) {
+        // בצע signup ואז login
+        console.log("הרשמה");
+        
+       const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+           email: email,
+           password: password,
+           authProvider:'google'
+       });
+
+     
+   }
         let loginResponse;
         if (data.e === "no" && data.status == true) {
              // בצע login
@@ -67,18 +79,7 @@ const handleGoogleLogin = async (req, res) => {
             }),
             res.redirect('https://skyrocket.onrender.com/search_form.html');
         }
-    else if (data.error) {
-             // בצע signup ואז login
-             console.log("הרשמה");
-             
-            const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-                email: email,
-                password: password,
-                authProvider:'google'
-            });
-
-          
-        }
+    
     } catch (error) {
 
         res.status(500).json({
