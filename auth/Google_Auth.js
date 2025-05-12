@@ -74,6 +74,8 @@ const handleGoogleLogin = async (req, res) => {
           
         }
     } catch (error) {
+        console.log("Check",Check);
+
         res.status(500).json({
             message: 'Error during signup or login',
             error: error.message 

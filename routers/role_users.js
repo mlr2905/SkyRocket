@@ -183,12 +183,6 @@ router.get('/users/search', async (request, response) => {
     const email = query.email
     console.log("ראטור",query);
     
-    // const username = query.username
-    // const password = query.password
-    // const id = query.id
-    // let search = email ? email : username ? username : password ? password : id;
-    // let type = search !== undefined ? (search === email ? "email" : search === username ? "username" : search === password ? "password" : "id") : undefined;
-
     try {
         const user = await bl.get_by_email_user(email)
 console.log("user",user);
