@@ -67,7 +67,7 @@ const handleGoogleLogin = async (req, res) => {
             }),
             res.redirect('https://skyrocket.onrender.com/search_form.html');
         }
-    else if (data.status === 404) {
+    else if (data.error) {
              // בצע signup ואז login
              console.log("הרשמה");
              
