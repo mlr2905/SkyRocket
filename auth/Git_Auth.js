@@ -36,7 +36,16 @@ const handleGitHubLogin = async (req, res) => {
     try {
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
         const data = Check.data;
+        if (data.error) {
+            // בצע signup ואז login
+            const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                email: email,
+                password: password,
+                authProvider:'github'
+            });
+            res.redirect('https://skyrocket.onrender.com/search_form.html');
 
+        }
 
         let loginResponse;
         if (data.e === "no" && data.status == true) {
@@ -59,15 +68,7 @@ const handleGitHubLogin = async (req, res) => {
             }),
             res.redirect('https://skyrocket.onrender.com/search_form.html');
         } 
-        else if (data.status == 404) {
-            // בצע signup ואז login
-            const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-                email: email,
-                password: password,
-                authProvider:'github'
-            });
-         
-        }
+        
     } catch (error) {
         console.error('Error during signup or login:', error);
         res.status(500).send('Error during signup or login');
