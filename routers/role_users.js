@@ -194,8 +194,12 @@ router.get('/users/search', async (request, response) => {
 console.log("user",user);
 
         if (!user) {
+            console.log("נכנס");
+            
             return response.status(404).json({ error: `Cannot find user with email: '${email}'` });
         }
+        console.log("לא נכנס");
+        
     
         
         return response.status(200).json({ e: "no", status: true, authProvider: user });
