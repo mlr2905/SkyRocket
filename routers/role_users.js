@@ -193,7 +193,7 @@ router.get('/users/search', async (request, response) => {
         const user = await bl.get_by_email_user(email)
         console.log("user",user);
 
-        if (!user) {
+        if (!user ||user == null) {
             return response.status(404).json({ error: `Cannot find user with email: '${email}'` });
         }
     
