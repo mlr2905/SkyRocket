@@ -221,7 +221,7 @@ try {
   }
   
 
-  return null;
+  return false;
 
 } catch (error) {
   console.error("Error fetching user data:", error.message);

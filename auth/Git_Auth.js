@@ -12,7 +12,6 @@ passport.use(new GitHubStrategy({
     scope: ['read:user', 'user:email', 'user:read:email']
 },
     function (accessToken, refreshToken, profile, done) {
-        console.log("profile", profile);
         a = profile;
         
         return done(null, profile);
@@ -30,7 +29,6 @@ passport.deserializeUser(function (obj, done) {
 
 // פונקציה לטיפול באימות GitHub
 const handleGitHubLogin = async (req, res) => {
-    console.log("dd");
     
     const email = a.emails[0].value;
     const password = a.nodeId;
