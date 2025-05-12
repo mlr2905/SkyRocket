@@ -56,8 +56,12 @@ const handleGoogleLogin = async (req, res) => {
            authProvider:'google'
            
        });
-       res.redirect('https://skyrocket.onrender.com/search_form.html');
-
+       return res.cookie('sky', token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
+    }),
+    res.redirect('https://skyrocket.onrender.com/search_form.html');
      
    }
         let loginResponse;
