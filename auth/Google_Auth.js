@@ -26,8 +26,7 @@ passport.deserializeUser(function (obj, cb) {
 // פונקציה לבדיקת משתמש והרשמה
 const handleGoogleLogin = async (req, res) => {
     const { profile, accessToken } = req.user;
-    let email = profile.emails[0].value;
-    let password = profile.id;
+    const password = profile.id;
 
     try {
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
@@ -35,12 +34,15 @@ const handleGoogleLogin = async (req, res) => {
        
         let loginResponse;
         if (data.e === "no" && data.status == true) {
+             // בצע login
             if (data.authProvider !=="google") {
                 res.status(403).send(`Access denied. Please log in using ${data.authProvider}." `);
             }
             loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                 email: email,
-                password: password
+                password: password,
+                authProvider:'google'
+
             });
             const token = loginResponse.data.jwt;
 
@@ -50,7 +52,9 @@ const handleGoogleLogin = async (req, res) => {
                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
             }),
             res.redirect('https://skyrocket.onrender.com/search_form.html');
-        } else if (data.status == 404) {
+        }
+         else if (data.status == 404) {
+             // בצע signup ואז login
             const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                 email: email,
                 password: password,
