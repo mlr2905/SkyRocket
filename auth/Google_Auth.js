@@ -44,7 +44,7 @@ const handleGoogleLogin = async (req, res) => {
         )
 
         const data = Check.data;
-       console.log("data",data);
+       console.log("dtt",data);
        
         let loginResponse;
         if (data.e === "no" && data.status == true) {
