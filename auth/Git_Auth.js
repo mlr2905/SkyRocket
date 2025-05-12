@@ -12,8 +12,9 @@ passport.use(new GitHubStrategy({
     scope: ['read:user', 'user:email', 'user:read:email']
 },
     function (accessToken, refreshToken, profile, done) {
-        console.log("profile aaaaa", profile);
+        console.log("profile", profile);
         a = profile;
+        
         return done(null, profile);
     }
 ));
@@ -29,12 +30,15 @@ passport.deserializeUser(function (obj, done) {
 
 // פונקציה לטיפול באימות GitHub
 const handleGitHubLogin = async (req, res) => {
+    console.log("dd");
+    
     const email = a.emails[0].value;
     const password = a.nodeId;
 
     try {
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
         const data = Check.data;
+
 
         let loginResponse;
         if (data.e === "no" && data.status == true) {
@@ -44,7 +48,9 @@ const handleGitHubLogin = async (req, res) => {
             }
             loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
                 email: email,
-                password: password
+                password: password,
+                authProvider:'github'
+
             });
             const token = loginResponse.data.jwt;
 
@@ -54,7 +60,8 @@ const handleGitHubLogin = async (req, res) => {
                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
             }),
             res.redirect('https://skyrocket.onrender.com/search_form.html');
-        } else if (data.status == 404) {
+        } 
+        else if (data.status == 404) {
             // בצע signup ואז login
             const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
                 email: email,

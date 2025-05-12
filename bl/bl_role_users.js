@@ -133,7 +133,11 @@ async function signup(email, password,authProvider) {
   };
 
   try {
+    console.log("dd",requestOptions);
+    
     const user = await fetch(url_node_mongo, requestOptions);
+    console.log( "fff",user);
+    
     const data_mongo = await user.json(); // או כל פעולה אחרת לקריאת הנתונים
     if (data_mongo.errors) {
       return { "e": "yes", "error": data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password };
@@ -221,6 +225,7 @@ try {
       console.log("User data received:", data);
       return data.authProvider;
   }
+  
 
   return null;
 

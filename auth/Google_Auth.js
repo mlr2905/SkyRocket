@@ -60,9 +60,11 @@ const handleGoogleLogin = async (req, res) => {
           
         }
     } catch (error) {
-        console.error('Error during signup or login:', error);
-        res.status(500).send('Error during signup or login',error);
-    }
+        res.status(500).json({
+            message: 'Error during signup or login',
+            error: error.message 
+          });
+          }
 };
 
 module.exports = { handleGoogleLogin };
