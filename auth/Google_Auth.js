@@ -26,7 +26,7 @@ passport.deserializeUser(function (obj, cb) {
 // פונקציה לבדיקת משתמש והרשמה
 const handleGoogleLogin = async (req, res) => {
     const { profile, accessToken } = req.user;
-    const email = a.emails[0].value;
+    const email = profile.emails[0].value;
     const password = profile.id;
     console.log(profile);
     console.log("aa",email);
