@@ -33,54 +33,66 @@ const handleGoogleLogin = async (req, res) => {
    
     try {
         console.log("התחלה");
-        
+    
         const Check = await axios.get(`https://skyrocket.onrender.com/role_users/users/search?email=${email}`);
-        console.log("Check",Check);
-
         const data = Check.data;
-       console.log("data",data);
-       
+        console.log("data", data);
+    
         let loginResponse;
-        if (data.e === "no" && data.status == true) {
-             // בצע login
-            if (data.authProvider !=="google") {
-                res.status(403).send(`Access denied. Please log in using ${data.authProvider}." `);
+        if (data.e === "no" && data.status === true) {
+            if (data.authProvider !== "google") {
+                return res.status(403).send(`Access denied. Please log in using ${data.authProvider}.`);
             }
+    
             loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-                email: email,
-                password: password,
-                authProvider:'google'
-
+                email,
+                password,
+                authProvider: 'google'
             });
+    
             const token = loginResponse.data.jwt;
-
-            return res.cookie('sky', token, {
+    
+            res.cookie('sky', token, {
                 httpOnly: true,
                 sameSite: 'strict',
                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
-            }),
-            res.redirect('https://skyrocket.onrender.com/search_form.html');
-        }
-         else if (data.status == 404) {
-             // בצע signup ואז login
-             console.log("הרשמה");
-             
-            const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-                email: email,
-                password: password,
-                authProvider:'google'
             });
-
-          
+    
+            return res.redirect('https://skyrocket.onrender.com/search_form.html');
         }
+    
     } catch (error) {
-        console.log("Check",Check);
-
-        res.status(500).json({
+        if (error.response?.status === 404) {
+            console.log("הרשמה");
+            await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                email,
+                password,
+                authProvider: 'google'
+            });
+    
+            // אחרי הרשמה - בצע login כמו קודם
+            const loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                email,
+                password,
+                authProvider: 'google'
+            });
+    
+            const token = loginResponse.data.jwt;
+    
+            res.cookie('sky', token, {
+                httpOnly: true,
+                sameSite: 'strict',
+                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
+            });
+    
+            return res.redirect('https://skyrocket.onrender.com/search_form.html');
+        }
+    
+        console.error('Error during signup or login:', error.message);
+        return res.status(500).json({
             message: 'Error during signup or login',
-            error: error.message 
-          });
-          }
-};
+            error: error.message
+        });
+    }
 
 module.exports = { handleGoogleLogin };
