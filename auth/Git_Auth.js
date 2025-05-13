@@ -36,55 +36,7 @@ const handleGitHubLogin = async (req, res) => {
     const password = a.nodeId;
     await HandAuth.processLogin(req, res,email,password,"github");
 
-    // try {
-    //  const Check = await axios.get(
-    //         `https://skyrocket.onrender.com/role_users/users/search?email=${email}`,
-    //         {
-    //             validateStatus: function (status) {
-    //                 return status < 500; 
-    //              }
-    //         }
-    //     )
-    //     const data = Check.data;
-    //     if (data.error) {
-    //         console.log("הרשמה");
-
-    //         // בצע signup ואז login
-    //         const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-    //             email: email,
-    //             password: password,
-    //             authProvider:"github"
-    //         });
-    //         res.redirect('https://skyrocket.onrender.com/search_form.html');
-
-    //     }
-
-    //     let loginResponse;
-    //     if (data.e === "no" && data.status == true) {
-    //         // בצע login
-    //         if (data.authProvider !=="github") {
-    //             res.status(403).send(`Access denied. Please log in using ${data.authProvider}." `);
-    //         }
-    //         loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-    //             email: email,
-    //             password: password,
-    //             authProvider:'github'
-
-    //         });
-    //         const token = loginResponse.data.jwt;
-
-    //         return res.cookie('sky', token, {
-    //             httpOnly: true,
-    //             sameSite: 'strict',
-    //             maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
-    //         }),
-    //         res.redirect('https://skyrocket.onrender.com/search_form.html');
-    //     } 
-        
-    // } catch (error) {
-    //     console.error('Error during signup or login:', error);
-    //     res.status(500).send('Error during signup or login');
-    // }
+   
 };
 
 module.exports = { handleGitHubLogin };

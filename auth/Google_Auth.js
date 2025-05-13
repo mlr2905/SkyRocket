@@ -2,6 +2,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const axios = require('axios');
 require('dotenv').config();
+const HandAuth = require('./HandleAuth');
 
 // GoogleStrategy הגדרת
 passport.use(new GoogleStrategy({
@@ -28,67 +29,11 @@ const handleGoogleLogin = async (req, res) => {
     const { profile, accessToken } = req.user;
     const email = profile.emails[0].value;
     const password = profile.id;
-    console.log("yy",email,password);
     
+    await HandAuth.processLogin(req, res,email,password,"google");
+
    
-    try {
-        console.log("התחלה");
-        
-        const Check = await axios.get(
-            `https://skyrocket.onrender.com/role_users/users/search?email=${email}`,
-            {
-                validateStatus: function (status) {
-                    return status < 500; 
-                 }
-            }
-        )
 
-        const data = Check.data;
-       console.log("dtt",data);
-       
-       if (data.error) {
-        // בצע signup ואז login
-        console.log("הרשמה");
-        
-       const signup = await axios.post('https://skyrocket.onrender.com/role_users/signup', {
-           email: email,
-           password: password,
-           authProvider:'google'
-           
-       });
-       res.redirect('https://skyrocket.onrender.com/search_form.html');
-
-     
-   }
-        let loginResponse;
-        if (data.e === "no" && data.status == true) {
-             // בצע login
-            if (data.authProvider !=="google") {
-                res.status(403).send(`Access denied. Please log in using ${data.authProvider}." `);
-            }
-            loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
-                email: email,
-                password: password,
-                authProvider:'google'
-
-            });
-            const token = loginResponse.data.jwt;
-
-            return res.cookie('sky', token, {
-                httpOnly: true,
-                sameSite: 'strict',
-                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
-            }),
-            res.redirect('https://skyrocket.onrender.com/search_form.html');
-        }
-    
-    } catch (error) {
-
-        res.status(500).json({
-            message: 'Error during signup or login',
-            error: error.message 
-          });
-          }
 };
 
 module.exports = { handleGoogleLogin };
