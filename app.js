@@ -51,49 +51,6 @@ app.get('/git',
 );
 
 
-        passport.use('tiktok', new OAuth2Strategy({
-            authorizationURL: 'https://www.tiktok.com/oauth/authorize',
-            tokenURL: 'https://open-api.tiktok.com/oauth/token',
-            clientID: process.env.TIKTOK_CLIENT_ID,
-            clientSecret: process.env.TIKTOK_CLIENT_SECRET,
-            callbackURL: "https://skyrocket.onrender.com/tiktok"
-        },
-        
-            function (accessToken, refreshToken, profile, done) {
-                // קריאה ל-API של TikTok לקבלת פרטי המשתמש
-                axios.get('https://api.tiktok.com/me', {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                })
-                    .then(response => {
-                        const user = {
-                            id: response.data.user.id,
-                            email: response.data.user.email,
-                            picture: response.data.user.avatar
-                        };
-                        console.log("user", user);
-                        return done(null, user);
-                    })
-                    .catch(err => {
-                        return done(err, false);
-                    });
-            }
-        ));
-        
-        // סריאליזציה ודסיריאליזציה של המשתמש
-        passport.serializeUser(function (user, done) {
-            done(null, user);
-        });
-        
-        passport.deserializeUser(function (obj, done) {
-            done(null, obj);
-        });
-        
-        // מסלול לאימות עם TikTok
-        app.get('/tiktok',
-            passport.authenticate('tiktok')
-        );
         
 
 app.get('/activation', async (req, res) => {

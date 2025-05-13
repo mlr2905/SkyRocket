@@ -15,7 +15,6 @@ passport.use(new GoogleStrategy({
     }
 ));
 
-// Serialize and deserialize user for session management
 passport.serializeUser(function (user, cb) {
     cb(null, user);
 });
@@ -31,9 +30,6 @@ const handleGoogleLogin = async (req, res) => {
     const password = profile.id;
     
     await HandAuth.processLogin(req, res,email,password,"google");
-
-   
-
 };
 
 module.exports = { handleGoogleLogin };
