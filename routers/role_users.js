@@ -2,8 +2,7 @@ const express = require('express')
 const router = express.Router()
 const qrcode = require('qrcode');
 const bl = require('../bl/bl_role_users');
-const { log } = require('winston');
-
+const logger = require('../logger/my_logger');
 
 // router.get('/', async (request, response) => {
 //     try {
@@ -28,19 +27,24 @@ const { log } = require('winston');
 //     }
 // })
 
-
 router.post('/authcode', async (request, response) => {
     try {
+        logger.info('Processing auth code request')
         const email = request.body.email;
+        logger.debug(`Auth code requested for email: ${email}`)
+        
         const datas = await bl.authcode(email)
         if (datas.e === "yes") {
+            logger.warn(`Auth code generation failed for ${email}: ${datas.error}`)
             response.status(409).json({ "e": "yes", "errors": `${datas.error}` });
         } else {
             if (datas.code !== undefined) {
+                logger.info(`Auth code successfully generated for ${email}`)
                 response.status(200).json({ datas });
             }
         }
     } catch (error) {
+        logger.error('Error in auth code generation:', error)
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 });
@@ -49,71 +53,87 @@ router.post('/validation', async (request, response) => {
     try {
         const email = request.body.email;
         const code = request.body.code;
+        logger.info(`Processing code validation for email: ${email}`)
+        logger.debug(`Validating code for ${email}`)
+        
         const datas = await bl.login_code(email, code)
         if (datas.e === "yes") {
+            logger.warn(`Code validation failed for ${email}: ${datas.error}`)
             response.status(409).json({ "e": "yes", "error": `${datas.error}` });
-
         }
         else {
+            logger.info(`Code validation successful for ${email}`)
             const token = datas.jwt
             response.cookie('sky', token, {
                 httpOnly: true,
                 sameSite: 'strict',
-                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות במילישניות
             });
+            logger.debug(`JWT cookie set for ${email}`)
+            
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/search_form.html';
 
             // הפניה לדף Swagger בתגובה המוחזרת
             response.status(200).json({ datas, swaggerUrl });
         }
-
     }
     catch (error) {
+        logger.error('Error in code validation:', error)
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 });
-router.get('/ip', async (request, response) => {
 
+router.get('/ip', async (request, response) => {
+    logger.debug('IP lookup request received')
+    
     const forwardedFor = request.headers['x-forwarded-for'];
     const clientIPs = forwardedFor ? forwardedFor.split(',').map(ip => ip.trim()) : [];
     const ip = clientIPs.length > 0 ? clientIPs[0] : undefined;
     let country = request.headers['cf-ipcountry'];
+    
     if (country === undefined) {
+        logger.debug('Country code not found in headers, defaulting to "il"')
         country = "il"
+    } else {
+        logger.debug(`Country code identified as: ${country}`)
     }
+    
     response.status(200).json({ country });
-
-
 });
+
 router.get('/email', async (request, response) => {
     const query = request.query
     const email = query.email
+    logger.info(`Email validation request for: ${email}`)
+    
     try {
         const check = await bl.valid_email(email)
-      
-            response.status(200).json(check)
-        
+        logger.debug(`Email validation result for ${email}: ${JSON.stringify(check)}`)
+        response.status(200).json(check)
     }
-
     catch (error) {
-        response.status(503).json({ "e": "yes", "status": e })
+        logger.error(`Email validation error for ${email}:`, error)
+        response.status(503).json({ "e": "yes", "status": error })
     }
-
 });
 
 router.post('/login', async (request, response) => {
-
+    logger.info('Processing login request')
+    
     const forwardedFor = request.headers['x-forwarded-for'];
     const clientIPs = forwardedFor ? forwardedFor.split(',').map(ip => ip.trim()) : [];
     const ip = clientIPs.length > 0 ? clientIPs[0] : undefined;
     const userAgent = request.headers['user-agent'];
     const email = request.body.email;
     const password = request.body.password;
+    
+    logger.debug(`Login attempt for email: ${email}, IP: ${ip}`)
 
     try {
         // בדיקת תקינות קלט
         if (!email || !password) {
+            logger.warn(`Login failed - invalid credentials: email=${!!email}, password=${!!password}`)
             throw new Error('Invalid email or password');
         }
 
@@ -122,15 +142,18 @@ router.post('/login', async (request, response) => {
 
         if (datas.e === "yes") {
             // החזרת תגובת שגיאה במקרה של שגיאה מהשירות החיצוני
+            logger.warn(`Login failed for ${email}: ${datas.error}`)
             response.status(409).json({ "e": "yes", "error": datas.error });
         } else {
             // הגדרת טוקן ושליחתו בעוגיה
+            logger.info(`Login successful for ${email}`)
             const token = datas.jwt;
             response.cookie('sky', token, {
                 httpOnly: true,
                 sameSite: 'strict',
-                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־2 דקות במילישניות
+                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות במילישניות
             });
+            logger.debug(`JWT cookie set for ${email}`)
 
             // בניית הקישור לדף Swagger
             const swaggerUrl = 'https://skyrocket.onrender.com/search_form.html';
@@ -138,267 +161,353 @@ router.post('/login', async (request, response) => {
             // הפניה לדף Swagger בתגובה המוחזרת
             response.status(200).json({ "e": datas.e, "jwt": datas.jwt, "swaggerUrl": swaggerUrl });
         }
-
     } catch (error) {
         // טיפול בשגיאה במידה והיא מתרחשת
+        logger.error('Login error:', error)
         response.status(503).json({ 'error': 'The request failed, try again later', error: error.message });
     }
-
 });
 
 router.post('/signup', async (request, response) => {
     try {
-        console.log("tt",request.body);
+        logger.info('Processing signup request')
+        logger.debug(`Signup request body: ${JSON.stringify(request.body)}`)
         
         const email = request.body.email;
         const password = request.body.password;
-        const authProvider=request.body.authProvider;
+        const authProvider = request.body.authProvider;
         const loginUrl = 'https://skyrocket.onrender.com/login.html';
-        const user = await bl.signup(email, password,authProvider)
-        console.log("2925",user);
+        
+        logger.debug(`Attempting signup for ${email} with auth provider: ${authProvider}`)
+        const user = await bl.signup(email, password, authProvider)
+        logger.debug(`Signup response: ${JSON.stringify(user)}`)
         
         if (user.e === "yes") {
+            logger.warn(`Signup failed for ${email}: ${user.error}`)
             response.status(409).json({ "e": "yes", "error": `${user.error}`, "loginUrl": loginUrl });
-
         }
         else {
             if (user.response.mongo_id !== undefined) {
-
+                logger.info(`Signup successful for ${email} with ID: ${user.response.id}`)
                 // הפניה לדף login בתגובה המוחזרת
                 response.status(200).json({ "e": "no", "id": user.response.id });
             }
         }
     }
     catch (error) {
+        logger.error('Signup error:', error)
         response.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 });
 
-
-
 // GET by search
 router.get('/users/search', async (request, response) => {
-
     const query = request.query
     const email = query.email
-    console.log("ראטור",query);
+    logger.info(`User search request for email: ${email}`)
+    logger.debug(`Search query: ${JSON.stringify(query)}`)
     
     try {
         const user = await bl.get_by_email_user(email)
-console.log("user",user);
+        logger.debug(`Search result for ${email}: ${JSON.stringify(user)}`)
 
         if (!user) {
-            console.log("נכנס");
-            
+            logger.warn(`User not found for email: ${email}`)
             return response.status(404).json({ error: `Cannot find user with email: '${email}'` });
         }
-        console.log("לא נכנס");
         
-    
-        
+        logger.info(`User found for email: ${email}`)
         return response.status(200).json({ e: "no", status: true, authProvider: user });
-
-     
     }
     catch (error) {
-        console.error("Error fetching user:", error);
+        logger.error(`User search error for ${email}:`, error)
         response.status(500).json({ error: "Internal Server Error. Please try again later." });
-        }
+    }
 })
 
 // GET by ID
 router.get('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
+    logger.info(`User details request for ID: ${user_id}`)
+    
     try {
         const user = await bl.get_by_id_user('id', user_id)
         if (user) {
             if (user !== 'Postponed') {
+                logger.info(`User details found for ID: ${user_id}`)
                 response.status(200).json(user)
             }
             else {
+                logger.warn(`Access denied for user ID: ${user_id}`)
                 response.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${user_id}'` })
             }
         }
         else {
+            logger.warn(`User not found for ID: ${user_id}`)
             response.status(404).json({ "error": `cannot find user with id '${user_id}'` })
         }
     }
     catch (error) {
+        logger.error(`Error fetching user ID: ${user_id}:`, error)
         response.status(503).json({ "error": `The request failed, try again later '${error}'` })
     }
-
 })
 
 // POST
 router.post('/users', async (request, response) => {
     const new_user = request.body
+    logger.info('Creating new user')
+    logger.debug(`New user data: ${JSON.stringify(new_user)}`)
+    
     try {
         const result = await bl.create_user(new_user)
         if (result.ok) {
+            logger.info(`User created successfully: ${new_user.username || new_user.email}`)
             response.status(201).json(result)
         }
         else if (result === 'rejected') {
+            logger.warn(`User creation rejected - duplicate user: ${new_user.username || new_user.email}`)
             response.status(409).json({ "error": `Username ${new_user.username} or email ${new_user.email} exist in the system` })
         }
         else {
+            logger.error('User creation failed')
             response.status(503).json({ "error": `The request failed, try again later` })
         }
     } catch (error) {
+        logger.error('Error creating user:', error)
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
-    response.status(503).json({ "error": `The request failed, try again later ${error}` })
-
 })
 
 // PUT 
-
 router.put('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_user('id', user_id)
-    if (user) {
-        try {
+    logger.info(`Updating user with ID: ${user_id}`)
+    
+    try {
+        const user = await bl.get_by_id_user('id', user_id)
+        if (user) {
             const updated_user_req = request.body
+            logger.debug(`Update data for user ID ${user_id}: ${JSON.stringify(updated_user_req)}`)
+            
             const result = await bl.update_user(user_id, updated_user_req)
             if (result) {
+                logger.info(`User ${user_id} updated successfully`)
                 response.status(201).json(result)
             }
             else {
+                logger.warn(`User update failed - email already exists: ${updated_user_req.email}`)
                 response.status(409).json({ "error": `${updated_user_req.email} already exists` })
             }
         }
-        catch (error) {
-            response.status(503).json({ "error": `The request failed, try again later ${error}` })
-                ; // מעבירה את השגיאה הלאה
+        else {
+            logger.warn(`User update failed - user not found: ${user_id}`)
+            response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+            return
         }
     }
-    else {
-        throw response.status(404).json({ "error": `The id ${user_id} you specified does not exist in the system ` })
+    catch (error) {
+        logger.error(`Error updating user ${user_id}:`, error)
+        response.status(503).json({ "error": `The request failed, try again later ${error}` })
     }
 })
-
 
 // DELETE
 router.delete('/users/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_user(user_id)
-
-    if (user) {
-        try {
+    logger.info(`Deleting user with ID: ${user_id}`)
+    
+    try {
+        const user = await bl.get_by_id_user(user_id)
+        if (user) {
             const result = await bl.delete_account(user_id)
+            logger.info(`User ${user_id} deleted successfully`)
             response.status(204).json({ result })
         }
-        catch (error) {
-            throw response.status(503).json({ "error": `The request failed, try again later  ` })
+        else {
+            logger.warn(`User deletion failed - user not found: ${user_id}`)
+            response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
         }
     }
-    else {
-        throw response.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
+    catch (error) {
+        logger.error(`Error deleting user ${user_id}:`, error)
+        response.status(503).json({ "error": `The request failed, try again later` })
     }
 })
 
 // GET by ID
 router.get('/customers/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_customer(user_id)
-    if (user) {
-        response.status(200).json(user)
+    logger.info(`Customer details request for ID: ${user_id}`)
+    
+    try {
+        const user = await bl.get_by_id_customer(user_id)
+        if (user) {
+            logger.info(`Customer details found for ID: ${user_id}`)
+            response.status(200).json(user)
+        }
+        else {
+            logger.warn(`Customer not found for ID: ${user_id}`)
+            response.status(404).json({ "error": `cannot find user with id ${user_id}` })
+        }
     }
-    else {
-        response.status(404).json({ "error": `cannot find user with id ${user_id}` })
+    catch (error) {
+        logger.error(`Error fetching customer ID: ${user_id}:`, error)
+        response.status(503).json({ "error": `The request failed, try again later` })
     }
 })
 
 // POST
 router.post('/customers', async (request, response) => {
     const signupUrl = 'https://skyrocket.onrender.com/login.html';
-
     const new_user = request.body
-    const user = await bl.new_customer(new_user)
-    if (user) {
-        response.status(201).json({ "e": "no", "signupUrl": signupUrl })
+    logger.info('Creating new customer')
+    logger.debug(`New customer data: ${JSON.stringify(new_user)}`)
+    
+    try {
+        const user = await bl.new_customer(new_user)
+        if (user) {
+            logger.info('Customer created successfully')
+            response.status(201).json({ "e": "no", "signupUrl": signupUrl })
+        }
+        else {
+            logger.warn('Customer creation failed - duplicate customer')
+            response.status(409).json({ "e": "yes", "error": `There is a customer with the details I mentioned` })
+        }
     }
-    else {
-        response.status(409).json({ "e": "yes", "error": `There is a customer with the details I mentioned` })
+    catch (error) {
+        logger.error('Error creating customer:', error)
+        response.status(503).json({ "error": `The request failed, try again later` })
     }
 })
 
 // PUT /PATCH
 router.put('/customers/:id', async (request, response) => {
     const user_id = parseInt(request.params.id)
-    // user exists ==> perform update
     const updated_user_req = request.body
-    const result = await bl.update_customer(user_id, updated_user_req)
-    response.json(updated_user_req)
-
+    logger.info(`Updating customer with ID: ${user_id}`)
+    logger.debug(`Update data for customer ID ${user_id}: ${JSON.stringify(updated_user_req)}`)
+    
+    try {
+        // user exists ==> perform update
+        const result = await bl.update_customer(user_id, updated_user_req)
+        logger.info(`Customer ${user_id} updated successfully`)
+        response.json(updated_user_req)
+    }
+    catch (error) {
+        logger.error(`Error updating customer ${user_id}:`, error)
+        response.status(503).json({ "error": `The request failed, try again later` })
+    }
 })
 
 //role_users/flights
-
 router.get('/flights', async (request, response) => {
+    logger.info('Retrieving all flights')
     try {
-        const customers = await bl.get_all_flights()
-        response.json(customers)
+        const flights = await bl.get_all_flights()
+        logger.debug(`Retrieved ${flights.length} flights`)
+        response.json(flights)
     }
-    catch (e) {
-        response.json({ 'error': JSON.stringify(e) })
+    catch (error) {
+        logger.error('Error retrieving flights:', error)
+        response.json({ 'error': JSON.stringify(error) })
     }
 })
 
 // GET by ID
 router.get('/flights/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_flights(user_id)
-    if (user) {
-        response.json(user)
+    const flight_id = parseInt(request.params.id)
+    logger.info(`Flight details request for ID: ${flight_id}`)
+    
+    try {
+        const flight = await bl.get_by_id_flights(flight_id)
+        if (flight) {
+            logger.info(`Flight details found for ID: ${flight_id}`)
+            response.json(flight)
+        }
+        else {
+            logger.warn(`Flight not found for ID: ${flight_id}`)
+            response.status(404).json({ "error": `cannot find flight with id ${flight_id}` })
+        }
     }
-    else {
-        response.status(404).json({ "error": `cannot find user with id ${user_id}` })
+    catch (error) {
+        logger.error(`Error fetching flight ID: ${flight_id}:`, error)
+        response.status(503).json({ "error": `The request failed, try again later` })
     }
 })
 
 //role_users/tickets
-
 // POST
 router.post('/tickets', async (request, response) => {
-    const new_user = request.body
-    const result = await bl.purchase_ticket(new_user)
-    response.status(201).json(result)
+    const new_ticket = request.body
+    logger.info('Creating new ticket')
+    logger.debug(`New ticket data: ${JSON.stringify(new_ticket)}`)
+    
+    try {
+        const result = await bl.purchase_ticket(new_ticket)
+        logger.info('Ticket purchased successfully')
+        response.status(201).json(result)
+    }
+    catch (error) {
+        logger.error('Error purchasing ticket:', error)
+        response.status(503).json({ "error": `The request failed, try again later` })
+    }
 })
 
 //role_users/chairs
-
 router.get('/chairs/:id', async (request, response) => {
     const id = parseInt(request.params.id)
-    console.log(id);
-    const result = await bl.get_all_chairs_by_flight(id)
-    response.status(201).json(result)
+    logger.info(`Retrieving chairs for flight ID: ${id}`)
+    
+    try {
+        const result = await bl.get_all_chairs_by_flight(id)
+        logger.debug(`Retrieved ${result.length} chairs for flight ${id}`)
+        response.status(201).json(result)
+    }
+    catch (error) {
+        logger.error(`Error retrieving chairs for flight ${id}:`, error)
+        response.status(503).json({ "error": `The request failed, try again later` })
+    }
 })
-//role_users/passengers
 
+//role_users/passengers
 // POST
 router.post('/passengers', async (request, response) => {
-    const new_user = request.body
-    const result = await bl.new_passenger(new_user)
-    response.status(201).json(result)
+    const new_passenger = request.body
+    logger.info('Creating new passenger')
+    logger.debug(`New passenger data: ${JSON.stringify(new_passenger)}`)
+    
+    try {
+        const result = await bl.new_passenger(new_passenger)
+        logger.info('Passenger created successfully')
+        response.status(201).json(result)
+    }
+    catch (error) {
+        logger.error('Error creating passenger:', error)
+        response.status(503).json({ "error": `The request failed, try again later` })
+    }
 })
 
 // GET by ID
 router.get('/passengers/:id', async (request, response) => {
-    const user_id = parseInt(request.params.id)
-    const user = await bl.get_by_id_passenger(user_id)
-    if (user) {
-        response.status(200).json(user)
+    const passenger_id = parseInt(request.params.id)
+    logger.info(`Passenger details request for ID: ${passenger_id}`)
+    
+    try {
+        const passenger = await bl.get_by_id_passenger(passenger_id)
+        if (passenger) {
+            logger.info(`Passenger details found for ID: ${passenger_id}`)
+            response.status(200).json(passenger)
+        }
+        else {
+            logger.warn(`Passenger not found for ID: ${passenger_id}`)
+            response.status(404).json({ "error": `cannot find passenger with id ${passenger_id}` })
+        }
     }
-    else {
-        response.status(404).json({ "error": `cannot find user with id ${user_id}` })
+    catch (error) {
+        logger.error(`Error fetching passenger ID: ${passenger_id}:`, error)
+        response.status(503).json({ "error": `The request failed, try again later` })
     }
 })
 
 module.exports = router
-
-
-
-
-
-
-
-
