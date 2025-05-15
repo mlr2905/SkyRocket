@@ -43,19 +43,18 @@ const sessionController = require('./controllers/sessionController');
 
 // יש לשים לפני כל ה-Routes (אבל אחרי static ו-session)
 app.use(sessionController.rootHandler);
-app.get('/', (req, res) => {
-    res.redirect('/login.html'); // או כל שם אחר של קובץ ההתחברות שלך
-});
+
 
 // Routes
-app.use('/', authRoutes);
-app.use('/', googleRoutes);
-app.use('/', githubRoutes);
+app.use('/google', googleRoutes);
+app.use('/git', githubRoutes);
 app.use('/all_tables', allTablesRouter);
 app.use('/role_admins', roleAdmins);
 app.use('/role_airlines', roleAirlines);
 app.use('/role_users', roleUsers);
-
+app.get('/', (req, res) => {
+    res.redirect('/login.html'); 
+});
 // Swagger
 const options = {
     definition: {
