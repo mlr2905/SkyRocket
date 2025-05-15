@@ -1,6 +1,6 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const logger = require('./logger/my_logger');
+const logger = require('../logger/my_logger');
 
 function setupSwagger(app) {
     // הגדרת Swagger

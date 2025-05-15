@@ -4,7 +4,7 @@ const cors = require('cors');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const path = require('path');
-const logger = require('./logger/my_logger');
+const logger = require('../logger/my_logger');
 
 function setupMiddleware(app) {
     // הגדרת session, passport
