@@ -52,9 +52,7 @@ app.use('/all_tables', allTablesRouter);
 app.use('/role_admins', roleAdmins);
 app.use('/role_airlines', roleAirlines);
 app.use('/role_users', roleUsers);
-app.get('/', (req, res) => {
-    res.redirect('/login.html'); 
-});
+
 // Swagger
 const options = {
     definition: {
