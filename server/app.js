@@ -37,7 +37,10 @@ app.use(passport.session());
 
 // לוג התחלה
 logger.info('==== System start =======');
+const sessionController = require('./controllers/sessionController');
 
+// יש לשים לפני כל ה-Routes (אבל אחרי static ו-session)
+app.use(sessionController.rootHandler);
 // Routes
 app.use('/google', googleRoutes);
 app.use('/git', githubRoutes);
