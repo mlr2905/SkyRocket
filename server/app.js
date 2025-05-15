@@ -42,7 +42,16 @@ const sessionController = require('./controllers/sessionController');
 
 // יש לשים לפני כל ה-Routes (אבל אחרי static ו-session)
 app.use(sessionController.rootHandler);
+app.get('/', (req, res) => {
+    const cookies = req.headers.cookie?.split(';').map(cookie => cookie.trim()) || [];
+    const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
 
+    if (!skyToken) {
+        return res.redirect('/login.html');
+    }
+
+    res.sendFile(path.join(__dirname, '..', 'client', 'public', 'index.html'));
+});
 // Routes
 app.use('/', authRoutes);
 app.use('/', googleRoutes);
