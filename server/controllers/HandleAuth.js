@@ -1,6 +1,12 @@
 const axios = require('axios');
 const winston = require('winston');
 
+const fs = require('fs');
+const path = require('path');
+
+// Ensure the log directory exists
+
+
 // Create a logger configuration
 const logger = winston.createLogger({
   level: 'info',
@@ -12,10 +18,13 @@ const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' })
+    new winston.transports.File({ filename: 'server/logs/HandleAuthError.log', level: 'error' }),
+    new winston.transports.File({ filename: 'server/logs/HandleAuthcombined.log' })
   ]
 });
+
+module.exports = logger;
+
 
 class HandAuth {
   static async processLogin(req, res, email, password, authProvider) {
