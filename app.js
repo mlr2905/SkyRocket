@@ -13,11 +13,14 @@ const role_airlines = require('./routes/role_airlines')
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 const app = express()
+const googleRoutes = require('./routes/googleRoutes');
+const githubRoutes = require('./routes/githubRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
-const { handleGoogleLogin } = require('./auth/Google_Auth');  
-const { handleGitHubLogin } = require('./auth/Git_Auth');  // ייבוא הפונקציה
+const { handleGoogleLogin } = require('./controllers/googleAuth');  
+const { handleGitHubLogin } = require('./controllers/githubAuth');  // ייבוא הפונקציה
 require('dotenv').config();
 app.use(session({ secret: 'keyboard', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
@@ -37,108 +40,9 @@ app.listen(9000, () => {
 
 
 
-app.get('/google',
-    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] }),
-    handleGoogleLogin  // קריאה לפונקציה שהובאה מ-googleAuth.js
-);
-
-
-
-// ניתוב לאימות GitHub
-app.get('/git',
-    passport.authenticate('github', { scope: ['read:user', 'user:email', 'user:read:email'] }),
-    handleGitHubLogin  
-);
-
-
-        
-
-app.get('/activation', async (req, res) => {
-    try {
-
-        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
-        if (!skyToken) {
-            res.status(404).json('on')
-            console.log('erre');
-        }
-        else {
-            res.status(200).json('ok');
-            console.log('ok');
-
-        }
-    } catch (e) {
-        return res.status(500).json(e)
-    }
-});
-
-app.get('/logout', async (req, res) => {
-    try {
-
-        res.clearCookie('sky');
-        return redirectToLogin(req, res);
-
-
-    } catch (e) {
-        return res.status(500).json(e)
-    }
-});
-
-
-app.get('/', async (req, res, next) => {
-    try {
-
-
-        if (req.path === '/login.html') {
-            return next()
-        }
-
-        if (req.path === '/search_form.html') {
-            return next()
-        }
-        if (req.path === '/registration.html') {
-            return next()
-        }
-        const cookies = req.headers.cookie.split(';').map(cookie => cookie.trim());
-        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
-        if (!skyToken) {
-            return redirectToLogin(req, res);
-        }
-        const token = skyToken.split('=')[1];
-        const response = await axios.get('https://jwt-node-mongodb.onrender.com/data', {
-            data: { token }
-        });
-        const data = response.data;
-        if (data.valid) {
-
-            // הגדרת השעה הנוכחית של השרת לשעה ישראלית
-            const israelTime = moment.tz(Date.now(), 'Asia/Jerusalem');
-
-            // השתמש בזמן השרת כזמן התחלה עבור העוגיה
-            res.clearCookie('sky');
-            res.cookie('sky', token, {
-                httpOnly: true,
-                sameSite: 'strict',
-                expires: israelTime.add(3, 'hours').add(15, 'minutes').toDate()
-            });
-            next();
-        } else {
-            return res.status(200).redirect(302, './login.html');
-        }
-    } catch (e) {
-        return res.status(500).send({ "error": e, "message": 'Internal Server Error' });
-    }
-});
-
-
-function redirectToLogin(req, res) {
-    res.status(200).send(`
-        <script>
-            document.cookie = 'redirect=${req.originalUrl}; max-age=3600';
-            window.location.href = 'https://skyrocket.onrender.com/login.html';
-        </script>
-    `);
-}
+app.use('/', authRoutes);
+app.use('/', googleRoutes);
+app.use('/', githubRoutes);
 
 const options = {
     definition: {
