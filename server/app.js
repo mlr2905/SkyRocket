@@ -26,24 +26,17 @@ require('dotenv').config();
 // Middlewares
 app.use(cors());
 app.use(bodyParser.json());
-
 app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 app.use(session({
     secret: process.env.SESSION_SECRET || 'keyboard',
     resave: false,
     saveUninitialized: false,
 }));
-
 app.use(passport.initialize());
 app.use(passport.session());
 
 // לוג התחלה
 logger.info('==== System start =======');
-const sessionController = require('./controllers/sessionController');
-
-// יש לשים לפני כל ה-Routes (אבל אחרי static ו-session)
-app.use(sessionController.rootHandler);
-
 
 // Routes
 app.use('/google', googleRoutes);
