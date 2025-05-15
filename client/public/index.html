@@ -1,221 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-
+    <title>Database</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/dWV6wgj/skyrocket-128.jpg" sizes="32x32">
     <link rel="icon" type="image/png" href="https://i.ibb.co/dWV6wgj/skyrocket-128.jpg" sizes="16x16">
-
-    <title>Database</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        th, td {
+            text-align: center;
+        }
+    </style>
 </head>
-<style>
-    th {
-        text-align: center;
-    }
-
-    td {
-        text-align: center;
-    }
-</style>
-
-<body style="width: 80%; padding: 2%;background-color: rgba(32,33,36);">
-
+<body style="width: 80%; padding: 2%; background-color: rgba(32,33,36);">
     <h1 style="color: aliceblue;">Database</h1>
 
-    <label for="filter" style="color: aliceblue;"><b>
-            <h4>Filter by ID:</h4>
-        </b></label>
+    <label for="filter" style="color: aliceblue;"><b><h4>Filter by ID:</h4></b></label>
     <input class="col-2" type="number" id="filter" placeholder="Enter ID 0-6" min="0" max="6">
-
 
     <table class="table table-striped table-dark" id="table">
         <thead id="trbody"></thead>
         <tbody id="dataTableBody"></tbody>
     </table>
+
     <script>
-        let filter_id = undefined
-        const tableBody = $('#dataTableBody');
-        // const tableBody = document.getElementById('dataTableBody');
+  const tableHead = document.getElementById('trbody');
+const tableBody = document.getElementById('dataTableBody');
 
+let filter_id = null;
 
-        $('#filter').on('input', function () {
-            filter_id = $(this).val();
-            if ("0123456".includes(filter_id)) {
-                fetchAndDisplay(filter_id);
-            } else {
-                alert("There is no such table, enter a number between 0-6");
-                $(this).val("");
-            }
-        });
-
-        // const filterInput = document.getElementById('filter');
-        // filterInput.addEventListener('input', function () {
-        //     const filterId = this.value;
-
-        //     if ("0123456".includes(filterId)) {
-        //         fetchAndDisplay(filterId);
-        //     } else {
-        //         alert("There is no such table, enter a number between 0-6");
-        //         this.value = "";
-        //     }
-        // });
-
-        const fetchAndDisplay = (filterid) => {
-
-            let myTable = document.querySelector("#trbody");
-            let mytable2 = document.querySelector("#dataTableBody");
-            myTable.innerHTML = ''
-            mytable2.innerHTML = ''
-
-            let newTr = document.createElement("tr");
-            const users = ['TABLE NUMBER AND NAME', 'ID', 'USERNAME', 'PASSWORD', 'EMAIL', 'ROLE_NAME (JOIN)'];
-            const countries = ['TABLE NUMBER AND NAME', 'ID', 'NAME', 'COUNTRY_ID', 'CONTINENT (JOIN)'];
-            const airlines = ['TABLE NUMBER AND NAME', 'ID', 'NAME', 'CONTINENT_ID', 'USER_ID', 'COUNTRY_NAME (JOIN)', 'USER_NAME (JOIN)'];
-            const customers = ['TABLE NUMBER AND NAME', 'ID', 'FIRST_NAME', 'LAST_NAME', 'ADDRESS', 'PHONE_NO', 'CREDIT_CARD_NO', 'USER_ID', 'USER_NAME (JOIN)'];
-            const flights = ['TABLE NUMBER AND NAME', 'ID', 'AIRLINE_ID', 'ORIGIN_COUNTRY_ID', 'DESTINATION_COUNTRY_ID', 'DEPARTURE_TIME', 'LANDING_TIME', 'REMAINING_TICKETS', 'AIRLINE_NAME (JOIN)', 'ORIGIN_COUNTRY_NAME (JOIN)', 'DESTINATION_COUNTRY_NAME (JOIN)'];
-            const tickets = ['TABLE NUMBER AND NAME', 'ID', 'FLIGHT_ID', 'PASSENGER_ID', 'CUSTOMER_ID', 'AIRLINE_NAME (JOIN)', 'FLIGHT_DESTINATION (JOIN)', 'PASSANGER_FIRST_NAME (JOIN)', 'PASSANGER_LAST_NAME (JOIN)', 'SEAT (JOIN)', 'USER_NAME (JOIN)'];
-            const passangers = ['TABLE NUMBER AND NAME', 'ID', 'FIRST_NAME', 'LAST_NAME', 'DATE_OF_BIRTH', 'PASSPORT_NUMBER'];
-
-            if (filter_id === '0') users.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '1') countries.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '2') airlines.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '3') customers.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '4') flights.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '5') tickets.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-            if (filter_id === '6') passangers.forEach(header => newTr.appendChild(document.createElement('th')).textContent = header);
-
-            myTable.appendChild(newTr);
-
-            if (filterid !== undefined && filterid !== '') {
-                filter_id = `${filterid}`;
-            }
-            let url = "/all_tables"
-            $.ajax({
-                url: url,
-                success: data => displayRecords(data),
-                error: error => console.error('Error fetching records:', error)
-            });
-            // fetch(url)
-            //     .then((response) => response.json())
-            //     .then((data) => displayRecords(data))
-            //     .catch((error) => console.error("Error fetching records:", error));
-        };
-
-        const displayRecords = records => {
-            const append_functions = [appendRow0, appendRow1, appendRow2, appendRow3, appendRow4, appendRow5, appendRow6];
-            records[filter_id].forEach(append_functions[filter_id]);
-        };
-
-        const name = { 0: 'USERS', 1: 'COUNTRIES', 2: 'AIRLINES', 3: 'CUSTOMERS', 4: 'FLIGHTS', 5: 'TICKETS', 6: 'PASSANGERS' };
-
-
-        const appendRow0 = records => tableBody.append(`
-                <tr>
-                    <td>${filter_id}-${name[filter_id]}</td>
-\                    <td>${records.id}</td>
-                    <td>${records.username}</td>
-                    <td>${records.password}</td>
-                    <td>${records.email}</td>
-                    <td>${records.role_name}</td>
-                    </tr>`);
-
-        const appendRow1 = records => tableBody.append(`
-            <tr>
-                    <td>${filter_id}-${name[filter_id]}</td>
-                    <td>${records.id}</td>
-                    <td>${records.country_name}</td>
-                    <td>${records.continent_id}</td>
-                    <td>${records.continent}</td>
-                    </tr>`);
-
-        const appendRow2 = records => tableBody.append(`
-                <tr>
-                    <td>${filter_id}-${name[filter_id]}</td>
-                    <td>${records.id}</td>
-                    <td>${records.name}</td>
-                    <td>${records.country_id}</td>
-                    <td>${records.user_id}</td>
-                    <td>${records.country_name}</td>
-                    <td>${records.user_name}</td>
-                    </tr>`);
-
-        const appendRow3 = records => tableBody.append(`
-                    <tr>
-                    <td>${filter_id}-${name[filter_id]}</td>
-                    <td>${records.id}</td>
-                    <td>${records.first_name}</td>
-                    <td>${records.last_name}</td>
-                    <td>${records.address}</td>
-                    <td>${records.phone_no}</td>
-                    <td>${records.credit_card_no}</td>
-                    <td>${records.user_id}</td>
-                    <td>${records.user_name}</td>
-                    </tr>`);
-
-        const appendRow4 = records => tableBody.append(`
-                <tr>
-                    <td>${filter_id}-${name[filter_id]}</td>
-                    <td>${records.id}</td>
-                    <td>${records.airline_id}</td>
-                    <td>${records.origin_country_id}</td>
-                    <td>${records.destination_country_id}</td>
-                    <td>${records.departure_time}</td>
-                    <td>${records.landing_time}</td>
-                    <td>${records.remaining_tickets}</td>
-                    <td>${records.airline_name}</td>
-                    <td>${records.origin_country_name}</td>
-                    <td>${records.destination_country_name}</td>
-                    </tr>`);
-
-        const appendRow5 = records => tableBody.append(`
-                <tr>
-                    <td>${filter_id}-${name[filter_id]}</td>
-                    <td>${records.id}</td>
-                    <td>${records.flight_id}</td>
-                    <td>${records.passenger_id}</td>
-                    <td>${records.customer_id}</td>
-                    <td>${records.airline_name}</td>
-                    <td>${records.flight_destination}</td>
-                    <td>${records.passanger_first_name}</td>
-                    <td>${records.passanger_last_name}</td>
-                    <td>${records.seat}</td>
-                    <td>${records.first_name} ${records.last_name}</td>
-
-                    </tr>`);
-
-        const appendRow6 = records => tableBody.append(`
-                <tr>
-                    <td>${filter_id}-${name[filter_id]}</td>
-                    <td>${records.id}</td>
-                    <td>${records.first_name}</td>
-                    <td>${records.last_name}</td>
-                    <td>${records.date_of_birth}</td>
-                    <td>${records.passport_number}</td>
-                    </tr>`);
-       window.axeptioSettings = {
-  clientId: "665f9596a7fef6109b7efaf2",
-  cookiesVersion: "skyrocket-en-EU",
-  googleConsentMode: {
-    default: {
-      analytics_storage: "denied",
-      ad_storage: "denied",
-      ad_user_data: "denied",
-      ad_personalization: "denied",
-      wait_for_update: 500
+document.getElementById('filter').addEventListener('input', function () {
+    const val = this.value;
+    const valNum = Number(val);
+    if (val === '' || (valNum >= 0 && valNum <= 6)) {
+        filter_id = valNum;
+        if (val !== '') fetchAndDisplay(valNum);
+        else {
+            tableHead.innerHTML = '';
+            tableBody.innerHTML = '';
+        }
+    } else {
+        alert("There is no such table, enter a number between 0-6");
+        this.value = "";
     }
-  }
+});
+
+const fetchAndDisplay = (filterid) => {
+    tableHead.innerHTML = '';
+    tableBody.innerHTML = '';
+
+    const headerRow = document.createElement('tr');
+    headersMap[filterid].forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    tableHead.appendChild(headerRow);
+
+    fetch('/all_tables')
+        .then(response => response.json())
+        .then(data => displayRecords(data, filterid))
+        .catch(error => console.error("Error fetching records:", error));
 };
+
+const displayRecords = (records, filterid) => {
+    const funcs = [appendRow0, appendRow1, appendRow2, appendRow3, appendRow4, appendRow5, appendRow6];
+    if (!records || !records[filterid]) {
+        console.error("No records found for filterid:", filterid);
+        return;
+    }
+    records[filterid].forEach(funcs[filterid]);
+};
+
+
+        const headersMap = {
+            0: ['TABLE NUMBER AND NAME', 'ID', 'USERNAME', 'PASSWORD', 'EMAIL', 'ROLE_NAME (JOIN)'],
+            1: ['TABLE NUMBER AND NAME', 'ID', 'NAME', 'COUNTRY_ID', 'CONTINENT (JOIN)'],
+            2: ['TABLE NUMBER AND NAME', 'ID', 'NAME', 'CONTINENT_ID', 'USER_ID', 'COUNTRY_NAME (JOIN)', 'USER_NAME (JOIN)'],
+            3: ['TABLE NUMBER AND NAME', 'ID', 'FIRST_NAME', 'LAST_NAME', 'ADDRESS', 'PHONE_NO', 'CREDIT_CARD_NO', 'USER_ID', 'USER_NAME (JOIN)'],
+            4: ['TABLE NUMBER AND NAME', 'ID', 'AIRLINE_ID', 'ORIGIN_COUNTRY_ID', 'DESTINATION_COUNTRY_ID', 'DEPARTURE_TIME', 'LANDING_TIME', 'REMAINING_TICKETS', 'AIRLINE_NAME (JOIN)', 'ORIGIN_COUNTRY_NAME (JOIN)', 'DESTINATION_COUNTRY_NAME (JOIN)'],
+            5: ['TABLE NUMBER AND NAME', 'ID', 'FLIGHT_ID', 'PASSENGER_ID', 'CUSTOMER_ID', 'AIRLINE_NAME (JOIN)', 'FLIGHT_DESTINATION (JOIN)', 'PASSANGER_FIRST_NAME (JOIN)', 'PASSANGER_LAST_NAME (JOIN)', 'SEAT (JOIN)', 'USER_NAME (JOIN)'],
+            6: ['TABLE NUMBER AND NAME', 'ID', 'FIRST_NAME', 'LAST_NAME', 'DATE_OF_BIRTH', 'PASSPORT_NUMBER']
+        };
+
+        const name = {
+            0: 'USERS', 1: 'COUNTRIES', 2: 'AIRLINES',
+            3: 'CUSTOMERS', 4: 'FLIGHTS', 5: 'TICKETS', 6: 'PASSANGERS'
+        };
+
  
-(function(d, s) {
-  var t = d.getElementsByTagName(s)[0], e = d.createElement(s);
-  e.async = true; e.src = "//static.axept.io/sdk.js";
-  t.parentNode.insertBefore(e, t);
-})(document, "script"); 
+        const createCell = (text) => {
+            const td = document.createElement('td');
+            td.textContent = text;
+            return td;
+        };
+
+        const appendRow = (values) => {
+            const tr = document.createElement('tr');
+            values.forEach(value => tr.appendChild(createCell(value)));
+            tableBody.appendChild(tr);
+        };
+
+        const appendRow0 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.username, r.password, r.email, r.role_name]);
+        const appendRow1 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.country_name, r.continent_id, r.continent]);
+        const appendRow2 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.name, r.country_id, r.user_id, r.country_name, r.user_name]);
+        const appendRow3 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.first_name, r.last_name, r.address, r.phone_no, r.credit_card_no, r.user_id, r.user_name]);
+        const appendRow4 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.airline_id, r.origin_country_id, r.destination_country_id, r.departure_time, r.landing_time, r.remaining_tickets, r.airline_name, r.origin_country_name, r.destination_country_name]);
+        const appendRow5 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.flight_id, r.passenger_id, r.customer_id, r.airline_name, r.flight_destination, r.passanger_first_name, r.passanger_last_name, r.seat, `${r.first_name} ${r.last_name}`]);
+        const appendRow6 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.first_name, r.last_name, r.date_of_birth, r.passport_number]);
+
+        // Axeptio cookie settings
+        window.axeptioSettings = {
+            clientId: "665f9596a7fef6109b7efaf2",
+            cookiesVersion: "skyrocket-en-EU",
+            googleConsentMode: {
+                default: {
+                    analytics_storage: "denied",
+                    ad_storage: "denied",
+                    ad_user_data: "denied",
+                    ad_personalization: "denied",
+                    wait_for_update: 500
+                }
+            }
+        };
+
+        (function(d, s) {
+            const t = d.getElementsByTagName(s)[0], e = d.createElement(s);
+            e.async = true; e.src = "//static.axept.io/sdk.js";
+            t.parentNode.insertBefore(e, t);
+        })(document, "script");
     </script>
 </body>
-
 </html>
