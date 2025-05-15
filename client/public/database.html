@@ -128,29 +128,39 @@ function openDB() {
     };
   });
 }
+const tableNames = ['users', 'countries', 'airlines', 'customers', 'flights', 'tickets', 'role_users'];
 
 const saveToIndexedDB = async (records, filterid) => {
-  const tableKey = name[filterid]?.toLowerCase(); // למשל "users"
-  if (!tableKey || !Array.isArray(records[tableKey])) {
-    console.error(`[IndexedDB Error] Invalid table key or data is not an array: key=${tableKey}`, records[tableKey]);
+  const tableKey = name[filterid]?.toLowerCase();
+  const dataToSave = records[tableKey];
+
+  if (!Array.isArray(dataToSave)) {
+    console.error(`[IndexedDB Error] Expected array for table '${tableKey}', got:`, dataToSave);
     return;
   }
 
-  const dataToSave = records[tableKey];
-
   console.log(`[IndexedDB] Saving ${dataToSave.length} rows to IndexedDB`);
 
-  const request = indexedDB.open('DatabaseCache', 1);
+  const request = indexedDB.open('DatabaseCache', 2); // אפשר לעלות גרסה כדי להכריח upgrade
 
   request.onupgradeneeded = (event) => {
     const db = event.target.result;
-    if (!db.objectStoreNames.contains(tableKey)) {
-      db.createObjectStore(tableKey, { keyPath: 'id' });
-    }
+
+    tableNames.forEach(name => {
+      if (!db.objectStoreNames.contains(name)) {
+        db.createObjectStore(name, { keyPath: 'id' });
+      }
+    });
   };
 
   request.onsuccess = (event) => {
     const db = event.target.result;
+
+    if (!db.objectStoreNames.contains(tableKey)) {
+      console.error(`[IndexedDB Error] Store '${tableKey}' not found in DB`);
+      return;
+    }
+
     const transaction = db.transaction([tableKey], 'readwrite');
     const store = transaction.objectStore(tableKey);
 
@@ -159,7 +169,7 @@ const saveToIndexedDB = async (records, filterid) => {
     });
 
     transaction.oncomplete = () => {
-      console.log(`[IndexedDB] Saved ${dataToSave.length} rows to store '${tableKey}'`);
+      console.log(`[IndexedDB] Saved ${dataToSave.length} rows to '${tableKey}'`);
     };
 
     transaction.onerror = (event) => {
