@@ -102,10 +102,10 @@ const displayRecords = (records, filterid) => {
             tableBody.appendChild(tr);
         };
 
-        const appendRow0 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.username, r.password, r.email, r.role_name]);
+        const appendRow0 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.username, , r.email, r.role_name]);
         const appendRow1 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.country_name, r.continent_id, r.continent]);
         const appendRow2 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.name, r.country_id, r.user_id, r.country_name, r.user_name]);
-        const appendRow3 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.first_name, r.last_name, r.address, r.phone_no, r.credit_card_no, r.user_id, r.user_name]);
+        const appendRow3 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.first_name, r.last_name, r.address, r.phone, r.credit_card, r.user_id, r.user_name]);
         const appendRow4 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.airline_id, r.origin_country_id, r.destination_country_id, r.departure_time, r.landing_time, r.remaining_tickets, r.airline_name, r.origin_country_name, r.destination_country_name]);
         const appendRow5 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.flight_id, r.passenger_id, r.customer_id, r.airline_name, r.flight_destination, r.passanger_first_name, r.passanger_last_name, r.seat, `${r.first_name} ${r.last_name}`]);
         const appendRow6 = r => appendRow([`${filter_id}-${name[filter_id]}`, r.id, r.first_name, r.last_name, r.date_of_birth, r.passport_number]);
