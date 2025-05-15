@@ -38,8 +38,8 @@ app.use(passport.session());
 // לוג התחלה
 logger.info('==== System start =======');
 // Routes
-app.use('/google', googleRoutes);
-app.use('/git', githubRoutes);
+app.use('/', googleRoutes);
+app.use('/', githubRoutes);
 app.use('/all_tables', allTablesRouter);
 app.use('/role_admins', roleAdmins);
 app.use('/role_airlines', roleAirlines);
