@@ -26,12 +26,13 @@ require('dotenv').config();
 // Middlewares
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'client', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 app.use(session({
     secret: process.env.SESSION_SECRET || 'keyboard',
     resave: false,
     saveUninitialized: false,
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
