@@ -51,7 +51,6 @@
         console.error('[Input Error]', e);
       }
     });
-  
     const fetchAndDisplay = async (filterid) => {
   tableHead.innerHTML = '';
   tableBody.innerHTML = '';
@@ -79,12 +78,15 @@
       return;
     }
 
-    // הוספה כאן — בדיקה שהטבלה הרצויה היא מערך
     const tableData = data[filterid];
     if (!Array.isArray(tableData)) {
       console.error(`[Display Error] Expected array for table ${filterid}, got:`, tableData);
       return;
     }
+
+    // שמירה ל-IndexedDB:
+    await saveToIndexedDB(filterid, tableData);
+    console.log(`[IndexedDB] Saved data for table ${filterid}`);
 
     console.log('[Fetch] Data received:', data);
     displayRecords(data, filterid);
@@ -151,6 +153,36 @@
     const appendRow4 = r => appendRow([`4-${name[4]}`, r.id, r.airline_id, r.origin_country_id, r.destination_country_id, r.departure_time, r.landing_time, r.remaining_tickets, r.airline_name, r.origin_country_name, r.destination_country_name]);
     const appendRow5 = r => appendRow([`5-${name[5]}`, r.id, r.flight_id, r.passenger_id, r.customer_id, r.airline_name, r.flight_destination, r.passanger_first_name, r.passanger_last_name, r.seat, `${r.first_name} ${r.last_name}`]);
     const appendRow6 = r => appendRow([`6-${name[6]}`, r.id, r.first_name, r.last_name, r.date_of_birth, r.passport_number]);
+    function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('MyDB', 1);
+
+    request.onupgradeneeded = function (event) {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('tables')) {
+        db.createObjectStore('tables');
+      }
+    };
+
+    request.onsuccess = function (event) {
+      resolve(event.target.result);
+    };
+
+    request.onerror = function (event) {
+      reject(event.target.error);
+    };
+  });
+}
+
+async function saveToIndexedDB(tableId, data) {
+  const db = await openDB();
+  const tx = db.transaction('tables', 'readwrite');
+  const store = tx.objectStore('tables');
+  store.put(data, String(tableId));
+  await tx.complete;
+  db.close();
+}
+
   </script>
   
 </body>
