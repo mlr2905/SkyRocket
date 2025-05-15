@@ -56,11 +56,23 @@ document.getElementById('filter').addEventListener('input', function () {
   }
 });
 
+// ממיר את filter_id לשם הטבלה המתאים
+const idToKey = {
+  0: 'users',
+  1: 'countries',
+  2: 'airlines',
+  3: 'customers',
+  4: 'flights',
+  5: 'tickets',
+  6: 'passengers'
+};
+
 const fetchAndDisplay = async (filterid) => {
   tableHead.innerHTML = '';
   tableBody.innerHTML = '';
 
   try {
+    // הצג כותרות הטבלה
     const headerRow = document.createElement('tr');
     headersMap[filterid].forEach(header => {
       const th = document.createElement('th');
@@ -74,36 +86,98 @@ const fetchAndDisplay = async (filterid) => {
   }
 
   try {
-    const res = await fetch('/all_tables');
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-    const data = await res.json();
+    // נסה לקבל נתונים תחילה מ-IndexedDB
+    let data = await getFromIndexedDB(filterid);
+    
+    // אם אין נתונים ב-IndexedDB, בצע בקשת fetch
+    if (!data || data.length === 0) {
+      console.log('[Cache] No data in IndexedDB, fetching from server...');
+      const res = await fetch('/all_tables');
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      data = await res.json();
 
-    if (!data || typeof data !== 'object') {
-      console.error('[Fetch Error] Invalid JSON structure:', data);
-      return;
+      if (!data || typeof data !== 'object') {
+        console.error('[Fetch Error] Invalid JSON structure:', data);
+        return;
+      }
+
+      console.log('[Fetch] Data received:', data);
+      await saveToIndexedDB(data, filterid);
+    } else {
+      console.log(`[Cache] Using data from IndexedDB for table ${filterid}`);
     }
-
-    console.log('[Fetch] Data received:', data);
-    await saveToIndexedDB(data, filterid); // ✅ שמירה ל־IndexedDB
+    
+    // הצג את הנתונים
     displayRecords(data, filterid);
   } catch (e) {
-    console.error('[Fetch Error]', e);
+    console.error('[Fetch/Cache Error]', e);
     alert("Error fetching data. Check the console for more info.");
   }
 };
 
+// פונקציה חדשה לקבלת נתונים מ-IndexedDB
+const getFromIndexedDB = (filterid) => {
+  return new Promise((resolve, reject) => {
+    const tableKey = idToKey[filterid];
+    if (!tableKey) {
+      return resolve(null);
+    }
+
+    const request = indexedDB.open('DatabaseCache', 1);
+    
+    request.onerror = (event) => {
+      console.error('[IndexedDB Open Error]', event.target.error);
+      resolve(null);
+    };
+    
+    request.onsuccess = (event) => {
+      const db = event.target.result;
+      
+      // בדוק אם ה-object store קיים
+      if (!db.objectStoreNames.contains(tableKey)) {
+        console.log(`[IndexedDB] Object store '${tableKey}' does not exist yet`);
+        resolve(null);
+        return;
+      }
+      
+      try {
+        const transaction = db.transaction([tableKey], 'readonly');
+        const store = transaction.objectStore(tableKey);
+        const getAllRequest = store.getAll();
+        
+        getAllRequest.onsuccess = () => {
+          resolve(getAllRequest.result);
+        };
+        
+        getAllRequest.onerror = (event) => {
+          console.error('[IndexedDB GetAll Error]', event.target.error);
+          resolve(null);
+        };
+      } catch (error) {
+        console.error('[IndexedDB Transaction Error]', error);
+        resolve(null);
+      }
+    };
+  });
+};
+
 const displayRecords = (records, filterid) => {
-  // נסה למצוא את הנתונים לפי שם הטבלה או לפי מספר המזהה
-  const tableKey = name[filterid]?.toLowerCase();
+  const tableKey = idToKey[filterid];
   let rowsToDisplay;
   
-  if (Array.isArray(records[tableKey])) {
+  // נסה לקבל נתונים מהמבנה הנכון
+  if (records[tableKey] && Array.isArray(records[tableKey])) {
     rowsToDisplay = records[tableKey];
-  } else if (Array.isArray(records[filterid])) {
-    rowsToDisplay = records[filterid];
+  } else if (Array.isArray(records)) {
+    // אם הנתונים כבר מערך (למשל מהקריאה ל-IndexedDB)
+    rowsToDisplay = records;
   } else {
-    console.error(`[Display Error] Expected array for table ${filterid} (${tableKey}), got:`, 
-      records[filterid], records[tableKey]);
+    console.error(`[Display Error] Cannot find data for table ${filterid} (${tableKey})`, records);
+    return;
+  }
+
+  if (!Array.isArray(rowsToDisplay)) {
+    console.error(`[Display Error] Expected array for table ${filterid}, got:`, rowsToDisplay);
     return;
   }
 
@@ -118,68 +192,57 @@ const displayRecords = (records, filterid) => {
     }
   });
 };
-// IndexedDB
-const dbName = "DataDB";
-const storeName = "tables_store";
-
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(dbName, 1);
-    request.onerror = (e) => reject(e);
-    request.onsuccess = () => resolve(request.result);
-    request.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(storeName)) {
-        db.createObjectStore(storeName, { keyPath: "id" });
-      }
-    };
-  });
-}
 
 const saveToIndexedDB = async (records, filterid) => {
-  // קבל את שם הטבלה מהמספר
-  const tableKey = name[filterid]?.toLowerCase(); // למשל "users"
-  
+  const tableKey = idToKey[filterid];
   if (!tableKey) {
-    console.error(`[IndexedDB Error] Invalid table key: key=${tableKey}`);
+    console.error(`[IndexedDB Error] Invalid table key for filterid=${filterid}`);
     return;
   }
   
-  // בדוק אם הנתונים קיימים ובפורמט הנכון
+  // קבל את הנתונים לשמירה
   let dataToSave;
-  if (Array.isArray(records[tableKey])) {
+  if (records[tableKey] && Array.isArray(records[tableKey])) {
     dataToSave = records[tableKey];
-  } else if (Array.isArray(records[filterid])) {
-    dataToSave = records[filterid];
   } else {
-    console.error(`[IndexedDB Error] Data is not an array for key=${tableKey} or filterid=${filterid}`, records);
+    console.error(`[IndexedDB Error] Cannot find data for table ${tableKey}`, records);
     return;
   }
 
-  console.log(`[IndexedDB] Attempting to save ${dataToSave.length} rows to IndexedDB for ${tableKey}`);
+  if (!dataToSave || dataToSave.length === 0) {
+    console.warn(`[IndexedDB] No data to save for ${tableKey}`);
+    return;
+  }
+
+  console.log(`[IndexedDB] Saving ${dataToSave.length} rows to IndexedDB for ${tableKey}`);
 
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('DatabaseCache', 1);
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      // וודא שה-object store קיים
-      if (!db.objectStoreNames.contains(tableKey)) {
-        console.log(`[IndexedDB] Creating object store: ${tableKey}`);
-        db.createObjectStore(tableKey, { keyPath: 'id' });
-      }
+      // יצירת כל ה-object stores בזמן שדרוג
+      const storeNames = Object.values(idToKey);
+      storeNames.forEach(storeName => {
+        if (!db.objectStoreNames.contains(storeName)) {
+          console.log(`[IndexedDB] Creating object store: ${storeName}`);
+          db.createObjectStore(storeName, { keyPath: 'id' });
+        }
+      });
     };
 
     request.onsuccess = (event) => {
       const db = event.target.result;
       
-      // וודא שה-object store קיים לפני יצירת transaction
+      // בדוק אם ה-object store קיים
       if (!db.objectStoreNames.contains(tableKey)) {
-        console.error(`[IndexedDB Error] Object store '${tableKey}' does not exist`);
+        console.error(`[IndexedDB Error] Object store '${tableKey}' does not exist. Upgrading DB...`);
         
-        // נסה לסגור ולפתוח מחדש עם גרסה חדשה
+        // סגור את מסד הנתונים הנוכחי
         db.close();
-        const upgradeRequest = indexedDB.open('DatabaseCache', 2); // הגדל גרסה
+        
+        // פתח שוב עם גרסה חדשה
+        const upgradeRequest = indexedDB.open('DatabaseCache', 2);
         
         upgradeRequest.onupgradeneeded = (event) => {
           const newDb = event.target.result;
@@ -217,8 +280,16 @@ function saveData(db, tableKey, dataToSave) {
     const transaction = db.transaction([tableKey], 'readwrite');
     const store = transaction.objectStore(tableKey);
 
+    // נקה את ה-store לפני הוספת נתונים חדשים
+    store.clear();
+
+    // הוסף את כל הנתונים
     dataToSave.forEach(row => {
-      store.put(row);
+      if (row && typeof row === 'object' && 'id' in row) {
+        store.put(row);
+      } else {
+        console.warn('[IndexedDB] Skipping row without id:', row);
+      }
     });
 
     transaction.oncomplete = () => {
@@ -232,7 +303,6 @@ function saveData(db, tableKey, dataToSave) {
     console.error('[IndexedDB Save Error]', error);
   }
 }
-
 // עזר
 const headersMap = {
   0: ['TABLE', 'ID', 'USERNAME','EMAIL', 'ROLE_NAME (JOIN)'],
