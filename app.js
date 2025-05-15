@@ -1,7 +1,7 @@
 const express = require('express');
 const logger = require('./logger/my_logger');
 const setupMiddleware = require('./config/middleware');
-const { setupAuthRoutes } = require('./routers/authRoutes');
+const { setupAuthRoutes } = require('./routes/authRoutes');
 const setupSwagger = require('./config/swaggerConfig');
 const setupRoutes = require('./routes');
 require('dotenv').config();
