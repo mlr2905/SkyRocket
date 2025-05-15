@@ -115,7 +115,7 @@
         };
       
         const headersMap = {
-          0: ['TABLE', 'ID', 'USERNAME', 'PASSWORD', 'EMAIL', 'ROLE_NAME (JOIN)'],
+          0: ['TABLE', 'ID', 'USERNAME','EMAIL', 'ROLE_NAME (JOIN)'],
           1: ['TABLE', 'ID', 'NAME', 'COUNTRY_ID', 'CONTINENT (JOIN)'],
           2: ['TABLE', 'ID', 'NAME', 'CONTINENT_ID', 'USER_ID', 'COUNTRY_NAME', 'USER_NAME'],
           3: ['TABLE', 'ID', 'FIRST_NAME', 'LAST_NAME', 'ADDRESS', 'PHONE_NO', 'CREDIT_CARD_NO', 'USER_ID', 'USER_NAME'],
@@ -141,7 +141,7 @@
           tableBody.appendChild(tr);
         };
       
-        const appendRow0 = r => appendRow([`0-${name[0]}`, r.id, r.username, r.password, r.email, r.role_name]);
+        const appendRow0 = r => appendRow([`0-${name[0]}`, r.id, r.username, r.email, r.role_name]);
         const appendRow1 = r => appendRow([`1-${name[1]}`, r.id, r.country_name, r.continent_id, r.continent]);
         const appendRow2 = r => appendRow([`2-${name[2]}`, r.id, r.name, r.country_id, r.user_id, r.country_name, r.user_name]);
         const appendRow3 = r => appendRow([`3-${name[3]}`, r.id, r.first_name, r.last_name, r.address, r.phone, r.credit_card, r.user_id, r.user_name]);
