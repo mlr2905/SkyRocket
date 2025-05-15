@@ -37,7 +37,9 @@ app.use(passport.session());
 
 // לוג התחלה
 logger.info('==== System start =======');
+
 // Routes
+app.use('/', authRoutes);
 app.use('/', googleRoutes);
 app.use('/', githubRoutes);
 app.use('/all_tables', allTablesRouter);
