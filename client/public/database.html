@@ -53,40 +53,47 @@
     });
   
     const fetchAndDisplay = async (filterid) => {
-      tableHead.innerHTML = '';
-      tableBody.innerHTML = '';
-  
-      try {
-        const headerRow = document.createElement('tr');
-        headersMap[filterid].forEach(header => {
-          const th = document.createElement('th');
-          th.textContent = header;
-          headerRow.appendChild(th);
-        });
-        tableHead.appendChild(headerRow);
-      } catch (e) {
-        console.error(`[Header Error] Failed to render headers for table ${filterid}`, e);
-        return;
-      }
-  
-      try {
-        const res = await fetch('/all_tables');
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const data = await res.json();
-  
-        if (!data || typeof data !== 'object') {
-          console.error('[Fetch Error] Invalid JSON structure:', data);
-          return;
-        }
-  
-        console.log('[Fetch] Data received:', data);
-        displayRecords(data, filterid);
-      } catch (e) {
-        console.error('[Fetch Error]', e);
-        alert("Error fetching data. Check the console for more info.");
-      }
-    };
-  
+  tableHead.innerHTML = '';
+  tableBody.innerHTML = '';
+
+  try {
+    const headerRow = document.createElement('tr');
+    headersMap[filterid].forEach(header => {
+      const th = document.createElement('th');
+      th.textContent = header;
+      headerRow.appendChild(th);
+    });
+    tableHead.appendChild(headerRow);
+  } catch (e) {
+    console.error(`[Header Error] Failed to render headers for table ${filterid}`, e);
+    return;
+  }
+
+  try {
+    const res = await fetch('/all_tables');
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const data = await res.json();
+
+    if (!data || typeof data !== 'object') {
+      console.error('[Fetch Error] Invalid JSON structure:', data);
+      return;
+    }
+
+    // הוספה כאן — בדיקה שהטבלה הרצויה היא מערך
+    const tableData = data[filterid];
+    if (!Array.isArray(tableData)) {
+      console.error(`[Display Error] Expected array for table ${filterid}, got:`, tableData);
+      return;
+    }
+
+    console.log('[Fetch] Data received:', data);
+    displayRecords(data, filterid);
+  } catch (e) {
+    console.error('[Fetch Error]', e);
+    alert("Error fetching data. Check the console for more info.");
+  }
+};
+
     const displayRecords = (records, filterid) => {
       try {
         const funcs = [appendRow0, appendRow1, appendRow2, appendRow3, appendRow4, appendRow5, appendRow6];
