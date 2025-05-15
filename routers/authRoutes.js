@@ -2,8 +2,8 @@ const passport = require('passport');
 const axios = require('axios');
 const moment = require('moment-timezone');
 const logger = require('../logger/my_logger');
-const { handleGoogleLogin } = require('./auth/Google_Auth');
-const { handleGitHubLogin } = require('./auth/Git_Auth');
+const { handleGoogleLogin } = require('../auth/Google_Auth');
+const { handleGitHubLogin } = require('../auth/Git_Auth');
 
 function setupAuthRoutes(app) {
     // ניתובים לאימות
