@@ -5,7 +5,7 @@ function redirectToLogin(req, res) {
     res.status(200).send(`
         <script>
             document.cookie = 'redirect=${req.originalUrl}; max-age=3600';
-            window.location.href = 'https://skyrocket.onrender.com/login.html';
+            window.location.href = '/login.html';
         </script>
     `);
 }

@@ -26,16 +26,7 @@ require('dotenv').config();
 // Middlewares
 app.use(cors());
 app.use(bodyParser.json());
-app.get('/', (req, res) => {
-    const cookies = req.headers.cookie?.split(';').map(cookie => cookie.trim()) || [];
-    const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
 
-    if (!skyToken) {
-        return res.redirect('/login.html');
-    }
-
-    res.sendFile(path.join(__dirname, '..', 'client', 'public', 'index.html'));
-});
 app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 app.use(session({
     secret: process.env.SESSION_SECRET || 'keyboard',
@@ -52,6 +43,9 @@ const sessionController = require('./controllers/sessionController');
 
 // יש לשים לפני כל ה-Routes (אבל אחרי static ו-session)
 app.use(sessionController.rootHandler);
+app.get('/', (req, res) => {
+    res.redirect('/login.html'); // או כל שם אחר של קובץ ההתחברות שלך
+});
 
 // Routes
 app.use('/', authRoutes);
