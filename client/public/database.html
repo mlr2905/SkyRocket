@@ -24,20 +24,19 @@
         <tbody id="dataTableBody"></tbody>
     </table>
 
- <script>
+    <script>
         const tableHead = document.getElementById('trbody');
         const tableBody = document.getElementById('dataTableBody');
         let filter_id = null;
-        
-        ```
+      
         document.getElementById('filter').addEventListener('input', function () {
           const val = this.value;
           const valNum = Number(val);
-        
+      
           try {
             if (val === '' || (valNum >= 0 && valNum <= 6)) {
               filter_id = valNum;
-        
+      
               if (val !== '') {
                 console.clear();
                 console.log(`[Input] Filter ID entered: ${valNum}`);
@@ -56,11 +55,11 @@
             console.error('[Input Error]', e);
           }
         });
-        
+      
         const fetchAndDisplay = async (filterid) => {
           tableHead.innerHTML = '';
           tableBody.innerHTML = '';
-        
+      
           try {
             const headerRow = document.createElement('tr');
             headersMap[filterid].forEach(header => {
@@ -73,17 +72,17 @@
             console.error(`[Header Error] Failed to render headers for table ${filterid}`, e);
             return;
           }
-        
+      
           try {
             const res = await fetch('/all_tables');
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             const data = await res.json();
-        
+      
             if (!data || typeof data !== 'object') {
               console.error('[Fetch Error] Invalid JSON structure:', data);
               return;
             }
-        
+      
             console.log('[Fetch] Data received:', data);
             displayRecords(data, filterid);
           } catch (e) {
@@ -91,17 +90,17 @@
             alert("Error fetching data. Check the console for more info.");
           }
         };
-        
+      
         const displayRecords = (records, filterid) => {
           try {
             const funcs = [appendRow0, appendRow1, appendRow2, appendRow3, appendRow4, appendRow5, appendRow6];
             const rows = records[filterid];
-        
+      
             if (!Array.isArray(rows)) {
               console.error(`[Display Error] Expected array for table ${filterid}, got:`, rows);
               return;
             }
-        
+      
             console.log(`[Display] Rendering ${rows.length} rows for table ${filterid}`);
             rows.forEach((row, index) => {
               try {
@@ -114,7 +113,7 @@
             console.error('[Display Records Error]', e);
           }
         };
-        
+      
         const headersMap = {
           0: ['TABLE', 'ID', 'USERNAME', 'PASSWORD', 'EMAIL', 'ROLE_NAME (JOIN)'],
           1: ['TABLE', 'ID', 'NAME', 'COUNTRY_ID', 'CONTINENT (JOIN)'],
@@ -124,24 +123,24 @@
           5: ['TABLE', 'ID', 'FLIGHT_ID', 'PASSENGER_ID', 'CUSTOMER_ID', 'AIRLINE_NAME', 'FLIGHT_DESTINATION', 'PASSENGER_FIRST_NAME', 'PASSENGER_LAST_NAME', 'SEAT', 'USER_NAME'],
           6: ['TABLE', 'ID', 'FIRST_NAME', 'LAST_NAME', 'DATE_OF_BIRTH', 'PASSPORT_NUMBER']
         };
-        
+      
         const name = {
           0: 'USERS', 1: 'COUNTRIES', 2: 'AIRLINES',
           3: 'CUSTOMERS', 4: 'FLIGHTS', 5: 'TICKETS', 6: 'PASSENGERS'
         };
-        
+      
         const createCell = (text) => {
           const td = document.createElement('td');
           td.textContent = text ?? 'N/A';
           return td;
         };
-        
+      
         const appendRow = (values) => {
           const tr = document.createElement('tr');
           values.forEach(value => tr.appendChild(createCell(value)));
           tableBody.appendChild(tr);
         };
-        
+      
         const appendRow0 = r => appendRow([`0-${name[0]}`, r.id, r.username, r.password, r.email, r.role_name]);
         const appendRow1 = r => appendRow([`1-${name[1]}`, r.id, r.country_name, r.continent_id, r.continent]);
         const appendRow2 = r => appendRow([`2-${name[2]}`, r.id, r.name, r.country_id, r.user_id, r.country_name, r.user_name]);
@@ -149,9 +148,6 @@
         const appendRow4 = r => appendRow([`4-${name[4]}`, r.id, r.airline_id, r.origin_country_id, r.destination_country_id, r.departure_time, r.landing_time, r.remaining_tickets, r.airline_name, r.origin_country_name, r.destination_country_name]);
         const appendRow5 = r => appendRow([`5-${name[5]}`, r.id, r.flight_id, r.passenger_id, r.customer_id, r.airline_name, r.flight_destination, r.passanger_first_name, r.passanger_last_name, r.seat, `${r.first_name} ${r.last_name}`]);
         const appendRow6 = r => appendRow([`6-${name[6]}`, r.id, r.first_name, r.last_name, r.date_of_birth, r.passport_number]);
-        ```
-        
-          </script>
-        
+      </script>
 </body>
 </html>
