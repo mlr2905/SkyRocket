@@ -60,11 +60,6 @@ const fetchAndDisplay = async (filterid) => {
   tableHead.innerHTML = '';
   tableBody.innerHTML = '';
 
-  if (!headersMap.hasOwnProperty(filterid)) {
-    console.error(`[Header Error] No headers defined for table ${filterid}`);
-    return;
-  }
-
   try {
     const headerRow = document.createElement('tr');
     headersMap[filterid].forEach(header => {
@@ -89,10 +84,7 @@ const fetchAndDisplay = async (filterid) => {
     }
 
     console.log('[Fetch] Data received:', data);
-
-    // שמור ל-IndexedDB
-    await saveToIndexedDB(filterid, data[filterid]);
-
+    await saveToIndexedDB(data, filterid); // ✅ שמירה ל־IndexedDB
     displayRecords(data, filterid);
   } catch (e) {
     console.error('[Fetch Error]', e);
@@ -137,17 +129,49 @@ function openDB() {
   });
 }
 
-async function saveToIndexedDB(filterid, data) {
-  try {
-    const db = await openDB();
-    const tx = db.transaction(storeName, "readwrite");
-    const store = tx.objectStore(storeName);
-    await store.put({ id: filterid, rows: data });
-    console.log(`[IndexedDB] Saved table ${filterid} with ${data.length} rows`);
-  } catch (e) {
-    console.error('[IndexedDB Error]', e);
+const saveToIndexedDB = async (records, filterid) => {
+  const tableKey = name[filterid]?.toLowerCase(); // למשל "users"
+  if (!tableKey || !Array.isArray(records[tableKey])) {
+    console.error(`[IndexedDB Error] Invalid table key or data is not an array: key=${tableKey}`, records[tableKey]);
+    return;
   }
-}
+
+  const dataToSave = records[tableKey];
+
+  console.log(`[IndexedDB] Saving ${dataToSave.length} rows to IndexedDB`);
+
+  const request = indexedDB.open('DatabaseCache', 1);
+
+  request.onupgradeneeded = (event) => {
+    const db = event.target.result;
+    if (!db.objectStoreNames.contains(tableKey)) {
+      db.createObjectStore(tableKey, { keyPath: 'id' });
+    }
+  };
+
+  request.onsuccess = (event) => {
+    const db = event.target.result;
+    const transaction = db.transaction([tableKey], 'readwrite');
+    const store = transaction.objectStore(tableKey);
+
+    dataToSave.forEach(row => {
+      store.put(row);
+    });
+
+    transaction.oncomplete = () => {
+      console.log(`[IndexedDB] Saved ${dataToSave.length} rows to store '${tableKey}'`);
+    };
+
+    transaction.onerror = (event) => {
+      console.error('[IndexedDB Transaction Error]', event.target.error);
+    };
+  };
+
+  request.onerror = (event) => {
+    console.error('[IndexedDB Open Error]', event.target.error);
+  };
+};
+
 
 // עזר
 const headersMap = {
