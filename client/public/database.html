@@ -138,7 +138,7 @@ function openDB() {
 
 const saveToIndexedDB = async (records, filterid) => {
   // קבל את שם הטבלה מהמספר
-  const tableKey = name[filterid]?.toLowerCase(); // למשל "users"
+  const tableKey = name[filterid]?.toLowerCase();
   
   if (!tableKey) {
     console.error(`[IndexedDB Error] Invalid table key: key=${tableKey}`);
@@ -159,31 +159,76 @@ const saveToIndexedDB = async (records, filterid) => {
   console.log(`[IndexedDB] Attempting to save ${dataToSave.length} rows to IndexedDB for ${tableKey}`);
 
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('DatabaseCache', 1);
-
-    request.onupgradeneeded = (event) => {
+    // נסה לפתוח את מסד הנתונים עם גרסה דינמית
+    let dbVersion = 1;
+    let openRequest = indexedDB.open('DatabaseCache', dbVersion);
+    
+    openRequest.onupgradeneeded = (event) => {
       const db = event.target.result;
-      // וודא שה-object store קיים
       if (!db.objectStoreNames.contains(tableKey)) {
         console.log(`[IndexedDB] Creating object store: ${tableKey}`);
         db.createObjectStore(tableKey, { keyPath: 'id' });
       }
     };
-
-    request.onsuccess = (event) => {
+    
+    openRequest.onerror = (event) => {
+      if (event.target.error.name === "VersionError") {
+        console.log("[IndexedDB] Version error, trying with higher version");
+        // נסה לגלות את הגרסה הנוכחית
+        const checkRequest = indexedDB.open('DatabaseCache');
+        checkRequest.onsuccess = () => {
+          dbVersion = checkRequest.result.version + 1;
+          console.log(`[IndexedDB] Current version is ${checkRequest.result.version}, trying with version ${dbVersion}`);
+          checkRequest.result.close();
+          
+          // נסה שוב עם הגרסה החדשה
+          const newRequest = indexedDB.open('DatabaseCache', dbVersion);
+          
+          newRequest.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(tableKey)) {
+              console.log(`[IndexedDB] Creating object store: ${tableKey} with version ${dbVersion}`);
+              db.createObjectStore(tableKey, { keyPath: 'id' });
+            }
+          };
+          
+          newRequest.onsuccess = (event) => {
+            const db = event.target.result;
+            saveData(db, tableKey, dataToSave);
+            resolve();
+          };
+          
+          newRequest.onerror = (error) => {
+            console.error('[IndexedDB Final Error]', error);
+            reject(error);
+          };
+        };
+        
+        checkRequest.onerror = (error) => {
+          console.error('[IndexedDB Check Error]', error);
+          reject(error);
+        };
+      } else {
+        console.error('[IndexedDB Open Error]', event.target.error);
+        reject(event.target.error);
+      }
+    };
+    
+    openRequest.onsuccess = (event) => {
       const db = event.target.result;
       
-      // וודא שה-object store קיים לפני יצירת transaction
+      // בדוק אם ה-object store קיים
       if (!db.objectStoreNames.contains(tableKey)) {
-        console.error(`[IndexedDB Error] Object store '${tableKey}' does not exist`);
-        
-        // נסה לסגור ולפתוח מחדש עם גרסה חדשה
+        console.log(`[IndexedDB] Object store '${tableKey}' doesn't exist, closing DB and upgrading`);
         db.close();
-        const upgradeRequest = indexedDB.open('DatabaseCache', 2); // הגדל גרסה
+        
+        // פתח עם גרסה חדשה
+        const newVersion = db.version + 1;
+        const upgradeRequest = indexedDB.open('DatabaseCache', newVersion);
         
         upgradeRequest.onupgradeneeded = (event) => {
           const newDb = event.target.result;
-          console.log(`[IndexedDB] Creating missing object store: ${tableKey}`);
+          console.log(`[IndexedDB] Creating missing object store: ${tableKey} with version ${newVersion}`);
           newDb.createObjectStore(tableKey, { keyPath: 'id' });
         };
         
@@ -197,21 +242,13 @@ const saveToIndexedDB = async (records, filterid) => {
           console.error('[IndexedDB Upgrade Error]', event.target.error);
           reject(event.target.error);
         };
-        
-        return;
+      } else {
+        saveData(db, tableKey, dataToSave);
+        resolve();
       }
-      
-      saveData(db, tableKey, dataToSave);
-      resolve();
-    };
-
-    request.onerror = (event) => {
-      console.error('[IndexedDB Open Error]', event.target.error);
-      reject(event.target.error);
     };
   });
 };
-
 function saveData(db, tableKey, dataToSave) {
   try {
     const transaction = db.transaction([tableKey], 'readwrite');
