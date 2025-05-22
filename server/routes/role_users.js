@@ -13,6 +13,8 @@ router.get('/users/:id', usersController.usersById);
 router.post('/authcode', usersController.authCode);
 
 router.post('/validation', usersController.validation);
+router.post('/loginWebAuthn', usersController.loginWebAuthn);
+router.post('/signupWebAuthn', usersController.signupWebAuthn);
 
 router.post('/login', usersController.login);
 

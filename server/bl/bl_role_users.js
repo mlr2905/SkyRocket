@@ -8,6 +8,282 @@ const dal_8 = require('../dals/dal_table_passengers')
 const logger = require('../logger/my_logger')
 
 logger.info('Role Users BL module initialized')
+/**
+ * Business Logic function for WebAuthn credential registration
+ * @param {Object} registrationData - Registration data object
+ * @param {string} registrationData.email - User email
+ * @param {string} registrationData.credentialId - The credential ID
+ * @param {string} registrationData.attestationObject - Base64 encoded attestation object
+ * @param {string} registrationData.clientDataJSON - Base64 encoded client data JSON
+ * @param {string} registrationData.credentialName - Optional name for the credential
+ * @returns {Promise<Object>} Response from the registration API
+ */
+async function signupWebAuthn(registrationData) {
+    const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/registerCredential';
+    
+    try {
+        // Validate input data
+        if (!validateRegistrationData(registrationData)) {
+            throw new Error('Missing required registration data');
+        }
+
+        // Prepare the request payload
+        const payload = {
+            email: registrationData.email,
+            credentialID: registrationData.credentialId,
+            publicKey: registrationData.publicKey || registrationData.attestationObject, // תיקון שם השדה
+            clientDataJSON: registrationData.clientDataJSON,
+            credentialName: registrationData.credentialName || `Access Key ${new Date().toLocaleDateString()}`
+        };
+
+        console.log('Sending registration request to:', API_REGISTER_URL);
+
+        // Make the API call
+        const response = await fetch(API_REGISTER_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload),
+        });
+
+        // Parse response
+        const result = await response.json();
+
+        // Check if the response is successful
+        if (!response.ok) {
+            throw new Error(`Registration failed: ${response.status} - ${result.error || response.statusText}`);
+        }
+
+        // Check server response format
+        if (result.e === 'no' && result.code === 'credential_registered') {
+            return {
+                success: true,
+                data: result,
+                message: 'Access key registered successfully'
+            };
+        } else if (result.e === 'yes') {
+            throw new Error(result.error || 'Registration failed');
+        }
+
+        // Fallback for unexpected response format
+        return {
+            success: true,
+            data: result,
+            message: 'Registration completed'
+        };
+
+    } catch (error) {
+        console.error('Registration BL Error:', error);
+        
+        // Return structured error response
+        return {
+            success: false,
+            error: error.message,
+            message: 'Registration failed'
+        };
+    }
+}
+
+/**
+ * Business Logic function for WebAuthn user authentication
+ * @param {Object} authData - Authentication data object
+ * @param {string} authData.credentialID - The credential ID (assertionId)
+ * @param {string} authData.email - User email
+ * @param {string} authData.authenticatorData - Base64 encoded authenticator data
+ * @param {string} authData.clientDataJSON - Base64 encoded client data JSON
+ * @param {string} authData.signature - Base64 encoded authentication signature
+ * @returns {Promise<Object>} Response from the authentication API
+ */
+async function loginWebAuthn(authData) {
+    const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWithCredential';
+
+    try {
+        // Validate input data
+        if (!validateAuthData(authData)) {
+            throw new Error('Invalid authentication data provided');
+        }
+
+        const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
+
+        // Prepare request payload
+        const requestPayload = {
+            credentialID: credentialID,
+            email: email,
+            authenticatorData: authenticatorData,
+            clientDataJSON: clientDataJSON,
+            signature: signature
+        };
+
+        console.log('Sending authentication request to:', API_LOGIN_URL);
+
+        // Make API call
+        const response = await fetch(API_LOGIN_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(requestPayload),
+        });
+
+        // Parse response
+        const responseData = await response.json();
+
+        // Handle response
+        if (!response.ok) {
+            throw new Error(`Authentication failed: ${response.status} - ${responseData.error || response.statusText}`);
+        }
+
+        // Check server response format
+        if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
+            // Store JWT token if provided
+            if (responseData.jwt) {
+                localStorage.setItem('authToken', responseData.jwt);
+                console.log('Authentication token stored');
+            }
+
+            return {
+                success: true,
+                data: responseData,
+                user: responseData.user,
+                token: responseData.jwt,
+                message: 'Authentication successful'
+            };
+        } else if (responseData.e === 'yes') {
+            throw new Error(responseData.error || 'Authentication failed');
+        }
+
+        // Fallback for unexpected response format
+        return {
+            success: true,
+            data: responseData,
+            message: 'Authentication completed'
+        };
+
+    } catch (error) {
+        // Handle errors
+        console.error('Authentication error:', error);
+        return {
+            success: false,
+            error: error.message,
+            message: 'Authentication failed'
+        };
+    }
+}
+
+/**
+ * Validate registration data
+ * @param {Object} data - Registration data to validate
+ * @returns {boolean} True if valid, false otherwise
+ */
+function validateRegistrationData(data) {
+    if (!data) {
+        console.error('Registration data is required');
+        return false;
+    }
+
+    const requiredFields = ['email', 'credentialId'];
+    const missingFields = requiredFields.filter(field => !data[field]);
+    
+    if (missingFields.length > 0) {
+        console.error('Missing required registration fields:', missingFields);
+        return false;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+        console.error('Invalid email format');
+        return false;
+    }
+
+    // Check if we have either publicKey or attestationObject
+    if (!data.publicKey && !data.attestationObject) {
+        console.error('Missing publicKey or attestationObject');
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Validate authentication data
+ * @param {Object} data - Authentication data to validate
+ * @returns {boolean} True if valid, false otherwise
+ */
+function validateAuthData(data) {
+    if (!data) {
+        console.error('Authentication data is required');
+        return false;
+    }
+
+    const requiredFields = ['credentialID', 'email', 'signature'];
+    const missingFields = requiredFields.filter(field => !data[field]);
+    
+    if (missingFields.length > 0) {
+        console.error('Missing required authentication fields:', missingFields);
+        return false;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+        console.error('Invalid email format');
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Helper function to get stored authentication token
+ * @returns {string|null} The stored JWT token or null if not found
+ */
+function getAuthToken() {
+    return localStorage.getItem('authToken');
+}
+
+/**
+ * Helper function to clear stored authentication token
+ */
+function clearAuthToken() {
+    localStorage.removeItem('authToken');
+    console.log('Authentication token cleared');
+}
+
+/**
+ * Helper function to check if user is authenticated
+ * @returns {boolean} True if user has a valid token
+ */
+function isAuthenticated() {
+    const token = getAuthToken();
+    if (!token) return false;
+    
+    try {
+        // Basic JWT structure check (without verification)
+        const parts = token.split('.');
+        return parts.length === 3;
+    } catch (error) {
+        console.error('Invalid token format:', error);
+        return false;
+    }
+}
+
+// Export functions for use in modules (if using ES6 modules)
+// export { signupWebAuthn, loginWebAuthn, getAuthToken, clearAuthToken, isAuthenticated };
+
+// For CommonJS or browser global usage
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        signupWebAuthn,
+        loginWebAuthn,
+        getAuthToken,
+        clearAuthToken,
+        isAuthenticated
+    };
+}
 
 /**
  * Sends authentication code to the specified email address.
@@ -646,6 +922,8 @@ async function get_by_id_passenger(id) {
 }
 
 module.exports = {
+  signupWebAuthn,
+  loginWebAuthn,
   get_all_chairs_by_flight,
   valid_email,
   authcode,

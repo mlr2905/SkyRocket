@@ -2,6 +2,163 @@ const bl = require('../bl/bl_role_users');
 const logger = require('../logger/my_logger');
 // const qrcode = require('qrcode');
 
+// exports.signupWebAuthn = async (req, res) => {
+//     try {
+//         const datas = await bl.signupWebAuthn(req)
+//         if (datas.e) {
+
+
+//         }
+//     } catch (error) {
+//         logger.error('Error in auth code generation:', error)
+//         res.status(503).json({ 'error': 'The request failed, try again later', error });
+//     }
+// }
+
+// exports.loginWebAuthn = async (req, res) => {
+//     try {
+//         const datas = await bl.loginWebAuthn(req)
+
+//         if (datas.e === "yes") {
+//             // החזרת תגובת שגיאה במקרה של שגיאה מהשירות החיצוני
+//             logger.warn(`Login failed for ${email}: ${datas.error}`)
+//             res.status(409).json({ "e": "yes", "error": datas.error });
+//         } else {
+//             // הגדרת טוקן ושליחתו בעוגיה
+//             logger.info(`Login successful for ${email}`)
+//             const token = datas.jwt;
+//             res.cookie('sky', token, {
+//                 httpOnly: true,
+//                 sameSite: 'strict',
+//                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות במילישניות
+//             });
+//             logger.debug(`JWT cookie set for ${email}`)
+
+//             // בניית הקישור לדף Swagger
+//             const swaggerUrl = 'https://skyrocket.onrender.com/search_form.html';
+
+//             // הפניה לדף Swagger בתגובה המוחזרת
+//             res.status(200).json({ "e": datas.e, "jwt": datas.jwt, "swaggerUrl": swaggerUrl });
+
+//         }
+//     } catch (error) {
+//         logger.error('Error in auth code generation:', error)
+//         res.status(503).json({ 'error': 'The request failed, try again later', error });
+//     }
+// }
+
+exports.signupWebAuthn = async (req, res) => {
+    try {
+        logger.info('WebAuthn registration request received');
+        
+        // קריאה ל-Business Logic
+        const result = await bl.registerCredential(req, res);
+        
+        // אם ה-BL כבר שלח תגובה, לא נשלח שוב
+        if (res.headersSent) {
+            return;
+        }
+
+        // טיפול בתגובה מה-BL (במקרה שהוא מחזיר ולא שולח ישירות)
+        if (result) {
+            if (result.e === "yes") {
+                logger.warn(`Registration failed: ${result.error}`);
+                return res.status(400).json({ 
+                    "e": "yes", 
+                    "error": result.error 
+                });
+            } else {
+                logger.info('Registration successful');
+                return res.status(201).json(result);
+            }
+        }
+
+    } catch (error) {
+        logger.error('Error in WebAuthn registration:', error);
+        
+        // בדיקה אם כבר נשלחה תגובה
+        if (!res.headersSent) {
+            res.status(503).json({ 
+                'e': 'yes',
+                'error': 'Registration service temporarily unavailable, please try again later'
+            });
+        }
+    }
+};
+
+/**
+ * Router function for WebAuthn authentication
+ */
+exports.loginWebAuthn = async (req, res) => {
+    const email = req.body?.email || 'unknown';
+    
+    try {
+        logger.info(`WebAuthn login attempt for: ${email}`);
+        
+        // קריאה ל-Business Logic
+        const result = await bl.loginWithCredential(req, res);
+        
+        // אם ה-BL כבר שלח תגובה, לא נשלח שוב
+        if (res.headersSent) {
+            return;
+        }
+
+        // טיפול בתגובה מה-BL (במקרה שהוא מחזיר ולא שולח ישירות)
+        if (result) {
+            if (result.e === "yes") {
+                logger.warn(`Login failed for ${email}: ${result.error}`);
+                return res.status(401).json({ 
+                    "e": "yes", 
+                    "error": result.error 
+                });
+            } else if (result.e === "no" && result.jwt) {
+                logger.info(`Login successful for ${email}`);
+                
+                // הגדרת JWT בעוגיה
+                const token = result.jwt;
+                res.cookie('sky', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production', // HTTPS בפרודקשן
+                    sameSite: 'strict',
+                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות
+                });
+                
+                logger.debug(`JWT cookie set for ${email}`);
+
+                // בניית תגובה מוצלחת
+                const response = {
+                    "e": "no",
+                    "code": "login_succeeded",
+                    "message": "Authentication successful",
+                    "jwt": token,
+                    "user": result.user,
+                    "redirectUrl": "https://skyrocket.onrender.com/search_form.html"
+                };
+
+                return res.status(200).json(response);
+            }
+        }
+
+        // במקרה של תגובה לא צפויה
+        logger.error(`Unexpected response format from BL for ${email}`);
+        return res.status(500).json({
+            "e": "yes",
+            "error": "Unexpected authentication response"
+        });
+
+    } catch (error) {
+        logger.error(`Error in WebAuthn login for ${email}:`, error);
+        
+        // בדיקה אם כבר נשלחה תגובה
+        if (!res.headersSent) {
+            res.status(503).json({ 
+                'e': 'yes',
+                'error': 'Authentication service temporarily unavailable, please try again later'
+            });
+        }
+    }
+};
+
 
 exports.authCode = async (req, res) => {
     try {
@@ -92,7 +249,7 @@ exports.email = async (req, res) => {
         logger.error(`Email validation error for ${email}:`, error)
         res.status(503).json({ "e": "yes", "status": error })
     }
-}; 
+};
 
 exports.login = async (req, res) => {
     logger.info('Processing login request')
