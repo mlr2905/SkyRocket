@@ -2,6 +2,42 @@ function changeText() {
     document.getElementById("email").disabled = false;
     document.getElementById('Change').style.display = 'none';
 }
+// בדיקת תמיכה בWebAuthn
+        function checkWebAuthnSupport() {
+            const biometricStatus = document.getElementById('biometricStatus');
+            
+            if (window.PublicKeyCredential) {
+                PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+                    .then((available) => {
+                        if (available) {
+                            isWebAuthnSupported = true;
+                            biometricStatus.textContent = '✅ המכשיר שלך תומך באימות ביומטרי';
+                            biometricStatus.style.color = 'green';
+                            
+                            // אפשר את כפתורי הביומטריה
+                            document.getElementById('registerBiometricButton').disabled = false;
+                            document.getElementById('loginBiometricButton').disabled = false;
+                            
+                            // אם יש מזהה שמור, מלא את שדה האימייל בטופס ההתחברות
+                            if (storedEmail) {
+                                document.getElementById('loginEmail').value = storedEmail;
+                            }
+                        } else {
+                            biometricStatus.textContent = '❌ המכשיר שלך לא תומך באימות ביומטרי';
+                            biometricStatus.style.color = 'red';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('שגיאה בבדיקת תמיכה ב-WebAuthn:', error);
+                        biometricStatus.textContent = '❌ אירעה שגיאה בבדיקת תמיכה באימות ביומטרי';
+                        biometricStatus.style.color = 'red';
+                    });
+            } else {
+                biometricStatus.textContent = '❌ הדפדפן שלך לא תומך באימות ביומטרי';
+                biometricStatus.style.color = 'red';
+            }
+        }
+        
 
 function togglePasswordVisibility() {
     var passwordInput = document.getElementById("password");
