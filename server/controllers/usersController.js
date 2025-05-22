@@ -47,12 +47,12 @@ const logger = require('../logger/my_logger');
 //     }
 // }
 
-exports.signupWebAuthn = async (req, res) => {
+exports.signupWebAuthn = async (req) => {
     try {
         logger.info('WebAuthn registration request received');
         
         // קריאה ל-Business Logic
-        const result = await bl.signupWebAuthn(req, res);
+        const result = await bl.signupWebAuthn(req);
         
         // אם ה-BL כבר שלח תגובה, לא נשלח שוב
         if (res.headersSent) {
@@ -89,14 +89,14 @@ exports.signupWebAuthn = async (req, res) => {
 /**
  * Router function for WebAuthn authentication
  */
-exports.loginWebAuthn = async (req, res) => {
+exports.loginWebAuthn = async (req) => {
     const email = req.body?.email || 'unknown';
     
     try {
         logger.info(`WebAuthn login attempt for: ${email}`);
         
         // קריאה ל-Business Logic
-        const result = await bl.loginWebAuthn(req, res);
+        const result = await bl.loginWebAuthn(req);
         
         // אם ה-BL כבר שלח תגובה, לא נשלח שוב
         if (res.headersSent) {
