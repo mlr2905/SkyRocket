@@ -18,9 +18,8 @@ function checkWebAuthnSupport() {
                     biometricStatus.textContent = '✅ המכשיר שלך תומך באימות ביומטרי';
                     biometricStatus.style.color = 'green';
 
-                    // אפשר את כפתורי הביומטריה
-                    document.getElementById('registerBiometricButton').disabled = false;
-                    document.getElementById('loginBiometricButton').disabled = false;
+                   
+                    
 
                     // אם יש מזהה שמור, מלא את שדה האימייל בטופס ההתחברות
                     if (storedEmail) {
