@@ -324,14 +324,14 @@
     
 
     #face {
-        background-color: #b3c5dd7d;
+        background-color: #a2c0e77d;
 
         /* צבע רקע כאשר מצביעים עם העכבר */
         color: #fff;
     }
 
     #face:hover {
-        background-color: #2d4373;
+        background-color: #d2dcf2;
         /* צבע רקע כאשר מצביעים עם העכבר */
 
     }
@@ -506,6 +506,8 @@
 
 
         setTimeout(showNotification, 10 * 60 * 1000);
+        document.addEventListener('DOMContentLoaded', checkWebAuthnSupport());
+
     </script>
 
 </body>
