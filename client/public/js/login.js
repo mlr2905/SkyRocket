@@ -1,5 +1,5 @@
-const API_REG_URL = "https://jwt-node-mongodb.onrender.com/reg";
-const API_LOGIN_URL = "https://jwt-node-mongodb.onrender.com/log";
+const API_REG_URL = "https://skyrocket.onrender.com/loginWebAuthn";
+const API_LOGIN_URL = "https://skyrocket.onrender.com/signupWebAuthn";
 
 // משתנים גלובליים
 let isWebAuthnSupported = false;
