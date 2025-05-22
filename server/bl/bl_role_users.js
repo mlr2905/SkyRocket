@@ -14,17 +14,14 @@ async function signupWebAuthn(registrationData) {
     
     try {
         // Validate input data
-        
-
-        // Prepare the request payload
         const payload = {
             email: registrationData.body.email,
             credentialID: registrationData.body.credentialID,
-            publicKey: registrationData.body.publicKey || registrationData.attestationObject, // תיקון שם השדה
+            publicKey: registrationData.body.publicKey || registrationData.attestationObject,
             credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
         };
-console.log("payload",payload);
-
+        
+        console.log("payload", payload);
         console.log('Sending registration request to:', API_REGISTER_URL);
 
         // Make the API call
@@ -37,8 +34,19 @@ console.log("payload",payload);
             body: JSON.stringify(payload),
         });
 
-        // Parse response
-        const result = await response.json();
+        // בדוק את Content-Type לפני פירוש JSON
+        const contentType = response.headers.get('content-type');
+        let result;
+
+        if (contentType && contentType.includes('application/json')) {
+            result = await response.json();
+        } else {
+            // אם זה לא JSON, קבל את התוכן כטקסט
+            const textResponse = await response.text();
+            console.error('Non-JSON response received:', textResponse.substring(0, 200));
+            
+            throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. This usually means the server is down or the endpoint doesn't exist.`);
+        }
 
         // Check if the response is successful
         if (!response.ok) {
@@ -74,7 +82,6 @@ console.log("payload",payload);
         };
     }
 }
-
 
 async function loginWebAuthn(authData) {
       console.log("כניסה ב");

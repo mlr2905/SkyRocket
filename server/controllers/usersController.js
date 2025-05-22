@@ -47,25 +47,25 @@ const logger = require('../logger/my_logger');
 //     }
 // }
 
-exports.signupWebAuthn = async (req) => {
+exports.signupWebAuthn = async (req,res) => {
     console.log("כניסה א");
-    
+
     try {
         logger.info('WebAuthn registration request received');
-        
+
         // קריאה ל-Business Logic
         const result = await bl.signupWebAuthn(req);
-console.log("result",result);
+        console.log("result", result);
 
-        
+
 
         // טיפול בתגובה מה-BL (במקרה שהוא מחזיר ולא שולח ישירות)
         if (result) {
             if (result.e === "yes") {
                 logger.warn(`Registration failed: ${result.error}`);
-                return res.status(400).json({ 
-                    "e": "yes", 
-                    "error": result.error 
+                return res.status(400).json({
+                    "e": "yes",
+                    "error": result.error
                 });
             } else {
                 logger.info('Registration successful');
@@ -75,45 +75,36 @@ console.log("result",result);
 
     } catch (error) {
         logger.error('Error in WebAuthn registration:', error);
-        
-        // בדיקה אם כבר נשלחה תגובה
-        if (!res.headersSent) {
-            res.status(503).json({ 
-                'e': 'yes',
-                'error': 'Registration service temporarily unavailable, please try again later'
-            });
-        }
+
+      
     }
 };
 
 /**
  * Router function for WebAuthn authentication
  */
-exports.loginWebAuthn = async (req) => {
+exports.loginWebAuthn = async (req,res) => {
     const email = req.body?.email || 'unknown';
-    
+
     try {
         logger.info(`WebAuthn login attempt for: ${email}`);
-        
+
         // קריאה ל-Business Logic
         const result = await bl.loginWebAuthn(req);
-        
-        // אם ה-BL כבר שלח תגובה, לא נשלח שוב
-        if (res.headersSent) {
-            return;
-        }
+
+      
 
         // טיפול בתגובה מה-BL (במקרה שהוא מחזיר ולא שולח ישירות)
         if (result) {
             if (result.e === "yes") {
                 logger.warn(`Login failed for ${email}: ${result.error}`);
-                return res.status(401).json({ 
-                    "e": "yes", 
-                    "error": result.error 
+                return res.status(401).json({
+                    "e": "yes",
+                    "error": result.error
                 });
             } else if (result.e === "no" && result.jwt) {
                 logger.info(`Login successful for ${email}`);
-                
+
                 // הגדרת JWT בעוגיה
                 const token = result.jwt;
                 res.cookie('sky', token, {
@@ -122,7 +113,7 @@ exports.loginWebAuthn = async (req) => {
                     sameSite: 'strict',
                     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות
                 });
-                
+
                 logger.debug(`JWT cookie set for ${email}`);
 
                 // בניית תגובה מוצלחת
@@ -148,10 +139,10 @@ exports.loginWebAuthn = async (req) => {
 
     } catch (error) {
         logger.error(`Error in WebAuthn login for ${email}:`, error);
-        
+
         // בדיקה אם כבר נשלחה תגובה
         if (!res.headersSent) {
-            res.status(503).json({ 
+            res.status(503).json({
                 'e': 'yes',
                 'error': 'Authentication service temporarily unavailable, please try again later'
             });
