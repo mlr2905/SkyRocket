@@ -1,3 +1,5 @@
+document.addEventListener('DOMContentLoaded', checkWebAuthnSupport());
+
 function changeText() {
     document.getElementById("email").disabled = false;
     document.getElementById('Change').style.display = 'none';
