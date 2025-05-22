@@ -318,9 +318,13 @@
         height: 20px;
         /* גובה התמונה */
     }
+     .button-icon-a img {
+    
+    }
+    
 
     #face {
-        background-color: #3b5998;
+        background-color: #b3c5dd7d;
 
         /* צבע רקע כאשר מצביעים עם העכבר */
         color: #fff;
@@ -367,7 +371,6 @@
 
 
     <form class="LOGIN-form" id="login-form">
-        <div id="biometricStatus">בודק תמיכה באימות ביומטרי...</div>
 
         <h2>Log in to your account</h2>
 
@@ -450,6 +453,7 @@
 
         <div class="divider">Or Log in</div>
 
+        <div id="biometricStatus">Checking biometric authentication support...</div>
 
         <div class="buttons-containers">
             <button type="button" class="rounded-button" id="git" onclick="login_git()">
@@ -461,12 +465,8 @@
                 </svg>
             </button>
             <button type="button" id="face" class="rounded-button">
-                <svg width="20" height="20" fill="currentColor" class="button-icon" viewBox="0 0 1792 1792"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M1343 12v264h-157q-86 0-116 36t-30 108v189h293l-39 296h-254v759h-306v-759h-255v-296h255v-218q0-186 104-288.5t277-102.5q147 0 228 12z">
-                    </path>
-                </svg>
+                 <img class="button-icon-a" src="./img/fingerprint.png" width="40"
+                    height="35" loading="lazy" alt="google logo">
             </button>
             <button class="rounded-button" onclick="login_google()">
                 <img class="button-icon" src="https://www.svgrepo.com/show/475656/google-color.svg" width="20"
