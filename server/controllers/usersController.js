@@ -52,7 +52,7 @@ exports.signupWebAuthn = async (req, res) => {
         logger.info('WebAuthn registration request received');
         
         // קריאה ל-Business Logic
-        const result = await bl.registerCredential(req, res);
+        const result = await bl.signupWebAuthn(req, res);
         
         // אם ה-BL כבר שלח תגובה, לא נשלח שוב
         if (res.headersSent) {
@@ -96,7 +96,7 @@ exports.loginWebAuthn = async (req, res) => {
         logger.info(`WebAuthn login attempt for: ${email}`);
         
         // קריאה ל-Business Logic
-        const result = await bl.loginWithCredential(req, res);
+        const result = await bl.loginWebAuthn(req, res);
         
         // אם ה-BL כבר שלח תגובה, לא נשלח שוב
         if (res.headersSent) {
