@@ -15,14 +15,12 @@ async function signupWebAuthn(registrationData) {
     try {
         // Validate input data
         
-console.log("חומר",registrationData);
 
         // Prepare the request payload
         const payload = {
             email: registrationData.body.email,
-            credentialID: registrationData.body.credentialId,
+            credentialID: registrationData.body.credentialID,
             publicKey: registrationData.body.publicKey || registrationData.attestationObject, // תיקון שם השדה
-            clientDataJSON: registrationData.body.clientDataJSON,
             credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
         };
 console.log("payload",payload);
