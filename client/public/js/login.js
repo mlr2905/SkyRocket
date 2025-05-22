@@ -1,5 +1,5 @@
-const API_LOGIN_URL = "https://skyrocket.onrender.com/loginWebAuthn";
-const API_REG_URL = "https://skyrocket.onrender.com/signupWebAuthn";
+const API_LOGIN_URL = "https://skyrocket.onrender.com/role_users/loginWebAuthn";
+const API_REG_URL = "https://skyrocket.onrender.com/role_users/rsignupWebAuthn";
 
 // משתנים גלובליים
 let isWebAuthnSupported = false;
