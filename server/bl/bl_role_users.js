@@ -10,7 +10,7 @@ const logger = require('../logger/my_logger')
 logger.info('Role Users BL module initialized')
 
 async function signupWebAuthn(registrationData) {
-    const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/registerCredential';
+    const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/register';
     
     try {
         // Validate input data
@@ -25,6 +25,7 @@ console.log("חומר",registrationData);
             clientDataJSON: registrationData.body.clientDataJSON,
             credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
         };
+console.log("payload",payload);
 
         console.log('Sending registration request to:', API_REGISTER_URL);
 
