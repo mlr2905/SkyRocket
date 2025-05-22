@@ -77,6 +77,8 @@ async function signupWebAuthn(registrationData) {
 
 
 async function loginWebAuthn(authData) {
+      console.log("כניסה ב");
+
     const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWithCredential';
 
     try {

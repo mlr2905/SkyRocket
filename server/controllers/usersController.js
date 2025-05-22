@@ -48,6 +48,8 @@ const logger = require('../logger/my_logger');
 // }
 
 exports.signupWebAuthn = async (req) => {
+    console.log("כניסה א");
+    
     try {
         logger.info('WebAuthn registration request received');
         
