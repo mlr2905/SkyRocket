@@ -8,7 +8,7 @@ const dal_8 = require('../dals/dal_table_passengers')
 const logger = require('../logger/my_logger')
 
 logger.info('Role Users BL module initialized')
-=
+
 async function signupWebAuthn(registrationData) {
     const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/registerCredential';
     
