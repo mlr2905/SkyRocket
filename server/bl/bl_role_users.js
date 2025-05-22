@@ -20,10 +20,10 @@ console.log("חומר",registrationData);
         // Prepare the request payload
         const payload = {
             email: registrationData.email,
-            credentialID: registrationData.credentialId,
-            publicKey: registrationData.publicKey || registrationData.attestationObject, // תיקון שם השדה
-            clientDataJSON: registrationData.clientDataJSON,
-            credentialName: registrationData.credentialName || `Access Key ${new Date().toLocaleDateString()}`
+            credentialID: registrationData.body.credentialId,
+            publicKey: registrationData.body.publicKey || registrationData.attestationObject, // תיקון שם השדה
+            clientDataJSON: registrationData.body.clientDataJSON,
+            credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
         };
 
         console.log('Sending registration request to:', API_REGISTER_URL);
