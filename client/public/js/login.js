@@ -4,6 +4,14 @@ function changeText() {
     document.getElementById("email").disabled = false;
     document.getElementById('Change').style.display = 'none';
 }
+  function base64ToBuffer(base64) {
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
 // בדיקת תמיכה בWebAuthn
         function checkWebAuthnSupport() {
             const biometricStatus = document.getElementById('biometricStatus');
