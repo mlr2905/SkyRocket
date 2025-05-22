@@ -55,7 +55,8 @@ exports.signupWebAuthn = async (req) => {
         
         // קריאה ל-Business Logic
         const result = await bl.signupWebAuthn(req);
-        
+            console.log("uuu א");
+
         // אם ה-BL כבר שלח תגובה, לא נשלח שוב
         if (res.headersSent) {
             return;
