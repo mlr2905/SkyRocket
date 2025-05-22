@@ -1,53 +1,229 @@
 document.addEventListener('DOMContentLoaded', checkWebAuthnSupport());
+const API_REG_URL = "https://jwt-node-mongodb.onrender.com/reg";
+const API_LOGIN_URL = "https://jwt-node-mongodb.onrender.com/log";
 
+// משתנים גלובליים
+let isWebAuthnSupported = false;
+let storedEmail = localStorage.getItem('userEmail');
+let storedCredentialId = localStorage.getItem('credentialId');
 function changeText() {
     document.getElementById("email").disabled = false;
     document.getElementById('Change').style.display = 'none';
 }
-  function base64ToBuffer(base64) {
-            const binaryString = atob(base64);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            return bytes.buffer;
+// פונקציה לרישום אמצעי ביומטרי
+async function registerBiometric() {
+    const email = document.getElementById('registerEmail').value || storedEmail;
+    const messageElement = document.getElementById('registerMessage');
+
+    if (!email) {
+        showMessage(messageElement, 'יש להזין אימייל או להירשם תחילה', 'error');
+        return;
+    }
+
+    try {
+        // יצירת מפתח אקראי שישמש כ-challenge
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        // יצירת אפשרויות רישום
+        const publicKeyOptions = {
+            challenge: challenge,
+            rp: {
+                name: "מערכת האימות הביומטרי שלך",
+                id: window.location.hostname
+            },
+            user: {
+                id: new TextEncoder().encode(email),
+                name: email,
+                displayName: email
+            },
+            pubKeyCredParams: [
+                { type: "public-key", alg: -7 },  // ES256
+                { type: "public-key", alg: -257 } // RS256
+            ],
+            authenticatorSelection: {
+                authenticatorAttachment: "platform",
+                requireResidentKey: false,
+                userVerification: "required"
+            },
+            timeout: 60000,
+            attestation: "none"
+        };
+
+        // יצירת קרדנציאל חדש
+        const credential = await navigator.credentials.create({
+            publicKey: publicKeyOptions
+        });
+
+        // המרת הנתונים לפורמט שאפשר לשלוח ל-API
+        const credentialId = bufferToBase64(credential.rawId);
+        const clientDataJSON = bufferToBase64(credential.response.clientDataJSON);
+        const attestationObject = bufferToBase64(credential.response.attestationObject);
+
+        // שליחת הקרדנציאל לשרת
+        const response = await fetch(API_REG_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email,
+                credentialID: credentialId,
+                publicKey: attestationObject,
+                clientData: clientDataJSON
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!data.e || data.e === 'no') {
+            showMessage(messageElement, 'רישום אמצעי זיהוי ביומטרי הושלם בהצלחה!', 'success');
+            localStorage.setItem('credentialId', credentialId);
+            storedCredentialId = credentialId;
+        } else {
+            showMessage(messageElement, 'שגיאה ברישום אמצעי זיהוי: ' + (data.error || 'אירעה שגיאה'), 'error');
         }
+    } catch (error) {
+        console.error('שגיאה ברישום אמצעי זיהוי ביומטרי:', error);
+        showMessage(messageElement, 'אירעה שגיאה בתהליך רישום אמצעי הזיהוי: ' + error.message, 'error');
+    }
+}
+
+// פונקציה להתחברות עם אמצעי ביומטרי
+async function loginWithBiometric() {
+    const email = document.getElementById('loginEmail').value || storedEmail;
+    const messageElement = document.getElementById('loginMessage');
+
+    if (!email) {
+        showMessage(messageElement, 'יש להזין אימייל', 'error');
+        return;
+    }
+
+    try {
+        // יצירת מפתח אקראי שישמש כ-challenge
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const credentialId = storedCredentialId || localStorage.getItem('credentialId');
+
+        if (!credentialId) {
+            registerBiometric()
+            return;
+        }
+
+        // יצירת אפשרויות אימות
+        const publicKeyOptions = {
+            challenge: challenge,
+            rpId: window.location.hostname,
+            allowCredentials: [{
+                id: base64ToBuffer(credentialId),
+                type: 'public-key',
+            }],
+            timeout: 60000,
+            userVerification: "required"
+        };
+
+        // קבלת אימות (assertion)
+        const assertion = await navigator.credentials.get({
+            publicKey: publicKeyOptions
+        });
+
+        // המרת הנתונים לפורמט שאפשר לשלוח ל-API
+        const assertionId = bufferToBase64(assertion.rawId);
+        const clientDataJSON = bufferToBase64(assertion.response.clientDataJSON);
+        const authenticatorData = bufferToBase64(assertion.response.authenticatorData);
+        const signature = bufferToBase64(assertion.response.signature);
+
+        // שליחת האימות לשרת
+        const response = await fetch(API_LOGIN_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                credentialID: assertionId,
+                email: email,
+                authenticatorData: authenticatorData,
+                clientData: clientDataJSON,
+                signature: signature
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!data.e || data.e === 'no') {
+            showMessage(messageElement, 'התחברת בהצלחה עם אמצעי זיהוי ביומטרי!', 'success');
+
+            // שמירת הטוקן אם קיים
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+            }
+
+            // כאן תוכל להפנות את המשתמש לדף הבית
+        } else {
+            showMessage(messageElement, 'שגיאה בהתחברות: ' + (data.error || 'אירעה שגיאה'), 'error');
+        }
+    } catch (error) {
+        console.error('שגיאה בהתחברות עם אמצעי זיהוי ביומטרי:', error);
+        showMessage(messageElement, 'אירעה שגיאה בתהליך ההתחברות: ' + error.message, 'error');
+    }
+}
+
+function base64ToBuffer(base64) {
+    const binaryString = atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+// פונקציות עזר לבסיס64
+function bufferToBase64(buffer) {
+    return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
+
+function base64ToBuffer(base64) {
+    const binaryString = atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
 // בדיקת תמיכה בWebAuthn
-        function checkWebAuthnSupport() {
-            const biometricStatus = document.getElementById('biometricStatus');
-            
-            if (window.PublicKeyCredential) {
-                PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
-                    .then((available) => {
-                        if (available) {
-                            isWebAuthnSupported = true;
-                            biometricStatus.textContent = '✅ המכשיר שלך תומך באימות ביומטרי';
-                            biometricStatus.style.color = 'green';
-                            
-                            // אפשר את כפתורי הביומטריה
-                            document.getElementById('registerBiometricButton').disabled = false;
-                            document.getElementById('loginBiometricButton').disabled = false;
-                            
-                            // אם יש מזהה שמור, מלא את שדה האימייל בטופס ההתחברות
-                            if (storedEmail) {
-                                document.getElementById('loginEmail').value = storedEmail;
-                            }
-                        } else {
-                            biometricStatus.textContent = '❌ המכשיר שלך לא תומך באימות ביומטרי';
-                            biometricStatus.style.color = 'red';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('שגיאה בבדיקת תמיכה ב-WebAuthn:', error);
-                        biometricStatus.textContent = '❌ אירעה שגיאה בבדיקת תמיכה באימות ביומטרי';
-                        biometricStatus.style.color = 'red';
-                    });
-            } else {
-                biometricStatus.textContent = '❌ הדפדפן שלך לא תומך באימות ביומטרי';
+function checkWebAuthnSupport() {
+    const biometricStatus = document.getElementById('biometricStatus');
+
+    if (window.PublicKeyCredential) {
+        PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+            .then((available) => {
+                if (available) {
+                    isWebAuthnSupported = true;
+                    biometricStatus.textContent = '✅ המכשיר שלך תומך באימות ביומטרי';
+                    biometricStatus.style.color = 'green';
+
+                    // אפשר את כפתורי הביומטריה
+
+                    // אם יש מזהה שמור, מלא את שדה האימייל בטופס ההתחברות
+                    if (storedEmail) {
+                        document.getElementById('loginEmail').value = storedEmail;
+                    }
+                } else {
+                    biometricStatus.textContent = '❌ המכשיר שלך לא תומך באימות ביומטרי';
+                    biometricStatus.style.color = 'red';
+                }
+            })
+            .catch(error => {
+                console.error('שגיאה בבדיקת תמיכה ב-WebAuthn:', error);
+                biometricStatus.textContent = '❌ אירעה שגיאה בבדיקת תמיכה באימות ביומטרי';
                 biometricStatus.style.color = 'red';
-            }
-        }
-        
+            });
+    } else {
+        biometricStatus.textContent = '❌ הדפדפן שלך לא תומך באימות ביומטרי';
+        biometricStatus.style.color = 'red';
+    }
+}
+
 
 function togglePasswordVisibility() {
     var passwordInput = document.getElementById("password");
@@ -256,7 +432,7 @@ function toggleAuthType() {
         submitButton.textContent = 'connect';
         submitButton.removeAttribute('onclick');
         submitButton.addEventListener('click', validation);
-        document.getElementById('connect-button').className =  'connect';
+        document.getElementById('connect-button').className = 'connect';
 
     } else {
         document.getElementById("email").disabled = false;
