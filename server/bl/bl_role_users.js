@@ -15,6 +15,7 @@ async function signupWebAuthn(registrationData) {
     try {
         // Validate input data
         
+console.log("חומר"תregistrationData);
 
         // Prepare the request payload
         const payload = {
