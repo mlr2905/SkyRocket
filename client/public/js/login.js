@@ -58,8 +58,8 @@ function base64ToBuffer(base64) {
 
 // פונקציה לרישום אמצעי ביומטרי
 async function registerBiometric() {
-    const email = document.getElementById('registerEmail').value || storedEmail;
-    const messageElement = document.getElementById('registerMessage');
+    const email = document.getElementById('email').value || storedEmail;
+    const messageElement = document.getElementById('Message');
 
     if (!email) {
         showMessage(messageElement, 'יש להזין אימייל או להירשם תחילה', 'error');
@@ -138,7 +138,7 @@ async function registerBiometric() {
 // פונקציה להתחברות עם אמצעי ביומטרי
 async function loginWithBiometric() {
     const email = document.getElementById('email').value || storedEmail;
-    const messageElement = document.getElementById('loginMessage');
+    const messageElement = document.getElementById('Message');
 
     if (!email) {
         showMessage(messageElement, 'יש להזין אימייל', 'error');
