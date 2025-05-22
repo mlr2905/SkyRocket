@@ -137,7 +137,7 @@ async function registerBiometric() {
 
 // פונקציה להתחברות עם אמצעי ביומטרי
 async function loginWithBiometric() {
-    const email = document.getElementById('loginEmail').value || storedEmail;
+    const email = document.getElementById('email').value || storedEmail;
     const messageElement = document.getElementById('loginMessage');
 
     if (!email) {
