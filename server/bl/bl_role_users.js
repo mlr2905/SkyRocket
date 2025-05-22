@@ -19,7 +19,7 @@ console.log("חומר",registrationData);
 
         // Prepare the request payload
         const payload = {
-            email: registrationData.email,
+            email: registrationData.body.email,
             credentialID: registrationData.body.credentialId,
             publicKey: registrationData.body.publicKey || registrationData.attestationObject, // תיקון שם השדה
             clientDataJSON: registrationData.body.clientDataJSON,
