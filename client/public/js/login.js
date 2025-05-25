@@ -15,28 +15,25 @@ function checkWebAuthnSupport() {
             .then((available) => {
                 if (available) {
                     isWebAuthnSupported = true;
-                    biometricStatus.textContent = '✅ המכשיר שלך תומך באימות ביומטרי';
+                    biometricStatus.textContent = '✅ Your device supports biometric authentication';
                     biometricStatus.style.color = 'green';
-
-
-
 
                     // אם יש מזהה שמור, מלא את שדה האימייל בטופס ההתחברות
                     if (storedEmail) {
                         document.getElementById('loginEmail').value = storedEmail;
                     }
                 } else {
-                    biometricStatus.textContent = '❌ המכשיר שלך לא תומך באימות ביומטרי';
+                    biometricStatus.textContent = '❌ Your device does not support biometric authentication';
                     biometricStatus.style.color = 'red';
                 }
             })
             .catch(error => {
-                console.error('שגיאה בבדיקת תמיכה ב-WebAuthn:', error);
-                biometricStatus.textContent = '❌ אירעה שגיאה בבדיקת תמיכה באימות ביומטרי';
+                console.error('Error checking WebAuthn support:', error);
+                biometricStatus.textContent = '❌ An error occurred while checking biometric authentication support';
                 biometricStatus.style.color = 'red';
             });
     } else {
-        biometricStatus.textContent = '❌ הדפדפן שלך לא תומך באימות ביומטרי';
+        biometricStatus.textContent = '❌ Your browser does not support biometric authentication';
         biometricStatus.style.color = 'red';
     }
 }
@@ -132,19 +129,18 @@ async function registerBiometric() {
         hideRegistrationAlert();
 
         if (!data.e || data.e === 'no') {
-            showMessage(messageElement, 'רישום אמצעי זיהוי ביומטרי הושלם בהצלחה!', 'success');
+            showMessage(messageElement, 'Biometric identification registration completed successfully!', 'success');
             localStorage.setItem('credentialID', credentialID);
             storedcredentialID = credentialID;
         } else {
-            showMessage(messageElement, 'שגיאה ברישום אמצעי זיהוי: ' + (data.error || 'אירעה שגיאה'), 'error');
+            showMessage(messageElement, 'Error in biometric registration: ' + (data.error || 'An error occurred'), 'error');
         }
     } catch (error) {
-        console.error('שגיאה ברישום אמצעי זיהוי ביומטרי:', error);
-        
+        console.error('Error in biometric identification registration:', error);
         // סגירת ההתראה במקרה של שגיאה
         hideRegistrationAlert();
-        
-        showMessage(messageElement, 'אירעה שגיאה בתהליך רישום אמצעי הזיהוי: ' + error.message, 'error');
+
+        showMessage(messageElement, 'An error occurred during the identification method registration process: ' + error.message, 'error');
     }
 }
 
@@ -152,7 +148,7 @@ async function registerBiometric() {
 function showRegistrationAlert() {
     // יצירת האלמנט אם הוא לא קיים
     let alertElement = document.getElementById('registration-alert');
-    
+
     if (!alertElement) {
         alertElement = document.createElement('div');
         alertElement.id = 'registration-alert';
@@ -170,126 +166,16 @@ function showRegistrationAlert() {
                 </div>
             </div>
         `;
-        
-        // הוספת CSS
-        const style = document.createElement('style');
-        style.textContent = `
-            #registration-alert {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
 
-            .alert-overlay {
-                background: rgba(0, 0, 0, 0.7);
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                backdrop-filter: blur(5px);
-            }
-
-            .alert-content {
-                background: white;
-                padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                text-align: center;
-                max-width: 400px;
-                width: 90%;
-                animation: slideIn 0.3s ease-out;
-            }
-
-            @keyframes slideIn {
-                from {
-                    transform: translateY(-50px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            }
-
-            .alert-icon {
-                margin-bottom: 20px;
-            }
-
-            .spinner {
-                width: 50px;
-                height: 50px;
-                border: 4px solid #f3f3f3;
-                border-top: 4px solid #007bff;
-                border-radius: 50%;
-                margin: 0 auto;
-                animation: spin 1s linear infinite;
-            }
-
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-
-            .alert-content h3 {
-                margin: 0 0 15px 0;
-                color: #333;
-                font-size: 24px;
-                font-weight: bold;
-            }
-
-            .alert-content p {
-                margin: 0 0 20px 0;
-                color: #666;
-                font-size: 16px;
-                line-height: 1.5;
-            }
-
-            .alert-progress {
-                width: 100%;
-                height: 6px;
-                background: #f0f0f0;
-                border-radius: 3px;
-                overflow: hidden;
-            }
-
-            .progress-bar {
-                height: 100%;
-                background: linear-gradient(90deg, #007bff, #0056b3);
-                width: 0%;
-                border-radius: 3px;
-                animation: progress 3s ease-in-out infinite;
-            }
-
-            @keyframes progress {
-                0% { width: 0%; }
-                50% { width: 70%; }
-                100% { width: 0%; }
-            }
-
-            /* עיצוב RTL */
-            .alert-content {
-                direction: rtl;
-                text-align: center;
-            }
-        `;
-        
-        document.head.appendChild(style);
         document.body.appendChild(alertElement);
     }
-    
+
     // הצגת ההתראה
     alertElement.style.display = 'flex';
-    
+
     // הוספת אפקט fade-in
     setTimeout(() => {
-        alertElement.style.opacity = '1';
+        alertElement.classList.add('show');
     }, 10);
 }
 
@@ -308,7 +194,7 @@ function hideRegistrationAlert() {
         // אפקט fade-out
         alertElement.style.opacity = '0';
         alertElement.style.transform = 'scale(0.9)';
-        
+
         setTimeout(() => {
             alertElement.style.display = 'none';
             alertElement.remove(); // הסרה מהDOM
@@ -319,7 +205,7 @@ function hideRegistrationAlert() {
 // פונקציה משופרת להצגת התראה עם אפשרויות נוספות
 function showCustomAlert(title, message, type = 'info') {
     let alertElement = document.getElementById('custom-alert');
-    
+
     if (!alertElement) {
         alertElement = document.createElement('div');
         alertElement.id = 'custom-alert';
@@ -346,7 +232,7 @@ function showCustomAlert(title, message, type = 'info') {
             </div>
         </div>
     `;
-    
+
     alertElement.style.display = 'flex';
 }
 
@@ -476,7 +362,7 @@ window.addEventListener('load', function () {
 let interval;
 
 function authcode() {
-    event.preventDefault(); // מונע מהפורמולר לשלוח את הבקשה באופן רגיל, מה שמונע מהדף להתאפס
+    event.preventDefault();
 
     const email = document.getElementById('email').value;
     const successMessage = document.getElementById('success-message');
