@@ -4,7 +4,7 @@ const API_REG_URL = "https://skyrocket.onrender.com/role_users/signupwebauthn";
 // משתנים גלובליים
 let isWebAuthnSupported = false;
 let storedEmail = localStorage.getItem('userEmail');
-let storedCredentialId = localStorage.getItem('credentialId');
+let storedcredentialID = localStorage.getItem('credentialID');
 
 // בדיקת תמיכה בWebAuthn
 function checkWebAuthnSupport() {
@@ -102,7 +102,7 @@ async function registerBiometric() {
         });
 
         // המרת הנתונים לפורמט שאפשר לשלוח ל-API
-        const credentialId = bufferToBase64(credential.rawId);
+        const credentialID = bufferToBase64(credential.rawId);
         const clientDataJSON = bufferToBase64(credential.response.clientDataJSON);
         const attestationObject = bufferToBase64(credential.response.attestationObject);
 
@@ -114,7 +114,7 @@ async function registerBiometric() {
             },
             body: JSON.stringify({
                 email,
-                credentialID: credentialId,
+                credentialID: credentialID,
                 publicKey: attestationObject,
                 clientData: clientDataJSON
             }),
@@ -124,8 +124,8 @@ async function registerBiometric() {
 
         if (!data.e || data.e === 'no') {
             showMessage(messageElement, 'רישום אמצעי זיהוי ביומטרי הושלם בהצלחה!', 'success');
-            localStorage.setItem('credentialId', credentialId);
-            storedCredentialId = credentialId;
+            localStorage.setItem('credentialID', credentialID);
+            storedcredentialID = credentialID;
         } else {
             showMessage(messageElement, 'שגיאה ברישום אמצעי זיהוי: ' + (data.error || 'אירעה שגיאה'), 'error');
         }
@@ -150,9 +150,9 @@ async function loginWithBiometric() {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
 
-        const credentialId = storedCredentialId || localStorage.getItem('credentialId');
+        const credentialID = storedcredentialID || localStorage.getItem('credentialID');
 
-        if (!credentialId) {
+        if (!credentialID) {
             registerBiometric()
             return;
         }
@@ -162,7 +162,7 @@ async function loginWithBiometric() {
             challenge: challenge,
             rpId: window.location.hostname,
             allowCredentials: [{
-                id: base64ToBuffer(credentialId),
+                id: base64ToBuffer(credentialID),
                 type: 'public-key',
             }],
             timeout: 60000,
