@@ -140,13 +140,8 @@ exports.loginWebAuthn = async (req,res) => {
     } catch (error) {
         logger.error(`Error in WebAuthn login for ${email}:`, error);
 
-        // בדיקה אם כבר נשלחה תגובה
-        if (!res.headersSent) {
-            res.status(503).json({
-                'e': 'yes',
-                'error': 'Authentication service temporarily unavailable, please try again later'
-            });
-        }
+       
+        
     }
 };
 
