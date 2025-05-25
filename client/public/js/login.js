@@ -18,8 +18,8 @@ function checkWebAuthnSupport() {
                     biometricStatus.textContent = '✅ המכשיר שלך תומך באימות ביומטרי';
                     biometricStatus.style.color = 'green';
 
-                   
-                    
+
+
 
                     // אם יש מזהה שמור, מלא את שדה האימייל בטופס ההתחברות
                     if (storedEmail) {
@@ -199,16 +199,19 @@ async function loginWithBiometric() {
 
         if (!data.e || data.e === 'no') {
             showMessage(messageElement, 'התחברת בהצלחה עם אמצעי זיהוי ביומטרי!', 'success');
-
-            // שמירת הטוקן אם קיים
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-            }
-
-            // כאן תוכל להפנות את המשתמש לדף הבית
-        } else {
-            showMessage(messageElement, 'שגיאה בהתחברות: ' + (data.error || 'אירעה שגיאה'), 'error');
+            localStorage.setItem('sky-jwt', JSON.stringify(data.jwt));
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = 'Login successful!';
+            window.location.href = data.swaggerUrl;
         }
+        else {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = data.error;
+        }
+
+
+        // כאן תוכל להפנות את המשתמש לדף הבית
+
     } catch (error) {
         console.error('שגיאה בהתחברות עם אמצעי זיהוי ביומטרי:', error);
         showMessage(messageElement, 'אירעה שגיאה בתהליך ההתחברות: ' + error.message, 'error');

@@ -13,8 +13,9 @@ function redirectToLogin(req, res) {
 exports.activation = async (req, res) => {
     try {
         const cookies = req.headers.cookie?.split(';').map(cookie => cookie.trim()) || [];
-        const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
-        if (!skyToken) {
+        const skyToken = cookies.find(cookie =>
+            cookie.startsWith('sky=') || cookie.startsWith('sky-jwt=')
+        ); if (!skyToken) {
             return res.status(404).json('on');
         }
         res.status(200).json('ok');
@@ -34,7 +35,7 @@ exports.logout = async (req, res) => {
 
 exports.rootHandler = async (req, res, next) => {
     try {
-        const allowedPaths = ['/login.html', '/search_form.html', '/registration.html','/git','/google'];
+        const allowedPaths = ['/login.html', '/search_form.html', '/registration.html', '/git', '/google'];
         if (allowedPaths.includes(req.path)) return next();
 
         const cookies = req.headers.cookie?.split(';').map(cookie => cookie.trim()) || [];
