@@ -83,16 +83,117 @@ async function signupWebAuthn(registrationData) {
     }
 }
 
+// async function loginWebAuthn(authData) {
+//       console.log("כניסה ב");
+
+//     const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWith';
+
+//     try {
+       
+//         const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
+
+//         // Prepare request payload
+//         const requestPayload = {
+//             credentialID: credentialID,
+//             email: email,
+//             authenticatorData: authenticatorData,
+//             clientDataJSON: clientDataJSON,
+//             signature: signature
+//         };
+
+//         console.log('Sending authentication request to:', API_LOGIN_URL);
+
+//         // Make API call
+//         const response = await fetch(API_LOGIN_URL, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Accept': 'application/json'
+//             },
+//             body: JSON.stringify(requestPayload),
+//         });
+
+//         // Parse response
+//         const responseData = await response.json();
+
+//         // Handle response
+//         if (!response.ok) {
+//             throw new Error(`Authentication failed: ${response.status} - ${responseData.error || response.statusText}`);
+//         }
+
+//         // Check server response format
+//         if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
+//             // Store JWT token if provided
+//             if (responseData.jwt) {
+//                 localStorage.setItem('authToken', responseData.jwt);
+//                 console.log('Authentication token stored');
+//             }
+
+//             return {
+//                 success: true,
+//                 data: responseData,
+//                 user: responseData.user,
+//                 token: responseData.jwt,
+//                 message: 'Authentication successful'
+//             };
+//         } else if (responseData.e === 'yes') {
+//             throw new Error(responseData.error || 'Authentication failed');
+//         }
+
+//         // Fallback for unexpected response format
+//         return {
+//             success: true,
+//             data: responseData,
+//             message: 'Authentication completed'
+//         };
+
+//     } catch (error) {
+//         // Handle errors
+//         console.error('Authentication error:', error);
+//         return {
+//             success: false,
+//             error: error.message,
+//             message: 'Authentication failed'
+//         };
+//     }
+// }
+
 async function loginWebAuthn(authData) {
-      console.log("כניסה ב");
+    console.log("=== התחלת תהליך כניסה ב-WebAuthn ===");
+    console.log("נתוני אימות שהתקבלו:", authData);
 
     const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWith';
 
     try {
-       
+        // בדיקה אם authData קיים
+        if (!authData) {
+            console.error("❌ שגיאה: authData לא הועבר לפונקציה");
+            throw new Error("Authentication data is missing");
+        }
+
+        // חילוץ הנתונים
         const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
 
-        // Prepare request payload
+        // בדיקה מפורטת של כל שדה
+        console.log("=== בדיקת שדות נדרשים ===");
+        console.log("credentialID קיים:", !!credentialID, "ערך:", credentialID);
+        console.log("email קיים:", !!email, "ערך:", email);
+        console.log("signature קיים:", !!signature, "ערך:", signature);
+        console.log("authenticatorData קיים:", !!authenticatorData, "ערך:", authenticatorData);
+        console.log("clientDataJSON קיים:", !!clientDataJSON, "ערך:", clientDataJSON);
+
+        // בדיקת שדות חובה
+        const missingFields = [];
+        if (!credentialID) missingFields.push('credentialID');
+        if (!email) missingFields.push('email');
+        if (!signature) missingFields.push('signature');
+
+        if (missingFields.length > 0) {
+            console.error("❌ שדות חסרים:", missingFields);
+            throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+        }
+
+        // הכנת המידע לשליחה
         const requestPayload = {
             credentialID: credentialID,
             email: email,
@@ -101,9 +202,11 @@ async function loginWebAuthn(authData) {
             signature: signature
         };
 
-        console.log('Sending authentication request to:', API_LOGIN_URL);
+        console.log("=== נתונים לשליחה ===");
+        console.log("Request payload:", JSON.stringify(requestPayload, null, 2));
+        console.log('שליחת בקשת אימות ל:', API_LOGIN_URL);
 
-        // Make API call
+        // שליחת הבקשה
         const response = await fetch(API_LOGIN_URL, {
             method: 'POST',
             headers: {
@@ -113,20 +216,44 @@ async function loginWebAuthn(authData) {
             body: JSON.stringify(requestPayload),
         });
 
-        // Parse response
-        const responseData = await response.json();
+        console.log("=== תגובת השרת ===");
+        console.log("Status:", response.status);
+        console.log("Status Text:", response.statusText);
+        console.log("Headers:", Object.fromEntries(response.headers.entries()));
 
-        // Handle response
+        // קריאת התגובה
+        let responseData;
+        try {
+            responseData = await response.json();
+            console.log("Response data:", JSON.stringify(responseData, null, 2));
+        } catch (parseError) {
+            console.error("❌ שגיאה בפרסור JSON:", parseError);
+            const textResponse = await response.text();
+            console.log("Raw response:", textResponse);
+            throw new Error(`Failed to parse response as JSON: ${parseError.message}`);
+        }
+
+        // טיפול בתגובה
         if (!response.ok) {
+            console.error("❌ התגובה לא בסדר - Status:", response.status);
             throw new Error(`Authentication failed: ${response.status} - ${responseData.error || response.statusText}`);
         }
 
-        // Check server response format
+        // בדיקת פורמט התגובה
+        console.log("=== ניתוח תגובת השרת ===");
+        console.log("responseData.e:", responseData.e);
+        console.log("responseData.code:", responseData.code);
+        console.log("responseData.jwt קיים:", !!responseData.jwt);
+
         if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
-            // Store JWT token if provided
+            console.log("✅ אימות הצליח!");
+            
+            // שמירת טוקן JWT אם קיים
             if (responseData.jwt) {
                 localStorage.setItem('authToken', responseData.jwt);
-                console.log('Authentication token stored');
+                console.log('✅ טוקן אימות נשמר');
+            } else {
+                console.log("⚠️ לא התקבל טוקן JWT");
             }
 
             return {
@@ -137,10 +264,12 @@ async function loginWebAuthn(authData) {
                 message: 'Authentication successful'
             };
         } else if (responseData.e === 'yes') {
+            console.error("❌ השרת החזיר שגיאה:", responseData.error);
             throw new Error(responseData.error || 'Authentication failed');
         }
 
-        // Fallback for unexpected response format
+        // מקרה של פורמט תגובה לא צפוי
+        console.log("⚠️ פורמט תגובה לא צפוי, מחזיר בכל זאת הצלחה");
         return {
             success: true,
             data: responseData,
@@ -148,8 +277,11 @@ async function loginWebAuthn(authData) {
         };
 
     } catch (error) {
-        // Handle errors
-        console.error('Authentication error:', error);
+        console.error("=== שגיאה בתהליך האימות ===");
+        console.error('סוג שגיאה:', error.constructor.name);
+        console.error('הודעת שגיאה:', error.message);
+        console.error('Stack trace:', error.stack);
+        
         return {
             success: false,
             error: error.message,
@@ -157,8 +289,6 @@ async function loginWebAuthn(authData) {
         };
     }
 }
-
-
 
 
 /**
