@@ -261,6 +261,25 @@
         /* רווח שווה בין הכפתורים */
     }
 
+      .rounded-button-a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2%;
+        max-width: md;
+        background-color: #f4f6f9;
+        /* צבע רקע לכפתור */
+        color: rgb(7, 7, 7);
+        border: none;
+        border-radius: 50%; /* עיגול מלא */
+        /* עיגול הכפתור */
+        transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        /* הוספת מעבר */
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
     .rounded-button {
         display: flex;
         align-items: center;
@@ -301,8 +320,12 @@
         /* גודל התמונה */
         height: 20px;
         /* גובה התמונה */
-    }
 
+    }
+.button-icon-a{
+            border-radius: 50%; /* עיגול מלא */
+
+}
 
 
     #face {
