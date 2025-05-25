@@ -66,6 +66,9 @@ async function registerBiometric() {
         return;
     }
 
+    // הצגת התראה קופצת בתחילת התהליך
+    showRegistrationAlert();
+
     try {
         // יצירת מפתח אקראי שישמש כ-challenge
         const challenge = new Uint8Array(32);
@@ -101,6 +104,9 @@ async function registerBiometric() {
             publicKey: publicKeyOptions
         });
 
+        // עדכון ההתראה לתהליך שליחה
+        updateRegistrationAlert('שולח נתונים לשרת...');
+
         // המרת הנתונים לפורמט שאפשר לשלוח ל-API
         const credentialID = bufferToBase64(credential.rawId);
         const clientDataJSON = bufferToBase64(credential.response.clientDataJSON);
@@ -122,6 +128,9 @@ async function registerBiometric() {
 
         const data = await response.json();
 
+        // סגירת ההתראה
+        hideRegistrationAlert();
+
         if (!data.e || data.e === 'no') {
             showMessage(messageElement, 'רישום אמצעי זיהוי ביומטרי הושלם בהצלחה!', 'success');
             localStorage.setItem('credentialID', credentialID);
@@ -131,7 +140,221 @@ async function registerBiometric() {
         }
     } catch (error) {
         console.error('שגיאה ברישום אמצעי זיהוי ביומטרי:', error);
+        
+        // סגירת ההתראה במקרה של שגיאה
+        hideRegistrationAlert();
+        
         showMessage(messageElement, 'אירעה שגיאה בתהליך רישום אמצעי הזיהוי: ' + error.message, 'error');
+    }
+}
+
+// פונקציה להצגת התראה קופצת
+function showRegistrationAlert() {
+    // יצירת האלמנט אם הוא לא קיים
+    let alertElement = document.getElementById('registration-alert');
+    
+    if (!alertElement) {
+        alertElement = document.createElement('div');
+        alertElement.id = 'registration-alert';
+        alertElement.innerHTML = `
+            <div class="alert-overlay">
+                <div class="alert-content">
+                    <div class="alert-icon">
+                        <div class="spinner"></div>
+                    </div>
+                    <h3>רושם מכשיר חדש</h3>
+                    <p id="alert-message">מתבצע רישום למכשיר זה...</p>
+                    <div class="alert-progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // הוספת CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            #registration-alert {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .alert-overlay {
+                background: rgba(0, 0, 0, 0.7);
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(5px);
+            }
+
+            .alert-content {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                text-align: center;
+                max-width: 400px;
+                width: 90%;
+                animation: slideIn 0.3s ease-out;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateY(-50px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .alert-icon {
+                margin-bottom: 20px;
+            }
+
+            .spinner {
+                width: 50px;
+                height: 50px;
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #007bff;
+                border-radius: 50%;
+                margin: 0 auto;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            .alert-content h3 {
+                margin: 0 0 15px 0;
+                color: #333;
+                font-size: 24px;
+                font-weight: bold;
+            }
+
+            .alert-content p {
+                margin: 0 0 20px 0;
+                color: #666;
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            .alert-progress {
+                width: 100%;
+                height: 6px;
+                background: #f0f0f0;
+                border-radius: 3px;
+                overflow: hidden;
+            }
+
+            .progress-bar {
+                height: 100%;
+                background: linear-gradient(90deg, #007bff, #0056b3);
+                width: 0%;
+                border-radius: 3px;
+                animation: progress 3s ease-in-out infinite;
+            }
+
+            @keyframes progress {
+                0% { width: 0%; }
+                50% { width: 70%; }
+                100% { width: 0%; }
+            }
+
+            /* עיצוב RTL */
+            .alert-content {
+                direction: rtl;
+                text-align: center;
+            }
+        `;
+        
+        document.head.appendChild(style);
+        document.body.appendChild(alertElement);
+    }
+    
+    // הצגת ההתראה
+    alertElement.style.display = 'flex';
+    
+    // הוספת אפקט fade-in
+    setTimeout(() => {
+        alertElement.style.opacity = '1';
+    }, 10);
+}
+
+// פונקציה לעדכון ההודעה בהתראה
+function updateRegistrationAlert(message) {
+    const messageElement = document.getElementById('alert-message');
+    if (messageElement) {
+        messageElement.textContent = message;
+    }
+}
+
+// פונקציה להסתרת ההתראה
+function hideRegistrationAlert() {
+    const alertElement = document.getElementById('registration-alert');
+    if (alertElement) {
+        // אפקט fade-out
+        alertElement.style.opacity = '0';
+        alertElement.style.transform = 'scale(0.9)';
+        
+        setTimeout(() => {
+            alertElement.style.display = 'none';
+            alertElement.remove(); // הסרה מהDOM
+        }, 300);
+    }
+}
+
+// פונקציה משופרת להצגת התראה עם אפשרויות נוספות
+function showCustomAlert(title, message, type = 'info') {
+    let alertElement = document.getElementById('custom-alert');
+    
+    if (!alertElement) {
+        alertElement = document.createElement('div');
+        alertElement.id = 'custom-alert';
+        document.body.appendChild(alertElement);
+    }
+
+    const iconMap = {
+        'info': '🔄',
+        'success': '✅',
+        'error': '❌',
+        'warning': '⚠️'
+    };
+
+    alertElement.innerHTML = `
+        <div class="alert-overlay">
+            <div class="alert-content ${type}">
+                <div class="alert-icon">
+                    <span class="icon">${iconMap[type] || '🔄'}</span>
+                </div>
+                <h3>${title}</h3>
+                <p>${message}</p>
+                ${type === 'info' ? '<div class="alert-progress"><div class="progress-bar"></div></div>' : ''}
+                ${type !== 'info' ? '<button onclick="hideCustomAlert()" class="alert-button">סגור</button>' : ''}
+            </div>
+        </div>
+    `;
+    
+    alertElement.style.display = 'flex';
+}
+
+function hideCustomAlert() {
+    const alertElement = document.getElementById('custom-alert');
+    if (alertElement) {
+        alertElement.style.display = 'none';
+        alertElement.remove();
     }
 }
 
