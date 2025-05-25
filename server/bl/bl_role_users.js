@@ -248,10 +248,9 @@ async function loginWebAuthn(authData) {
         if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
             console.log("✅ אימות הצליח!");
             
-            // שמירת טוקן JWT אם קיים
             if (responseData.jwt) {
-                localStorage.setItem('authToken', responseData.jwt);
-                console.log('✅ טוקן אימות נשמר');
+                console.log('✅ JWT התקבל בהצלחה');
+                console.log('JWT Token:', responseData.jwt.substring(0, 20) + '...');
             } else {
                 console.log("⚠️ לא התקבל טוקן JWT");
             }
