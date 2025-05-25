@@ -83,40 +83,141 @@ exports.signupWebAuthn = async (req,res) => {
 /**
  * Router function for WebAuthn authentication
  */
-exports.loginWebAuthn = async (req,res) => {
+exports.loginWebAuthn = async (req, res) => {
+    console.log("=== התחלת WebAuthn Router ===");
+    
     const email = req.body?.email || 'unknown';
-
+    
     try {
+        console.log("=== בדיקת נתוני הבקשה ===");
+        console.log("Request method:", req.method);
+        console.log("Request headers:", JSON.stringify(req.headers, null, 2));
+        console.log("Request body:", JSON.stringify(req.body, null, 2));
+        console.log("Email extracted:", email);
+        
         logger.info(`WebAuthn login attempt for: ${email}`);
 
-        // קריאה ל-Business Logic
-        const result = await bl.loginWebAuthn(req);
+        // בדיקת נתונים נדרשים
+        const requiredFields = ['credentialID', 'signature', 'email'];
+        const missingFields = [];
+        
+        requiredFields.forEach(field => {
+            if (!req.body[field]) {
+                missingFields.push(field);
+            }
+        });
 
-      
+        console.log("=== בדיקת שדות נדרשים ===");
+        console.log("Required fields:", requiredFields);
+        console.log("Missing fields:", missingFields);
+        
+        if (missingFields.length > 0) {
+            console.error("❌ שדות חסרים בבקשה:", missingFields);
+            logger.warn(`Missing required fields for ${email}: ${missingFields.join(', ')}`);
+            return res.status(400).json({
+                "e": "yes",
+                "error": `Missing required fields: ${missingFields.join(', ')}`
+            });
+        }
 
-        // טיפול בתגובה מה-BL (במקרה שהוא מחזיר ולא שולח ישירות)
+        // הכנת אובייקט הנתונים לפונקציה
+        const authData = {
+            credentialID: req.body.credentialID,
+            email: req.body.email,
+            signature: req.body.signature,
+            authenticatorData: req.body.authenticatorData,
+            clientDataJSON: req.body.clientDataJSON
+        };
+
+        console.log("=== נתונים שמועברים ל-BL ===");
+        console.log("Auth data:", JSON.stringify(authData, null, 2));
+
+        // קריאה ל-Business Logic עם הנתונים הנכונים
+        console.log("🔄 קוראים ל-bl.loginWebAuthn...");
+        const result = await bl.loginWebAuthn(authData);
+
+        console.log("=== תגובה מ-BL ===");
+        console.log("BL Result:", JSON.stringify(result, null, 2));
+
+        // טיפול בתגובה מה-BL
         if (result) {
+            if (result.success === false) {
+                console.log("❌ BL החזיר כישלון");
+                logger.warn(`Login failed for ${email}: ${result.error}`);
+                return res.status(401).json({
+                    "e": "yes",
+                    "error": result.error || "Authentication failed"
+                });
+            } 
+            
+            if (result.success === true) {
+                console.log("✅ BL החזיר הצלחה");
+                
+                // בדיקה אם יש JWT
+                const token = result.token || result.data?.jwt;
+                
+                if (token) {
+                    console.log("✅ נמצא JWT טוקן");
+                    logger.info(`Login successful for ${email}`);
+
+                    // הגדרת JWT בעוגיה
+                    res.cookie('sky', token, {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production',
+                        sameSite: 'strict',
+                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות
+                    });
+
+                    console.log("✅ JWT cookie הוגדר");
+                    logger.debug(`JWT cookie set for ${email}`);
+
+                    // בניית תגובה מוצלחת
+                    const response = {
+                        "e": "no",
+                        "code": "login_succeeded",
+                        "message": "Authentication successful",
+                        "jwt": token,
+                        "user": result.user || result.data?.user,
+                        "redirectUrl": "https://skyrocket.onrender.com/search_form.html"
+                    };
+
+                    console.log("=== תגובה סופית ללקוח ===");
+                    console.log("Final response:", JSON.stringify(response, null, 2));
+
+                    return res.status(200).json(response);
+                } else {
+                    console.log("⚠️ לא נמצא JWT בתגובה");
+                    logger.warn(`No JWT token in successful response for ${email}`);
+                    return res.status(500).json({
+                        "e": "yes",
+                        "error": "Authentication succeeded but no token received"
+                    });
+                }
+            }
+
+            // תגובה ישנה (לתמיכה לאחור)
             if (result.e === "yes") {
+                console.log("❌ תגובה ישנה עם שגיאה");
                 logger.warn(`Login failed for ${email}: ${result.error}`);
                 return res.status(401).json({
                     "e": "yes",
                     "error": result.error
                 });
             } else if (result.e === "no" && result.jwt) {
+                console.log("✅ תגובה ישנה מוצלחת");
                 logger.info(`Login successful for ${email}`);
 
                 // הגדרת JWT בעוגיה
                 const token = result.jwt;
                 res.cookie('sky', token, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production', // HTTPS בפרודקשן
+                    secure: process.env.NODE_ENV === 'production',
                     sameSite: 'strict',
-                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות
+                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
                 });
 
                 logger.debug(`JWT cookie set for ${email}`);
 
-                // בניית תגובה מוצלחת
                 const response = {
                     "e": "no",
                     "code": "login_succeeded",
@@ -131,17 +232,27 @@ exports.loginWebAuthn = async (req,res) => {
         }
 
         // במקרה של תגובה לא צפויה
-        logger.error(`Unexpected response format from BL for ${email}`);
+        console.error("❌ תגובה לא צפויה מ-BL");
+        console.error("Unexpected result:", result);
+        logger.error(`Unexpected response format from BL for ${email}`, result);
+        
         return res.status(500).json({
             "e": "yes",
             "error": "Unexpected authentication response"
         });
 
     } catch (error) {
+        console.error("=== שגיאה ב-Router ===");
+        console.error("Error type:", error.constructor.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+        
         logger.error(`Error in WebAuthn login for ${email}:`, error);
 
-       
-        
+        return res.status(500).json({
+            "e": "yes",
+            "error": "Internal server error during authentication"
+        });
     }
 };
 

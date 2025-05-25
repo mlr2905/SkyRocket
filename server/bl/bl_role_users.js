@@ -172,7 +172,7 @@ async function loginWebAuthn(authData) {
         }
 
         // חילוץ הנתונים
-        const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData.body;
+        const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
 
         // בדיקה מפורטת של כל שדה
         console.log("=== בדיקת שדות נדרשים ===");
