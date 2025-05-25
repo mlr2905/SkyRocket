@@ -1,53 +1,8 @@
 const bl = require('../bl/bl_role_users');
 const logger = require('../logger/my_logger');
-// const qrcode = require('qrcode');
-
-// exports.signupWebAuthn = async (req, res) => {
-//     try {
-//         const datas = await bl.signupWebAuthn(req)
-//         if (datas.e) {
 
 
-//         }
-//     } catch (error) {
-//         logger.error('Error in auth code generation:', error)
-//         res.status(503).json({ 'error': 'The request failed, try again later', error });
-//     }
-// }
-
-// exports.loginWebAuthn = async (req, res) => {
-//     try {
-//         const datas = await bl.loginWebAuthn(req)
-
-//         if (datas.e === "yes") {
-//             // החזרת תגובת שגיאה במקרה של שגיאה מהשירות החיצוני
-//             logger.warn(`Login failed for ${email}: ${datas.error}`)
-//             res.status(409).json({ "e": "yes", "error": datas.error });
-//         } else {
-//             // הגדרת טוקן ושליחתו בעוגיה
-//             logger.info(`Login successful for ${email}`)
-//             const token = datas.jwt;
-//             res.cookie('sky', token, {
-//                 httpOnly: true,
-//                 sameSite: 'strict',
-//                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות במילישניות
-//             });
-//             logger.debug(`JWT cookie set for ${email}`)
-
-//             // בניית הקישור לדף Swagger
-//             const redirectUrl = 'https://skyrocket.onrender.com/search_form.html';
-
-//             // הפניה לדף Swagger בתגובה המוחזרת
-//             res.status(200).json({ "e": datas.e, "jwt": datas.jwt, "redirectUrl": redirectUrl });
-
-//         }
-//     } catch (error) {
-//         logger.error('Error in auth code generation:', error)
-//         res.status(503).json({ 'error': 'The request failed, try again later', error });
-//     }
-// }
-
-exports.signupWebAuthn = async (req,res) => {
+exports.signupWebAuthn = async (req, res) => {
     console.log("כניסה א");
 
     try {
@@ -76,7 +31,7 @@ exports.signupWebAuthn = async (req,res) => {
     } catch (error) {
         logger.error('Error in WebAuthn registration:', error);
 
-      
+
     }
 };
 
@@ -85,22 +40,22 @@ exports.signupWebAuthn = async (req,res) => {
  */
 exports.loginWebAuthn = async (req, res) => {
     console.log("=== התחלת WebAuthn Router ===");
-    
+
     const email = req.body?.email || 'unknown';
-    
+
     try {
         console.log("=== בדיקת נתוני הבקשה ===");
         console.log("Request method:", req.method);
         console.log("Request headers:", JSON.stringify(req.headers, null, 2));
         console.log("Request body:", JSON.stringify(req.body, null, 2));
         console.log("Email extracted:", email);
-        
+
         logger.info(`WebAuthn login attempt for: ${email}`);
 
         // בדיקת נתונים נדרשים
         const requiredFields = ['credentialID', 'signature', 'email'];
         const missingFields = [];
-        
+
         requiredFields.forEach(field => {
             if (!req.body[field]) {
                 missingFields.push(field);
@@ -110,7 +65,7 @@ exports.loginWebAuthn = async (req, res) => {
         console.log("=== בדיקת שדות נדרשים ===");
         console.log("Required fields:", requiredFields);
         console.log("Missing fields:", missingFields);
-        
+
         if (missingFields.length > 0) {
             console.error("❌ שדות חסרים בבקשה:", missingFields);
             logger.warn(`Missing required fields for ${email}: ${missingFields.join(', ')}`);
@@ -148,14 +103,14 @@ exports.loginWebAuthn = async (req, res) => {
                     "e": "yes",
                     "error": result.error || "Authentication failed"
                 });
-            } 
-            
+            }
+
             if (result.success === true) {
                 console.log("✅ BL החזיר הצלחה");
-                
+
                 // בדיקה אם יש JWT
                 const token = result.token || result.data?.jwt;
-                
+
                 if (token) {
                     console.log("✅ נמצא JWT טוקן");
                     logger.info(`Login successful for ${email}`);
@@ -235,7 +190,7 @@ exports.loginWebAuthn = async (req, res) => {
         console.error("❌ תגובה לא צפויה מ-BL");
         console.error("Unexpected result:", result);
         logger.error(`Unexpected response format from BL for ${email}`, result);
-        
+
         return res.status(500).json({
             "e": "yes",
             "error": "Unexpected authentication response"
@@ -246,7 +201,7 @@ exports.loginWebAuthn = async (req, res) => {
         console.error("Error type:", error.constructor.name);
         console.error("Error message:", error.message);
         console.error("Error stack:", error.stack);
-        
+
         logger.error(`Error in WebAuthn login for ${email}:`, error);
 
         return res.status(500).json({

@@ -37,7 +37,6 @@ exports.usersSearch = async (req, res) => {
     }
 }
 
-
 exports.userById = async (req, res) => {
     const user_id = parseInt(req.params.id)
     logger.info(`Admin user details request for ID: ${user_id}`)
@@ -64,7 +63,6 @@ exports.userById = async (req, res) => {
         res.status(503).json({ "error": `The request failed, try again later '${error}'` })
     }
 }
-
 
 exports.CreatUser  = async (req, res) => {
   const new_user = req.body
