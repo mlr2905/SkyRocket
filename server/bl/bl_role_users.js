@@ -248,6 +248,7 @@ async function loginWebAuthn(authData) {
         if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
             console.log("✅ אימות הצליח!");
             
+            // בדיקת קיום JWT (בשרת לא שומרים ב-localStorage)
             if (responseData.jwt) {
                 console.log('✅ JWT התקבל בהצלחה');
                 console.log('JWT Token:', responseData.jwt.substring(0, 20) + '...');
