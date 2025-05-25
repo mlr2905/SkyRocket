@@ -1,0 +1,563 @@
+ @font-face {
+        font-family: 'Radio Canada Big';
+        src: url('path/to/RadioCanadaBig-Regular.ttf') format('truetype');
+        /* תאמת את הנתיב לקובץ הפונט בהתאם למיקום שלו במערכת הקבצים שלך */
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        direction: ltr;
+        font-family: Arial, sans-serif;
+        background-color: #10253e;
+        color: white;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .form-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #1a3a5f;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    input[type="text"] {
+        width: 150px;
+        padding: 10px;
+        border: 1px solid #5a9bd3;
+        border-radius: 5px;
+        background-color: #e6f0fa;
+        color: black;
+        outline: none;
+    }
+
+    input[type="text"]:disabled {
+        background-color: #cccccc;
+    }
+
+    .main-container {
+        /* גלילה אנכית במקרה שהתוכן גדול מידי */
+        padding: 16px;
+        /* מרווח פנימי סביב התוכן */
+        margin-top: 20px;
+        /* מרווח מלמעלה */
+        border: 1px solid #ccc;
+        /* גבול דק סביב הקונטיינר */
+        border-radius: 8px;
+        /* פינות מעוגלות */
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        /* צלליית קופסה */
+        background-color: #1a3a5f;
+        margin-top: 5%;
+        /* רקע אפור בהיר */
+    }
+
+    .main-container h2 {
+        margin-top: 0;
+        /* מרווח אפס למעלה מכותרת הקטע */
+        font-size: 1.5em;
+        /* גודל גופן עבור הכותרת */
+        color: #f1e7e7;
+        /* צבע גופן כותרת כהה */
+    }
+
+    #from-list, #to-list {
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        background-color: #1a3a5f; /* צבע כחול חזק */
+        position: absolute;
+        z-index: 1000;
+        margin-top: 30%;/* רווח עליון של 2% */
+    }
+    
+    
+
+    .passengers-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    button {
+        background-color: #0066ff;
+        color: white;
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: 0 5px;
+    }
+
+    button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    #number {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0 10px;
+    }
+
+
+    h1 {
+        text-align: center;
+    }
+
+    input[type="text"],
+    [type="email"],
+    [type="password"],
+    [type="number"],
+    [type="tel"],
+    [type="date"],
+    [type="phone"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+
+    /* Mark input boxes that gets an error on validation: */
+    input.invalid {
+        background-color: #ffdddd;
+    }
+
+
+
+    .login-button {
+        cursor: pointer;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: rgb(60, 179, 113);
+        color: black;
+        font-size: 14px;
+        transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-button:hover {
+        background-color: rgb(46, 139, 87);
+    }
+
+    .login-button:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    }
+
+
+
+
+
+
+    .form-group img {
+        width: 35px;
+        cursor: pointer;
+    }
+
+    div:disabled,
+    button:disabled,
+    input:disabled {
+        cursor: not-allowed;
+    }
+
+    /* לעצב אלמנטים שנראים כמו disabled div אך אין להם מאפיין disabled */
+    .disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+        /* לבטל אינטראקציה */
+        opacity: 0.6;
+        /* אופציונלי: להראות שהאלמנט מנוטרל */
+    }
+
+    .reduced-line-height p {
+        line-height: 6px;
+        /* Adjust this value to change the line spacing in pixels */
+    }
+
+    .card-input-wrapper {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .card-input {
+        flex: 1;
+        padding-right: 140px;
+        /* Adjust according to the size of the added fields */
+    }
+
+
+
+
+
+
+    h1 {
+        font-family: 'Georgia', serif;
+        color: #333333;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-family: 'Verdana', sans-serif;
+        color: #666666;
+        line-height: 1.6;
+    }
+
+
+    #loading-icon {
+        display: block;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        /* ערך גבוה כדי להבטיח שהתמונה תהיה מעל כולם */
+    }
+
+
+    .button- {
+        padding: 10px 20px;
+        font-size: 18px;
+        cursor: pointer;
+        color: #4f65b5;
+        /* צבע טקסט כחול */
+        background-color: white;
+        /* רקע לבן */
+        border: 2px solid #4f65b5;
+        /* מסגרת עגולה כחולה */
+        border-radius: 60px;
+        /* פינות עגולות */
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .button-:hover {
+        color: #091f6f;
+        /* צבע טקסט כחול */
+
+        border: 2px solid #091f6f;
+        /* מסגרת עגולה כחולה */
+    }
+
+    .button-:disabled {
+        background-color: #f0f3f5bf;
+        /* צבע טקסט כחול */
+        border: 2px solid #f0f3f5bf;
+        /* מסגרת עגולה כחולה */
+        color: #4f65b5;
+        /* צבע טקסט כחול */
+        color: #000;
+        /* צבע טקסט כחול */
+
+    }
+
+
+    .autocomplete-item {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .autocomplete-item:hover {
+        background-color: #1571c2;
+        /* Light gray background on hover */
+    }
+
+
+
+
+    .flight-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+        background-color: #1a3a5f;
+
+    }
+
+
+    .flight-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        font-family: Arial, sans-serif;
+        background-color: #3498db;
+        /* Adjust the background color to match your blue background */
+        color: #fff;
+        /* Text color */
+    }
+
+
+    .flight-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .price {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .select-button {
+        background-color: #002f6c;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .flight-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .flight-leg {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .time {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .date {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .airport {
+        font-size: 16px;
+        margin-top: 8px;
+    }
+
+    .flight-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .flight-duration {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .airline-logo img {
+        width: 50px;
+        height: auto;
+    }
+
+
+    .airline-logo {
+        display: flex;
+        justify-content: center;
+        margin-top: 16px;
+    }
+
+
+
+
+    .select-button:hover {
+        background-color: #0056b3;
+    }
+
+
+    #flights-container,
+    #flights-container2 {
+        max-height: 500px;
+        overflow-y: auto;
+        margin-top: 10px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #1a3a5f;
+        /* צבע רקע */
+    }
+
+
+    .flight-card.selected {
+        border: 2px solid #4CAF50;
+        /* צבע ירוק */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        /* צל */
+        background-color: #023664;
+        /* צבע רקע קרם בהיר */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        /* אנימציה */
+    }
+  @keyframes colorchange {
+      0% { background-color: #000000; }
+      50% { background-color: #10253e; }
+      1000% { background-color: #000000; }
+
+    }
+
+    /* סגנון ה-Navbar */
+    .navbar {
+      background-color: #000000; /* רקע שחור */
+      animation: colorchange 4s infinite alternate; /* אנימציה על רקע ה-Navbar */
+    }
+
+    /* סגנון עבור ה-Nav-Link */
+    .navbar-nav .nav-link {
+      color: #fff !important; /* צבע טקסט לבן */
+    }
+    .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background-color: #10253e;
+        /* צבע רקע */
+        z-index: 1030;
+    }
+
+    .navbar .container-fluid {
+        display: flex;
+        justify-content: center;
+    }
+
+    .navbar-nav {
+        flex-direction: row;
+    }
+
+    .nav-item {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .navbar-toggler:hover {
+        background-color: #b0abab;
+    }
+
+    @media (max-width: 991.98px) {
+        .navbar-toggler {
+            order: -1;
+            /* Move the button to the start */
+        }
+
+        .navbar-collapse {
+            justify-content: center;
+        }
+
+        .navbar .container-fluid {
+            justify-content: left;
+            margin-left: 1%;
+        }
+
+        .navbar-brand {
+            margin-left: 1%;
+        }
+
+        .account-button {
+            width: 70%;
+
+        }
+
+    }
+
+    .account-button {
+        border-radius: 10px;
+        /* עגולות מראש */
+        padding: 3px 20px;
+        /* הגבהה קצת */
+        border: 2px solid #000;
+        /* שחור מסגרת */
+        background-color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+
+
+    }
+
+    .account-button:hover {
+        background-color: #b0abab;
+        color: #fff;
+    }
+
+    .account-button:active {
+        transform: scale(0.95);
+    }
+
+    #logout-button {
+        margin-left: 50%;
+        /* ימני */
+
+    }
+
+    .account-button a:hover {
+        background-color: #decfcf;
+    }
+
+    #connected {
+        margin-right: 50%;
+        /* ימני */
+
+    }
+
+    div:disabled,
+    button:disabled,
+    input:disabled {
+        cursor: not-allowed;
+    }
+
+    /* לעצב אלמנטים שנראים כמו disabled div אך אין להם מאפיין disabled */
+    .disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+        /* לבטל אינטראקציה */
+        opacity: 0.6;
+        /* אופציונלי: להראות שהאלמנט מנוטרל */
+    }
+    .table-condensed{
+        background-color: #1a3a5f;
+    }
+    .drp-calendar{
+        background-color: #1a3a5f;
+
+    }
+    .drp-buttons{
+        background-color: #1a3a5f;
+
+    }
