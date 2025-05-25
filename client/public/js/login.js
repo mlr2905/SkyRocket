@@ -202,7 +202,7 @@ async function loginWithBiometric() {
             localStorage.setItem('sky-jwt', JSON.stringify(data.jwt));
             const successMessage = document.getElementById('success-message');
             successMessage.textContent = 'Login successful!';
-            window.location.href = data.swaggerUrl;
+            window.location.href = data.redirectUrl;
         }
         else {
             const successMessage = document.getElementById('success-message');
@@ -354,11 +354,11 @@ function validation() {
         .then(data => {
             document.getElementById('loading-icon').style.display = 'none';
 
-            if (data.swaggerUrl) {
+            if (data.redirectUrl) {
                 localStorage.setItem('sky', JSON.stringify(data.datas.jwt));
                 const successMessage = document.getElementById('success-message');
                 successMessage.textContent = data.datas.code;
-                window.location.href = data.swaggerUrl;
+                window.location.href = data.redirectUrl;
             }
         })
         .catch(error => {
@@ -409,7 +409,7 @@ async function connect() {
                 localStorage.setItem('sky', JSON.stringify(data.jwt));
                 const successMessage = document.getElementById('success-message');
                 successMessage.textContent = 'Login successful!';
-                window.location.href = data.swaggerUrl;
+                window.location.href = data.redirectUrl;
             } else {
                 const successMessage = document.getElementById('success-message');
                 successMessage.textContent = data.error;

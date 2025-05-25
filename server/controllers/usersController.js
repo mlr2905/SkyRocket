@@ -35,10 +35,10 @@ const logger = require('../logger/my_logger');
 //             logger.debug(`JWT cookie set for ${email}`)
 
 //             // בניית הקישור לדף Swagger
-//             const swaggerUrl = 'https://skyrocket.onrender.com/search_form.html';
+//             const redirectUrl = 'https://skyrocket.onrender.com/search_form.html';
 
 //             // הפניה לדף Swagger בתגובה המוחזרת
-//             res.status(200).json({ "e": datas.e, "jwt": datas.jwt, "swaggerUrl": swaggerUrl });
+//             res.status(200).json({ "e": datas.e, "jwt": datas.jwt, "redirectUrl": redirectUrl });
 
 //         }
 //     } catch (error) {
@@ -302,10 +302,10 @@ exports.validation = async (req, res) => {
             logger.debug(`JWT cookie set for ${email}`)
 
             // בניית הקישור לדף Swagger
-            const swaggerUrl = 'https://skyrocket.onrender.com/search_form.html';
+            const redirectUrl = 'https://skyrocket.onrender.com/search_form.html';
 
             // הפניה לדף Swagger בתגובה המוחזרת
-            res.status(200).json({ datas, swaggerUrl });
+            res.status(200).json({ datas, redirectUrl });
         }
     }
     catch (error) {
@@ -386,10 +386,10 @@ exports.login = async (req, res) => {
             logger.debug(`JWT cookie set for ${email}`)
 
             // בניית הקישור לדף Swagger
-            const swaggerUrl = 'https://skyrocket.onrender.com/search_form.html';
+            const redirectUrl = 'https://skyrocket.onrender.com/search_form.html';
 
             // הפניה לדף Swagger בתגובה המוחזרת
-            res.status(200).json({ "e": datas.e, "jwt": datas.jwt, "swaggerUrl": swaggerUrl });
+            res.status(200).json({ "e": datas.e, "jwt": datas.jwt, "redirectUrl": redirectUrl });
         }
     } catch (error) {
         // טיפול בשגיאה במידה והיא מתרחשת
