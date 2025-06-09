@@ -58,7 +58,7 @@ const options = {
         },
         servers: [{ url: "https://skyrocket.onrender.com/" }],
     },
-    apis: ["./swagger/*.js"],
+    apis: ["./server/swagger/*.js"],
 };
 
 const specs = swaggerJsdoc(options);
