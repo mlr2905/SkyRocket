@@ -1,613 +1,532 @@
+  function toggleSearchIcon() {
 
-function addDays(date, days) {
-    date.setDate(date.getDate() + days);
-    return date;
-}
+        const formRow = document.querySelector('.form-group');
+        const flight = document.querySelector('.main-container');
 
-// חישוב תאריכים
-let today = new Date();
-let minDate = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate());
-let maxDate = addDays(new Date(today.getFullYear() - 18, today.getMonth(), today.getDate()), -1);
-
-// הגדרת המינימום והמקסימום
-
-
-
-
-// הפעלת הפונקציה עם קוד מדינה כפרמטר
-
-function cardcvv(input) {
-    input.classList.remove('invalid');
-
-}
-function data(input) {
-    input.classList.remove('invalid');
-    document.getElementById('nextBtn').className = 'nextBtn2';
-
-
-}
-function formatExpiryDate(input) {
-    input.classList.remove('invalid');
-
-    document.getElementById("card_").style.display = "none";
-
-    const currentDate = new Date();
-    const currentYear = parseInt(currentDate.getFullYear().toString().substring(2));
-
-    const value = input.value.replace(/\D/g, ''); // Remove all non-digit characters
-    let formattedValue = '';
-
-    if (value.length >= 1) {
-        // Validate and format the month
-        let month = value.substring(0, 2);
-        if (month.length === 1) {
-            if (month > '1') {
-                month = '0' + month;
-            }
-        } else if (month.length === 2) {
-            if (month > '12') {
-                month = '12';
-            }
-        }
-        formattedValue = month;
-    }
-
-    if (value.length > 2) {
-        formattedValue += '/';
-        // Validate and format the year
-        let year = value.substring(2, 4);
-        if (year.length === 1) {
-            if (year < '2') {
-                year = '2' + year;
-            }
-        } else if (year.length === 2) {
-            const inputYear = parseInt(year);
-            if (inputYear < currentYear || inputYear === currentYear) {
-                year = (currentYear + 1).toString().substr(-2);
-            } else if (inputYear > currentYear + 7) {
-                year = (currentYear + 7).toString().substr(-2);
-            }
-        }
-        formattedValue += year;
-    }
-
-    // Set the value only if it matches the expected format
-    if (/^\d{0,2}\/\d{0,2}$/.test(formattedValue)) {
-        input.value = formattedValue;
-    }
-}
-
-
-
-function togglePasswordVisibility(icon) {
-    // Get the input field (assuming the icon is next to the input field)
-    let passwordField = icon.previousElementSibling;
-
-    // Check if the previous sibling is indeed an input field of type password or text
-    if (passwordField && (passwordField.type === "password" || passwordField.type === "text")) {
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            icon.src = "/eye.png";  // Change icon to indicate visibility
-        } else {
-            passwordField.type = "password";
-            icon.src = "/eye.gif";  // Change icon back to original state
-        }
-    } else {
-        console.error("Previous sibling is not a password field.");
-    }
-}
-
-var currentTab = 0; // Current tab is set to be the first tab (0)
-showTab(currentTab); // Display the current tab
-
-function showTab(n) {
-
-    // document.getElementById("nextBtn").disabled = true
-    document.getElementById('nextBtn').className = 'nextBtn';
-    // This function will display the specified tab of the form...
-    var x = document.getElementsByClassName("tab");
-    x[n].style.display = "block";
-    //... and fix the Back/Next buttons:
-    if (n === 1) {
-        document.getElementById('search_form').style.maxWidth = '80%';
-        document.getElementById('search_form').style.height = '80%'
+        formRow.style.display = formRow.style.display === 'block' ? 'none' : 'block'
+        flight.style.display = formRow.style.display === 'none' ? 'block' : 'none'
+        createOutboundFlightCards();
+        createReturnFlightCards();
 
     }
-    if (n == 0) {
-        document.getElementById('search_form').style.maxWidth = '600';
-        document.getElementById("backBtn").style.display = "none";
-    } else {
-        document.getElementById("backBtn").style.display = "inline";
-    }
-    if (n == (x.length - 1)) {
-        document.getElementById("nextBtn").innerHTML = "Finish";
-        document.getElementById("nextBtn").onclick = signup; // Assigning the signup function
-    } else {
-        document.getElementById("nextBtn").innerHTML = "Next";
-    }
-    //... and run a function that will display the correct step indicator:
-    fixStepIndicator(n)
-} async function signup() {
-    document.getElementById('loading-icon').style.display = 'block';
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-        const response = await fetch('/role_users/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
+    document.getElementById('logout-button').addEventListener('click', function () {
+        alert("You have been logged out!");
+    });
+    function checkActivationStatus() {
+        fetch('https://skyrocket.onrender.com/activation')
+            .then(response => {
+                if (response.status === 404 || response.status === 500) {
+                    // אם חזר סטטוס 404 או 500, הצג את כפתור ההתחברות והסתר את כפתור החשבון
+                    document.getElementById('login-button').style.display = 'block';
+                } else if (response.status === 200) {
+                    // אם חזר סטטוס 200, הצג את כפתור החשבון והסתר את כפתור ההתחברות
+                    document.getElementById('logout-button').style.display = 'block';
+                }
             })
+            .catch(error => {
+                console.error('בעיה בביצוע בקשת HTTP:', error);
+                // טיפול בשגיאות כאן, לדוגמה יכול להיות הצגת הודעת שגיאה או פעולה נוספת
+            });
+    }
+
+    // קריאה לפונקציה ברגע שהדף נטען
+    checkActivationStatus();
+
+    function handleInputChange() {
+        var fromInput = document.getElementById('from');
+        var toInput = document.getElementById('to');
+        var dateRangeInput = document.getElementById('daterange');
+
+        // Enable or disable 'To' input and date range input based on 'From' input value
+        if (fromInput.value.trim() !== '') {
+            toInput.disabled = false;
+            if (toInput.value.trim() !== '') {
+                dateRangeInput.disabled = false
+            }
+            else {
+                dateRangeInput.disabled = true
+
+            }
+        } else {
+            toInput.disabled = true;
+            dateRangeInput.disabled = true;
+        }
+    }
+
+
+    $(function () {
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'left'
+        }, function (start, end, label) {
+
+        });
+    });
+
+    let currentNumber = 1;
+    const numberElement = document.getElementById('number');
+    const subtractButton = document.getElementById('button-subtract');
+
+    function update(action) {
+        event.preventDefault(); // מונע את ההתנהגות הרגילה של הטופס
+
+        if (action === 'add') currentNumber++;
+        else if (action === 'subtract') currentNumber--;
+
+        numberElement.textContent = currentNumber;
+        subtractButton.disabled = currentNumber <= 1;
+    }
+
+    function changeNumber(action) {
+
+        update(action);
+    }
+
+    let addedItems = {}
+    document.addEventListener("DOMContentLoaded", function () {
+        let timeout = null;
+
+        async function fetchDataAndStore() {
+            try {
+                let response = await fetch('https://skyrocket.onrender.com/role_users/flights');
+                let data = await response.json();
+
+                // Open IndexedDB
+                let dbRequest = indexedDB.open('FlightDB', 1);
+
+                dbRequest.onupgradeneeded = function (event) {
+                    let db = event.target.result;
+                    if (!db.objectStoreNames.contains('flights')) {
+                        db.createObjectStore('flights', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+
+                dbRequest.onsuccess = function (event) {
+                    let db = event.target.result;
+                    let transaction = db.transaction('flights', 'readwrite');
+                    let store = transaction.objectStore('flights');
+
+                    // Clear previous data
+                    store.clear();
+
+                    // Add new data
+                    data.forEach(flight => {
+                        store.add(flight);
+                    });
+
+                    transaction.oncomplete = function () {
+                        console.log('Data stored successfully in IndexedDB');
+
+                        // Extract unique countries
+                        let countrySet = new Set();
+                        data.forEach(flight => {
+                            countrySet.add(flight.origin_country_name);
+                        });
+
+                        let uniqueCountries = Array.from(countrySet);
+                        localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
+                    };
+
+                    transaction.onerror = function (event) {
+                        console.error('Transaction error:', event.target.error);
+                    };
+                };
+
+                dbRequest.onerror = function (event) {
+                    console.error('IndexedDB error:', event.target.error);
+                };
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        function getFlightsFromDB(callback) {
+            let dbRequest = indexedDB.open('FlightDB', 1);
+
+            dbRequest.onsuccess = function (event) {
+                let db = event.target.result;
+                let transaction = db.transaction('flights', 'readonly');
+                let store = transaction.objectStore('flights');
+                let request = store.getAll();
+
+                request.onsuccess = function (event) {
+                    callback(event.target.result);
+                };
+
+                request.onerror = function (event) {
+                    console.error('Request error:', event.target.error);
+                };
+            };
+
+            dbRequest.onerror = function (event) {
+                console.error('IndexedDB error:', event.target.error);
+            };
+        }
+
+        function displayFlights(data) {
+            let fromList = document.getElementById('from-list');
+            fromList.innerHTML = ''; // Clear previous items
+            const icon = document.getElementById('loading-icon');
+            icon.style.display = 'block';
+            for (let i = 0; i < data.length; i++) {
+                let itemName = data[i];
+                // Check if item already exists
+                if (!fromList.querySelector(`.autocomplete-item[data-text="${itemName}"]`)) {
+                    let item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    item.textContent = itemName;
+                    item.setAttribute('data-text', itemName); // Set attribute to identify this item
+                    item.addEventListener('click', function () {
+                        document.getElementById('from').value = this.textContent;
+                        handleInputChange();
+                        fromList.innerHTML = ''; // Clear the list after selection
+                        updateDestinationOptions(this.textContent);
+                    });
+                    fromList.appendChild(item);
+                }
+            }
+
+            icon.style.display = 'none';
+        }
+
+        function displayAllFlights() {
+            let uniqueCountries = JSON.parse(localStorage.getItem('uniqueCountries'));
+            if (uniqueCountries) {
+                displayFlights(uniqueCountries);
+            }
+        }
+
+        function filterAndDisplayFlights(query) {
+            getFlightsFromDB(function (flightData) {
+                if (flightData) {
+                    let regex = new RegExp(query, 'i');
+                    let filteredFlights = flightData.filter(flight => regex.test(flight.origin_country_name));
+                    displayFlights(filteredFlights.map(flight => flight.origin_country_name));
+                }
+            });
+        }
+
+        function updateDestinationOptions(originCountry) {
+
+            handleInputChange();
+            let toList = document.getElementById('to-list');
+            toList.innerHTML = '';
+
+            getFlightsFromDB(function (flightData) {
+
+                if (flightData) {
+                    let toInput = document.getElementById('to');
+
+                    // Function to create autocomplete items
+                    function createAutocompleteItem(flight) {
+                        let item = document.createElement('div');
+                        item.className = 'autocomplete-item';
+                        item.textContent = flight.destination_country_name;
+                        item.setAttribute('data-text', flight.destination_country_name); // Set attribute to identify this item
+                        item.addEventListener('click', function () {
+                            toInput.value = this.textContent;
+                            toList.innerHTML = '';
+                            document.getElementById("search").disabled = false;
+
+                            handleInputChange();
+                        });
+                        return item;
+                    }
+
+                    // Add input event listener to 'to' input element
+                    toInput.addEventListener('input', function () {
+
+                        let inputValue = this.value.toLowerCase(); // Get current input value and convert to lowercase
+
+                        // Filter flights based on originCountry and current input value
+                        let filteredDestinations = flightData.filter(flight =>
+                            flight.origin_country_name === originCountry &&
+                            flight.destination_country_name.toLowerCase().includes(inputValue) &&
+                            !toList.querySelector(`.autocomplete-item[data-text="${flight.destination_country_name}"]`)
+                        );
+
+                        // Clear existing items in toList
+                        toList.innerHTML = '';
+
+                        // Iterate through filtered destinations and create autocomplete items
+                        filteredDestinations.forEach(flight => {
+                            let item = createAutocompleteItem(flight);
+                            let text = item.dataset.text;
+
+                            // בדיקה האם הטקסט של הפריט כבר קיים במערך הפריטים שנוספו
+                            if (!addedItems[text]) {
+                                toList.appendChild(item);
+                                addedItems[text] = true; // סימון שהפריט נוסף למערך
+                            }
+                        });
+
+                        // מחיקת כל המידע ב-addedItems לאחר סיום הלולאה
+                        addedItems = {};
+
+                    });
+
+                    // Initial filtering based on originCountry and empty input
+                    let filteredDestinations = flightData.filter(flight =>
+                        flight.origin_country_name === originCountry &&
+                        !toList.querySelector(`.autocomplete-item[data-text="${flight.destination_country_name}"]`)
+                    );
+
+                    // Create autocomplete items for initial load
+                    filteredDestinations.forEach(flight => {
+                        let item = createAutocompleteItem(flight);
+                        toList.appendChild(item);
+                    });
+                }
+
+            });
+        }
+
+
+        fetchDataAndStore();
+
+        document.getElementById('from').addEventListener('input', function () {
+            clearTimeout(timeout);
+            let query = this.value.trim();
+            timeout = setTimeout(() => {
+                if (query.length > 0) {
+                    filterAndDisplayFlights(query);
+                    updateDestinationOptions(query);
+                } else {
+                    displayAllFlights();
+                }
+            }, 300);
         });
 
-        const data = await response.json();
 
-        if (data.e === "yes") {
-            const successMessage = document.getElementById('success-message');
-            successMessage.textContent = data.error;
-            window.location.href = data.loginUrl;
-        } else {
-            if (data.id) {
-                return registration(data.id);
-            }
-        }
-    } catch (error) {
-        document.getElementById('loading-icon').style.display = 'none';
-        console.error('Error:', error);
-    }
-}
 
-async function registration(id) {
 
-    const first_name = document.getElementById('first_name').value;
-    const last_name = document.getElementById('last_name').value;
-    const phone = document.getElementById('phone').value;
-    const credit_card = document.getElementById('credit_card').value;
-    const expiry_date = document.getElementById('expiry_date').value;
-    const cvv = document.getElementById('cvv').value;
-
-    try {
-        const response = await fetch('/role_users/customers', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                first_name: first_name,
-                last_name: last_name,
-                phone: phone,
-                credit_card: credit_card,
-                expiry_date: expiry_date,
-                cvv: cvv,
-                user_id: id
-            })
+        document.getElementById('from').addEventListener('focus', function () {
+            displayAllFlights();
         });
 
-        const data = await response.json();
-        document.getElementById('loading-icon').style.display = 'none';
+        document.getElementById('to').addEventListener('focus', function () {
+            let originCountry = document.getElementById('from').value.trim();
+            updateDestinationOptions(originCountry);
+        });
+    });
 
-        if (data.e === "yes") {
-            const successMessage = document.getElementById('success-message');
-            successMessage.textContent = data.error;
-        } else {
-            if (data.signupUrl) {
-                const successMessage = document.getElementById('success-message');
-                successMessage.textContent = 'signup successful!';
-                window.location.href = data.signupUrl;
-            } else {
-                document.getElementById('loading-icon').style.display = 'none';
-            }
-        }
-    } catch (error) {
-        document.getElementById('loading-icon').style.display = 'none';
-        console.error('Error:', error);
-    }
-}
+    function createOutboundFlightCards() {
+        const icon = document.getElementById('loading-icon');
+        icon.style.display = 'block';
 
-function nextPrev(n) {
-    // This function will figure out which tab to display
-    var x = document.getElementsByClassName("tab");
-    // Exit the function if any field in the current tab is invalid:
-    if (n == 1 && !validateForm()) return false;
-    // Hide the current tab:
-    x[currentTab].style.display = "none";
-    // Increase or decrease the current tab by 1:
-    currentTab = currentTab + n;
-    // if you have reached the end of the form...
-    if (currentTab >= x.length) {
-        // ... the form gets submitted:
-        const submitButton = document.getElementById('nextBtn');
+        // Open IndexedDB
+        const request = indexedDB.open('FlightDB');
 
-        submitButton.textContent = 'connect';
-        submitButton.removeAttribute('onclick');
-        submitButton.addEventListener('click', registration);
-        document.getElementById('nextBtn').className = 'nextBtn2';
-    }
-    // Otherwise, display the correct tab:
-    showTab(currentTab);
-}
+        request.onsuccess = function (event) {
+            const db = event.target.result;
 
-function handleResponse(data) {
-    console.log("data.err", data.err);
-    console.log("data loginUrl", data.loginUrl);
+            // Assuming 'flights' is the object store name
+            const transaction = db.transaction(['flights'], 'readonly');
+            const objectStore = transaction.objectStore('flights');
 
-    const successMessage = document.getElementById('success-message');
-    if (data.err === "yes") {
-        successMessage.textContent = data.error;
-        window.location.href = data.loginUrl;
-    } else if (data.loginUrl) {
-        successMessage.textContent = 'Signup successful!';
-        window.location.href = data.loginUrl;
-    }
-}
+            const from = document.getElementById('from').value.toLowerCase();
+            const to = document.getElementById('to').value.toLowerCase();
 
-function validateForm() {
-    // פונקציה זו מטפלת בבדיקת תקינות של השדות בטופס
+            const container = document.getElementById('flights-container');
+            container.innerHTML = ''; // Clear previous results
 
-    var x, y, i, valid = true;
-    x = document.getElementsByClassName("tab");
-    y = x[currentTab].getElementsByTagName("input");
-    // לולאה שבודקת כל שדה קלט בטאב הנוכחי:
-    for (i = 0; i < y.length; i++) {
-        // אם השדה ריק או שיש לו מחלקה "invalid"...
-        if (y[i].value.length > 0 ) {
-                    }            else {
-                valid = false;
-                y[i].classList.add("invalid");
-            
-
-
-        }
-    }
-    // אם הסטטוס התקין הוא true, סמן את הצעד כהושלם ותקין:
-    if (valid) {
-        document.getElementsByClassName("step")[currentTab].className += " finish";
-    }
-    return valid; // החזר את סטטוס התקינות
-}
-
-
-function fixStepIndicator(n) {
-    // This function removes the "active" class of all steps...
-    var i, x = document.getElementsByClassName("step");
-    for (i = 0; i < x.length; i++) {
-        x[i].className = x[i].className.replace(" active", "");
-    }
-    //... and adds the "active" class on the current step:
-    x[n].className += " active";
-}
-// Function to check if the ID number is valid
-function checkIdNumber(inputNumber) {
-    let isValid;
-    let numSum = 0;
-
-    try {
-        // Validate inputNumber length
-        if (inputNumber.length !== 9) {
-            throw "Input number must be 9 digits long";
-        }
-
-        // Calculate the sum according to the algorithm
-        for (let i = 0; i < 9; i++) {
-            let digit = parseInt(inputNumber.charAt(i));
-            let factor = (i % 2 === 0) ? 1 : 2;
-            let product = digit * factor;
-            // Add digits of products over 9
-            numSum += (product > 9) ? product - 9 : product;
-        }
-
-        // Check if the sum is divisible by 10
-        isValid = (numSum % 10 === 0);
-    } catch (error) {
-        // If any error occurs, consider the ID invalid
-        isValid = false;
-        console.error("Error:", error);
-    }
-    return isValid;
-}
+            const outboundContainer = document.createElement('div');
+            outboundContainer.className = 'flight-grid';
 
 
 
-// פונקציה שמתבצעת כאשר מתבצעת הקלטה בשדה
-function validateIdNumber(input) {
-    // קבלת הערך של ה-ID number מהשדה
-    let inputNumber = input.value.trim();
+            container.appendChild(outboundContainer);
 
-    // בדיקה האם הערך תקין
-    if (/^\d{9}$/.test(inputNumber)) {
-        // התראה על תוקף המספר
-        if (checkIdNumber(inputNumber)) {
-            input.className = '';
-            document.getElementById("id_number_error").style.display = "none";
-            document.getElementById("id_number").style.display = "block";
-        } else {
-            input.className = 'invalid';
-            document.getElementById("id_number_error").style.display = "block";
-            document.getElementById("phone_").style.display = "none";
-        }
-    } else {
-        input.className = 'invalid';
-        // התראה על אורך לא תקין או תווים לא תקינים
-        document.getElementById("id_number_error").style.display = "block";
-        document.getElementById("phone_").style.display = "none";
-    }
-}
-// הוספת אירוע 'change' לשדה ה-ID number
+            let resultCount = 0;
 
-function validatePhone(input) {
-    const phone_ = input.value.trim();
-    // הסרת תווים שאינם מספרים מהטלפון
-    const phone = phone_.replace(/\D/g, '');
-    // קבלת ה-pattern והסרת התווים "( ) -"
-    const pattern = input.pattern.replace(/[\(\)\-\s]/g, '');
-    // בניית התבנית הרגולרית מה-pattern שלא כוללת את התווים "( ) -"
-    if (phone.length === pattern.length) {
-        input.classList.remove('invalid');
-        document.getElementById("phone_").style.display = "block";
-        document.getElementById("phone_error").style.display = "none";
-    } else {
-        input.classList.add('invalid');
-        document.getElementById("phone_error").style.display = "block";
-        document.getElementById("phone_").style.display = "none";
-    }
-}
+            objectStore.openCursor().onsuccess = function (event) {
+                const cursor = event.target.result;
+                if (cursor) {
+                    const flight = cursor.value;
+                    if (flight.origin_country_name.toLowerCase() === from && flight.destination_country_name.toLowerCase() === to) {
+                        const departureDate = new Date(flight.departure_time).toLocaleDateString();
+                        const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const landingDate = new Date(flight.landing_time).toLocaleDateString();
+                        const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+                        // Calculate duration in milliseconds
+                        const departureTimestamp = new Date(flight.departure_time).getTime();
+                        const landingTimestamp = new Date(flight.landing_time).getTime();
+                        const durationMs = landingTimestamp - departureTimestamp;
 
+                        // Convert milliseconds to hours and minutes
+                        const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+                        const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
 
-async function validateEmail(input) {
-    document.getElementById('loading-icon').style.display = 'block';
+                        // Format duration as HH:mm
+                        const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
 
-    const email = input.value.trim();
-    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/;
-    
-    if (!emailRegex.test(email)) {
-        updateUI('invalid', true, "Invalid email format", false);
-        document.getElementById("login-button").style.display = "none"
-        document.getElementById('loading-icon').style.display = 'none';
-        return;
-    }
+                        // Calculate total minutes
+                        const totalMinutes = durationHours * 60 + durationMinutes;
 
-    try {
-        const response = await fetch(`role_users/users/search?email=${email}`);
-        const data = await response.json();
-        if (data === "ok") {
-            updateUI('invalid', true, "The email already exists", false);
-            document.getElementById('loading-icon').style.display = 'none';
+                        // Calculate price based on rate per hour (assuming 150 units per hour)
+                        const price = Math.ceil(totalMinutes / 60) * 150;
 
-        } else {
-            let [name, domain] = email.split('@');
-
-            const response = await fetch(`role_users/email?email=${email}`);
-            const check = await response.json();
-            if (check.e === "no") {
-                if (check.status === "disposable") {
-                    updateUI('invalid', true, `'${domain}' does not exist `, false);
-                    document.getElementById('loading-icon').style.display = 'none';
-                    document.getElementById("login-button").style.display = "none"        
-                }
-                if (check.status === "invalid") {
-                    updateUI('invalid', true, ` '${name}' not exist in '${domain}' `, false);
-                    document.getElementById('loading-icon').style.display = 'none';
-                    document.getElementById("login-button").style.display = "none"        
-                }
-                if (check.status === "valid") {
-                    updateUI('', false, "", true);
-                    document.getElementById('loading-icon').style.display = 'none';
-                    document.getElementById("login-button").style.display = "none"        
-                }
-               
-            }
-            if (check.e === "yes") {
-                
-                updateUI('invalid', true, `errer:'${check.status}' `, false);
-                document.getElementById('loading-icon').style.display = 'none';
-                document.getElementById("login-button").style.display = "none"
-            }
-          
-         
-        }
-    } catch (error) {
-        updateUI('invalid', true, "An error occurred", false);
-        document.getElementById("login-button").style.display = "none"
-        document.getElementById('loading-icon').style.display = 'none';
-
-
-
-    }
-}
-
-
-function updateUI(inputClass, passwordDisabled, emailErrorMessage, passwordValid) {
-    document.getElementById('email').className = inputClass;
-
-    document.getElementById("password").disabled = passwordDisabled;
-
-    const emailErrorElement = document.getElementById("email_error");
-    const emailValidElement = document.getElementById("email_");
-
-    if (emailErrorMessage) {
-        emailErrorElement.style.display = "block";
-        emailErrorElement.querySelector("spam").textContent = emailErrorMessage;
-        emailValidElement.style.display = "none";
-    } else {
-        emailErrorElement.style.display = "none";
-        emailValidElement.style.display = "block";
-    }
-
-    document.getElementById("password_error").style.display = passwordValid ? "block" : "none";
-}
-
-function validatePassword(input) {
-    document.getElementById("email_").style.display = "none";
-    const password = input.value.trim();
-    const lengthRegex = /^.{8,}$/;
-    const LowerCase = /[a-z]/;
-    const uppercaseRegex = /[A-Z]/;
-    const Numbers = /[0-9]/
-    const specialCharRegex = /[~!@$^*?=_-]/;
-    const forbidden_characters = /["|'()]/;
-    // התבנית הבאה מייחסת רק לתווים באנגלית
-    const englishOnlyRegex = /^[a-zA-Z0-9@$!%*?&]*$/;
-    let errorMessage = "";
-    let successMessage = "";
-    document.getElementById("email").disabled = true;
-
-    const check = (regex, message) => {
-        if (!regex.test(password)) errorMessage += `<p><b class="red-x">&#10006;</b> <spam class ="red-text">${message}</spam></P>`;
-        else successMessage += `<p><b class="green-v">&#10004;</b> <spam class ="green-text">${message}</spam></P>`;
-    };
-    const check2 = (regex, message) => {
-        if (regex.test(password)) errorMessage += `<p><b class="red-x">&#10006;</b> <span class="red-text">${message}</span></p>`;
-        else successMessage += `<p><b class="green-v">&#10004;</b> <spam class ="green-text">${message}</spam></P>`;
-    };
-
-    check(lengthRegex, "At least 8 characters");
-    check(LowerCase, "LowerCase letters (a-z)");
-    check(uppercaseRegex, "Upper case letters (A-Z)");
-    check(Numbers, "Numbers (0-9)");
-    check(specialCharRegex, "Special characters [~!@$^*?=_-]");
-    check2(forbidden_characters, `Forbidden characters [ " ' ()]`);
-
-    // הוסף את הבדיקה של התבנית הרגולרית של התווים באנגלית
-
-    input.classList.toggle('invalid', errorMessage !== "");
-    document.getElementById("password_error").innerHTML = errorMessage;
-    document.getElementById("password_error").style.display = errorMessage ? "block" : "none";
-    document.getElementById("password_").innerHTML = successMessage;
-    document.getElementById("password_").style.display = successMessage ? "block" : "none";
-    document.getElementById("password2").disabled = errorMessage ? true : false
-
-
-}
-
-
-function Checking_password(input) {
-
-
-    const password = document.getElementById('password').value;
-    const password2 = document.getElementById('password2').value;
-
-    if (password === password2) {
-
-        document.getElementById("password_").innerHTML = `<p><b class="green-v">&#10004;</b>
-        <spam class="green-text">The passwords are the same</spam></p>`;
-        document.getElementById("password_error").style.display = "block" ? "none" : "none";
-        document.getElementById("password_").style.display = "none" ? "block" : "none";
-        // document.getElementById("nextBtn").disabled = false
-        document.getElementById('nextBtn').className = 'nextBtn2';
-        input.classList.remove('invalid');
-
-
-
-
-
-    } else {
-        input.classList.add('invalid');
-        document.getElementById('nextBtn').className = 'nextBtn';
-        document.getElementById("password_error").innerHTML = `<p><b class="red-x">&#10006;</b>
-        <spam class="red-text">The passwords are not the same</spam></p>`;
-        document.getElementById("password_error").style.display = "none" ? "block" : "none";
-        document.getElementById("password_").style.display = "block" ? "none" : "none";
-    }
-
-}
-function checkCreditCardValidity(input) {
-    let CardNumber = input.value.trim();
-
-    let isValid;
-    let totalSum = 0;
-    let isSecond = false;
-
-    // Remove any spaces from the credit card number
-    CardNumber = CardNumber.replace(/\s/g, '');
-
-    if (CardNumber.length !== 16) {
-        isValid = false
-    }
-    else {
-
-        if (!/\D/.test(CardNumber)) {
-            for (let i = CardNumber.length - 1; i >= 0; i--) {
-                let digit = parseInt(CardNumber.charAt(i));
-
-                if (isSecond) {
-                    digit *= 2;
-                    if (digit > 9) {
-                        digit -= 9;
+                        // Create flight card with corrected price calculation
+                        const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
+                        outboundContainer.appendChild(card);
+                        resultCount++;
+                    }
+                    cursor.continue();
+                } else {
+                    icon.style.display = 'none';
+                    // Set container height based on the number of results
+                    if (resultCount <= 2) {
+                        container.style.maxHeight = 'none'; // Disable max-height for fewer results
+                    } else {
+                        container.style.maxHeight = '400px'; // Re-enable max-height for more results
                     }
                 }
+            };
+        };
 
-                totalSum += digit;
-                isSecond = !isSecond;
-            }
+        request.onerror = function (event) {
+            console.error("Error opening indexedDB: ", event.target.error);
+        };
+    }
 
-            if (totalSum % 10 === 0) {
-                isValid = true;
+
+    function createReturnFlightCards() {
+        const icon = document.getElementById('loading-icon');
+        icon.style.display = 'block';
+
+        // Open IndexedDB
+        const request = indexedDB.open('FlightDB');
+
+        request.onsuccess = function (event) {
+            const db = event.target.result;
+
+            // Check if 'flights' object store exists
+            if (db.objectStoreNames.contains('flights')) {
+                const transaction = db.transaction(['flights'], 'readonly');
+                const objectStore = transaction.objectStore('flights');
+
+                const from = document.getElementById('from').value.toLowerCase();
+                const to = document.getElementById('to').value.toLowerCase();
+
+                const container = document.getElementById('flights-container2');
+                container.innerHTML = ''; // Clear previous results
+
+                const returnContainer = document.createElement('div');
+                returnContainer.className = 'flight-grid';
+
+
+                container.appendChild(returnContainer);
+
+                let resultCount = 0;
+
+                objectStore.openCursor().onsuccess = function (event) {
+                    const cursor = event.target.result;
+                    if (cursor) {
+                        const flight = cursor.value;
+                        if (flight.origin_country_name.toLowerCase() === to && flight.destination_country_name.toLowerCase() === from) {
+                            const departureDate = new Date(flight.departure_time).toLocaleDateString();
+                            const departureTime = new Date(flight.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            const landingDate = new Date(flight.landing_time).toLocaleDateString();
+                            const landingTime = new Date(flight.landing_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                            // Calculate duration in milliseconds
+                            const departureTimestamp = new Date(flight.departure_time).getTime();
+                            const landingTimestamp = new Date(flight.landing_time).getTime();
+                            const durationMs = landingTimestamp - departureTimestamp;
+
+                            // Convert milliseconds to hours and minutes
+                            const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+                            const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                            // Format duration as HH:mm
+                            const duration = `${durationHours}:${(durationMinutes < 10 ? '0' : '') + durationMinutes}`;
+
+                            // Calculate total minutes
+                            const totalMinutes = durationHours * 60 + durationMinutes;
+
+                            // Calculate price based on rate per hour (assuming 150 units per hour)
+                            const price = Math.ceil(totalMinutes / 60) * 150;
+
+                            // Create flight card with corrected price calculation
+                            const card = createFlightCard(flight.id, price, departureDate, departureTime, duration, landingDate, landingTime, flight.origin_country_name, flight.destination_country_name, flight.airline_id);
+                            returnContainer.appendChild(card);
+                            resultCount++;
+                        }
+                        cursor.continue();
+                    } else {
+                        icon.style.display = 'none';
+                        // Set container height based on the number of results
+                        if (resultCount <= 2) {
+                            container.style.maxHeight = 'none'; // Disable max-height for fewer results
+                        } else {
+                            container.style.maxHeight = '300px'; // Re-enable max-height for more results
+                        }
+                    }
+                };
+            } else {
+                console.error("Object store 'flights' not found in 'FlightDB'.");
             }
+        };
+
+        request.onerror = function (event) {
+            console.error("Error opening FlightDB: ", event.target.error);
+        };
+    }
+
+    function createFlightCard(id, price, departureDate, departureTime, duration, landingDate, landingTime, origin, destination, airlineId) {
+        const card = document.createElement('div');
+        card.className = 'flight-card';
+        card.innerHTML = `
+         <div class="flight-card-header">
+                    <div class="price">$${price}</div>
+                    <button class="select-button">בחירה</button>
+                </div>
+                <div class="flight-info">
+                    <div class="flight-leg">
+                        <span class="time">${departureTime}</span>
+                        <span class="date">${departureDate}</span>
+                        <span class="airport">${origin}</span>
+                    </div>
+                    <div class="flight-leg">
+                        <span class="time">${landingTime}</span>
+                        <span class="date">${landingDate}</span>
+                        <span class="airport">${destination}</span>
+                    </div>
+                </div>
+                <div class="flight-details">
+                    <div class="flight-duration">${duration}</div>
+                    <div class="airline-logo">
+                        <img src="./logo_airlines/${airlineId}.png" alt="Airline Logo">
+                    </div>
+                </div>
+            `;
+
+        const selectButton = card.querySelector('.select-button');
+        selectButton.addEventListener('click', function () {
+            const currentlySelected = document.querySelector('.flight-card.selected');
+            if (currentlySelected) {
+                currentlySelected.classList.remove('selected');
+            }
+            card.classList.add('selected');
+            addToSelection(id);
+        });
+
+        return card;
+    }
+
+    function addToSelection(id) {
+        document.querySelector('.main-container')
+        const div1 = document.querySelector('#return');
+        const div2 = document.querySelector('#outbound')
+        div2.style.display = 'none'
+
+        if (div2.style.display = 'none') {
+            div1.style.display = 'block'
         }
 
+
+
+        // הוסף את ה id למערך או בצורה אחרת לפי הצורך
+        console.log(`Flight ID ${id} has been added to selection.`);
+        flight
     }
-    if (isValid) {
-        input.className = '';
-
-        document.getElementById("card_").style.display = "block";
-        document.getElementById("card_error").style.display = "none";
-    } else {
-        input.className = 'invalid';
-
-        document.getElementById("card_error").style.display = "block";
-        document.getElementById("card_").style.display = "none";
-        document.getElementById("id_number").style.display = "none";
-
-
-
-    }
-}
-function validateCreditCard(input) {
-    const expiryDate = input.value.trim();
-    const expiryRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/; // MM/YY format
-    const today = new Date();
-    const currentMonth = today.getMonth() + 1; // getMonth() returns zero-based month
-    const currentYear = today.getFullYear() % 100; // getYear() returns full year, so we get only the last two digits
-
-    if (expiryRegex.test(expiryDate)) {
-        const parts = expiryDate.split('/');
-        const month = parseInt(parts[0], 10);
-        const year = parseInt(parts[1], 10);
-
-        if (year > currentYear || (year === currentYear && month >= currentMonth)) {
-            input.className = '';
-            document.getElementById("card_").style.display = "block";
-            document.getElementById("card_error").style.display = "none";
-            // ניתן להוסיף פעולות נוספות כאן במידת הצורך
-        } else {
-            input.className = 'invalid';
-            document.getElementById("card_error").style.display = "block";
-            document.getElementById("card_").style.display = "none";
-            // ניתן להוסיף פעולות נוספות כאן במידת הצורך
-        }
-    } else {
-        input.className = 'invalid';
-        document.getElementById("card_error").style.display = "block";
-        document.getElementById("card_").style.display = "none";
-        // ניתן להוסיף פעולות נוספות כאן במידת הצורך
-    }
-}
-function checkboxv(input) {
-    if (input.checked) {
-        document.getElementById('nextBtn').className = 'nextBtn2';
-        document.getElementById('nextBtn').disabled = false;
-    } else {
-        document.getElementById('nextBtn').className = 'nextBtn';
-        document.getElementById('nextBtn').disabled = true;
-    }
-}
-window.addEventListener('load', function () {
-    // Hide the loading icon when the page is fully loaded
-    document.getElementById('loading-icon').style.display = 'none';
-});
