@@ -43,7 +43,6 @@ body {
         border: 1px solid #ddd;
         border-radius: 4px;
         box-sizing: border-box;
-        /* Makes sure padding does not affect overall width */
     }
 
     .connect {
@@ -163,7 +162,6 @@ body {
         box-sizing: border-box;
     }
 
-    /* Hide all steps by default: */
 
 
     .form-group img {
@@ -198,7 +196,6 @@ body {
 
     .reduced-line-height p {
         line-height: 6px;
-        /* Adjust this value to change the line spacing in pixels */
     }
 
     .button-container {
@@ -227,7 +224,6 @@ body {
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 9999;
-        /* ערך גבוה כדי להבטיח שהתמונה תהיה מעל כולם */
     }
 
     .divider {
@@ -237,7 +233,7 @@ body {
         margin-top: 5%;
         color: #00000093;
         margin-bottom: 5%;
-        width: 100%; /* <-- הוסף את השורה הזו */
+        width: 100%; 
     }
 
     .divider::before,
@@ -259,7 +255,6 @@ body {
         display: flex;
         justify-content: center;
         gap: 1rem;
-        /* רווח שווה בין הכפתורים */
     }
 
       .rounded-button-a {
@@ -269,13 +264,10 @@ body {
         padding: 2%;
         max-width: md;
         background-color: #f4f6f9;
-        /* צבע רקע לכפתור */
         color: rgb(7, 7, 7);
         border: none;
-        border-radius: 50%; /* עיגול מלא */
-        /* עיגול הכפתור */
+        border-radius: 50%;
         transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-        /* הוספת מעבר */
         cursor: pointer;
         font-size: 1rem;
         font-weight: 600;
@@ -288,13 +280,10 @@ body {
         padding: 0.5rem 1rem;
         max-width: md;
         background-color: #f4f6f9;
-        /* צבע רקע לכפתור */
         color: rgb(7, 7, 7);
         border: none;
         border-radius: 50px;
-        /* עיגול הכפתור */
         transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-        /* הוספת מעבר */
         cursor: pointer;
         font-size: 1rem;
         font-weight: 600;
@@ -302,43 +291,35 @@ body {
 
     .rounded-button:hover {
         background-color: #374151;
-        /* צבע רקע כאשר מצביעים עם העכבר */
     }
 
     .rounded-button:active {
         transform: scale(0.95);
-        /* תחושת לחיצה */
     }
 
     .rounded-button:focus {
         outline: none;
         box-shadow: 0 0 0 2px #9ca3af;
-        /* טבעת פוקוס */
     }
 
     .button-icon img {
         width: 20px;
-        /* גודל התמונה */
         height: 20px;
-        /* גובה התמונה */
 
     }
 .button-icon-a{
-            border-radius: 50%; /* עיגול מלא */
+            border-radius: 50%; 
 
 }
-
 
     #face {
         background-color: #a2c0e77d;
 
-        /* צבע רקע כאשר מצביעים עם העכבר */
         color: #fff;
     }
 
     #face:hover {
         background-color: #d2dcf2;
-        /* צבע רקע כאשר מצביעים עם העכבר */
 
     }
 
@@ -356,13 +337,11 @@ body {
 
     #face:active {
         transform: scale(0.95);
-        /* תחושת לחיצה */
     }
 
     #face:focus {
         outline: none;
         box-shadow: 0 0 0 2px #9ca3af;
-        /* טבעת פוקוס */
     }
 
     #biometricStatus {
@@ -492,12 +471,7 @@ body {
     }
 
 
-/* =====================================================
-=== כללים חדשים שהועברו מה-HTML ===
-=====================================================
-*/
 
-/* כללי הסתרה/הצגה */
 #Change,
 #email_error,
 #email_,
@@ -514,18 +488,15 @@ body {
     display: none;
 }
 
-/* הצגה כברירת מחדל (מה-inline style) */
 #pass,
 #password {
     display: block;
 }
 
-/* קונטיינרים שהיו צריכים להיות flex */
 .flex-container {
     display: flex;
 }
 
-/* מיקום אלמנטים בתוך שדות האינפוט */
 .input-wrapper {
     position: relative;
 }
@@ -546,7 +517,6 @@ body {
     cursor: pointer;
 }
 
-/* צבעים */
 #password_error {
     color: rgb(222, 0, 45);
 }
