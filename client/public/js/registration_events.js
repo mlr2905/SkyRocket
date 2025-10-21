@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (email) {
         email.addEventListener('input', () => validateEmail(email));
         email.addEventListener('keypress', function(event) {
-            if (!/^[a-z0-9._-@]$/.test(event.key)) {
-                event.preventDefault();
+    if (!/^[a-z0-9._\-@]$/.test(event.key)) {
+                    event.preventDefault();
             }
         });
     }
