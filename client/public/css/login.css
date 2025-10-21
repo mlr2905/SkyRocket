@@ -1,4 +1,4 @@
-    body {
+body {
         font-family: 'Varela Round', sans-serif;
         background-image: url("../img/plane.jpg");
         background-repeat: no-repeat;
@@ -489,3 +489,63 @@
             width: 0%;
         }
     }
+
+
+/* =====================================================
+=== כללים חדשים שהועברו מה-HTML ===
+=====================================================
+*/
+
+/* כללי הסתרה/הצגה */
+#Change,
+#email_error,
+#email_,
+#password_error,
+#password_,
+#pass_,
+#Verification,
+#verification-code-input,
+#resend-message,
+#code_error,
+#code_,
+#success-message,
+#Message {
+    display: none;
+}
+
+/* הצגה כברירת מחדל (מה-inline style) */
+#pass,
+#password {
+    display: block;
+}
+
+/* קונטיינרים שהיו צריכים להיות flex */
+.flex-container {
+    display: flex;
+}
+
+/* מיקום אלמנטים בתוך שדות האינפוט */
+.input-wrapper {
+    position: relative;
+}
+
+#Change {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: blue;
+}
+
+#eyeicon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+/* צבעים */
+#password_error {
+    color: rgb(222, 0, 45);
+}

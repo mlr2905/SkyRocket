@@ -16,11 +16,8 @@
 
 </head>
 
-
-
 <body>
     <img id="loading-icon" src="./img/loading.gif" alt="Loading...">
-
 
     <form class="LOGIN-form" id="login-form">
 
@@ -31,71 +28,67 @@
 
         <div class="form-group">
 
-            <label for="email" style="font-family: 'Varela Round', sans-serif;">Email</label>
-            <div style="position: relative;">
-                <input type="email" placeholder="example@example.com"
-                    name="email" id="email">
-                <a id="Change"
-                    style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);color: blue; display: none">Change</a>
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+                <input type="email" placeholder="example@example.com" name="email" id="email">
+                <a id="Change">Change</a>
             </div>
-            <p style="display: none;" id="email_error"><b class="red-x">&#10006;</b>
+            <p id="email_error"><b class="red-x">&#10006;</b>
                 <spam class="red-text">Invalid email. Please enter a valid email.</spam>
             </p>
-            <p style="display: none;" id="email_"><b class="green-v">&#10004;</b>
+            <p id="email_"><b class="green-v">&#10004;</b>
                 <spam class="green-text">valid email.</spam>
             </p>
 
         </div>
-        <div class="form-group" id="pass" style="display: block">
-            <label for="password" style="font-family: 'Varela Round', sans-serif;">Password</label>
+        <div class="form-group" id="pass">
+            <label for="password">Password</label>
 
-            <div style="position: relative;">
+            <div class="input-wrapper">
                 <input type="password" id="password" placeholder="example: Aa12345@" name="password"
-                    style="display: block;" pattern="^[^#%&+]+$"
+                     pattern="^[^#%&+]+$"
                     aria-checked="false" disabled>
-                <img src="./img/eye.gif" alt="" id="eyeicon"
-                    style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                <img src="./img/eye.gif" alt="" id="eyeicon">
             </div>
 
             <div class="reduced-line-height">
-                <p style="color: rgb(222, 0, 45); display: none; font-family: 'Varela Round', sans-serif;"
-                    id="password_error">Must: 8
+                <p id="password_error">Must: 8
                     characters-[A-Z]-[a-z]/[0-9]-[!/@/$/?/*]</p>
-                <p style="display: none;" id="password_"></p>
+                <p id="password_"></p>
             </div>
         </div>
 
         <div class="button-container">
             <button type="button" class="change" id="toggle-auth-type" disabled>code by
                 email</button>
-            <p style="display: none;" id="pass_">
+            <p id="pass_">
                 <a id="forgot-password-link" href="#">&nbsp;Forgot Password?</a>
             </p>
-            <button type="button" class="Send" id="Verification" style="display: none;">Send code
+            <button type="button" class="Send" id="Verification">Send code
                 to email</button>
         </div>
         <br />
 
-        <div id="verification-code-input" style="display: none;">
+        <div id="verification-code-input">
             <div class="form-group">
                 <label for="verification-code" placeholder="Enter a code...">Code:</label>
 
-                <div style="display: flex;">
+                <div class="flex-container">
                     <input type="text" id="verification-code" placeholder="Enter a code..." name="verification-code"
                         pattern="[0-9]{1,6}" maxlength="6" required>
                     <div class="timer" id="timer"></div>
-                    <div id="resend-message" style="display: none; font-family: 'Varela Round', sans-serif;">send again</div>
+                    <div id="resend-message">send again</div>
                 </div>
             </div>
         </div>
-        <p style=" display: none;" id="code_error"><b class="red-x">&#10006;</b>
+        <p id="code_error"><b class="red-x">&#10006;</b>
             <spam class="red-text">Invalid code. Please enter a valid code.</spam>
         </p>
-        <p style="display: none;" id="code_"><b class="green-v">&#10004;</b>
+        <p id="code_"><b class="green-v">&#10004;</b>
             <spam class="green-text">valid code.</spam>
         </p>
-        <div style="display: flex;">
-            <div id="success-message" style="display: none;"></div>
+        <div class="flex-container">
+            <div id="success-message"></div>
             <div class="timer" id="timer_"></div>
         </div>
 
@@ -124,7 +117,7 @@
             </button>
 
         </div>
-        <div id="Message" class="message" style="display: none;"></div>
+        <div id="Message" class="message"></div>
 
     </form>
 
@@ -141,12 +134,11 @@
         })(document, "script");
 
         setTimeout(showNotification, 10 * 60 * 1000);
-        
-        // תיקון: הסרת הסוגריים מ-checkWebAuthnSupport
-        document.addEventListener('DOMContentLoaded', checkWebAuthnSupport);
 
+        document.addEventListener('DOMContentLoaded', checkWebAuthnSupport);
     </script>
-    
-    <script src="js/login_events.js"></script> </body>
+
+    <script src="js/login_events.js"></script>
+</body>
 
 </html>
