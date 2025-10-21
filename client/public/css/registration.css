@@ -1,4 +1,4 @@
- @font-face {
+@font-face {
     font-family: 'Radio Canada Big';
     src: url('path/to/RadioCanadaBig-Regular.ttf') format('truetype');
     /* תאמת את הנתיב לקובץ הפונט בהתאם למיקום שלו במערכת הקבצים שלך */
@@ -299,4 +299,69 @@
     text-align: right;
     direction: rtl;
     padding-right: 63%;
+}
+
+
+
+#h1,
+#email_error,
+#email_,
+#password_,
+#phone_error,
+#phone_,
+#id_number_error,
+#id_number,
+#card_error,
+#card_ {
+    display: none;
+}
+
+#pass,
+#password {
+    display: block; /* נשאר כפי שהיה ב-HTML, למרות ש-block הוא ברירת מחדל */
+}
+
+/* כללי צבע */
+#password_error {
+    color: rgb(222, 0, 45);
+}
+
+#phone_error,
+#id_number_error,
+#card_error {
+    color: red;
+}
+
+#phone_,
+#id_number,
+#card_ {
+    color: green;
+}
+
+/* מיקום אייקונים של סיסמה */
+#eyeicon,
+#eyeicon2 {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+/* עיצוב ה-container של תנאי השימוש */
+.terms-container {
+    display: flex;
+    align-items: center; /* מיישר את התיבה והטקסט */
+}
+
+/* עיצוב הלייבל של תנאי השימוש */
+#terms_checkbox_label {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+/* עיצוב ה-container של מחוון הצעדים */
+.step-indicator-container {
+    text-align: center;
+    margin-top: 40px;
 }

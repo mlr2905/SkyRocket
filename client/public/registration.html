@@ -16,7 +16,7 @@
     <img id="loading-icon" src="./img/loading.gif" alt="Loading...">
 
     <form class="signup-form" id="login-form">
-        <h1 style="display: none;" id="h1">Register</h1>
+        <h1 id="h1">Register</h1>
         <div class="tab">
             <div class="container">
                 <h1>Welcome!</h1>
@@ -24,11 +24,11 @@
                     <span class="highlight">price alerts</span>.</p>
                 <p>Get expert advice, join discussions, and earn rewards with every booking.</p>
                 <p>Don't miss out on the amazing benefits. <span class="highlight">Join now!</span></p>
-                <div style="display: flex;">
+                <div class="terms-container">
                     <input class="" type="checkbox" name="vehicle3" value="Boat" id="terms_checkbox">
-                    <label for="terms_checkbox" class="link"
-                        style="cursor: pointer; margin-left: 5px;">I agree to the 
-                        <a href="https://drive.usercontent.google.com/u/0/uc?id=1UX1K70Da2xmJ2LShUVEFoiO4lup-zXx7&export=download" target="_blank">Terms and Conditions</a>
+                    <label for="terms_checkbox" class="link" id="terms_checkbox_label">I agree to the
+                        <a href="https://drive.usercontent.google.com/u/0/uc?id=1UX1K70Da2xmJ2LShUVEFoiO4lup-zXx7&export=download"
+                            target="_blank">Terms and Conditions</a>
                     </label>
                 </div>
             </div>
@@ -48,41 +48,37 @@
                 </p>
                 <p>
                     <label for="email">Email:</label>
-                    <input class="" type="email" placeholder="example@example.com"
-                        name="email" id="email">
+                    <input class="" type="email" placeholder="example@example.com" name="email" id="email">
                 </p>
-                <p style="display: none;" id="email_error">
+                <p id="email_error">
                     <b class="red-x">&#10006;</b>
                     <spam id="red-text" class="red-text">Invalid email. Please enter a valid email.</spam>
                     <button id="login-button" type="button" class="login-button">Click to login</button>
                 </p>
-                <p style="display: none;" id="email_"><b class="green-v">&#10004;</b>
+                <p id="email_"><b class="green-v">&#10004;</b>
                     <spam class="green-text">valid email.</spam>
                 </p>
-                <div class="form-group" id="pass" style="display: block">
+                <div class="form-group" id="pass">
                     <label for="password">Password</label>
                     <div style="position: relative;">
                         <input class="" type="password" id="password" placeholder="example: Aa12345@" name="password"
-                            style="display: block;" pattern="^[^#%&+]+$"
+                             pattern="^[^#%&+]+$"
                             aria-checked="false" disabled>
-                        <img src="./img/eye.gif" alt="" id="eyeicon"
-                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                        <img src="./img/eye.gif" alt="" id="eyeicon">
                     </div>
                     </br>
                     <div style="position: relative;">
                         <label for="password2">Confirm Password</label>
                         <div style="position: relative;">
                             <input class="" type="password" id="password2" placeholder="example: Aa12345@"
-                                name="password"
-                                aria-checked="false" disabled>
-                            <img src="./img/eye.gif" alt="" id="eyeicon2"
-                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                                name="password" aria-checked="false" disabled>
+                            <img src="./img/eye.gif" alt="" id="eyeicon2">
                         </div>
                     </div>
                     <div class="reduced-line-height">
-                        <p style="color: rgb(222, 0, 45); display: none;" id="password_error">Must: 8
+                        <p id="password_error">Must: 8
                             characters-[A-Z]-[a-z]/[0-9]-[!/@/$/?/*]</p>
-                        <p style="display: none;" id="password_"></p>
+                        <p id="password_"></p>
                     </div>
                 </div>
             </div>
@@ -92,21 +88,21 @@
                 <label for="phone">Phone:</label>
                 <input id="phone" placeholder="" name="phone" type="phone" value="" />
             </p>
-            <p style="color: red; display: none;" id="phone_error">Invalid phone. Please enter a valid phone number.</p>
-            <p style="color: green; display: none;" id="phone_">valid number.</p>
+            <p id="phone_error">Invalid phone. Please enter a valid phone number.</p>
+            <p id="phone_">valid number.</p>
             <p>
                 <label for="id_number_input">ID Number:</label>
                 <input class="" type="text" placeholder="ID Number..." name="id_number" id="id_number_input"
                     pattern="[0-9]{9}" minlength="9" maxlength="9">
             </p>
-            <p style="color: red; display: none;" id="id_number_error">Invalid ID number. Please enter a valid ID
+            <p id="id_number_error">Invalid ID number. Please enter a valid ID
                 number.</p>
-            <p style="color: green; display: none;" id="id_number">valid ID number.</p>
-            
+            <p id="id_number">valid ID number.</p>
+
             <label for="credit_card">Credit Card Number:</label>
             <div class="card-input-wrapper">
-                <input class="" type="text" class="card-input" id="credit_card" placeholder="Credit Card Number..." pattern="\d{16}"
-                    maxlength="16" minlength="16" name="credit_card">
+                <input class="" type="text" class="card-input" id="credit_card" placeholder="Credit Card Number..."
+                    pattern="\d{16}" maxlength="16" minlength="16" name="credit_card">
                 <div class="extra-inputs">
                     <input class="" type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" pattern="\d{4}"
                         maxlength="5" minlength="5" required>
@@ -114,10 +110,10 @@
                         minlength="3" required>
                 </div>
             </div>
-            <p style="color: red; display: none;" id="card_error">Incorrect credit card number.
+            <p id="card_error">Incorrect credit card number.
             </p>
-            <p style="color: green; display: none;" id="card_">valid card number.</p>
-            
+            <p id="card_">valid card number.</p>
+
             <p>
                 <label for="birthday">Birthday:</label>
                 <input class="" type="date" id="birthday" name="birthday">
@@ -130,7 +126,7 @@
 
         </div>
         </div>
-        <div style="text-align:center;margin-top:40px;">
+        <div class="step-indicator-container">
             <span class="step"></span>
             <span class="step"></span>
         </div>
