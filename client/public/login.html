@@ -10,10 +10,9 @@
     <script src="https://cdn.userway.org/widget.js" data-account="gjsjaxVCEY"></script>
     <title>Login Page</title>
 
-    <!-- <link rel="stylesheet" href=".css"> -->
     <script src="js/login.js"></script>
 
-        <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/login.css">
 
 </head>
 
@@ -31,12 +30,12 @@
                 href="https://skyrocket.onrender.com/registration.html">&nbsp;Sign Up</a></p>
 
         <div class="form-group">
-            
+
             <label for="email" style="font-family: 'Varela Round', sans-serif;">Email</label>
             <div style="position: relative;">
-                <input type="email" placeholder="example@example.com" oninput="validateEmail(this)"
-                    onkeypress="return /^[a-z0-9._-@]+$/.test(event.key)" name="email" id="email">
-                <a id="Change" onclick="changeText()"
+                <input type="email" placeholder="example@example.com"
+                    name="email" id="email">
+                <a id="Change"
                     style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);color: blue; display: none">Change</a>
             </div>
             <p style="display: none;" id="email_error"><b class="red-x">&#10006;</b>
@@ -52,11 +51,10 @@
 
             <div style="position: relative;">
                 <input type="password" id="password" placeholder="example: Aa12345@" name="password"
-                    style="display: block;" oninput="validatePassword(this)" pattern="^[^#%&+]+$"
-                    onkeypress="if(this.value.length >= 9 || event.key.match(/[^\x00-\x7F]/) || event.key === '#' || event.key === '%' || event.key === '&' || event.key === '+' || event.key === '\\' || event.key === '/'  || event.key === ',' || event.key === '`'|| event.key === '`' || event.key === '.'|| event.key === '[' || event.key === ']' || event.key === '{' || event.key === '}' || event.key === '<' || event.key === '>') return false;"
+                    style="display: block;" pattern="^[^#%&+]+$"
                     aria-checked="false" disabled>
                 <img src="./img/eye.gif" alt="" id="eyeicon"
-                    style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                    style="font-family: 'Varela Round', sans-serif;position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
             </div>
 
             <div class="reduced-line-height">
@@ -68,12 +66,12 @@
         </div>
 
         <div class="button-container">
-            <button type="button" class="change" id="toggle-auth-type" onclick="toggleAuthType()" disabled>code by
+            <button type="button" class="change" id="toggle-auth-type" disabled>code by
                 email</button>
             <p style="display: none;" id="pass_">
                 <a id="forgot-password-link" href="#">&nbsp;Forgot Password?</a>
             </p>
-            <button type="button" class="Send" id="Verification" style="display: none;" onclick="authcode()">Send code
+            <button type="button" class="Send" id="Verification" style="display: none;">Send code
                 to email</button>
         </div>
         <br />
@@ -84,10 +82,9 @@
 
                 <div style="display: flex;">
                     <input type="text" id="verification-code" placeholder="Enter a code..." name="verification-code"
-                        pattern="[0-9]{1,6}" maxlength="6" required oninput="validateCode(this)">
+                        pattern="[0-9]{1,6}" maxlength="6" required>
                     <div class="timer" id="timer"></div>
-                    <div id="resend-message" style="display: none; font-family: 'Varela Round', sans-serif;"
-                        onclick="authcode()">send again</div>
+                    <div id="resend-message" style="display: none; font-family: 'Varela Round', sans-serif;">send again</div>
                 </div>
             </div>
         </div>
@@ -102,14 +99,14 @@
             <div class="timer" id="timer_"></div>
         </div>
 
-        <button class="connect" type="submit" id="connect-button" onclick="connect()" disabled>Connect</button>
+        <button class="connect" type="submit" id="connect-button" disabled>Connect</button>
 
         <div class="divider">Or Log in</div>
 
         <div id="biometricStatus">Checking biometric authentication support...</div>
 
         <div class="buttons-containers">
-            <button type="button" class="rounded-button" id="git" onclick="login_git()">
+            <button type="button" class="rounded-button" id="git">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" width="20"
                     height="20" class="button-icon" viewBox="0 0 1792 1792">
                     <path
@@ -117,17 +114,17 @@
                     </path>
                 </svg>
             </button>
-            <button type="button" id="face" class="rounded-button-a" onclick="loginWithBiometric()">
-                 <img class="button-icon-a" src="./img/fingerprint.gif" width="40"
-                    height="35" loading="lazy" alt="google logo">
+            <button type="button" id="face" class="rounded-button-a">
+                <img class="button-icon-a" src="./img/fingerprint.gif" width="40" height="35" loading="lazy"
+                    alt="google logo">
             </button>
-            <button class="rounded-button" onclick="login_google()">
+            <button class="rounded-button" type="button">
                 <img class="button-icon" src="https://www.svgrepo.com/show/475656/google-color.svg" width="20"
                     height="20" loading="lazy" alt="google logo">
             </button>
 
         </div>
-            <div id="Message" class="message" style="display: none;"></div>
+        <div id="Message" class="message" style="display: none;"></div>
 
     </form>
 
@@ -142,28 +139,14 @@
             e.async = true; e.src = "//static.axept.io/sdk.js";
             t.parentNode.insertBefore(e, t);
         })(document, "script");
-        
-        let eyeicon = document.getElementById("eyeicon");
-        let password = document.getElementById("password");
-
-        eyeicon.addEventListener("click", () => {
-            if (password.type == "password") {
-                password.type = "text";
-                eyeicon.src = "./img/eye.png";
-            } else {
-                password.type = "password";
-                eyeicon.src = "./img/eye.gif";
-
-            }
-        })
-
-
 
         setTimeout(showNotification, 10 * 60 * 1000);
-        document.addEventListener('DOMContentLoaded', checkWebAuthnSupport());
+        
+        // תיקון: הסרת הסוגריים מ-checkWebAuthnSupport
+        document.addEventListener('DOMContentLoaded', checkWebAuthnSupport);
 
     </script>
-
-</body>
+    
+    <script src="js/login_events.js"></script> </body>
 
 </html>
