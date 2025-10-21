@@ -1,4 +1,4 @@
- @font-face {
+@font-face {
         font-family: 'Radio Canada Big';
         src: url('path/to/RadioCanadaBig-Regular.ttf') format('truetype');
         /* תאמת את הנתיב לקובץ הפונט בהתאם למיקום שלו במערכת הקבצים שלך */
@@ -561,3 +561,60 @@
         background-color: #1a3a5f;
 
     }
+
+/* =====================================================
+=== כללים חדשים שהועברו מה-HTML ===
+=====================================================
+*/
+
+/* כללי ניווט */
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link {
+    color: #fff !important; /* הבטחת צבע לבן לקישורי ניווט */
+}
+
+/* כפתורי התחברות/התנתקות */
+#login-button,
+#logout-button {
+    display: none; /* הסתרה כברירת מחדל */
+}
+
+/* אייקון טעינה */
+#loading-icon {
+    display: none;
+}
+
+/* לוגו ב-header */
+header .logo-container {
+    text-align: center;
+    margin-bottom: 1%;
+}
+
+/* טופס חיפוש */
+.search-form-group {
+    display: block;
+}
+
+/* תוצאות חיפוש */
+.main-container {
+    display: none;
+}
+
+#outbound {
+    display: block;
+}
+
+#return {
+    display: none;
+}
+
+#flights-container,
+#flights-container2 {
+    max-height: 500px;
+}
+
+/* טקסט אדום בכפתור התנתקות */
+#logout-button .logout-text {
+    color: red;
+    font-weight: bold;
+}
