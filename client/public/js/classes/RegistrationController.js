@@ -7,13 +7,11 @@ import { RegistrationUIHandler } from './RegistrationUIHandler.js';
 export class RegistrationController {
     #currentTab = 0;
     #iti; // Instance for intl-tel-input
-    #elements = {}; // Object to hold all DOM elements
+    #elements = {}; 
     
-    // --- Sub-Controllers ---
     #validator;
     #ui;
 
-    // --- Bound Handlers ---
     #boundNextPrev;
     #boundSubmitForm;
 
@@ -21,11 +19,9 @@ export class RegistrationController {
         this.#selectDOMElements();
         this.#validator = new RegistrationValidator(this.#elements);
         
-        // Handlers must be bound before being passed to UIHandler
-        this.#boundNextPrev = this.#nextPrev.bind(this);
+        this.#boundNextPrev = () => this.#nextPrev(1); 
         this.#boundSubmitForm = this.#submitForm.bind(this);
         
-        // Pass bound handlers to elements object
         this.#elements.nextPrevHandler = this.#boundNextPrev;
         this.#elements.submitHandler = this.#boundSubmitForm;
 
@@ -36,7 +32,6 @@ export class RegistrationController {
     }
 
     #selectDOMElements() {
-        // Form Tabs
         this.#elements.tabs = document.getElementsByClassName("tab");
         this.#elements.steps = document.getElementsByClassName("step");
         
@@ -92,7 +87,7 @@ export class RegistrationController {
             this.#initializeIntlTelInput(country);
         } catch (error) {
             console.error('Error fetching IP:', error);
-            this.#initializeIntlTelInput('en'); // Fallback
+            this.#initializeIntlTelInput('en'); 
         }
     }
 
@@ -139,9 +134,8 @@ export class RegistrationController {
         this.#elements.cvv.addEventListener('keypress', Utils.restrictToNumbers);
         this.#elements.birthday.addEventListener('input', (e) => this.#validator.validateSimpleInput(e.target));
 
-        // --- Navigation ---
         this.#elements.backBtn.addEventListener('click', () => this.#nextPrev(-1));
-        this.#elements.nextBtn.addEventListener('click', this.#boundNextPrev); // Default handler
+        this.#elements.nextBtn.addEventListener('click', this.#boundNextPrev); 
     }
 
     async #validateCurrentTab() {
@@ -177,6 +171,11 @@ export class RegistrationController {
     }
 
     async #nextPrev(n) {
+      
+        if (this.#currentTab === 0 && n === -1) {
+            return;
+        }
+
         if (n === 1 && !(await this.#validateCurrentTab())) {
             return false; 
         }
@@ -188,7 +187,6 @@ export class RegistrationController {
             return;
         }
 
-        
         this.#ui.showTab(this.#currentTab, this.#boundSubmitForm);
     }
 
@@ -219,7 +217,7 @@ export class RegistrationController {
             const customerData = {
                 first_name: this.#elements.firstName.value,
                 last_name: this.#elements.lastName.value,
-                phone: this.#iti.getNumber(), 
+                phone: this.#iti.getNumber(),
                 credit_card: this.#elements.creditCard.value.replace(/\s/g, ''),
                 expiry_date: this.#elements.expiryDate.value,
                 cvv: this.#elements.cvv.value,
