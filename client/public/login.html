@@ -10,8 +10,6 @@
     <script src="https://cdn.userway.org/widget.js" data-account="gjsjaxVCEY"></script>
     <title>Login Page</title>
 
-    <script src="js/login.js"></script>
-
     <link rel="stylesheet" href="css/login.css">
 
 </head>
@@ -134,12 +132,11 @@
             t.parentNode.insertBefore(e, t);
         })(document, "script");
 
-        setTimeout(showNotification, 10 * 60 * 1000);
-
-        document.addEventListener('DOMContentLoaded', checkWebAuthnSupport);
+        // הקריאות ל-showNotification ו-checkWebAuthnSupport נמחקו 
+        // כי הן מטופלות עכשיו בתוך LoginController דרך main.js
     </script>
 
-    <script src="js/login_events.js"></script>
+    <script type="module" src="js/login/main.js"></script>
 </body>
 
 </html>
