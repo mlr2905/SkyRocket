@@ -1,4 +1,3 @@
-// File: RegistrationValidator.js
 import * as AuthService from '../services/authService.js';
 
 export class RegistrationValidator {
@@ -244,7 +243,6 @@ export class RegistrationValidator {
         if (value.length > 2) {
             formattedValue += '/';
             let year = value.substring(2, 4);
-            // Basic validation while typing
             if (year.length === 2) {
                  const inputYear = parseInt(year);
                  if (inputYear < currentYear) year = currentYear.toString();

@@ -2,7 +2,7 @@
 import * as C from '../utils/constants.js';
 
 /**
- * פונקציית עזר גנרית לביצוע בקשות fetch
+* Generic helper function for performing fetch requests
  * @param {string} url
  * @param {object} options
  */
@@ -10,7 +10,6 @@ async function apiRequest(url, options) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-            // ננסה לקרוא את גוף השגיאה, אם קיים
             let errorData;
             try {
                 errorData = await response.json();
@@ -22,7 +21,6 @@ async function apiRequest(url, options) {
         return await response.json();
     } catch (error) {
         console.error('API Request Error:', error);
-        // זורק את השגיאה הלאה כדי שה-Controller יטפל בה
         throw error;
     }
 }

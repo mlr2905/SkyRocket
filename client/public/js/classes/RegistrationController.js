@@ -1,4 +1,3 @@
-// File: RegistrationController.js
 import * as C from '../utils/constants.js';
 import * as Utils from '../utils/utils.js';
 import * as AuthService from '../services/authService.js';
@@ -6,7 +5,6 @@ import { RegistrationValidator } from './RegistrationValidator.js';
 import { RegistrationUIHandler } from './RegistrationUIHandler.js';
 
 export class RegistrationController {
-    // --- State ---
     #currentTab = 0;
     #iti; // Instance for intl-tel-input
     #elements = {}; // Object to hold all DOM elements
@@ -47,7 +45,6 @@ export class RegistrationController {
         this.#elements.nextBtn = document.getElementById('nextBtn');
         
         // Tab 0 (Terms)
-        // --- תיקון כאן: שימוש ב-ID במקום ב-name ---
         this.#elements.termsCheckbox = document.getElementById('terms_checkbox');
         
         // Tab 1 (User)
@@ -67,7 +64,6 @@ export class RegistrationController {
 
         // Tab 2 (Contact/Payment)
         this.#elements.phone = document.getElementById('phone');
-        // --- תיקון כאן: שימוש ב-ID המדויק מה-HTML ---
         this.#elements.idNumber = document.getElementById('id_number_input'); 
         this.#elements.creditCard = document.getElementById('credit_card');
         this.#elements.expiryDate = document.getElementById('expiry_date');
@@ -109,8 +105,7 @@ export class RegistrationController {
     }
 
     #setupDatePickers() {
-        // (הלוגיקה של min/max date לא הייתה משויכת לכלום בקוד המקורי, 
-        // אז נשאיר אותה בחוץ אלא אם יש אלמנט datepicker ספציפי)
+        
     }
 
     #attachEventListeners() {
@@ -152,13 +147,11 @@ export class RegistrationController {
     async #validateCurrentTab() {
         let isValid = true;
         
-        // הסרת הוולידציה הכללית והחלפתה בבדיקה ספציפית לכל טאב
         switch (this.#currentTab) {
             case 0:
                 isValid = this.#validator.validateTerms();
                 break;
             case 1:
-                // הפעלת כל הבדיקות של הטאב
                 const validEmail = await this.#validator.validateEmail();
                 const validPass = this.#validator.validatePassword();
                 const validConfirm = this.#validator.confirmPassword();
@@ -185,25 +178,21 @@ export class RegistrationController {
 
     async #nextPrev(n) {
         if (n === 1 && !(await this.#validateCurrentTab())) {
-            return false; // עצור אם הוולידציה נכשלה
+            return false; 
         }
 
-        // הסתר טאב נוכחי
         this.#elements.tabs[this.#currentTab].style.display = "none";
-        // קדם טאב
         this.#currentTab = this.#currentTab + n;
 
         if (this.#currentTab >= this.#elements.tabs.length) {
-            // (הלוגיקה הזו מנוהלת עכשיו על ידי onFinishHandler ב-showTab)
             return;
         }
 
-        // הצג טאב הבא
+        
         this.#ui.showTab(this.#currentTab, this.#boundSubmitForm);
     }
 
     async #submitForm() {
-        // ולידציה אחרונה של הטאב הנוכחי
         if (!(await this.#validateCurrentTab())) {
             return false;
         }
@@ -211,7 +200,6 @@ export class RegistrationController {
         this.#ui.showLoading();
 
         try {
-            // 1. הרשמת משתמש (signup)
             const signupData = await AuthService.signupUser(
                 this.#elements.email.value,
                 this.#elements.password.value
@@ -228,11 +216,10 @@ export class RegistrationController {
                 throw new Error("Signup succeeded but did not return a user ID.");
             }
 
-            // 2. הרשמת לקוח (customer details)
             const customerData = {
                 first_name: this.#elements.firstName.value,
                 last_name: this.#elements.lastName.value,
-                phone: this.#iti.getNumber(), // קבלת המספר המלא מהספרייה
+                phone: this.#iti.getNumber(), 
                 credit_card: this.#elements.creditCard.value.replace(/\s/g, ''),
                 expiry_date: this.#elements.expiryDate.value,
                 cvv: this.#elements.cvv.value,
@@ -247,7 +234,7 @@ export class RegistrationController {
 
             if (registrationData.e === "yes") {
                 this.#ui.showMessage(registrationData.error);
-            } else if (registrationData.signupUrl) { // הנחה שזה URL ההתחברות
+            } else if (registrationData.signupUrl) { 
                 this.#ui.showMessage('Signup successful!');
                 window.location.href = registrationData.signupUrl;
             }

@@ -9,8 +9,8 @@ export const GIT_AUTH_URL = "https://skyrocket.onrender.com/git";
 
 // --- Registration Endpoints ---
 export const API_IP_URL = "https://skyrocket.onrender.com/role_users/ip";
-export const API_SIGNUP_URL = "/role_users/signup"; // (הנתיב היה יחסי בקובץ המקורי)
-export const API_CUSTOMERS_URL = "/role_users/customers"; // (הנתיב היה יחסי בקובץ המקורי)
-export const API_USER_SEARCH_URL = "role_users/users/search"; // (הנתיב היה יחסי בקובץ המקורי)
-export const API_EMAIL_CHECK_URL = "role_users/email"; // (הנתיב היה יחסי בקובץ המקורי)
+export const API_SIGNUP_URL = "/role_users/signup";  
+export const API_CUSTOMERS_URL = "/role_users/customers"; 
+export const API_USER_SEARCH_URL = "role_users/users/search";
+export const API_EMAIL_CHECK_URL = "role_users/email";
 export const LOGIN_PAGE_URL = "https://skyrocket.onrender.com/login.html";

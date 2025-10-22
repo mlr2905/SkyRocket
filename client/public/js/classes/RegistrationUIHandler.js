@@ -1,4 +1,3 @@
-// File: RegistrationUIHandler.js
 
 export class RegistrationUIHandler {
     #elements;
@@ -11,22 +10,18 @@ export class RegistrationUIHandler {
         const tabs = this.#elements.tabs;
         tabs[n].style.display = "block";
 
-        // הגדרת כפתורי ניווט
         this.#elements.backBtn.style.display = (n === 0) ? "none" : "inline";
         
         if (n === (tabs.length - 1)) {
             this.#elements.nextBtn.innerHTML = "Finish";
-            // החלפת ה-handler של הכפתור
             this.#elements.nextBtn.removeEventListener('click', this.#elements.nextPrevHandler);
             this.#elements.nextBtn.addEventListener('click', onFinishHandler);
         } else {
             this.#elements.nextBtn.innerHTML = "Next";
-            // וידוא שה-handler הנכון מחובר
             this.#elements.nextBtn.removeEventListener('click', onFinishHandler);
             this.#elements.nextBtn.addEventListener('click', this.#elements.nextPrevHandler);
         }
         
-        // עדכון מחוון שלב
         this.updateStepIndicator(n);
     }
 
