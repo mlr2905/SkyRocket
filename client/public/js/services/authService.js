@@ -1,3 +1,4 @@
+// File: authService.js
 import * as C from '../utils/constants.js';
 
 /**
@@ -26,6 +27,7 @@ async function apiRequest(url, options) {
     }
 }
 
+// --- Login Functions ---
 export function redirectToGoogle() {
     window.location.href = C.GOOGLE_AUTH_URL;
 }
@@ -71,5 +73,35 @@ export async function loginWithPasswordAPI(email, password) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+    });
+}
+
+// --- Registration Functions ---
+
+export async function getCountryCode() {
+    return apiRequest(C.API_IP_URL);
+}
+
+export async function checkEmailExists(email) {
+    return apiRequest(`${C.API_USER_SEARCH_URL}?email=${email}`);
+}
+
+export async function checkEmailDomain(email) {
+    return apiRequest(`${C.API_EMAIL_CHECK_URL}?email=${email}`);
+}
+
+export async function signupUser(email, password) {
+    return apiRequest(C.API_SIGNUP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+    });
+}
+
+export async function registerCustomer(customerData) {
+    return apiRequest(C.API_CUSTOMERS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customerData),
     });
 }

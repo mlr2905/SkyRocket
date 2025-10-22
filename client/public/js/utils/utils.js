@@ -1,4 +1,6 @@
+// File: utils.js
 
+// --- Base64 Helpers ---
 export function bufferToBase64(buffer) {
     return btoa(String.fromCharCode(...new Uint8Array(buffer)));
 }
@@ -83,7 +85,6 @@ export function showCustomAlert(title, message, type = 'info') {
     `;
     alertElement.style.display = 'flex';
 
-    // הוספת מאזין לכפתור הסגירה החדש
     const closeButton = document.getElementById('custom-alert-close-btn');
     if (closeButton) {
         closeButton.addEventListener('click', hideCustomAlert);
@@ -112,15 +113,14 @@ export function startTimer(duration, display, resendDisplay) {
             resendDisplay.style.display = 'block';
         }
     }, 1000);
-    return interval; // מחזיר את המזהה של האינטרוול כדי שנוכל לנקות אותו
+    return interval;
 }
 
-// פונקציית ההתראה שמשתמשת ב-SweetAlert (Swal)
+// --- SweetAlert Notification ---
 export function showNotification() {
     let timerInterval;
     const fiveMinutes = 5 * 60 * 1000;
 
-    // ודא ש-Swal ו-moment טעונים
     if (typeof Swal === 'undefined' || typeof moment === 'undefined') {
         console.error('Swal or Moment.js is not loaded.');
         return;
@@ -153,4 +153,17 @@ export function showNotification() {
             location.reload();
         }
     });
+}
+
+// --- Registration Helpers ---
+
+export function addDays(date, days) {
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
+export function restrictToNumbers(event) {
+    if (event.charCode < 48 || event.charCode > 57) {
+        event.preventDefault();
+    }
 }

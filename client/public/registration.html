@@ -25,7 +25,7 @@
                 <p>Get expert advice, join discussions, and earn rewards with every booking.</p>
                 <p>Don't miss out on the amazing benefits. <span class="highlight">Join now!</span></p>
                 <div class="terms-container">
-                    <input  type="checkbox" name="vehicle3" value="Boat" id="terms_checkbox">
+                    <input type="checkbox" name="vehicle3" value="Boat" id="terms_checkbox">
                     <label for="terms_checkbox" class="link" id="terms_checkbox_label">I agree to the
                        <a href="terms.html" target="_blank">Terms and Conditions</a>
                     </label>
@@ -37,21 +37,21 @@
             <div class="form-group">
                 <p>
                     <label for="first_name">First name:</label>
-                    <input  type="text" id="first_name" placeholder="First name..." name="fname"
+                    <input type="text" id="first_name" placeholder="First name..." name="fname"
                         maxlength="30"  title="Please enter up to 30 lowercase letters">
                 </p>
                 <p>
                     <label for="last_name">Last name:</label>
-                    <input  type="text" id="last_name" placeholder="Last name..." name="lname"
+                    <input type="text" id="last_name" placeholder="Last name..." name="lname"
                         maxlength="30" title="Please enter up to 30 lowercase letters">
                 </p>
                 <p>
                     <label for="email">Email:</label>
-                    <input  type="email" placeholder="example@example.com" name="email" id="email">
+                    <input type="email" placeholder="example@example.com" name="email" id="email">
                 </p>
                 <p id="email_error">
                     <b class="red-x">&#10006;</b>
-                    <spam id="red-text" class="red-text">Invalid email. Please enter a valid email.</spam>
+                    <spam id="email_error_msg" class="red-text">Invalid email. Please enter a valid email.</spam>
                     <button id="login-button" type="button" class="login-button">Click to login</button>
                 </p>
                 <p id="email_"><b class="green-v">&#10004;</b>
@@ -60,7 +60,7 @@
                 <div class="form-group" id="pass">
                     <label for="password">Password</label>
                     <div style="position: relative;">
-                        <input  type="password" id="password" placeholder="example: Aa12345@" name="password"
+                        <input type="password" id="password" placeholder="example: Aa12345@" name="password"
                             
                             aria-checked="false" disabled>
                         <img src="./img/eye.gif" alt="" id="eyeicon">
@@ -69,7 +69,7 @@
                     <div style="position: relative;">
                         <label for="password2">Confirm Password</label>
                         <div style="position: relative;">
-                            <input  type="password" id="password2" placeholder="example: Aa12345@"
+                            <input type="password" id="password2" placeholder="example: Aa12345@"
                                 name="password" aria-checked="false" disabled>
                             <img src="./img/eye.gif" alt="" id="eyeicon2">
                         </div>
@@ -91,7 +91,7 @@
             <p id="phone_">valid number.</p>
             <p>
                 <label for="id_number_input">ID Number:</label>
-                <input  type="text" placeholder="ID Number..." name="id_number" id="id_number_input"
+                <input type="text" placeholder="ID Number..." name="id_number" id="id_number_input"
                      minlength="9" maxlength="9">
             </p>
             <p id="id_number_error">Invalid ID number. Please enter a valid ID
@@ -100,12 +100,12 @@
 
             <label for="credit_card">Credit Card Number:</label>
             <div class="card-input-wrapper">
-                <input  type="text" class="card-input" id="credit_card" placeholder="Credit Card Number..."
+                <input type="text" class="card-input" id="credit_card" placeholder="Credit Card Number..."
                      maxlength="16" minlength="16" name="credit_card">
                 <div class="extra-inputs">
-                    <input  type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" 
+                    <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" 
                         maxlength="5" minlength="5" required>
-                    <input  type="text" id="cvv" name="cvv" placeholder="CVV"  maxlength="3"
+                    <input type="text" id="cvv" name="cvv" placeholder="CVV"  maxlength="3"
                         minlength="3" required>
                 </div>
             </div>
@@ -115,7 +115,7 @@
 
             <p>
                 <label for="birthday">Birthday:</label>
-                <input  type="date" id="birthday" name="birthday">
+                <input type="date" id="birthday" name="birthday">
             </p>
         </div>
         <div class="button-container">
@@ -128,13 +128,12 @@
         <div class="step-indicator-container">
             <span class="step"></span>
             <span class="step"></span>
+            <span class="step"></span> 
         </div>
     </form>
 
 
-
-    <script src="js/registration.js"></script>
-    <script src="js/registration_events.js"></script>
+    <script type="module" src="js/registration_main.js"></script>
 </body>
 
 </html>

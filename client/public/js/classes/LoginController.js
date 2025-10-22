@@ -1,9 +1,9 @@
 
 import * as Utils from '../utils/utils.js';
 import * as AuthService from '../services/authService.js';
-import { FormValidator } from './FormValidator.js';
-import { WebAuthnController } from './WebAuthnController.js';
-import { UIHandler } from './UIHandler.js';
+import { FormValidator } from './LoginFormValidator.js';
+import { WebAuthnController } from './LoginWebAuthnController.js';
+import { UIHandler } from './LoginUIHandler.js';
 
 export class LoginController {
     // --- State ---
