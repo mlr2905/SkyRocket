@@ -59,7 +59,7 @@ export class WebAuthnController {
 
     async handleRegisterBiometric(email) {
         if (!email) {
-            Utils.showMessage(this.#messageElement, 'יש להזין אימייל או להירשם תחילה', 'error');
+            Utils.showMessage(this.#messageElement, 'You must enter an email or register first', 'error');
             return null;
         }
 
@@ -71,7 +71,7 @@ export class WebAuthnController {
 
             const publicKeyOptions = {
                 challenge: challenge,
-                rp: { name: "מערכת האימות הביומטרי שלך", id: window.location.hostname },
+                rp: { name: "Your biometric authentication system", id: window.location.hostname },
                 user: { id: new TextEncoder().encode(email), name: email, displayName: email },
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
                 authenticatorSelection: { authenticatorAttachment: "platform", requireResidentKey: false, userVerification: "required" },
@@ -81,7 +81,7 @@ export class WebAuthnController {
 
             const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
             
-            Utils.updateRegistrationAlert('שולח נתונים לשרת...');
+            Utils.updateRegistrationAlert('Sending data to server...');
 
             const credentialID = Utils.bufferToBase64(credential.rawId);
             const clientDataJSON = Utils.bufferToBase64(credential.response.clientDataJSON);
@@ -109,7 +109,7 @@ export class WebAuthnController {
 
     async handleLoginBiometric(email) {
         if (!email) {
-            Utils.showMessage(this.#messageElement, 'יש להזין אימייל', 'error');
+            Utils.showMessage(this.#messageElement, 'You must enter an email.', 'error');
             return { success: false };
         }
 
@@ -142,14 +142,14 @@ export class WebAuthnController {
             const data = await AuthService.loginBiometricAPI(assertionId, email, authenticatorData, clientDataJSON, signature);
 
             if (!data.e || data.e === 'no') {
-                Utils.showMessage(this.#messageElement, 'התחברת בהצלחה עם אמצעי זיהוי ביומטרי!', 'success');
+                Utils.showMessage(this.#messageElement, 'You have successfully logged in with biometric identification!', 'success');
                 return { success: true, jwt: data.jwt, redirectUrl: data.redirectUrl, message: 'Login successful!' };
             } else {
                 return { success: false, message: data.error };
             }
         } catch (error) {
-            console.error('שגיאה בהתחברות עם אמצעי זיהוי ביומטרי:', error);
-            Utils.showMessage(this.#messageElement, 'אירעה שגיאה בתהליך ההתחברות: ' + error.message, 'error');
+            console.error('Error connecting with biometric identification:', error);
+            Utils.showMessage(this.#messageElement, 'An error occurred during the login process: ' + error.message, 'error');
             return { success: false, message: error.message };
         }
     }

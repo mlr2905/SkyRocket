@@ -280,9 +280,8 @@ export class RegistrationValidator {
     }
 
     /**
-     * פונקציה כללית לבדיקת שדות פשוטים (שם פרטי, משפחה, CVV, יום הולדת)
-     * @param {HTMLElement} input - אלמנט הקלט
-     * @returns {boolean} - האם השדה תקין (לא ריק)
+     * @param {HTMLElement} input 
+     * @returns {boolean} 
      */
     validateSimpleInput(input) {
         if (input.value.trim() !== "") {

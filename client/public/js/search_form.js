@@ -16,20 +16,16 @@
         fetch('https://skyrocket.onrender.com/activation')
             .then(response => {
                 if (response.status === 404 || response.status === 500) {
-                    // אם חזר סטטוס 404 או 500, הצג את כפתור ההתחברות והסתר את כפתור החשבון
                     document.getElementById('login-button').style.display = 'block';
                 } else if (response.status === 200) {
-                    // אם חזר סטטוס 200, הצג את כפתור החשבון והסתר את כפתור ההתחברות
                     document.getElementById('logout-button').style.display = 'block';
                 }
             })
             .catch(error => {
-                console.error('בעיה בביצוע בקשת HTTP:', error);
-                // טיפול בשגיאות כאן, לדוגמה יכול להיות הצגת הודעת שגיאה או פעולה נוספת
+                console.error('Problem executing request HTTP:', error);
             });
     }
 
-    // קריאה לפונקציה ברגע שהדף נטען
     checkActivationStatus();
 
     function handleInputChange() {
@@ -67,7 +63,7 @@
     const subtractButton = document.getElementById('button-subtract');
 
     function update(action) {
-        event.preventDefault(); // מונע את ההתנהגות הרגילה של הטופס
+        event.preventDefault(); 
 
         if (action === 'add') currentNumber++;
         else if (action === 'subtract') currentNumber--;
@@ -252,14 +248,12 @@
                             let item = createAutocompleteItem(flight);
                             let text = item.dataset.text;
 
-                            // בדיקה האם הטקסט של הפריט כבר קיים במערך הפריטים שנוספו
                             if (!addedItems[text]) {
                                 toList.appendChild(item);
-                                addedItems[text] = true; // סימון שהפריט נוסף למערך
+                                addedItems[text] = true; 
                             }
                         });
 
-                        // מחיקת כל המידע ב-addedItems לאחר סיום הלולאה
                         addedItems = {};
 
                     });
@@ -295,9 +289,6 @@
                 }
             }, 300);
         });
-
-
-
 
         document.getElementById('from').addEventListener('focus', function () {
             displayAllFlights();
@@ -524,9 +515,6 @@
             div1.style.display = 'block'
         }
 
-
-
-        // הוסף את ה id למערך או בצורה אחרת לפי הצורך
         console.log(`Flight ID ${id} has been added to selection.`);
         flight
     }
