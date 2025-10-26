@@ -318,7 +318,7 @@
 
 #pass,
 #password {
-    display: block; /* נשאר כפי שהיה ב-HTML, למרות ש-block הוא ברירת מחדל */
+    display: block;
 }
 
 /* כללי צבע */
