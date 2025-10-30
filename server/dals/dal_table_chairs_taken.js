@@ -104,16 +104,17 @@ async function get_all_chairs_by_flight(id) {
     logger.info(`Retrieving all chair assignments for flight ID: ${id}`)
     
     try {
-        const chairs_taken = await connectedKnex.raw(`SELECT id,flight_id,char_id,passenger_id,user_id
-FROM 
-    public.chairs_taken
-WHERE 
-    flight_id = ${id}`)
-        
-        const chairsCount = chairs_taken.rows ? chairs_taken.rows.length : 0
+        // --- שינוי ---
+        // שימוש ב-Knex בצורה בטוחה (Parameterized Query)
+        const chairs_taken = await connectedKnex('chairs_taken')
+            .select('id', 'flight_id', 'char_id', 'passenger_id', 'user_id')
+            .where('flight_id', id);
+        // --- סוף שינוי ---
+
+        const chairsCount = chairs_taken ? chairs_taken.length : 0
         logger.debug(`Retrieved ${chairsCount} chair assignments for flight ${id}`)
         
-        return chairs_taken.rows
+        return chairs_taken // מחזיר ישירות את המערך
     } catch (error) {
         logger.error(`Error retrieving chair assignments for flight ${id}:`, error)
         throw error

@@ -34,9 +34,17 @@ router.post('/customers', usersController.createCustomer);
 
 router.put('/customers/:id', usersController.updateCustomer);
 
+router.get('/flights/search', usersController.getFilteredFlights);
+
+router.get('/countries/origins', usersController.getAllOriginCountries);
+
+router.get('/countries/destinations', usersController.getDestinationsFromOrigin);
+
 router.get('/flights', usersController.get_all_flights);
 
 router.get('/flights/:id', usersController.getFlightById);
+
+router.post('/chairs', usersController.createChairAssignment);
 
 router.post('/tickets', usersController.createTicket);
 

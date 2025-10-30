@@ -6,7 +6,7 @@ export class WebAuthnController {
     #messageElement;
     #emailInput;
     #isWebAuthnSupported = false;
-    #credentialID = null; // Private state for this controller
+    #credentialID; // Private state for this controller
 
     constructor(elements, initialCredentialID) {
         this.#biometricStatus = elements.biometricStatus;
@@ -60,7 +60,7 @@ export class WebAuthnController {
     async handleRegisterBiometric(email) {
         if (!email) {
             Utils.showMessage(this.#messageElement, 'You must enter an email or register first', 'error');
-            return null;
+            return ;
         }
 
         Utils.showRegistrationAlert();
@@ -97,13 +97,13 @@ export class WebAuthnController {
                 return credentialID; // Return new ID to LoginController
             } else {
                 Utils.showMessage(this.#messageElement, 'Error in biometric registration: ' + (data.error || 'An error occurred'), 'error');
-                return null;
+                return ;
             }
         } catch (error) {
             console.error('Error in biometric identification registration:', error);
             Utils.hideRegistrationAlert();
             Utils.showMessage(this.#messageElement, 'An error occurred: ' + error.message, 'error');
-            return null;
+            return ;
         }
     }
 

@@ -7,10 +7,10 @@ import { UIHandler } from './LoginUIHandler.js';
 
 export class LoginController {
     // --- State ---
-    #storedEmail = null;
-    #storedCredentialID = null;
-    #authCodeInterval = null;
-    #resendTimerInterval = null;
+    #storedEmail;
+    #storedCredentialID;
+    #authCodeInterval ;
+    #resendTimerInterval;
 
     // --- DOM Elements ---
     #emailInput;
@@ -92,7 +92,7 @@ export class LoginController {
         
         this.#loadingIcon.style.display = 'none';
         if (this.#storedEmail) {
-            this.#emailInput.value = this.#storedEmail;
+            // this.#emailInput.value = this.#storedEmail;
             this.#validator.validateEmail(); // Use validator to update UI
         }
     }

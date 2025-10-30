@@ -97,7 +97,101 @@ async function new_flight(new_flight) {
         throw error
     }
 }
+// פונקציה חדשה להוספה ל-dal_table_flights.js
+async function get_destinations_from_origin(origin_id) {
+    logger.info(`Retrieving all unique destinations from origin ID: ${origin_id}`);
+    try {
+        const destinations = await connectedKnex('flights')
+            // בחר ID ושם ייחודיים
+            .distinct('flights.destination_country_id as id', 'dest_countries.country_name as name')
+            // בצע צירוף (join) לטבלת המדינות כדי לקבל את שם היעד
+            .join('countries as dest_countries', 'flights.destination_country_id', 'dest_countries.id')
+            // סנן לפי מדינת המוצא שנבחרה
+            .where('flights.origin_country_id', origin_id)
+            .orderBy('name', 'ASC'); // מיין לפי שם
+        
+        logger.debug(`Found ${destinations.length} unique destinations for origin ${origin_id}`);
+        // הפונקציה תחזיר מערך של אובייקטים, למשל:
+        // [{ id: 10, name: "Greece" }, { id: 12, name: "Italy" }]
+        return destinations;
+    } catch (error) {
+        logger.error(`Error retrieving destinations for origin ${origin_id}:`, error);
+        throw error;
+    }
+}
+// פונקציה חדשה להוספה ל-dal_table_flights.js
+async function get_all_origin_countries() {
+    logger.info('Retrieving all unique origin countries from flights');
+    try {
+        const countries = await connectedKnex('flights')
+            // בחר רק ID ושם ייחודיים
+            .distinct('flights.origin_country_id as id', 'origin_countries.country_name as name')
+            // בצע צירוף (join) לטבלת המדינות כדי לקבל את השם
+            .join('countries as origin_countries', 'flights.origin_country_id', 'origin_countries.id')
+            .orderBy('name', 'ASC'); // מיין לפי שם
+        
+        logger.debug(`Found ${countries.length} unique origin countries`);
+        // הפונקציה תחזיר מערך של אובייקטים, למשל:
+        // [{ id: 5, name: "Israel" }, { id: 10, name: "Greece" }]
+        return countries;
+    } catch (error) {
+        logger.error('Error retrieving origin countries:', error);
+        throw error;
+    }
+}
+async function get_filtered_flights(filters = {}) {
+    const { origin_country_id, destination_country_id, date } = filters;
 
+    logger.info('Retrieving filtered flights');
+    logger.debug(`Filter parameters: ${JSON.stringify(filters)}`);
+
+    try {
+        let query = connectedKnex('flights')
+            .leftJoin('airlines', 'airlines.id', 'flights.airline_id')
+            .leftJoin('countries as origin_countries', 'origin_countries.id', 'flights.origin_country_id')
+            .leftJoin('countries as destination_countries', 'destination_countries.id', 'flights.destination_country_id')
+            .leftJoin('planes', 'planes.id', 'flights.plane_id')
+            .select('flights.*', 'airlines.name as airline_name', 'origin_countries.country_name as origin_country_name', 
+                    'destination_countries.country_name as destination_country_name', 'planes.seat as Total_tickets');
+
+        // 1. סינון לפי מדינת מוצא
+        if (origin_country_id) {
+            query.where('flights.origin_country_id', origin_country_id);
+        }
+
+        // 2. סינון לפי מדינת יעד
+        if (destination_country_id) {
+            query.where('flights.destination_country_id', destination_country_id);
+        }
+
+        // 3. סינון לפי תאריך (הלוגיקה שביקשת)
+        if (date) {
+            // מקרה א': המשתמש בחר תאריך ספציפי
+            // אנו משווים רק את התאריך (ללא השעה) של הטיסה
+            // שימוש ב-whereRaw בטוח מפני SQL Injection כאשר משתמשים ב-'?'
+            query.whereRaw('flights.departure_time::date = ?', [date]);
+        } else {
+            // מקרה ב': המשתמש לא בחר תאריך
+            // הצג אוטומטית טיסות מהיום והלאה ("תאריך קרוב")
+            query.whereRaw('flights.departure_time::date >= CURRENT_DATE');
+        }
+        
+        // --- סוף סינונים ---
+
+        // מיון התוצאות - תמיד נציג את הטיסות הקרובות ביותר קודם
+        query.orderBy('flights.departure_time', 'ASC');
+
+        // בצע את השאילתה
+        const flights = await query;
+
+        logger.debug(`Found ${flights.length} flights matching criteria`);
+        return flights;
+
+    } catch (error) {
+        logger.error('Error retrieving filtered flights:', error);
+        throw error; // זרוק את השגיאה כדי שהקוד שקרא לפונקציה יטפל בה
+    }
+}
 async function get_by_id(id) {
     logger.debug(`Looking up flight by ID: ${id}`)
     
@@ -276,5 +370,8 @@ module.exports = {
     delete_all, 
     get_by_flight_code, 
     set_id, 
-    get_flight_by_airline_id_test 
+    get_flight_by_airline_id_test,
+    get_filtered_flights,
+    get_all_origin_countries,
+    get_destinations_from_origin
 }

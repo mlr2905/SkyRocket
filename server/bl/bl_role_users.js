@@ -810,6 +810,71 @@ async function get_all_flights() {
     throw error
   }
 }
+/**
+ * Gets all unique origin countries that have flights.
+ * @returns {Promise<Array<{id: number, name: string}>>}
+ */
+async function get_all_origin_countries() {
+  logger.info('Processing request for all origin countries in BL');
+  try {
+    // קריאה ישירה ל-DAL (מיובא כ-dal_5)
+    const countries = await dal_5.get_all_origin_countries();
+    logger.info(`BL: Retrieved ${countries.length} origin countries`);
+    return countries;
+  } catch (error) {
+    logger.error('Error in BL processing origin countries:', error);
+    throw error; // זרוק את השגיאה חזרה ל-Controller
+  }
+}
+
+/**
+ * Gets all unique destination countries from a specific origin.
+ * @param {number} originId - The ID of the origin country
+ * @returns {Promise<Array<{id: number, name: string}>>}
+ */
+async function get_destinations_from_origin(originId) {
+  logger.info(`Processing request for destinations from origin ID: ${originId} in BL`);
+  
+  // ולידציה בסיסית
+  if (!originId || isNaN(parseInt(originId))) {
+      logger.warn('BL: Invalid or missing originId for destinations lookup');
+      return []; // החזר מערך ריק אם אין ID
+  }
+
+  try {
+    // קריאה ל-DAL עם ה-ID
+    const destinations = await dal_5.get_destinations_from_origin(originId);
+    logger.info(`BL: Retrieved ${destinations.length} destinations for origin ${originId}`);
+    return destinations;
+  } catch (error) {
+    logger.error(`Error in BL processing destinations for origin ${originId}:`, error);
+    throw error; // זרוק את השגיאה חזרה ל-Controller
+  }
+}
+
+/**
+ * Gets filtered flights based on provided criteria.
+ * This function is called by the route and it calls the DAL.
+ * @param {object} filters - Filter criteria (e.g., { origin_country_id, destination_country_id, date })
+ * @returns {Promise<Array>} List of filtered flights.
+ */
+async function get_filtered_flights(filters) {
+  logger.info('Processing filtered flights request in BL');
+  logger.debug(`Filter criteria: ${JSON.stringify(filters)}`);
+  
+  try {
+    // קריאה לפונקציית ה-DAL שיצרנו בקובץ dal_table_flights (מיובא כ-dal_5)
+    const flights = await dal_5.get_filtered_flights(filters);
+    
+    logger.info(`BL: Retrieved ${flights.length} filtered flights successfully`);
+    return flights;
+
+  } catch (error) {
+    logger.error('Error in BL processing filtered flights:', error);
+    // זורק את השגיאה חזרה כדי שה-Route (Controller) יטפל בה וישלח תגובת שגיאה
+    throw error; 
+  }
+}
 
 /**
  * Gets flight by ID.
@@ -850,6 +915,27 @@ async function get_all_chairs_by_flight(id) {
   } catch (error) {
     logger.error(`Error getting chairs for flight ${id}:`, error)
     throw error
+  }
+}
+/**
+ * Creates a new chair assignment (links a passenger to a seat on a flight).
+ * @param {object} chairData - { flight_id, char_id, passenger_id, user_id }
+ * @returns {Promise<object>} Created chair assignment.
+ */
+async function new_chair_assignment(chairData) {
+  logger.info('Processing new chair assignment in BL');
+  
+  // כאן אפשר להוסיף ולידציות, למשל לבדוק שהכיסא לא תפוס כבר
+  // (כרגע נסתמך על מסד הנתונים שיטפל בזה)
+  
+  try {
+    // קריאה ל-DAL (מיובא כ-dal_6)
+    const assignment = await dal_6.new_chair(chairData);
+    logger.info(`BL: Successfully assigned chair ${chairData.char_id} to passenger ${chairData.passenger_id} on flight ${chairData.flight_id}`);
+    return assignment;
+  } catch (error) {
+    logger.error('Error in BL processing chair assignment:', error);
+    throw error; 
   }
 }
 
@@ -985,5 +1071,10 @@ module.exports = {
   get_by_id_ticket,
   get_by_id_passenger,
   new_passenger,
-  get_qr
+  get_qr,
+  get_filtered_flights,
+  get_filtered_flights,
+  get_all_origin_countries,
+  get_destinations_from_origin,
+  new_chair_assignment 
 }

@@ -579,6 +579,81 @@ exports.updateCustomer = async (req, res) => {
     }
 };
 
+/**
+ * Controller function to get all unique origin countries.
+ * (GET /api/countries/origins)
+ */
+exports.getAllOriginCountries = async (req, res) => {
+    logger.info('Received request for all origin countries');
+    try {
+        // 1. קרא לפונקציית ה-BL הרלוונטית
+        const countries = await bl.get_all_origin_countries();
+
+        // 2. שלח את התוצאות חזרה לפרונט-אנד
+        logger.info(`Successfully retrieved ${countries.length} origin countries`);
+        res.status(200).json(countries);
+
+    } catch (error) {
+        // 3. טיפול בשגיאות
+        logger.error('Error in getAllOriginCountries controller:', error);
+        res.status(500).json({ "error": "The request failed, try again later", "details": error.message });
+    }
+};
+
+/**
+ * Controller function to get all unique destination countries from a specific origin.
+ * (GET /api/countries/destinations?origin_id=5)
+ */
+exports.getDestinationsFromOrigin = async (req, res) => {
+    logger.info('Received request for destinations from origin');
+    try {
+        // 1. קרא את ה-ID מה-query parameters
+        const originId = req.query.origin_id;
+        logger.debug(`Fetching destinations for origin ID: ${originId}`);
+        
+        // 2. קרא לפונקציית ה-BL הרלוונטית
+        // ה-BL כבר מכיל ולידציה למקרה ש-originId חסר
+        const destinations = await bl.get_destinations_from_origin(originId);
+
+        // 3. שלח את התוצאות חזרה לפרונט-אנד
+        logger.info(`Successfully retrieved ${destinations.length} destinations for origin ${originId}`);
+        res.status(200).json(destinations);
+
+    } catch (error) {
+        // 4. טיפול בשגיאות
+        logger.error('Error in getDestinationsFromOrigin controller:', error);
+        res.status(500).json({ "error": "The request failed, try again later", "details": error.message });
+    }
+};
+
+exports.getFilteredFlights = async (req, res) => {
+    logger.info('Received request for filtered flights');
+    
+    try {
+        // 1. קרא את הפילטרים מה-query parameters של הבקשה
+        // אלה נשלחים מהפרונט-אנד (למשל: /api/flights/search?date=2025-11-20&origin_country_id=1)
+        const filters = {
+            origin_country_id: req.query.origin_country_id,
+            destination_country_id: req.query.destination_country_id,
+            date: req.query.date // 'date' יכיל את התאריך או יהיה undefined אם לא נשלח
+        };
+        
+        logger.debug(`Filtering flights with criteria: ${JSON.stringify(filters)}`);
+
+        // 2. קרא לפונקציית ה-BL (שיצרנו קודם) והעבר לה את הפילטרים
+        const flights = await bl.get_filtered_flights(filters);
+
+        // 3. שלח את התוצאות המסוננות חזרה לפרונט-אנד
+        logger.info(`Successfully retrieved ${flights.length} filtered flights`);
+        res.status(200).json(flights);
+
+    } catch (error) {
+        // 4. במקרה של שגיאה ב-BL או ב-DAL, שלח תגובת שגיאה
+        logger.error('Error in getFilteredFlights controller:', error);
+        res.status(500).json({ "error": "The request failed, try again later", "details": error.message });
+    }
+};
+
 exports.get_all_flights = async (req, res) => {
     logger.info('Retrieving all flights')
     try {
@@ -610,6 +685,34 @@ exports.getFlightById = async (req, res) => {
     catch (error) {
         logger.error(`Error fetching flight ID: ${flight_id}:`, error)
         res.status(503).json({ "error": `The request failed, try again later` })
+    }
+};
+
+/**
+ * Controller function to create a new chair assignment.
+ * (POST /api/chairs)
+ */
+exports.createChairAssignment = async (req, res) => {
+    logger.info('Received request to create chair assignment');
+    try {
+        const chairData = req.body; // { flight_id, char_id, passenger_id, user_id }
+        logger.debug(`Chair assignment data: ${JSON.stringify(chairData)}`);
+
+        // כאן חסר user_id, ייתכן שתצטרך לשלוף אותו מה-JWT
+        // לדוגמה: chairData.user_id = req.user.id; 
+
+        const assignment = await bl.new_chair_assignment(chairData);
+
+        res.status(201).json(assignment);
+
+    } catch (error) {
+        logger.error('Error in createChairAssignment controller:', error);
+        // בדוק אם זו שגיאת "כיסא תפוס"
+        if (error.code === '23505') { // קוד שגיאה של PostgreSQL ל-Unique Violation
+             res.status(409).json({ "error": "This seat is already taken." });
+        } else {
+             res.status(500).json({ "error": "The request failed, try again later", "details": error.message });
+        }
     }
 };
 

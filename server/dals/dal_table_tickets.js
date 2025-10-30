@@ -7,21 +7,39 @@ logger.info('Tickets DAL module initialized')
 
 // ---------------User functions only and admin---------------
 
-async function new_ticket(new_t) {
-    logger.info('Creating new ticket')
-    logger.debug(`New ticket data: ${JSON.stringify(new_t)}`)
-    
+
+async function new_ticket(newTicketData) { // שנה את שם הפרמטר כדי שיהיה ברור
+    logger.info('Creating new ticket');
+    // הדפס את הנתונים שהתקבלו (כבר אמורים להכיל את השדות החדשים)
+    logger.debug(`New ticket data received: ${JSON.stringify(newTicketData)}`);
+
+    // --- **השינוי:** בנה אובייקט להכנסה עם שמות העמודות הנכונים ---
+    const dataToInsert = {
+        flight_id: newTicketData.flight_id,
+        customer_id: newTicketData.customer_id,
+        passenger_id: newTicketData.passenger_id,
+        user_id: newTicketData.user_id,
+        outbound_chair_id: newTicketData.outbound_chair_id, // שם עמודה חדש
+        return_chair_id: newTicketData.return_chair_id     // שם עמודה חדש (יכול להיות null)
+        // שים לב: ticket_code כנראה נוצר אוטומטית ב-DB
+    };
+    logger.debug(`Data to insert into tickets table: ${JSON.stringify(dataToInsert)}`);
+    // --- סוף השינוי ---
+
     try {
-        const result = await connectedKnex('tickets').insert(new_t).returning('*');
-        logger.info(`Ticket created successfully with ID: ${result[0].id}`)
-        logger.debug(`Created ticket details: ${JSON.stringify(result[0])}`)
-        return result[0]
+        // השתמש באובייקט המסונן dataToInsert
+        const result = await connectedKnex('tickets')
+                             .insert(dataToInsert) // <<< הכנס את האובייקט החדש
+                             .returning('*');
+        logger.info(`Ticket created successfully with ID: ${result[0].id}`);
+        logger.debug(`Created ticket details: ${JSON.stringify(result[0])}`);
+        return result[0];
     } catch (error) {
-        logger.error('Error creating new ticket:', error)
-        throw error
+        // הלוג הזה ידפיס את השגיאה המדויקת ממסד הנתונים
+        logger.error('Error creating new ticket in DAL:', error);
+        throw error; // זרוק את השגיאה כדי שה-Controller יתפוס אותה
     }
 }
-
 async function get_by_id(id) {
     logger.debug(`Looking up ticket by ID: ${id}`)
     

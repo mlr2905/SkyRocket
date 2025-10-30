@@ -1,6 +1,5 @@
 // File: searchService.js
 import * as C from '../utils/constants.js';
-import { DatabaseService } from '../classes/DatabaseService.js';
 
 /**
  * Checks login status against the server.
@@ -8,89 +7,98 @@ import { DatabaseService } from '../classes/DatabaseService.js';
 export async function checkActivationStatus() {
     try {
         const response = await fetch(C.API_ACTIVATION_URL);
-        return response.status; // e.g., 200, 404, 500
+        return response.status;
     } catch (error) {
         console.error('Problem executing activation check:', error);
-        return 500; // Assume error if fetch fails
+        return 500;
     }
 }
 
 /**
- * Fetches flights from the server and stores them in IndexedDB.
- * Returns the list of unique origin countries.
- * @returns {Promise<Array<string> | undefined>}
+ * Fetches the list of unique origin countries from the server.
+ * @returns {Promise<Array<{id: number, name: string}>>}
  */
-export async function fetchAndStoreFlights() {
-    console.log("Attempting to fetch flights from:", C.API_FLIGHTS_URL);
+export async function fetchOriginCountries() {
+    console.log("Fetching origin countries from:", C.API_ORIGIN_COUNTRIES_URL);
     try {
-        const response = await fetch(C.API_FLIGHTS_URL);
-         if (!response.ok) {
+        const response = await fetch(C.API_ORIGIN_COUNTRIES_URL);
+        if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Fetched flights data:", data);
-
-
-        if (!Array.isArray(data)) {
-             console.error("Fetched data is not an array:", data);
-             throw new Error("Invalid data format received from server.");
-        }
-
-
-        const dbService = new DatabaseService();
-        await dbService.clearAndStoreFlights(data);
-
-        // Store unique countries in localStorage
-        const countrySet = new Set(data.map(flight => flight.origin_country_name).filter(Boolean)); // Filter out undefined/null
-        const uniqueCountries = Array.from(countrySet);
-        localStorage.setItem('uniqueCountries', JSON.stringify(uniqueCountries));
-        console.log("Stored unique countries:", uniqueCountries);
-        
-        return uniqueCountries;
+        localStorage.setItem('uniqueCountries', JSON.stringify(data));
+        console.log("Stored unique countries:", data);
+        return data;
     } catch (error) {
-        console.error("Error fetching or storing flight data:", error);
-        // Consider returning an empty array or undefined, or re-throwing
-        return undefined;
+        console.error("Error fetching origin countries:", error);
+        return [];
     }
 }
 
 /**
- * Retrieves unique countries from localStorage.
- * @returns {Array<string>}
+ * Fetches possible destinations from a specific origin ID.
+ * @param {number} originId
+ * @returns {Promise<Array<{id: number, name: string}>>}
  */
-export function getUniqueCountries() {
-    const countries = localStorage.getItem('uniqueCountries');
-    return countries ? JSON.parse(countries) : [];
+export async function fetchDestinations(originId) {
+    if (!originId) return [];
+    const url = `${C.API_DESTINATIONS_URL}?origin_id=${originId}`;
+    console.log("Fetching destinations from:", url);
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(`Error fetching destinations for origin ${originId}:`, error);
+        return [];
+    }
 }
 
 /**
- * Retrieves all flights from the local database.
+ * Searches for flights directly from the server based on filters.
+ * @param {object} filters
  * @returns {Promise<Array<Object>>}
  */
-export async function getAllFlightsFromDB() {
-    const dbService = new DatabaseService();
-    return dbService.getAllFlights();
+export async function searchFlights(filters) {
+    const url = new URL(C.API_FLIGHTS_SEARCH_URL, window.location.origin);
+    url.searchParams.append('origin_country_id', filters.origin_id);
+    url.searchParams.append('destination_country_id', filters.destination_id);
+    if (filters.date) {
+        url.searchParams.append('date', filters.date);
+    }
+    console.log("Searching flights from server:", url.toString());
+    try {
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error searching flights:", error);
+        return [];
+    }
 }
 
 /**
- * Searches for outbound flights in the local database.
- * @param {string} from
- * @param {string} to
- * @returns {Promise<Array<Object>>}
+ * Fetches the list of taken seats for a specific flight.
+ * @param {number} flightId
+ * @returns {Promise<Array<{char_id: number}>>} Expects an array of objects with the numeric seat ID.
  */
-export async function getOutboundFlights(from, to) {
-    const dbService = new DatabaseService();
-    return dbService.getFilteredFlights(from, to);
-}
-
-/**
- * Searches for return flights in the local database.
- * @param {string} from - The original departure country
- * @param {string} to - The original destination country
- * @returns {Promise<Array<Object>>}
- */
-export async function getReturnFlights(from, to) {
-    const dbService = new DatabaseService();
-    // Note the reversed order for return flights
-    return dbService.getFilteredFlights(to, from);
+export async function getTakenSeats(flightId) {
+    // Uses the existing C.API_CHAIRS_URL, assumes the GET /chairs/:id endpoint works
+    const url = `${C.API_CHAIRS_URL}/${flightId}`;
+    console.log("Fetching taken seats from:", url);
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        // Expects response like [{ char_id: 1 }, { char_id: 15 }, ...]
+        return await response.json();
+    } catch (error) {
+        console.error(`Error fetching taken seats for flight ${flightId}:`, error);
+        return [];
+    }
 }
