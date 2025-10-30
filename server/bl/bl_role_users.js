@@ -594,6 +594,46 @@ async function valid_email(email) {
     return { "e": "yes", "err": error.message || "Network error" }
   }
 }
+async function get_by_id_user(id) {
+    logger.info(`Looking up user by id: ${id}`);
+    let url = `https://spring-postgresql.onrender.com/${id}`;
+    
+    try {
+        logger.debug(`Making user search request to external service`);
+        const response = await fetch(url);
+console.log("BL",1,response);
+console.log("BL",2,response.ok);
+
+
+        // --- 1. הבדיקה הנכונה ---
+        // 'response.ok' בודק אם הסטטוס הוא 2xx (כלומר 200)
+        if (!response.ok) {
+            // זה יטפל ב-404, 500, וכל שגיאה אחרת מהשרת
+            logger.warn(`No user found for id: ${id} (Status: ${response.status})`);
+            return false;
+        }
+        
+        // --- 2. קריאת ה-JSON ---
+        // רק אם התגובה תקינה (200), נפענח את גוף התשובה
+        const data = await response.json(); 
+        console.log("BL",3,data);
+
+
+        // עכשיו 'data' הוא אובייקט Client תקין
+        logger.info(`User found for id: ${id}`);
+        logger.debug(`Auth provider for ${id}: ${data.authProvider}`);
+        
+        // --- 3. החזרת הערך ---
+        return data; 
+
+    } catch (error) {
+        // שגיאה זו תקרה רק אם יש בעיית רשת (כמו אין אינטרנט)
+        // או אם ה-JSON שהוחזר היה לא תקין
+        logger.error(`Error fetching user data for ${id}:`, error);
+        return { error: error.message || "Network error" };
+    }
+}
+
 
 /**
  * Gets user by email from authentication service.
@@ -1063,6 +1103,7 @@ module.exports = {
   get_by_email_user,
   get_by_id_flights,
   get_all_flights,
+  get_by_id_user,
   update_user,
   delete_account,
   new_customer,
