@@ -410,32 +410,42 @@ exports.usersSearch = async (req, res) => {
 };
 
 exports.usersById = async (req, res) => {
-    const user_id = parseInt(req.params.id)
-    logger.info(`User details request for ID: ${user_id}`)
+    // 1. התיקון: הסרת parseInt. ה-ID נשאר מחרוזת
+    const user_id = req.params.id; 
+    logger.info(`User details request for ID: ${user_id}`);
+console.log("CON", 1,user_id);
 
     try {
-        const user = await bl.get_by_id_user('id', user_id)
-        if (user) {
+        // 2. התיקון: קריאה לפונקציה שתיקנו קודם, עם פרמטר אחד בלבד
+        const user = await bl.get_by_id_user(user_id);
+console.log("CON",2,user);
+
+        // --- שאר הלוגיקה נראית תקינה ---
+
+        if (user) { // 'user' הוא authProvider או 'Postponed'
             if (user !== 'Postponed') {
-                logger.info(`User details found for ID: ${user_id}`)
-                res.status(200).json(user)
+                logger.info(`User details found for ID: ${user_id}`);
+                res.status(200).json(user); // מחזיר 200 עם ה-authProvider
+            } else {
+                // זה המקרה של 403 (Access Denied)
+                logger.warn(`Access denied for user ID: ${user_id}`);
+                res.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${user_id}'` });
             }
-            else {
-                logger.warn(`Access denied for user ID: ${user_id}`)
-                res.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${user_id}'` })
-            }
+        } 
+        else if (user === false) { // הפונקציה החזירה 'false' (לא נמצא)
+            logger.warn(`User not found for ID: ${user_id}`);
+            res.status(404).json({ "error": `cannot find user with id '${user_id}'` });
         }
-        else {
-            logger.warn(`User not found for ID: ${user_id}`)
-            res.status(404).json({ "error": `cannot find user with id '${user_id}'` })
+        else { // הפונקציה החזירה אובייקט שגיאה (למשל מה-catch הפנימי)
+            logger.error(`Error returned from BL for user ID: ${user_id}:`, user.error);
+            res.status(503).json({ "error": `The request failed: '${user.error}'` });
         }
-    }
-    catch (error) {
-        logger.error(`Error fetching user ID: ${user_id}:`, error)
-        res.status(503).json({ "error": `The request failed, try again later '${error}'` })
+    } 
+    catch (error) { // שגיאה כללית ברמת ה-Controller
+        logger.error(`Error fetching user ID: ${user_id}:`, error);
+        res.status(503).json({ "error": `The request failed, try again later '${error}'` });
     }
 };
-
 
 exports.createUser = async (req, res) => {
     const new_user = req.body
