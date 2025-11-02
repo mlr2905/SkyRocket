@@ -170,23 +170,33 @@ export class LoginController {
     }
 
     // --- Main Auth Handlers ---
-    async #handleBiometricLogin() {
-        const email = this.#emailInput.value || this.userEmail;
-        const result = await this.#webAuthn.handleLoginBiometric(email);
+   async #handleBiometricLogin() {
+    const email = this.#emailInput.value || this.userEmail;
+    const result = await this.#webAuthn.handleLoginBiometric(email);
 
-        if (result.success) {
-            localStorage.setItem('sky-jwt', JSON.stringify(result.jwt));
-            this.#successMessage.textContent = result.message;
-            window.location.href = result.redirectUrl;
-        } else if (result.newCredentialID) {
-            // Registration was triggered and successful, update ID
-            this.credentialID = result.newCredentialID;
-        } else if (result.message) {
-            // Login failed
-            this.#successMessage.textContent = result.message;
-        }
+    if (result.success) {
+        // ================== תחילת שינוי ==================
+
+        // שמירת הטוקן
+        localStorage.setItem('sky-jwt', JSON.stringify(result.jwt));
+        
+        // שמירת פרטי המשתמש (בהנחה שהשרת מחזיר אותם בתוך האובייקט result.user)
+        localStorage.setItem('userId', result.user.id);
+        localStorage.setItem('userEmail', result.user.email);
+        
+        // =================== סוף שינוי ===================
+
+        this.#successMessage.textContent = result.message;
+        window.location.href = result.redirectUrl;
+
+    } else if (result.newCredentialID) {
+        // Registration was triggered and successful, update ID
+        this.credentialID = result.newCredentialID;
+    } else if (result.message) {
+        // Login failed
+        this.#successMessage.textContent = result.message;
     }
-
+}
     async #handleAuthCode(event) {
         event.preventDefault();
         const email = this.#emailInput.value;

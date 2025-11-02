@@ -455,10 +455,10 @@ async function login(email, password, ip, userAgent) {
     }
 
     // החזרת נתוני המשתמש במקרה של הצלחה
-    logger.info(`Login successful for ${email}`)
+    logger.info(` ${email}`)
 logger.info(`Login successful for user: ${JSON.stringify(user, null, 2)}`);
 
-    return { e: "no", jwt: user.jwt };
+    return { e: "no", jwt: user.jwt,id:user.id,email:user.email };
 
   } catch (error) {
     logger.error(`Login error for ${email}:`, error)

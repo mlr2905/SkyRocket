@@ -343,8 +343,19 @@ exports.login = async (req, res) => {
             // בניית הקישור לדף Swagger
             const redirectUrl = 'https://skyrocket.onrender.com/search_form.html';
 
-            // הפניה לדף Swagger בתגובה המוחזרת
-            res.status(200).json({ "e": datas.e, "jwt": datas.jwt, "redirectUrl": redirectUrl });
+            const userDetails = {
+                id: datas.id,
+                email: datas.email
+            };
+
+            // הפניה לדף Swagger בתגובה המוחזרת, כולל פרטי המשתמש
+            res.status(200).json({
+                "e": datas.e,
+                "jwt": datas.jwt,
+                "redirectUrl": redirectUrl,
+                "user": userDetails // <-- הוספנו את פרטי המשתמש כאן
+            });
+
         }
     } catch (error) {
         // טיפול בשגיאה במידה והיא מתרחשת
@@ -411,14 +422,14 @@ exports.usersSearch = async (req, res) => {
 
 exports.usersById = async (req, res) => {
     // 1. התיקון: הסרת parseInt. ה-ID נשאר מחרוזת
-    const user_id = req.params.id; 
+    const user_id = req.params.id;
     logger.info(`User details request for ID: ${user_id}`);
-console.log("CON", 1,user_id);
+    console.log("CON", 1, user_id);
 
     try {
         // 2. התיקון: קריאה לפונקציה שתיקנו קודם, עם פרמטר אחד בלבד
         const user = await bl.get_by_id_user(user_id);
-console.log("CON",2,user);
+        console.log("CON", 2, user);
 
         // --- שאר הלוגיקה נראית תקינה ---
 
@@ -431,7 +442,7 @@ console.log("CON",2,user);
                 logger.warn(`Access denied for user ID: ${user_id}`);
                 res.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${user_id}'` });
             }
-        } 
+        }
         else if (user === false) { // הפונקציה החזירה 'false' (לא נמצא)
             logger.warn(`User not found for ID: ${user_id}`);
             res.status(404).json({ "error": `cannot find user with id '${user_id}'` });
@@ -440,7 +451,7 @@ console.log("CON",2,user);
             logger.error(`Error returned from BL for user ID: ${user_id}:`, user.error);
             res.status(503).json({ "error": `The request failed: '${user.error}'` });
         }
-    } 
+    }
     catch (error) { // שגיאה כללית ברמת ה-Controller
         logger.error(`Error fetching user ID: ${user_id}:`, error);
         res.status(503).json({ "error": `The request failed, try again later '${error}'` });
@@ -620,7 +631,7 @@ exports.getDestinationsFromOrigin = async (req, res) => {
         // 1. קרא את ה-ID מה-query parameters
         const originId = req.query.origin_id;
         logger.debug(`Fetching destinations for origin ID: ${originId}`);
-        
+
         // 2. קרא לפונקציית ה-BL הרלוונטית
         // ה-BL כבר מכיל ולידציה למקרה ש-originId חסר
         const destinations = await bl.get_destinations_from_origin(originId);
@@ -638,7 +649,7 @@ exports.getDestinationsFromOrigin = async (req, res) => {
 
 exports.getFilteredFlights = async (req, res) => {
     logger.info('Received request for filtered flights');
-    
+
     try {
         // 1. קרא את הפילטרים מה-query parameters של הבקשה
         // אלה נשלחים מהפרונט-אנד (למשל: /api/flights/search?date=2025-11-20&origin_country_id=1)
@@ -647,7 +658,7 @@ exports.getFilteredFlights = async (req, res) => {
             destination_country_id: req.query.destination_country_id,
             date: req.query.date // 'date' יכיל את התאריך או יהיה undefined אם לא נשלח
         };
-        
+
         logger.debug(`Filtering flights with criteria: ${JSON.stringify(filters)}`);
 
         // 2. קרא לפונקציית ה-BL (שיצרנו קודם) והעבר לה את הפילטרים
@@ -719,9 +730,9 @@ exports.createChairAssignment = async (req, res) => {
         logger.error('Error in createChairAssignment controller:', error);
         // בדוק אם זו שגיאת "כיסא תפוס"
         if (error.code === '23505') { // קוד שגיאה של PostgreSQL ל-Unique Violation
-             res.status(409).json({ "error": "This seat is already taken." });
+            res.status(409).json({ "error": "This seat is already taken." });
         } else {
-             res.status(500).json({ "error": "The request failed, try again later", "details": error.message });
+            res.status(500).json({ "error": "The request failed, try again later", "details": error.message });
         }
     }
 };
