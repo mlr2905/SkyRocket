@@ -4,7 +4,6 @@ import * as AuthService from '../services/authService.js';
 import { FormValidator } from './LoginFormValidator.js';
 import { WebAuthnController } from './LoginWebAuthnController.js';
 import { UIHandler } from './LoginUIHandler.js';
-import { log } from 'winston';
 
 export class LoginController {
     // --- State ---
@@ -177,13 +176,12 @@ export class LoginController {
 
     if (result.success) {
         // ================== תחילת שינוי ==================
+console.log("DDDDDD",JSON.stringify(result));
 
         // שמירת הטוקן
         localStorage.setItem('sky-jwt', JSON.stringify(result.jwt));
         
         // שמירת פרטי המשתמש (בהנחה שהשרת מחזיר אותם בתוך האובייקט result.user)
-        console.log("aaaa",result);
-        
         localStorage.setItem('userId', result.id);
         localStorage.setItem('userEmail', result.email);
         
