@@ -353,7 +353,8 @@ exports.login = async (req, res) => {
                 "e": datas.e,
                 "jwt": datas.jwt,
                 "redirectUrl": redirectUrl,
-                "user": userDetails // <-- הוספנו את פרטי המשתמש כאן
+                "id": datas.id,
+                 "email": datas.email // <-- הוספנו את פרטי המשתמש כאן
             });
 
         }
