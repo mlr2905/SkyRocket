@@ -260,7 +260,7 @@ exports.validation = async (req, res) => {
             const redirectUrl = 'https://skyrocket.onrender.com/search_form.html';
 
             // הפניה לדף Swagger בתגובה המוחזרת
-            res.status(200).json({ datas, redirectUrl });
+            res.status(200).json({ datas, redirectUrl, });
         }
     }
     catch (error) {

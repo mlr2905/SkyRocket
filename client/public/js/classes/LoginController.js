@@ -9,7 +9,7 @@ export class LoginController {
     // --- State ---
     #storedEmail;
     #storedCredentialID;
-    #authCodeInterval ;
+    #authCodeInterval;
     #resendTimerInterval;
 
     // --- DOM Elements ---
@@ -41,7 +41,7 @@ export class LoginController {
     constructor() {
         this.#selectDOMElements();
         this.#loadStateFromStorage();
-        
+
         // --- Instantiate Sub-Controllers ---
         this.#validator = new FormValidator({
             emailInput: this.#emailInput,
@@ -82,14 +82,14 @@ export class LoginController {
         // אנו שומרים את הפונקציות הכבולות בשדות הפרטיים החדשים
         this.#boundHandleConnect = this.#handleConnect.bind(this);
         this.#boundHandleValidation = this.#handleValidation.bind(this);
-        
+
         // Set handlers in UIHandler
         // אנו מעבירים את הפונקציות שכבר קשורות
         this.#ui.setConnectHandler(this.#boundHandleConnect);
         this.#ui.setValidationHandler(this.#boundHandleValidation);
 
         this.#attachEventListeners();
-        
+
         this.#loadingIcon.style.display = 'none';
         if (this.#storedEmail) {
             // this.#emailInput.value = this.#storedEmail;
@@ -101,16 +101,16 @@ export class LoginController {
     get userEmail() {
         return this.#storedEmail;
     }
-    
+
     set userEmail(email) {
         this.#storedEmail = email;
         localStorage.setItem('userEmail', email);
     }
-    
+
     get credentialID() {
         return this.#storedCredentialID;
     }
-    
+
     set credentialID(id) {
         this.#storedCredentialID = id;
         localStorage.setItem('credentialID', id);
@@ -157,9 +157,9 @@ export class LoginController {
         // --- Auth Action Listeners (handled by this Controller) ---
         this.#verificationButton.addEventListener('click', (e) => this.#handleAuthCode(e));
         this.#resendButton.addEventListener('click', (e) => this.#handleAuthCode(e));
-        
+
         // Connect button is set up by UIHandler's constructor/methods
-        this.#connectButton.removeAttribute('onclick'); 
+        this.#connectButton.removeAttribute('onclick');
         // (התיקון כאן) השתמש בפונקציה הכבולה מראש
         this.#connectButton.addEventListener('click', this.#boundHandleConnect); // Default handler
 
@@ -170,45 +170,45 @@ export class LoginController {
     }
 
     // --- Main Auth Handlers ---
-   async #handleBiometricLogin() {
-    const email = this.#emailInput.value || this.userEmail;
-    const result = await this.#webAuthn.handleLoginBiometric(email);
+    async #handleBiometricLogin() {
+        const email = this.#emailInput.value || this.userEmail;
+        const result = await this.#webAuthn.handleLoginBiometric(email);
 
-    if (result.success) {
-        // ================== תחילת שינוי ==================
-console.log("DDDDDD",JSON.stringify(result));
+        if (result.success) {
+            // ================== תחילת שינוי ==================
+            console.log("DDDDDD", JSON.stringify(result));
 
-        // שמירת הטוקן
-        localStorage.setItem('sky-jwt', JSON.stringify(result.jwt));
-        
-        // שמירת פרטי המשתמש (בהנחה שהשרת מחזיר אותם בתוך האובייקט result.user)
-        localStorage.setItem('userId', result.id);
-        localStorage.setItem('userEmail', result.email);
-        
-        // =================== סוף שינוי ===================
+            // שמירת הטוקן
+            localStorage.setItem('sky-jwt', JSON.stringify(result.jwt));
 
-        this.#successMessage.textContent = result.message;
-        window.location.href = result.redirectUrl;
+            // שמירת פרטי המשתמש (בהנחה שהשרת מחזיר אותם בתוך האובייקט result.user)
+            localStorage.setItem('userId', result.id);
+            localStorage.setItem('userEmail', result.email);
 
-    } else if (result.newCredentialID) {
-        // Registration was triggered and successful, update ID
-        this.credentialID = result.newCredentialID;
-    } else if (result.message) {
-        // Login failed
-        this.#successMessage.textContent = result.message;
+            // =================== סוף שינוי ===================
+
+            this.#successMessage.textContent = result.message;
+            window.location.href = result.redirectUrl;
+
+        } else if (result.newCredentialID) {
+            // Registration was triggered and successful, update ID
+            this.credentialID = result.newCredentialID;
+        } else if (result.message) {
+            // Login failed
+            this.#successMessage.textContent = result.message;
+        }
     }
-}
     async #handleAuthCode(event) {
         event.preventDefault();
         const email = this.#emailInput.value;
-        
+
         this.#loadingIcon.style.display = 'block';
         this.#resendButton.style.display = 'none';
 
         try {
             const data = await AuthService.sendAuthCodeAPI(email);
             this.#loadingIcon.style.display = 'none';
-            
+
             if (data.datas.code === "succeeded") {
                 this.#verificationButton.style.display = 'none';
                 this.#codeInputContainer.style.display = 'block';
@@ -241,7 +241,7 @@ console.log("DDDDDD",JSON.stringify(result));
             this.#successMessage.textContent = `Try again! Error: ${error.message}`;
         }
     }
-    
+
     async #handleValidation(event) {
         event.preventDefault();
         const email = this.#emailInput.value;
@@ -251,9 +251,21 @@ console.log("DDDDDD",JSON.stringify(result));
         try {
             const data = await AuthService.validateCodeAPI(email, code);
             this.#loadingIcon.style.display = 'none';
-            
+
             if (data.redirectUrl) {
+                // ================== תחילת שינוי ==================
+
+                // שמירת הטוקן
                 localStorage.setItem('sky', JSON.stringify(data.datas.jwt));
+
+                // שמירת פרטי המשתמש
+                localStorage.setItem('userId-1', data.datas.id);
+                localStorage.setItem('userEmail-1', data.datas.email);
+                 localStorage.setItem('userId-2', data.id);
+                localStorage.setItem('userEmail-2', data.email);
+
+                // =================== סוף שינוי ===================
+
                 this.#successMessage.textContent = data.datas.code;
                 window.location.href = data.redirectUrl;
             } else {
@@ -265,7 +277,7 @@ console.log("DDDDDD",JSON.stringify(result));
             console.error('Error:', error);
         }
     }
-    
+
     async #handleConnect(event) {
         event.preventDefault();
         const email = this.#emailInput.value;
