@@ -331,13 +331,13 @@ exports.login = async (req, res) => {
             res.status(409).json({ "e": "yes", "error": datas.error });
         } else {
             // הגדרת טוקן ושליחתו בעוגיה
-            // logger.info(`Login successful for ${email}`)
-            // const token = datas.jwt;
-            // res.cookie('sky', token, {
-            //     httpOnly: true,
-            //     sameSite: 'strict',
-            //     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות במילישניות
-            // });
+            logger.info(`Login successful for ${email}`)
+            const token = datas.jwt;
+            res.cookie('sky', token, {
+                httpOnly: true,
+                sameSite: 'strict',
+                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3 שעות ו־15 דקות במילישניות
+            });
             logger.debug(`JWT cookie set for ${email}`)
 
             // בניית הקישור לדף Swagger
