@@ -456,6 +456,8 @@ async function login(email, password, ip, userAgent) {
 
     // החזרת נתוני המשתמש במקרה של הצלחה
     logger.info(`Login successful for ${email}`)
+    logger.info(`Login successful for ${user}`)
+
     return { e: "no", jwt: user.jwt };
 
   } catch (error) {
