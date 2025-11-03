@@ -150,15 +150,27 @@ export class LoginController {
         this.#verificationButton.addEventListener('click', (e) => this.#handleAuthCode(e));
         this.#resendButton.addEventListener('click', (e) => this.#handleAuthCode(e));
 
-        // Connect button is set up by UIHandler's constructor/methods
         this.#connectButton.removeAttribute('onclick');
 
         this.#connectButton.addEventListener('click', this.#boundHandleConnect); // Default handler
 
         // --- Other Auth ---
-        this.#gitButton.addEventListener('click', AuthService.redirectToGit);
-        this.#googleButton.parentElement.addEventListener('click', AuthService.redirectToGoogle);
-        this.#biometricButton.addEventListener('click', () => this.#handleBiometricLogin());
+
+        this.#gitButton.addEventListener('click', (event) => {
+            event.preventDefault(); 
+            AuthService.redirectToGit();
+        });
+
+        this.#googleButton.parentElement.addEventListener('click', (event) => {
+            event.preventDefault(); 
+            AuthService.redirectToGoogle();
+        });
+
+        this.#biometricButton.addEventListener('click', (event) => {
+            event.preventDefault(); 
+            this.#handleBiometricLogin();
+        });
+    
     }
 
     // --- Main Auth Handlers ---
