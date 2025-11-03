@@ -10,7 +10,7 @@ export class LoginController {
     #storedCredentialID;
     #authCodeInterval;
     #resendTimerInterval;
-
+    #loginForm;
     #emailInput;
     #passwordInput;
     #verificationCodeInput;
@@ -113,6 +113,7 @@ export class LoginController {
 
     // --- Setup ---
     #selectDOMElements() {
+        this.#loginForm = document.getElementById('login-form');
         this.#emailInput = document.getElementById('email');
         this.#passwordInput = document.getElementById('password');
         this.#verificationCodeInput = document.getElementById('verification-code');
@@ -136,7 +137,11 @@ export class LoginController {
     }
 
     #attachEventListeners() {
+        this.#loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+        });
         // --- Validation Listeners (delegated to Validator) ---
+        
         this.#emailInput.addEventListener('input', () => this.#validator.validateEmail());
         this.#passwordInput.addEventListener('input', () => this.#validator.validatePassword());
         this.#verificationCodeInput.addEventListener('input', () => this.#validator.validateCode());
