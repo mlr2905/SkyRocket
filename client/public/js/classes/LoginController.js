@@ -6,13 +6,11 @@ import { WebAuthnController } from './LoginWebAuthnController.js';
 import { UIHandler } from './LoginUIHandler.js';
 
 export class LoginController {
-    // --- State ---
     #storedEmail;
     #storedCredentialID;
     #authCodeInterval;
     #resendTimerInterval;
 
-    // --- DOM Elements ---
     #emailInput;
     #passwordInput;
     #verificationCodeInput;
@@ -29,12 +27,10 @@ export class LoginController {
     #verificationButton;
     #codeInputContainer;
 
-    // --- Sub-Controllers ---
     #validator;
     #webAuthn;
     #ui;
 
-    // --- Bound Handlers (התיקון כאן) ---
     #boundHandleConnect;
     #boundHandleValidation;
 
@@ -78,13 +74,10 @@ export class LoginController {
             passContainer: document.getElementById('pass_')
         });
 
-        // --- Bind Handlers (התיקון כאן) ---
-        // אנו שומרים את הפונקציות הכבולות בשדות הפרטיים החדשים
+       
         this.#boundHandleConnect = this.#handleConnect.bind(this);
         this.#boundHandleValidation = this.#handleValidation.bind(this);
 
-        // Set handlers in UIHandler
-        // אנו מעבירים את הפונקציות שכבר קשורות
         this.#ui.setConnectHandler(this.#boundHandleConnect);
         this.#ui.setValidationHandler(this.#boundHandleValidation);
 
@@ -92,8 +85,7 @@ export class LoginController {
 
         this.#loadingIcon.style.display = 'none';
         if (this.#storedEmail) {
-            // this.#emailInput.value = this.#storedEmail;
-            this.#validator.validateEmail(); // Use validator to update UI
+            this.#validator.validateEmail(); 
         }
     }
 
@@ -160,7 +152,7 @@ export class LoginController {
 
         // Connect button is set up by UIHandler's constructor/methods
         this.#connectButton.removeAttribute('onclick');
-        // (התיקון כאן) השתמש בפונקציה הכבולה מראש
+
         this.#connectButton.addEventListener('click', this.#boundHandleConnect); // Default handler
 
         // --- Other Auth ---
@@ -175,26 +167,18 @@ export class LoginController {
         const result = await this.#webAuthn.handleLoginBiometric(email);
 
         if (result.success) {
-            // ================== תחילת שינוי ==================
             console.log("DDDDDD", JSON.stringify(result));
 
-            // שמירת הטוקן
-            localStorage.setItem('sky-jwt', JSON.stringify(result.jwt));
-
-            // שמירת פרטי המשתמש (בהנחה שהשרת מחזיר אותם בתוך האובייקט result.user)
+            localStorage.setItem('sky-jwt-1', JSON.stringify(result.jwt));
             localStorage.setItem('userId', result.id);
             localStorage.setItem('userEmail', result.email);
-
-            // =================== סוף שינוי ===================
 
             this.#successMessage.textContent = result.message;
             window.location.href = result.redirectUrl;
 
         } else if (result.newCredentialID) {
-            // Registration was triggered and successful, update ID
             this.credentialID = result.newCredentialID;
         } else if (result.message) {
-            // Login failed
             this.#successMessage.textContent = result.message;
         }
     }
@@ -253,18 +237,11 @@ export class LoginController {
             this.#loadingIcon.style.display = 'none';
 
             if (data.redirectUrl) {
-                // ================== תחילת שינוי ==================
 
-                // שמירת הטוקן
-                localStorage.setItem('sky', JSON.stringify(data.datas.jwt));
+                localStorage.setItem('sky-jwt-2', JSON.stringify(data.datas.jwt));
+                localStorage.setItem('userId', data.datas.id);
+                localStorage.setItem('userEmail', data.datas.email);
 
-                // שמירת פרטי המשתמש
-                localStorage.setItem('userId-1', data.datas.id);
-                localStorage.setItem('userEmail-1', data.datas.email);
-                 localStorage.setItem('userId-2', data.id);
-                localStorage.setItem('userEmail-2', data.email);
-
-                // =================== סוף שינוי ===================
 
                 this.#successMessage.textContent = data.datas.code;
                 window.location.href = data.redirectUrl;
@@ -289,8 +266,8 @@ export class LoginController {
             this.#loadingIcon.style.display = 'none';
 
             if (data.e === "no") {
-                localStorage.setItem('sky', JSON.stringify(data.jwt));
-                this.userEmail = email; // Save email on successful login
+                localStorage.setItem('sky-jwt-3', JSON.stringify(data.jwt));
+                this.userEmail = email; 
                 this.#successMessage.textContent = 'Login successful!';
                 window.location.href = data.redirectUrl;
             } else {
