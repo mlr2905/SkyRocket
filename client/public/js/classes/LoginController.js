@@ -157,18 +157,21 @@ export class LoginController {
         // --- Other Auth ---
 
         this.#gitButton.addEventListener('click', (event) => {
-            event.preventDefault(); 
             AuthService.redirectToGit();
+            event.preventDefault(); 
+
         });
 
         this.#googleButton.parentElement.addEventListener('click', (event) => {
-            event.preventDefault(); 
             AuthService.redirectToGoogle();
+            event.preventDefault(); 
+
         });
 
         this.#biometricButton.addEventListener('click', (event) => {
-            event.preventDefault(); 
             this.#handleBiometricLogin();
+            redirectToGoogle
+            event.preventDefault();
         });
     
     }
