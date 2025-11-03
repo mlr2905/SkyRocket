@@ -169,7 +169,7 @@ export class LoginController {
         if (result.success) {
             console.log("DDDDDD", JSON.stringify(result));
 
-            localStorage.setItem('sky-jwt-1', JSON.stringify(result.jwt));
+            localStorage.setItem('sky', JSON.stringify(result.jwt));
             localStorage.setItem('userId', result.id);
             localStorage.setItem('userEmail', result.email);
 
@@ -238,7 +238,7 @@ export class LoginController {
 
             if (data.redirectUrl) {
 
-                localStorage.setItem('sky-jwt-2', JSON.stringify(data.datas.jwt));
+                localStorage.setItem('sky', JSON.stringify(data.datas.jwt));
                 localStorage.setItem('userId', data.datas.id);
                 localStorage.setItem('userEmail', data.datas.email);
 
@@ -266,7 +266,7 @@ export class LoginController {
             this.#loadingIcon.style.display = 'none';
 
             if (data.e === "no") {
-                localStorage.setItem('sky-jwt-3', JSON.stringify(data.jwt));
+                localStorage.setItem('sky', JSON.stringify(data.jwt));
                 this.userEmail = email; 
                 this.#successMessage.textContent = 'Login successful!';
                 window.location.href = data.redirectUrl;
