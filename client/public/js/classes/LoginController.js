@@ -118,8 +118,8 @@ export class LoginController {
         this.#verificationCodeInput = document.getElementById('verification-code');
         this.#connectButton = document.getElementById('connect-button');
         this.#gitButton = document.getElementById('git');
-        this.#biometricButton = document.getElementById('face');
-        this.#googleButton = document.querySelector('button img[alt="google logo"]');
+        this.#biometricButton = document.getElementById('fingerprint');
+        this.#googleButton = document.getElementById('google');;
         this.#messageElement = document.getElementById('Message');
         this.#successMessage = document.getElementById('success-message');
         this.#loadingIcon = document.getElementById('loading-icon');
