@@ -248,8 +248,11 @@ export class SearchController {
 
     #selectDOMElements() {
         this.#elements = {
+            
             logoutButton: document.getElementById('logout-button'),
             loginButton: document.getElementById('login-button'),
+            signupButton: document.getElementById('signup-button'), 
+            personalAreaDropdown: document.getElementById('personal-area-dropdown'),
             searchFormGroup: document.getElementById('search-form-group'),
             flightContainer: document.querySelector('.main-container'),
             fromInput: document.getElementById('from'),
@@ -317,6 +320,8 @@ export class SearchController {
 
     #attachEventListeners() {
         this.#elements.logoutButton?.addEventListener('click', this.#handleLogout);
+        this.#elements.loginButton?.addEventListener('click', () => {window.location.href = '/login.html';});
+        this.#elements.signupButton?.addEventListener('click', () => {window.location.href = '/registration.html';});
         this.#elements.subtractButton?.addEventListener('click', (e) => this.#handlePassengerChange(e, 'subtract'));
         this.#elements.addButton?.addEventListener('click', (e) => this.#handlePassengerChange(e, 'add'));
         this.#elements.searchButton?.addEventListener('click', this.#handleSearch);

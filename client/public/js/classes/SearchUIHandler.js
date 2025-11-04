@@ -293,16 +293,26 @@ export class SearchUIHandler {
     }
 
 
-    /**
+   /**
      * Updates the display of login/logout buttons.
      * @param {boolean} isLoggedIn
      */
     updateLoginStatus(isLoggedIn) {
+        // הגדרת משתנים לקריאות טובה יותר
+        const displayLoggedIn = isLoggedIn ? 'block' : 'none';
+        const displayLoggedOut = isLoggedIn ? 'none' : 'block';
+
         if (this.#elements.loginButton) {
-            this.#elements.loginButton.style.display = isLoggedIn ? 'none' : 'block';
+            this.#elements.loginButton.style.display = displayLoggedOut;
+        }
+        if (this.#elements.signupButton) { 
+            this.#elements.signupButton.style.display = displayLoggedOut;
         }
         if (this.#elements.logoutButton) {
-            this.#elements.logoutButton.style.display = isLoggedIn ? 'block' : 'none';
+            this.#elements.logoutButton.style.display = displayLoggedIn;
+        }
+        if (this.#elements.personalAreaDropdown) { 
+            this.#elements.personalAreaDropdown.style.display = displayLoggedIn;
         }
     }
 }
