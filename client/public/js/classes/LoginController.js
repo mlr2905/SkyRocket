@@ -163,7 +163,7 @@ export class LoginController {
 
         });
 
-        this.#googleButton.parentElement.addEventListener('click', (event) => {
+        this.#googleButton.addEventListener('click', (event) => {
             event.preventDefault();
             AuthService.redirectToGoogle();
             event.preventDefault(); 
