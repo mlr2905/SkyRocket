@@ -32,8 +32,8 @@ async function new_customer(new_cus) {
     logger.info('Creating new customer')
     // השמט את מספר כרטיס האשראי מהלוג מסיבות אבטחה
     const logSafeData = { ...new_cus }
-    if (logSafeData.credit_card_no) {
-        logSafeData.credit_card_no = `************${logSafeData.credit_card_no.slice(-4)}`
+    if (logSafeData.credit_card) {
+        logSafeData.credit_card = `************${logSafeData.credit_card.slice(-4)}`
     }
     logger.debug(`New customer data: ${JSON.stringify(logSafeData)}`)
     
@@ -42,8 +42,8 @@ async function new_customer(new_cus) {
         
         // השמט את מספר כרטיס האשראי מהלוג גם כאן
         const logSafeResult = { ...result[0] }
-        if (logSafeResult.credit_card_no) {
-            logSafeResult.credit_card_no = `************${logSafeResult.credit_card_no.slice(-4)}`
+        if (logSafeResult.credit_card) {
+            logSafeResult.credit_card = `************${logSafeResult.credit_card.slice(-4)}`
         }
         
         logger.info(`Customer created successfully with ID: ${result[0].id}`)
@@ -63,10 +63,10 @@ async function get_by_id(id) {
             .select(
                 'customers.*',
                 'users.username as user_name',
-                connectedKnex.raw("CONCAT('************', RIGHT(customers.credit_card_no, 4)) AS credit_card_no")
+                connectedKnex.raw("CONCAT('************', RIGHT(customers.credit_card, 4)) AS credit_card")
             )
             .leftJoin('users', 'users.id', '=', 'customers.user_id')
-            .where('customers.id', id)
+            .where('customers.user_id', id)
             .first();
             
         if (customer) {
@@ -87,21 +87,22 @@ async function update_customer(id, updated_customer) {
     
     // השמט את מספר כרטיס האשראי מהלוג מסיבות אבטחה
     const logSafeData = { ...updated_customer }
-    if (logSafeData.credit_card_no) {
-        logSafeData.credit_card_no = `************${logSafeData.credit_card_no.slice(-4)}`
+    if (logSafeData.credit_card) {
+        logSafeData.credit_card = `************${logSafeData.credit_card.slice(-4)}`
     }
     logger.debug(`Update data: ${JSON.stringify(logSafeData)}`)
     
     try {
         // תחילה בדוק אם הלקוח קיים
-        const customer = await connectedKnex('customers').select('id').where('id', id).first()
+        const customer = await connectedKnex('customers').select('id').where('user_id', id).first()
+        console.log("customer",customer);
         
         if (!customer) {
             logger.warn(`Customer update failed - customer not found: ${id}`)
             return null
         }
         
-        const result = await connectedKnex('customers').where('id', id).update(updated_customer)
+        const result = await connectedKnex('customers').where('id', customer.id).update(updated_customer)
         logger.info(`Customer ${id} updated successfully`)
         return updated_customer
     } catch (error) {
@@ -121,8 +122,8 @@ async function get_by_name(name) {
         if (customer) {
             // השמט את מספר כרטיס האשראי מהלוג
             const logSafeCustomer = { ...customer }
-            if (logSafeCustomer.credit_card_no) {
-                logSafeCustomer.credit_card_no = `************${logSafeCustomer.credit_card_no.slice(-4)}`
+            if (logSafeCustomer.credit_card) {
+                logSafeCustomer.credit_card = `************${logSafeCustomer.credit_card.slice(-4)}`
             }
             
             logger.debug(`Customer found by last name: ${name}`)
