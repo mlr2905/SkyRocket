@@ -1,5 +1,6 @@
 // מודולים חיצוניים
 const express = require('express');
+const cookieParser = require('cookie-parser'); 
 const session = require('express-session');
 const moment = require('moment-timezone');
 const path = require('path');
@@ -9,6 +10,7 @@ const passport = require('passport');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const app = express(); 
+app.use(cookieParser());
 
 // מודולים פנימיים
 const logger = require('./logger/my_logger');
