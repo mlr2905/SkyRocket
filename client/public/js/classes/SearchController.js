@@ -248,10 +248,11 @@ export class SearchController {
 
     #selectDOMElements() {
         this.#elements = {
-            
+
             logoutButton: document.getElementById('logout-button'),
             loginButton: document.getElementById('login-button'),
-            signupButton: document.getElementById('signup-button'), 
+            signupButton: document.getElementById('signup-button'),
+            deleteAccountLink: document.getElementById('delete-account-link'),
             personalAreaDropdown: document.getElementById('personal-area-dropdown'),
             searchFormGroup: document.getElementById('search-form-group'),
             flightContainer: document.querySelector('.main-container'),
@@ -293,8 +294,8 @@ export class SearchController {
             const status = await SearchService.checkActivationStatus();
             this.#ui.updateLoginStatus(status === 200);
         } catch (error) {
-             console.error("Failed to check activation status:", error);
-             this.#ui.updateLoginStatus(false);
+            console.error("Failed to check activation status:", error);
+            this.#ui.updateLoginStatus(false);
         }
 
         try {
@@ -305,14 +306,14 @@ export class SearchController {
         }
 
         if (typeof $ === 'function' && typeof $.fn.daterangepicker === 'function') {
-             try {
+            try {
                 $(this.#elements.dateRangeInput).daterangepicker({
                     opens: 'left', singleDatePicker: true, autoUpdateInput: false,
                     locale: { format: "YYYY-MM-DD", cancelLabel: 'Clear' }
                 });
-                $(this.#elements.dateRangeInput).on('apply.daterangepicker', function(ev, picker) { $(this).val(picker.startDate.format('YYYY-MM-DD')); });
-                $(this.#elements.dateRangeInput).on('cancel.daterangepicker', function(ev, picker) { $(this).val(''); });
-            } catch(e) { console.error("Failed to initialize daterangepicker:", e); }
+                $(this.#elements.dateRangeInput).on('apply.daterangepicker', function (ev, picker) { $(this).val(picker.startDate.format('YYYY-MM-DD')); });
+                $(this.#elements.dateRangeInput).on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
+            } catch (e) { console.error("Failed to initialize daterangepicker:", e); }
         } else { console.error('jQuery or daterangepicker plugin not loaded'); }
 
         this.#ui.showLoading(false);
@@ -320,16 +321,17 @@ export class SearchController {
 
     #attachEventListeners() {
         this.#elements.logoutButton?.addEventListener('click', this.#handleLogout);
-        this.#elements.loginButton?.addEventListener('click', () => {window.location.href = '/login.html';});
-        this.#elements.signupButton?.addEventListener('click', () => {window.location.href = '/registration.html';});
+        this.#elements.loginButton?.addEventListener('click', () => { window.location.href = '/login.html'; });
+        this.#elements.signupButton?.addEventListener('click', () => { window.location.href = '/registration.html'; });
+        this.#elements.deleteAccountLink?.addEventListener('click', this.#handleDeleteAccount);
         this.#elements.subtractButton?.addEventListener('click', (e) => this.#handlePassengerChange(e, 'subtract'));
         this.#elements.addButton?.addEventListener('click', (e) => this.#handlePassengerChange(e, 'add'));
         this.#elements.searchButton?.addEventListener('click', this.#handleSearch);
         this.#elements.fromInput?.addEventListener('input', (e) => this.#handleFromInput(e.target.value));
         this.#elements.fromInput?.addEventListener('focus', this.#handleFromFocus);
         document.addEventListener('click', (e) => {
-             if (!this.#elements.fromInput?.contains(e.target) && !this.#elements.fromList?.contains(e.target)) this.#ui.clearAutocomplete(this.#elements.fromList);
-             if (!this.#elements.toInput?.contains(e.target) && !this.#elements.toList?.contains(e.target)) this.#ui.clearAutocomplete(this.#elements.toList);
+            if (!this.#elements.fromInput?.contains(e.target) && !this.#elements.fromList?.contains(e.target)) this.#ui.clearAutocomplete(this.#elements.fromList);
+            if (!this.#elements.toInput?.contains(e.target) && !this.#elements.toList?.contains(e.target)) this.#ui.clearAutocomplete(this.#elements.toList);
         });
         this.#elements.toInput?.addEventListener('input', (e) => this.#handleToInput(e.target.value));
         this.#elements.toInput?.addEventListener('focus', this.#handleToFocus);
@@ -342,6 +344,45 @@ export class SearchController {
 
     // --- Event Handlers ---
     #handleLogout = () => { alert("You have been logged out!"); this.#ui.updateLoginStatus(false); }
+    // פונקציה חדשה לטיפול במחיקת חשבון
+    // פונקציה חדשה לטיפול במחיקת חשבון
+    #handleDeleteAccount = async (event) => {
+        event.preventDefault(); // מנע מהקישור לנווט
+
+        // 1. בקש אישור מהמשתמש (חשוב!)
+        const isConfirmed = confirm("האם אתה בטוח שברצונך למחוק את החשבון? \nפעולה זו היא סופית ולא ניתן לשחזר אותה.");
+
+        if (!isConfirmed) {
+            return; // המשתמש ביטל
+        }
+
+        this.#ui.showLoading(true);
+
+        try {
+            // 2. שלח בקשת DELETE לנתיב החדש שיצרנו
+            const response = await fetch('/role_users/me', {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || 'שגיאה במחיקת החשבון');
+            }
+
+            alert('החשבון נמחק בהצלחה. הנך מועבר לדף הבית.');
+            window.location.href = '/'; 
+
+        } catch (error) {
+                        
+            console.error('Delete account failed:', error.message);
+            
+            alert('מחיקת החשבון נכשלה. אנא פנה לשירות הלקוחות.');
+            
+
+        } finally {
+            this.#ui.showLoading(false);
+        }
+    }
     #handlePassengerChange = (e, action) => { e.preventDefault(); if (action === 'add') this.#state.currentNumber++; else if (action === 'subtract' && this.#state.currentNumber > 1) this.#state.currentNumber--; this.#ui.updatePassengerCount(this.#state.currentNumber); }
     #handleTripTypeChange = (e) => { if (e.target.checked) { this.#state.tripType = e.target.value; console.log("Trip type set to:", this.#state.tripType); } }
 
@@ -355,36 +396,36 @@ export class SearchController {
 
     // --- Search ---
     #handleSearch = async () => {
-         console.log("Search button clicked");
-         this.#ui.toggleSearchView(true); this.#ui.togglePassengerView(false); this.#ui.showLoading(true);
-         const originId = this.#state.selectedOrigin.id; const destId = this.#state.selectedDestination.id;
-         const date = this.#elements.dateRangeInput?.value || null; const tripType = this.#state.tripType;
-         if (!originId || !destId) { alert("Please select origin and destination."); this.#ui.showLoading(false); this.#ui.toggleSearchView(false); return; }
-         try {
+        console.log("Search button clicked");
+        this.#ui.toggleSearchView(true); this.#ui.togglePassengerView(false); this.#ui.showLoading(true);
+        const originId = this.#state.selectedOrigin.id; const destId = this.#state.selectedDestination.id;
+        const date = this.#elements.dateRangeInput?.value || null; const tripType = this.#state.tripType;
+        if (!originId || !destId) { alert("Please select origin and destination."); this.#ui.showLoading(false); this.#ui.toggleSearchView(false); return; }
+        try {
             let outbound = []; let returns = [];
             const outFilters = { origin_id: originId, destination_id: destId, date: date };
-            if (tripType === 'round-trip') { const retFilters = { origin_id: destId, destination_id: originId, date: date }; [outbound, returns] = await Promise.all([SearchService.searchFlights(outFilters), SearchService.searchFlights(retFilters)]); }
+            if (tripType === 'round-trip') { const retFilters = { origin_id: destId, destination_id: originId, date: date };[outbound, returns] = await Promise.all([SearchService.searchFlights(outFilters), SearchService.searchFlights(retFilters)]); }
             else { outbound = await SearchService.searchFlights(outFilters); }
             console.log("Outbound flights:", outbound.length, "Return flights:", returns.length);
             this.#ui.renderFlightCards(this.#elements.outboundContainer, outbound, this.#handleFlightSelect);
             this.#ui.renderFlightCards(this.#elements.returnContainer, returns, (f, c) => this.#handleFlightSelect(f, c, 'return'));
             this.#state.selectedOutboundFlight = null; this.#state.selectedReturnFlight = null; this.#ui.selectedOutboundCard = null; this.#ui.selectedReturnCard = null;
-            if(this.#elements.outboundSection) this.#elements.outboundSection.style.display = 'block'; if(this.#elements.returnSection) this.#elements.returnSection.style.display = 'none';
-         } catch (error) { console.error("Flight search error:", error); } finally { this.#ui.showLoading(false); }
+            if (this.#elements.outboundSection) this.#elements.outboundSection.style.display = 'block'; if (this.#elements.returnSection) this.#elements.returnSection.style.display = 'none';
+        } catch (error) { console.error("Flight search error:", error); } finally { this.#ui.showLoading(false); }
     }
 
     // --- Passenger/Seat Logic ---
     #handleFlightSelect = (flight, card, type = 'outbound') => {
-         console.log(`${type} flight selected: ID ${flight.id}, Plane ID: ${flight.plane_id}`);
-         this.#ui.updateSelectedCardVisuals(card, type);
-         if (type === 'outbound') {
-             this.#state.selectedOutboundFlight = flight;
-             if (this.#state.tripType === 'round-trip') this.#ui.showReturnFlightsSection();
-             else this.#showPassengerDetailsForm();
-         } else {
-             this.#state.selectedReturnFlight = flight;
-             this.#showPassengerDetailsForm();
-         }
+        console.log(`${type} flight selected: ID ${flight.id}, Plane ID: ${flight.plane_id}`);
+        this.#ui.updateSelectedCardVisuals(card, type);
+        if (type === 'outbound') {
+            this.#state.selectedOutboundFlight = flight;
+            if (this.#state.tripType === 'round-trip') this.#ui.showReturnFlightsSection();
+            else this.#showPassengerDetailsForm();
+        } else {
+            this.#state.selectedReturnFlight = flight;
+            this.#showPassengerDetailsForm();
+        }
     }
 
     #showPassengerDetailsForm = () => { console.log("Showing passenger details form for", this.#state.currentNumber); this.#ui.togglePassengerView(true); this.#ui.renderPassengerForms(this.#state.currentNumber, this.#state.tripType); }
@@ -453,7 +494,7 @@ export class SearchController {
         modal.show();
     }
 
-#handleConfirmBooking = async () => {
+    #handleConfirmBooking = async () => {
         console.log("Confirming booking..."); this.#ui.showLoading(true);
         const forms = this.#elements.passengerFormsContainer.querySelectorAll('.passenger-form');
         let dataToSubmit = [];
@@ -476,8 +517,7 @@ export class SearchController {
         console.log("Data collected to submit (seat IDs are from 'seats' table):", dataToSubmit);
 
         try {
-            const customer_id = 1; 
-            const user_id = 1;     
+            const customer_id = 1;
 
             // 2. עיבוד כל נוסע בלולאה
             for (const data of dataToSubmit) {
@@ -485,12 +525,11 @@ export class SearchController {
                 const pRes = await fetch(C.API_PASSENGERS_URL, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                         first_name: data.first_name,
-                         last_name: data.last_name,
-                         passport_number: data.passport_number,
-                         flight_id: this.#state.selectedOutboundFlight.id,
-                         date_of_birth: data.date_of_birth,
-                         user_id: user_id
+                        first_name: data.first_name,
+                        last_name: data.last_name,
+                        passport_number: data.passport_number,
+                        flight_id: this.#state.selectedOutboundFlight.id,
+                        date_of_birth: data.date_of_birth,
                     })
                 });
                 const newPassenger = await pRes.json();
@@ -504,8 +543,8 @@ export class SearchController {
                     body: JSON.stringify({
                         flight_id: this.#state.selectedOutboundFlight.id,
                         char_id: outboundSeatId, // שולחים ID מטבלת seats ל-chairs_taken
-                        passenger_id: passengerId,
-                        user_id: user_id
+                        passenger_id: passengerId
+                        // user_id: user_id
                     })
                 });
                 if (!cOutRes.ok) { const err = await cOutRes.json(); throw new Error(`Outbound seat assignment failed: ${err.error || cOutRes.statusText}`); }
@@ -520,8 +559,8 @@ export class SearchController {
                         body: JSON.stringify({
                             flight_id: this.#state.selectedReturnFlight.id,
                             char_id: returnSeatId, // שולחים ID מטבלת seats ל-chairs_taken
-                            passenger_id: passengerId,
-                            user_id: user_id
+                            passenger_id: passengerId
+                            // user_id: user_id
                         })
                     });
                     if (!cRetRes.ok) { const err = await cRetRes.json(); throw new Error(`Return seat assignment failed: ${err.error || cRetRes.statusText}`); }
@@ -533,13 +572,10 @@ export class SearchController {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         flight_id: this.#state.selectedOutboundFlight.id,
-                        customer_id: customer_id,
+                        // customer_id: customer_id,
                         passenger_id: passengerId,
-                        user_id: user_id,
-                        // --- **השינוי:** שליחת השדות החדשים עם ID מטבלת seats ---
-                        outbound_chair_id: outboundSeatId, // שולח ID מטבלת seats
-                        return_chair_id: returnSeatId     // שולח ID מטבלת seats (או null)
-                        // --- ---
+                        outbound_chair_id: outboundSeatId,
+                        return_chair_id: returnSeatId
                     })
                 });
                 if (!tRes.ok) { const err = await tRes.json(); throw new Error(`Ticket creation failed for passenger ${data.index}: ${err.error || tRes.statusText}`); }
