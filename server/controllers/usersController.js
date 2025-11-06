@@ -131,8 +131,8 @@ exports.loginWebAuthn = async (req, res) => {
                         "e": "no",
                         "code": "login_succeeded",
                         "message": "Authentication successful",
-                        "jwt": token,
-                        "user": result.user || result.data?.user,
+                        // "jwt": token,
+                        // "user": result.user || result.data?.user,
                         "redirectUrl": "https://skyrocket.onrender.com/search_form.html"
                     };
 
@@ -256,10 +256,8 @@ exports.validation = async (req, res) => {
             });
             logger.debug(`JWT cookie set for ${email}`)
 
-            // בניית הקישור לדף Swagger
             const redirectUrl = 'https://skyrocket.onrender.com/search_form.html';
 
-            // הפניה לדף Swagger בתגובה המוחזרת
             res.status(200).json({ datas, redirectUrl, });
         }
     }
@@ -343,18 +341,11 @@ exports.login = async (req, res) => {
             // בניית הקישור לדף Swagger
             const redirectUrl = 'https://skyrocket.onrender.com/search_form.html';
 
-            const userDetails = {
-                id: datas.id,
-                email: datas.email
-            };
-
+          
             // הפניה לדף Swagger בתגובה המוחזרת, כולל פרטי המשתמש
             res.status(200).json({
                 "e": datas.e,
-                "jwt": datas.jwt,
                 "redirectUrl": redirectUrl,
-                "id": datas.id,
-                 "email": datas.email // <-- הוספנו את פרטי המשתמש כאן
             });
 
         }
@@ -396,6 +387,37 @@ exports.signup = async (req, res) => {
         res.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 };
+exports.getMyDetails = async (req, res) => {
+    // ה-Middleware 'protect' כבר רץ ואימת את המשתמש
+    // פרטי המשתמש (מהטוקן) נמצאים ב-req.user
+    console.log("a",req.user);
+    
+    const userIdFromToken = req.user.id; 
+
+    logger.info(`Fetching details for user ID (from token): ${userIdFromToken}`);
+
+    try {
+        // השתמש ב-ID מהטוקן כדי לקרוא את הפרטים המלאים מה-DB
+        const user = await bl.get_by_id_user(userIdFromToken); // שימוש חוזר בפונקציה קיימת
+
+        if (user && user !== 'Postponed' && user !== false) {
+            // שלח חזרה רק את הפרטים הבטוחים (בלי סיסמה וכו')
+            res.status(200).json({
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                mongo_id: user.mongo_id,
+                role_id: user.role_id
+            });
+        } else {
+            logger.warn(`User details not found for ID: ${userIdFromToken}`);
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (error) {
+        logger.error(`Error fetching user details for ID: ${userIdFromToken}:`, error);
+        res.status(503).json({ "error": "Failed to retrieve user details", error });
+    }
+};
 
 exports.usersSearch = async (req, res) => {
     const query = req.query
@@ -422,33 +444,29 @@ exports.usersSearch = async (req, res) => {
 };
 
 exports.usersById = async (req, res) => {
-    // 1. התיקון: הסרת parseInt. ה-ID נשאר מחרוזת
     const user_id = req.params.id;
     logger.info(`User details request for ID: ${user_id}`);
     console.log("CON", 1, user_id);
 
     try {
-        // 2. התיקון: קריאה לפונקציה שתיקנו קודם, עם פרמטר אחד בלבד
         const user = await bl.get_by_id_user(user_id);
         console.log("CON", 2, user);
 
-        // --- שאר הלוגיקה נראית תקינה ---
 
-        if (user) { // 'user' הוא authProvider או 'Postponed'
+        if (user) {
             if (user !== 'Postponed') {
                 logger.info(`User details found for ID: ${user_id}`);
-                res.status(200).json(user); // מחזיר 200 עם ה-authProvider
+                res.status(200).json(user); 
             } else {
-                // זה המקרה של 403 (Access Denied)
                 logger.warn(`Access denied for user ID: ${user_id}`);
                 res.status(403).json({ "error": `Access denied, you do not have permission to access the requested Id '${user_id}'` });
             }
         }
-        else if (user === false) { // הפונקציה החזירה 'false' (לא נמצא)
+        else if (user === false) { 
             logger.warn(`User not found for ID: ${user_id}`);
             res.status(404).json({ "error": `cannot find user with id '${user_id}'` });
         }
-        else { // הפונקציה החזירה אובייקט שגיאה (למשל מה-catch הפנימי)
+        else { 
             logger.error(`Error returned from BL for user ID: ${user_id}:`, user.error);
             res.status(503).json({ "error": `The request failed: '${user.error}'` });
         }
@@ -516,31 +534,43 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-exports.deleteUser = async (req, res) => {
-    const user_id = parseInt(req.params.id)
-    logger.info(`Deleting user with ID: ${user_id}`)
+// פונקציה חדשה למחיקת החשבון האישי של המשתמש המחובר
+exports.deleteMe = async (req, res) => {
+    // 1. קח את ה-mongo_id מהטוקן המאומת (שהגיע מה-Middleware)
+    const mongo_id_from_token = req.user.id; 
+    logger.info(`Attempting self-deletion for user (mongo_id): ${mongo_id_from_token}`);
 
     try {
-        const user = await bl.get_by_id_user(user_id)
-        if (user) {
-            const result = await bl.delete_account(user_id)
-            logger.info(`User ${user_id} deleted successfully`)
-            res.status(204).json({ result })
-        }
-        else {
-            logger.warn(`User deletion failed - user not found: ${user_id}`)
-            res.status(404).json({ "error": `The ID ${user_id} you specified does not exist ` })
+        // 2. מצא את פרטי המשתמש המלאים (כולל ה-ID המספרי)
+        //    אנו משתמשים בפונקציה שכבר קיימת
+        const user = await bl.get_by_id_user(mongo_id_from_token); 
+        
+        if (user && user.id) {
+            const numeric_id = user.id; // זה ה-ID המספרי (למשל 49)
+            logger.debug(`Found numeric ID ${numeric_id} for mongo_id ${mongo_id_from_token}`);
+
+            // 3. בצע את המחיקה באמצעות ה-ID המספרי
+            const result = await bl.delete_account(numeric_id);
+            logger.info(`User ${numeric_id} deleted successfully`);
+            
+            // 4. נקה את עוגיית ההתחברות ושלח תשובה
+            res.clearCookie('sky');
+            res.status(200).json({ message: result }); // שלח 200 OK
+
+        } else {
+            logger.warn(`User self-deletion failed - user not found for mongo_id: ${mongo_id_from_token}`);
+            res.status(404).json({ "error": `User not found` });
         }
     }
     catch (error) {
-        logger.error(`Error deleting user ${user_id}:`, error)
-        res.status(503).json({ "error": `The request failed, try again later` })
+        logger.error(`Error deleting user ${mongo_id_from_token}:`, error);
+        res.status(503).json({ "error": `The request failed, try again later` });
     }
 };
 
 
 exports.customersById = async (req, res) => {
-    const user_id = parseInt(req.params.id)
+  const user_id = parseInt(req.params.id, 10); 
     logger.info(`Customer details request for ID: ${user_id}`)
 
     try {
