@@ -743,21 +743,24 @@ async function delete_account(id) {
  * @param {object} new_cus - Customer details including credit card.
  * @returns {Promise<object|string>} Creation result or error message.
  */
+// בקובץ: bl_role_users.js
+// בפונקציה: new_customer
+
 async function new_customer(new_cus) {
   logger.info(`Creating new customer`)
   
-  // הסתרת פרטי כרטיס אשראי בלוגים
   const logSafeCust = { ...new_cus }
-  if (logSafeCust.credit_card_no) {
-    logSafeCust.credit_card_no = `************${logSafeCust.credit_card_no.slice(-4)}`
+  if (logSafeCust.credit_card) {
+    logSafeCust.credit_card = `************${logSafeCust.credit_card.slice(-4)}`
   }
   logger.debug(`New customer data: ${JSON.stringify(logSafeCust)}`)
   
   try {
     logger.debug(`Validating credit card`)
-    const Credit_check = await dal_4.credit_check(new_cus.credit_card_no)
+    const Credit_check = await dal_4.credit_check(new_cus.credit_card)
     
-    if (!Credit_check) {
+    if (Credit_check) { 
+
       logger.debug(`Credit card validated successfully, creating customer`)
       const new_customer = await dal_4.new_customer(new_cus);
       
@@ -769,8 +772,8 @@ async function new_customer(new_cus) {
         return null
       }
     } else {
-      logger.warn(`Invalid credit card number (last 4 digits: ${new_cus.credit_card_no.slice(-4)})`)
-      return `Invalid credit card number ${logSafeCust.credit_card_no}`;
+      logger.warn(`Invalid credit card number (last 4 digits: ${new_cus.credit_card.slice(-4)})`)
+      return `Invalid credit card number ${logSafeCust.credit_card}`;
     }
   } catch (error) {
     logger.error(`Error creating customer:`, error)
@@ -813,8 +816,8 @@ async function update_customer(id, update) {
   
   // הסתרת פרטי כרטיס אשראי בלוגים
   const logSafeUpdate = { ...update }
-  if (logSafeUpdate.credit_card_no) {
-    logSafeUpdate.credit_card_no = `************${logSafeUpdate.credit_card_no.slice(-4)}`
+  if (logSafeUpdate.credit_card) {
+    logSafeUpdate.credit_card = `************${logSafeUpdate.credit_card.slice(-4)}`
   }
   logger.debug(`Update data: ${JSON.stringify(logSafeUpdate)}`)
   
