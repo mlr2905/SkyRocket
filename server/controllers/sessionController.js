@@ -44,8 +44,8 @@ exports.rootHandler = async (req, res, next) => {
         if (!skyToken) return redirectToLogin(req, res);
 
         const token = skyToken.split('=')[1];
-        const response = await axios.get('https://jwt-node-mongodb.onrender.com/data', {
-            data: { token }
+        const response = await axios.post('https://jwt-node-mongodb.onrender.com/data', {
+            token: token
         });
 
         if (response.data.valid) {
