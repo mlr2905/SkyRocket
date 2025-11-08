@@ -1,9 +1,7 @@
-// קובץ: js/personal-details.js
 
-// הפעלה כאשר ה-DOM נטען
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. בחירת אלמנטים ---
+    // --- 1. Selecting elements ---
     const form = document.getElementById('details-form');
     const fieldset = document.getElementById('form-fieldset');
     const editButton = document.getElementById('edit-button');
@@ -11,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageContainer = document.getElementById('message-container');
     const loadingSpinner = document.getElementById('loading-spinner');
     
-    // קלטות (Inputs)
+    // Inputs
     const emailInput = document.getElementById('email');
     const usernameInput = document.getElementById('username');
     const firstNameInput = document.getElementById('first_name');
@@ -24,23 +22,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const cvvInput = document.getElementById('cvv');
 
     let currentUserId = null; // ID רגיל (ל-PUT ו-POST)
-    
-    // --- שינוי: הוספנו "דגל" לניהול מצב ---
-    let customerExists = false; // נניח שלא קיים עד שנוכיח אחרת
+    let customerExists = false; 
 
-    // --- 2. פונקציה להצגת הודעות ---
+    // --- 2. Function to display messages ---
     function showMessage(message, type = 'danger') {
         messageContainer.textContent = message;
         messageContainer.className = `alert alert-${type}`;
         messageContainer.style.display = 'block';
     }
 
-    // --- 3. פונקציה לטעינת נתוני משתמש ולקוח ---
+    // --- 3. Function to load user and client data ---
     async function fetchUserAndCustomerData() {
         loadingSpinner.style.display = 'block';
         try {
-            // שלב א': קבלת פרטי המשתמש המחובר (מזהה אותו מהעוגייה)
-            const userRes = await fetch('/role_users/me');
+            // Step 1: Get the logged in user information
+            const userRes = await fetch('/role_users/me', {
+                credentials: 'include' 
+            });
             
             if (!userRes.ok) {
                 showMessage('אינך מחובר. הנך מועבר לדף התחברות.', 'warning');
@@ -50,31 +48,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const user = await userRes.json();
             
-            currentUserId = user.id; // שומרים את ה-ID הרגיל (e.g. 49)
+            currentUserId = user.id; 
 
-            // מילוי שדות החשבון (לקריאה בלבד)
+            // Fill in the account fields (read only)
             emailInput.value = user.email || '';
             usernameInput.value = user.username || '';
 
-            // שלב ב': שימוש ב-ID הרגיל עבור בקשת ה-GET
-            const customerRes = await fetch(`/role_users/customers/${currentUserId}`);
+            // Step 2: Using the standard ID for the GET request
+            const customerRes = await fetch(`/role_users/customers/${currentUserId}`, {
+                credentials: 'include' 
+            });
 
             if (customerRes.ok) {
                 const customer = await customerRes.json();
                 
-                // מילוי שדות הלקוח (לעריכה)
+                // Fill in the customer fields (for editing)
                 firstNameInput.value = customer.first_name || '';
                 lastNameInput.value = customer.last_name || '';
                 addressInput.value = customer.address || '';
                 phoneInput.value = customer.phone || '';
                 creditCardDisplay.value = customer.credit_card || 'לא הוזן כרטיס';
                 
-                // --- שינוי: עדכון הדגל ---
                 customerExists = true;
                 
             } else if (customerRes.status === 404) {
-                // --- שינוי: עדכון הדגל ---
-                customerExists = false; // הלקוח לא קיים
+                customerExists = false;
                 showMessage('נראה שזו הפעם הראשונה שלך כאן. אנא מלא את פרטי הלקוח.', 'info');
                 toggleEdit(true); 
             } else {
@@ -89,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 4. פונקציה לפתיחה/נעילת הטופס ---
+    // --- 4. Function to open/lock the form ---
     function toggleEdit(enable = true) {
         fieldset.disabled = !enable;
         if (enable) {
@@ -101,9 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 5. פונקציה לטיפול בשליחת הטופס (עדכון או יצירה) ---
+    // --- 5. Function to handle form submission (update or create) ---
     async function handleFormSubmit(event) {
-        event.preventDefault(); // מניעת רענון דף
+        event.preventDefault(); 
         
         if (!currentUserId) {
             showMessage('שגיאה בזיהוי משתמש, נסה לרענן את הדף.', 'danger');
@@ -113,16 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingSpinner.style.display = 'block';
         messageContainer.style.display = 'none';
 
-        // איסוף נתונים מהטופס
+        
         const dataToSubmit = {
             first_name: firstNameInput.value,
             last_name: lastNameInput.value,
             address: addressInput.value,
             phone: phoneInput.value,
-            user_id: currentUserId // חובה לשלוח את מזהה המשתמש
+            user_id: currentUserId
         };
 
-        // הוספת פרטי כרטיס אשראי רק אם המשתמש הזין אותם
+        // Add credit card details only if the user has entered them
         if (creditCardInput.value) {
             dataToSubmit.credit_card = creditCardInput.value;
         }
@@ -134,23 +132,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // --- שינוי: לוגיקה דינאמית של POST / PUT ---
             let url;
             let method;
 
             if (customerExists) {
-                // אם הלקוח קיים, בצע עדכון (PUT)
-                url = `/role_users/customers/${currentUserId}`; // הנתיב דורש ID רגיל
+                url = `/role_users/customers/${currentUserId}`; 
                 method = 'PUT';
             } else {
-                // אם הלקוח חדש, בצע יצירה (POST)
-                url = `/role_users/customers`; // הנתיב לא דורש ID ב-URL
+                url = `/role_users/customers`; 
                 method = 'POST';
             }
-            // --- סוף שינוי ---
 
             const response = await fetch(url, {
-                method: method, // שימוש במתודה הדינאמית
+                method: method, 
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -164,22 +159,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const result = await response.json();
             
-            // הצלחה
             showMessage('הפרטים נשמרו בהצלחה!', 'success');
-            toggleEdit(false); // נעל בחזרה את הטופס
+            toggleEdit(false); 
             
-            // --- שינוי: אם יצרנו לקוח חדש, נעדכן את הדגל ---
             if (!customerExists) {
                 customerExists = true;
             }
-            // --- סוף שינוי ---
 
-            // נקה שדות תשלום רגישים
+            // Clear sensitive payment fields
             creditCardInput.value = '';
             expiryDateInput.value = '';
             cvvInput.value = '';
             
-            // עדכן את תצוגת הכרטיס אם הוא השתנה
+            // Update the card view if it has changed
             if (result.credit_card) {
                 creditCardDisplay.value = result.credit_card;
             }
@@ -191,10 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 6. חיבור מאזיני אירועים ---
+    // --- 6. Connecting event listeners ---
     editButton.addEventListener('click', () => toggleEdit(true));
     form.addEventListener('submit', handleFormSubmit);
 
-    // --- 7. הפעלה ראשונית ---
+    // --- 7. Initial operation ---
     fetchUserAndCustomerData();
 });
