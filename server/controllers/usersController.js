@@ -337,6 +337,9 @@ exports.login = async (req, res) => {
             console.info("datas3",datas);
             
             const token = datas.jwt;
+            console.info("datas3.jwt",datas.jwt);
+            console.info("datas3.token",token);
+
             res.cookie('sky', token, {
                 httpOnly: true,
                 sameSite: 'strict',
