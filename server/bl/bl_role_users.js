@@ -10,77 +10,77 @@ const logger = require('../logger/my_logger')
 logger.info('Role Users BL module initialized')
 
 async function signupWebAuthn(registrationData) {
-    const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/register';
-    
-    try {
-        // Validate input data
-        const payload = {
-            email: registrationData.body.email,
-            credentialID: registrationData.body.credentialID,
-            publicKey: registrationData.body.publicKey || registrationData.attestationObject,
-            credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
-        };
-        
-        console.log("payload", payload);
-        console.log('Sending registration request to:', API_REGISTER_URL);
+  const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/register';
 
-        // Make the API call
-        const response = await fetch(API_REGISTER_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload),
-        });
+  try {
+    // Validate input data
+    const payload = {
+      email: registrationData.body.email,
+      credentialID: registrationData.body.credentialID,
+      publicKey: registrationData.body.publicKey || registrationData.attestationObject,
+      credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
+    };
 
-        // בדוק את Content-Type לפני פירוש JSON
-        const contentType = response.headers.get('content-type');
-        let result;
+    console.log("payload", payload);
+    console.log('Sending registration request to:', API_REGISTER_URL);
 
-        if (contentType && contentType.includes('application/json')) {
-            result = await response.json();
-        } else {
-            // אם זה לא JSON, קבל את התוכן כטקסט
-            const textResponse = await response.text();
-            console.error('Non-JSON response received:', textResponse.substring(0, 200));
-            
-            throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. This usually means the server is down or the endpoint doesn't exist.`);
-        }
+    // Make the API call
+    const response = await fetch(API_REGISTER_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload),
+    });
 
-        // Check if the response is successful
-        if (!response.ok) {
-            throw new Error(`Registration failed: ${response.status} - ${result.error || response.statusText}`);
-        }
+    // בדוק את Content-Type לפני פירוש JSON
+    const contentType = response.headers.get('content-type');
+    let result;
 
-        // Check server response format
-        if (result.e === 'no' && result.code === 'credential_registered') {
-            return {
-                success: true,
-                data: result,
-                message: 'Access key registered successfully'
-            };
-        } else if (result.e === 'yes') {
-            throw new Error(result.error || 'Registration failed');
-        }
+    if (contentType && contentType.includes('application/json')) {
+      result = await response.json();
+    } else {
+      // אם זה לא JSON, קבל את התוכן כטקסט
+      const textResponse = await response.text();
+      console.error('Non-JSON response received:', textResponse.substring(0, 200));
 
-        // Fallback for unexpected response format
-        return {
-            success: true,
-            data: result,
-            message: 'Registration completed'
-        };
-
-    } catch (error) {
-        console.error('Registration BL Error:', error);
-        
-        // Return structured error response
-        return {
-            success: false,
-            error: error.message,
-            message: 'Registration failed'
-        };
+      throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. This usually means the server is down or the endpoint doesn't exist.`);
     }
+
+    // Check if the response is successful
+    if (!response.ok) {
+      throw new Error(`Registration failed: ${response.status} - ${result.error || response.statusText}`);
+    }
+
+    // Check server response format
+    if (result.e === 'no' && result.code === 'credential_registered') {
+      return {
+        success: true,
+        data: result,
+        message: 'Access key registered successfully'
+      };
+    } else if (result.e === 'yes') {
+      throw new Error(result.error || 'Registration failed');
+    }
+
+    // Fallback for unexpected response format
+    return {
+      success: true,
+      data: result,
+      message: 'Registration completed'
+    };
+
+  } catch (error) {
+    console.error('Registration BL Error:', error);
+
+    // Return structured error response
+    return {
+      success: false,
+      error: error.message,
+      message: 'Registration failed'
+    };
+  }
 }
 
 // async function loginWebAuthn(authData) {
@@ -89,7 +89,7 @@ async function signupWebAuthn(registrationData) {
 //     const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWith';
 
 //     try {
-       
+
 //         const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
 
 //         // Prepare request payload
@@ -159,135 +159,135 @@ async function signupWebAuthn(registrationData) {
 // }
 
 async function loginWebAuthn(authData) {
-    console.log("=== התחלת תהליך כניסה ב-WebAuthn ===");
-    console.log("נתוני אימות שהתקבלו:", authData);
+  console.log("=== התחלת תהליך כניסה ב-WebAuthn ===");
+  console.log("נתוני אימות שהתקבלו:", authData);
 
-    const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWith';
+  const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWith';
 
-    try {
-        // בדיקה אם authData קיים
-        if (!authData) {
-            console.error("❌ שגיאה: authData לא הועבר לפונקציה");
-            throw new Error("Authentication data is missing");
-        }
-
-        // חילוץ הנתונים
-        const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
-
-        // בדיקה מפורטת של כל שדה
-        console.log("=== בדיקת שדות נדרשים ===");
-        console.log("credentialID קיים:", !!credentialID, "ערך:", credentialID);
-        console.log("email קיים:", !!email, "ערך:", email);
-        console.log("signature קיים:", !!signature, "ערך:", signature);
-        console.log("authenticatorData קיים:", !!authenticatorData, "ערך:", authenticatorData);
-        console.log("clientDataJSON קיים:", !!clientDataJSON, "ערך:", clientDataJSON);
-
-        // בדיקת שדות חובה
-        const missingFields = [];
-        if (!credentialID) missingFields.push('credentialID');
-        if (!email) missingFields.push('email');
-        if (!signature) missingFields.push('signature');
-
-        if (missingFields.length > 0) {
-            console.error("❌ שדות חסרים:", missingFields);
-            throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
-        }
-
-        // הכנת המידע לשליחה
-        const requestPayload = {
-            credentialID: credentialID,
-            email: email,
-            authenticatorData: authenticatorData,
-            clientDataJSON: clientDataJSON,
-            signature: signature
-        };
-
-        console.log("=== נתונים לשליחה ===");
-        console.log("Request payload:", JSON.stringify(requestPayload, null, 2));
-        console.log('שליחת בקשת אימות ל:', API_LOGIN_URL);
-
-        // שליחת הבקשה
-        const response = await fetch(API_LOGIN_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(requestPayload),
-        });
-
-        console.log("=== תגובת השרת ===");
-        console.log("Status:", response.status);
-        console.log("Status Text:", response.statusText);
-        console.log("Headers:", Object.fromEntries(response.headers.entries()));
-
-        // קריאת התגובה
-        let responseData;
-        try {
-            responseData = await response.json();
-            console.log("Response data:", JSON.stringify(responseData, null, 2));
-        } catch (parseError) {
-            console.error("❌ שגיאה בפרסור JSON:", parseError);
-            const textResponse = await response.text();
-            console.log("Raw response:", textResponse);
-            throw new Error(`Failed to parse response as JSON: ${parseError.message}`);
-        }
-
-        // טיפול בתגובה
-        if (!response.ok) {
-            console.error("❌ התגובה לא בסדר - Status:", response.status);
-            throw new Error(`Authentication failed: ${response.status} - ${responseData.error || response.statusText}`);
-        }
-
-        // בדיקת פורמט התגובה
-        console.log("=== ניתוח תגובת השרת ===");
-        console.log("responseData.e:", responseData.e);
-        console.log("responseData.code:", responseData.code);
-        console.log("responseData.jwt קיים:", !!responseData.jwt);
-
-        if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
-            console.log("✅ אימות הצליח!");
-            
-            // בדיקת קיום JWT (בשרת לא שומרים ב-localStorage)
-            if (responseData.jwt) {
-                console.log('✅ JWT התקבל בהצלחה');
-                console.log('JWT Token:', responseData.jwt.substring(0, 20) + '...');
-            } else {
-                console.log("⚠️ לא התקבל טוקן JWT");
-            }
-
-            return {
-                success: true,
-                data: responseData,
-                user: responseData.user,
-                token: responseData.jwt,
-                message: 'Authentication successful'
-            };
-        } else if (responseData.e === 'yes') {
-            console.error("❌ השרת החזיר שגיאה:", responseData.error);
-            throw new Error(responseData.error || 'Authentication failed');
-        }
-
-        // מקרה של פורמט תגובה לא צפוי
-        console.log("⚠️ פורמט תגובה לא צפוי, מחזיר בכל זאת הצלחה");
-        return {
-            success: true,
-            data: responseData,
-            message: 'Authentication completed'
-        };
-
-    } catch (error) {
-        console.error("=== שגיאה בתהליך האימות ===");
-        console.error('סוג שגיאה:', error.constructor.name);
-        console.error('הודעת שגיאה:', error.message);
-        console.error('Stack trace:', error.stack);
-        
-        return {
-            success: false,
-            error: error.message,
-            message: 'Authentication failed'
-        };
+  try {
+    // בדיקה אם authData קיים
+    if (!authData) {
+      console.error("❌ שגיאה: authData לא הועבר לפונקציה");
+      throw new Error("Authentication data is missing");
     }
+
+    // חילוץ הנתונים
+    const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
+
+    // בדיקה מפורטת של כל שדה
+    console.log("=== בדיקת שדות נדרשים ===");
+    console.log("credentialID קיים:", !!credentialID, "ערך:", credentialID);
+    console.log("email קיים:", !!email, "ערך:", email);
+    console.log("signature קיים:", !!signature, "ערך:", signature);
+    console.log("authenticatorData קיים:", !!authenticatorData, "ערך:", authenticatorData);
+    console.log("clientDataJSON קיים:", !!clientDataJSON, "ערך:", clientDataJSON);
+
+    // בדיקת שדות חובה
+    const missingFields = [];
+    if (!credentialID) missingFields.push('credentialID');
+    if (!email) missingFields.push('email');
+    if (!signature) missingFields.push('signature');
+
+    if (missingFields.length > 0) {
+      console.error("❌ שדות חסרים:", missingFields);
+      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+    }
+
+    // הכנת המידע לשליחה
+    const requestPayload = {
+      credentialID: credentialID,
+      email: email,
+      authenticatorData: authenticatorData,
+      clientDataJSON: clientDataJSON,
+      signature: signature
+    };
+
+    console.log("=== נתונים לשליחה ===");
+    console.log("Request payload:", JSON.stringify(requestPayload, null, 2));
+    console.log('שליחת בקשת אימות ל:', API_LOGIN_URL);
+
+    // שליחת הבקשה
+    const response = await fetch(API_LOGIN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(requestPayload),
+    });
+
+    console.log("=== תגובת השרת ===");
+    console.log("Status:", response.status);
+    console.log("Status Text:", response.statusText);
+    console.log("Headers:", Object.fromEntries(response.headers.entries()));
+
+    // קריאת התגובה
+    let responseData;
+    try {
+      responseData = await response.json();
+      console.log("Response data:", JSON.stringify(responseData, null, 2));
+    } catch (parseError) {
+      console.error("❌ שגיאה בפרסור JSON:", parseError);
+      const textResponse = await response.text();
+      console.log("Raw response:", textResponse);
+      throw new Error(`Failed to parse response as JSON: ${parseError.message}`);
+    }
+
+    // טיפול בתגובה
+    if (!response.ok) {
+      console.error("❌ התגובה לא בסדר - Status:", response.status);
+      throw new Error(`Authentication failed: ${response.status} - ${responseData.error || response.statusText}`);
+    }
+
+    // בדיקת פורמט התגובה
+    console.log("=== ניתוח תגובת השרת ===");
+    console.log("responseData.e:", responseData.e);
+    console.log("responseData.code:", responseData.code);
+    console.log("responseData.jwt קיים:", !!responseData.jwt);
+
+    if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
+      console.log("✅ אימות הצליח!");
+
+      // בדיקת קיום JWT (בשרת לא שומרים ב-localStorage)
+      if (responseData.jwt) {
+        console.log('✅ JWT התקבל בהצלחה');
+        console.log('JWT Token:', responseData.jwt.substring(0, 20) + '...');
+      } else {
+        console.log("⚠️ לא התקבל טוקן JWT");
+      }
+
+      return {
+        success: true,
+        data: responseData,
+        user: responseData.user,
+        token: responseData.jwt,
+        message: 'Authentication successful'
+      };
+    } else if (responseData.e === 'yes') {
+      console.error("❌ השרת החזיר שגיאה:", responseData.error);
+      throw new Error(responseData.error || 'Authentication failed');
+    }
+
+    // מקרה של פורמט תגובה לא צפוי
+    console.log("⚠️ פורמט תגובה לא צפוי, מחזיר בכל זאת הצלחה");
+    return {
+      success: true,
+      data: responseData,
+      message: 'Authentication completed'
+    };
+
+  } catch (error) {
+    console.error("=== שגיאה בתהליך האימות ===");
+    console.error('סוג שגיאה:', error.constructor.name);
+    console.error('הודעת שגיאה:', error.message);
+    console.error('Stack trace:', error.stack);
+
+    return {
+      success: false,
+      error: error.message,
+      message: 'Authentication failed'
+    };
+  }
 }
 
 
@@ -296,15 +296,15 @@ async function loginWebAuthn(authData) {
  * @returns {string|null} The stored JWT token or null if not found
  */
 function getAuthToken() {
-    return localStorage.getItem('authToken');
+  return localStorage.getItem('authToken');
 }
 
 /**
  * Helper function to clear stored authentication token
  */
 function clearAuthToken() {
-    localStorage.removeItem('authToken');
-    console.log('Authentication token cleared');
+  localStorage.removeItem('authToken');
+  console.log('Authentication token cleared');
 }
 
 /**
@@ -312,17 +312,17 @@ function clearAuthToken() {
  * @returns {boolean} True if user has a valid token
  */
 function isAuthenticated() {
-    const token = getAuthToken();
-    if (!token) return false;
-    
-    try {
-        // Basic JWT structure check (without verification)
-        const parts = token.split('.');
-        return parts.length === 3;
-    } catch (error) {
-        console.error('Invalid token format:', error);
-        return false;
-    }
+  const token = getAuthToken();
+  if (!token) return false;
+
+  try {
+    // Basic JWT structure check (without verification)
+    const parts = token.split('.');
+    return parts.length === 3;
+  } catch (error) {
+    console.error('Invalid token format:', error);
+    return false;
+  }
 }
 
 
@@ -334,7 +334,7 @@ function isAuthenticated() {
  */
 async function authcode(email) {
   logger.info(`Sending authentication code to email: ${email}`)
-  
+
   let url = 'https://jwt-node-mongodb.onrender.com/authcode';
   const data = {
     email: email
@@ -374,7 +374,7 @@ async function authcode(email) {
  */
 async function login_code(email, code) {
   logger.info(`Verifying authentication code for email: ${email}`)
-  
+
   let url = 'https://jwt-node-mongodb.onrender.com/verifyCode';
 
   const data = {
@@ -394,7 +394,7 @@ async function login_code(email, code) {
     logger.debug(`Making code verification request to external service for ${email}`)
     const response = await fetch(url, requestOptions);
     const user = await response.json();
-    
+
     if (user.e === "yes") {
       logger.warn(`Code verification failed for ${email}: ${user.error}`)
       return { "e": "yes", "error": user.error };
@@ -419,7 +419,7 @@ async function login_code(email, code) {
 async function login(email, password, ip, userAgent) {
   logger.info(`Processing login request for email: ${email}`)
   logger.debug(`Login request IP: ${ip}, User-Agent: ${userAgent}`)
-  
+
   const url = 'https://jwt-node-mongodb.onrender.com/login';
 
   const data = {
@@ -456,9 +456,9 @@ async function login(email, password, ip, userAgent) {
 
     // החזרת נתוני המשתמש במקרה של הצלחה
     logger.info(` ${email}`)
-logger.info(`Login successful for user: ${JSON.stringify(user, null, 2)}`);
+    logger.info(`Login successful for user: ${JSON.stringify(user, null, 2)}`);
 
-    return { e: "no", jwt: user.jwt,id:user.id,email:user.email };
+    return { e: "no", jwt: user.jwt, id: user.id, email: user.email };
 
   } catch (error) {
     logger.error(`Login error for ${email}:`, error)
@@ -477,10 +477,10 @@ logger.info(`Login successful for user: ${JSON.stringify(user, null, 2)}`);
 async function signup(email, password, authProvider) {
   logger.info(`Processing signup request for email: ${email}`)
   logger.debug(`Signup auth provider: ${authProvider}`)
-  
+
   let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
   let url_spring = "https://spring-postgresql.onrender.com"
-  
+
   const data = {
     email: email,
     password: password,
@@ -499,7 +499,7 @@ async function signup(email, password, authProvider) {
     logger.debug(`Making signup request to MongoDB service for ${email}`)
     const response = await fetch(url_node_mongo, requestOptions);
     const data_mongo = await response.json();
-    
+
     if (data_mongo.errors) {
       const errorMsg = data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password;
       logger.warn(`Signup failed at MongoDB service for ${email}: ${errorMsg}`)
@@ -520,7 +520,7 @@ async function signup(email, password, authProvider) {
 
       const create_user_response = await fetch(url_spring, requestOptions);
       const response = await create_user_response.json();
-      
+
       logger.info(`Signup completed successfully for ${email}`)
       return { "e": "no", "response": response }
     } else {
@@ -540,25 +540,25 @@ async function signup(email, password, authProvider) {
  */
 async function create_user(user) {
   logger.info(`Creating new user: ${user.username}`)
-  
+
   try {
     const user_name = await dal_1.get_by_name(user.username)
-    
+
     if (user_name === undefined) {
       logger.debug(`Username ${user.username} is available, creating user`)
-      
+
       const new_user = await dal_1.new_user_role1(user)
-      
+
       if (typeof new_user === 'string' && new_user.length === 8) {
         logger.info(`User ${user.username} created successfully with generated password`)
         return { 'OK': `'${user.username}' successfully created, This is the generated password, '${new_user}'` }
       }
-      
+
       if (new_user === true) {
         logger.info(`User ${user.username} created successfully`)
         return { 'OK': `'${user.username}' successfully created` }
       }
-      
+
       logger.warn(`Unexpected result when creating user ${user.username}`)
       return new_user
     } else {
@@ -578,62 +578,62 @@ async function create_user(user) {
  */
 async function valid_email(email) {
   logger.info(`Validating email: ${email}`)
-  
+
   let url = `https://www.ipqualityscore.com/api/json/email/goCQBJHwMYjYULVaNcy82xFcdNEhqUIz/${email}`;
 
   try {
     logger.debug(`Making email validation request to external service`)
     const response = await fetch(url);
     const check = await response.json();
-    
+
     const valid = check.valid
     const dmarc_record = check.dmarc_record
-    
+
     logger.debug(`Email validation result for ${email}: valid=${valid}, dmarc_record=${dmarc_record}`)
-    return {"e":"no", "valid":valid, "dmarc_record":dmarc_record}
+    return { "e": "no", "valid": valid, "dmarc_record": dmarc_record }
   } catch (error) {
     logger.error(`Error validating email ${email}:`, error)
     return { "e": "yes", "err": error.message || "Network error" }
   }
 }
 async function get_by_id_user(id) {
-    logger.info(`Looking up user by id: ${id}`);
-    let url = `https://spring-postgresql.onrender.com/${id}`;
-    
-    try {
-        logger.debug(`Making user search request to external service`);
-        const response = await fetch(url);
-console.log("BL",1,response);
-console.log("BL",2,response.ok);
+  logger.info(`Looking up user by id: ${id}`);
+  let url = `https://spring-postgresql.onrender.com/${id}`;
+
+  try {
+    logger.debug(`Making user search request to external service`);
+    const response = await fetch(url);
+    console.log("BL", 1, response);
+    console.log("BL", 2, response.ok);
 
 
-        // --- 1. הבדיקה הנכונה ---
-        // 'response.ok' בודק אם הסטטוס הוא 2xx (כלומר 200)
-        if (!response.ok) {
-            // זה יטפל ב-404, 500, וכל שגיאה אחרת מהשרת
-            logger.warn(`No user found for id: ${id} (Status: ${response.status})`);
-            return false;
-        }
-        
-        // --- 2. קריאת ה-JSON ---
-        // רק אם התגובה תקינה (200), נפענח את גוף התשובה
-        const data = await response.json(); 
-        console.log("BL",3,data);
-
-
-        // עכשיו 'data' הוא אובייקט Client תקין
-        logger.info(`User found for id: ${id}`);
-        logger.debug(`Auth provider for ${id}: ${data.authProvider}`);
-        
-        // --- 3. החזרת הערך ---
-        return data; 
-
-    } catch (error) {
-        // שגיאה זו תקרה רק אם יש בעיית רשת (כמו אין אינטרנט)
-        // או אם ה-JSON שהוחזר היה לא תקין
-        logger.error(`Error fetching user data for ${id}:`, error);
-        return { error: error.message || "Network error" };
+    // --- 1. הבדיקה הנכונה ---
+    // 'response.ok' בודק אם הסטטוס הוא 2xx (כלומר 200)
+    if (!response.ok) {
+      // זה יטפל ב-404, 500, וכל שגיאה אחרת מהשרת
+      logger.warn(`No user found for id: ${id} (Status: ${response.status})`);
+      return false;
     }
+
+    // --- 2. קריאת ה-JSON ---
+    // רק אם התגובה תקינה (200), נפענח את גוף התשובה
+    const data = await response.json();
+    console.log("BL", 3, data);
+
+
+    // עכשיו 'data' הוא אובייקט Client תקין
+    logger.info(`User found for id: ${id}`);
+    logger.debug(`Auth provider for ${id}: ${data.authProvider}`);
+
+    // --- 3. החזרת הערך ---
+    return data;
+
+  } catch (error) {
+    // שגיאה זו תקרה רק אם יש בעיית רשת (כמו אין אינטרנט)
+    // או אם ה-JSON שהוחזר היה לא תקין
+    logger.error(`Error fetching user data for ${id}:`, error);
+    return { error: error.message || "Network error" };
+  }
 }
 
 
@@ -644,7 +644,7 @@ console.log("BL",2,response.ok);
  */
 async function get_by_email_user(email) {
   logger.info(`Looking up user by email: ${email}`)
-  
+
   let url = `https://jwt-node-mongodb.onrender.com/search?email=${email}`;
 
   try {
@@ -673,7 +673,7 @@ async function get_by_email_user(email) {
  */
 async function get_qr(id) {
   logger.info(`Generating QR code for ID: ${id}`)
-  
+
   try {
     const qrData = await dal_0.get_qr(id);
     logger.debug(`QR code generation successful for ID: ${id}`)
@@ -693,10 +693,10 @@ async function get_qr(id) {
 async function update_user(id, user) {
   logger.info(`Updating user with ID: ${id}`)
   logger.debug(`Update data: ${JSON.stringify(user)}`)
-  
+
   try {
     const user_id = await dal_1.get_by_id('id', id);
-    
+
     if (user_id) {
       logger.debug(`User found with ID ${id}, proceeding with update`)
       const update_user = await dal_1.update_user(id, user);
@@ -719,10 +719,10 @@ async function update_user(id, user) {
  */
 async function delete_account(id) {
   logger.info(`Deleting user account with ID: ${id}`)
-  
+
   try {
     const user_id = await dal_1.get_by_id('id', id);
-    
+
     if (user_id) {
       logger.debug(`User found with ID ${id}, proceeding with deletion`)
       const delete_user = await dal_1.delete_user(id);
@@ -748,22 +748,22 @@ async function delete_account(id) {
 
 async function new_customer(new_cus) {
   logger.info(`Creating new customer`)
-  
+
   const logSafeCust = { ...new_cus }
   if (logSafeCust.credit_card) {
     logSafeCust.credit_card = `************${logSafeCust.credit_card.slice(-4)}`
   }
   logger.debug(`New customer data: ${JSON.stringify(logSafeCust)}`)
-  
+
   try {
     logger.debug(`Validating credit card`)
     const Credit_check = await dal_4.credit_check(new_cus.credit_card)
-    
-    if (Credit_check) { 
+
+    if (Credit_check) {
 
       logger.debug(`Credit card validated successfully, creating customer`)
       const new_customer = await dal_4.new_customer(new_cus);
-      
+
       if (new_customer) {
         logger.info(`Customer created successfully`)
         return new_cus
@@ -788,10 +788,10 @@ async function new_customer(new_cus) {
  */
 async function get_by_id_customer(id) {
   logger.info(`Getting customer with ID: ${id}`)
-  
+
   try {
     const customer = await dal_4.get_by_id(id);
-    
+
     if (customer) {
       logger.debug(`Customer found with ID: ${id}`)
       return customer
@@ -813,17 +813,17 @@ async function get_by_id_customer(id) {
  */
 async function update_customer(id, update) {
   logger.info(`Updating customer with ID: ${id}`)
-  
+
   // הסתרת פרטי כרטיס אשראי בלוגים
   const logSafeUpdate = { ...update }
   if (logSafeUpdate.credit_card) {
     logSafeUpdate.credit_card = `************${logSafeUpdate.credit_card.slice(-4)}`
   }
   logger.debug(`Update data: ${JSON.stringify(logSafeUpdate)}`)
-  
+
   try {
     const get_by_id = await dal_4.get_by_id(id);
-    
+
     if (get_by_id) {
       logger.debug(`Customer found with ID ${id}, proceeding with update`)
       const update_customer = await dal_4.update_customer(id, update);
@@ -845,7 +845,7 @@ async function update_customer(id, update) {
  */
 async function get_all_flights() {
   logger.info(`Getting all flights`)
-  
+
   try {
     const flights = await dal_5.get_all();
     logger.debug(`Retrieved ${flights ? flights.length : 0} flights`)
@@ -879,11 +879,11 @@ async function get_all_origin_countries() {
  */
 async function get_destinations_from_origin(originId) {
   logger.info(`Processing request for destinations from origin ID: ${originId} in BL`);
-  
+
   // ולידציה בסיסית
   if (!originId || isNaN(parseInt(originId))) {
-      logger.warn('BL: Invalid or missing originId for destinations lookup');
-      return []; // החזר מערך ריק אם אין ID
+    logger.warn('BL: Invalid or missing originId for destinations lookup');
+    return []; // החזר מערך ריק אם אין ID
   }
 
   try {
@@ -906,18 +906,18 @@ async function get_destinations_from_origin(originId) {
 async function get_filtered_flights(filters) {
   logger.info('Processing filtered flights request in BL');
   logger.debug(`Filter criteria: ${JSON.stringify(filters)}`);
-  
+
   try {
     // קריאה לפונקציית ה-DAL שיצרנו בקובץ dal_table_flights (מיובא כ-dal_5)
     const flights = await dal_5.get_filtered_flights(filters);
-    
+
     logger.info(`BL: Retrieved ${flights.length} filtered flights successfully`);
     return flights;
 
   } catch (error) {
     logger.error('Error in BL processing filtered flights:', error);
     // זורק את השגיאה חזרה כדי שה-Route (Controller) יטפל בה וישלח תגובת שגיאה
-    throw error; 
+    throw error;
   }
 }
 
@@ -928,10 +928,10 @@ async function get_filtered_flights(filters) {
  */
 async function get_by_id_flights(id) {
   logger.info(`Getting flight with ID: ${id}`)
-  
+
   try {
     const flight = await dal_5.get_by_id(id);
-    
+
     if (flight) {
       logger.debug(`Flight found with ID: ${id}`)
       return flight
@@ -952,7 +952,7 @@ async function get_by_id_flights(id) {
  */
 async function get_all_chairs_by_flight(id) {
   logger.info(`Getting all chairs for flight ID: ${id}`)
-  
+
   try {
     const chairs = await dal_6.get_all_chairs_by_flight(id);
     logger.debug(`Retrieved ${chairs ? chairs.length : 0} chair assignments for flight ${id}`)
@@ -969,10 +969,10 @@ async function get_all_chairs_by_flight(id) {
  */
 async function new_chair_assignment(chairData) {
   logger.info('Processing new chair assignment in BL');
-  
+
   // כאן אפשר להוסיף ולידציות, למשל לבדוק שהכיסא לא תפוס כבר
   // (כרגע נסתמך על מסד הנתונים שיטפל בזה)
-  
+
   try {
     // קריאה ל-DAL (מיובא כ-dal_6)
     const assignment = await dal_6.new_chair(chairData);
@@ -980,7 +980,7 @@ async function new_chair_assignment(chairData) {
     return assignment;
   } catch (error) {
     logger.error('Error in BL processing chair assignment:', error);
-    throw error; 
+    throw error;
   }
 }
 
@@ -993,22 +993,22 @@ async function new_chair_assignment(chairData) {
 async function purchase_ticket(new_ticket, test) {
   logger.info(`Processing ticket purchase request`)
   logger.debug(`Ticket data: ${JSON.stringify(new_ticket)}, Test mode: ${!!test}`)
-  
+
   try {
     logger.debug(`Checking flight existence and available tickets`)
     const flight = await dal_5.get_by_id(new_ticket.flight_id)
-    
+
     if (flight) {
       if (flight.remaining_tickets > 0) {
         const id = parseInt(flight.id);
-        
+
         if (test === undefined) {
           logger.debug(`Updating remaining tickets for flight ${id}`)
           await dal_5.update_remaining_tickets(id);
         } else {
           logger.debug(`Test mode: skipping ticket update for flight ${id}`)
         }
-        
+
         logger.debug(`Creating new ticket record`)
         const result = await dal_7.new_ticket(new_ticket);
         logger.info(`Ticket purchased successfully for flight ${flight.id}`)
@@ -1034,10 +1034,10 @@ async function purchase_ticket(new_ticket, test) {
  */
 async function get_by_id_ticket(id) {
   logger.info(`Getting ticket with ID: ${id}`)
-  
+
   try {
     const ticket = await dal_7.get_by_id(id);
-    
+
     if (ticket) {
       logger.debug(`Ticket found with ID: ${id}`)
       return ticket
@@ -1059,7 +1059,7 @@ async function get_by_id_ticket(id) {
 async function new_passenger(new_p) {
   logger.info(`Creating new passenger`)
   logger.debug(`Passenger data: ${JSON.stringify(new_p)}`)
-  
+
   try {
     const new_passenger = await dal_8.new_passenger(new_p);
     logger.info(`Passenger created successfully with ID: ${new_passenger.id}`)
@@ -1077,10 +1077,10 @@ async function new_passenger(new_p) {
  */
 async function get_by_id_passenger(id) {
   logger.info(`Getting passenger with ID: ${id}`)
-  
+
   try {
     const passenger = await dal_8.get_by_id_passenger(id);
-    
+
     if (passenger) {
       logger.debug(`Passenger found with ID: ${id}`)
       return passenger
@@ -1122,5 +1122,5 @@ module.exports = {
   get_filtered_flights,
   get_all_origin_countries,
   get_destinations_from_origin,
-  new_chair_assignment 
+  new_chair_assignment
 }
