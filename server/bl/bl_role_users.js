@@ -773,7 +773,7 @@ async function new_customer(new_cus) {
       }
     } else {
       logger.warn(`Invalid credit card number (last 4 digits: ${new_cus.credit_card.slice(-4)})`)
-      return `Invalid credit card number ${logSafeCust.credit_card}`;
+      return null
     }
   } catch (error) {
     logger.error(`Error creating customer:`, error)
