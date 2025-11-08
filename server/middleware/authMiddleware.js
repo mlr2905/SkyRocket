@@ -27,6 +27,7 @@ const protect = async (req, res, next) => {
         console.log("response.data", response.data);
 
         if (response.data.valid) {
+             console.log("response.data.", response.data);
             // 3. הוסף את פרטי המשתמש המפוענחים לבקשה
             //    הטוקן מכיל את ה-ID והמייל (לפי bl_role_users.js)
             req.user = response.data.user; // נניח שהאוביקט חוזר כ- { user: { id: 49, email: '...' } }
