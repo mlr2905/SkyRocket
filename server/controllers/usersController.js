@@ -114,6 +114,8 @@ exports.loginWebAuthn = async (req, res) => {
                 if (token) {
                     console.log("✅ נמצא JWT טוקן");
                     logger.info(`Login successful for ${email}`);
+                    console.info("loginWebAuthn",token   );
+                    
 
                     // הגדרת JWT בעוגיה
                     res.cookie('sky', token, {
@@ -161,6 +163,8 @@ exports.loginWebAuthn = async (req, res) => {
             } else if (result.e === "no" && result.jwt) {
                 console.log("✅ תגובה ישנה מוצלחת");
                 logger.info(`Login successful for ${email}`);
+                console.info("loginWebAuthn2",result);
+                
 
                 // הגדרת JWT בעוגיה
                 const token = result.jwt;
@@ -330,6 +334,8 @@ exports.login = async (req, res) => {
         } else {
             // הגדרת טוקן ושליחתו בעוגיה
             logger.info(`Login successful for ${email}`)
+            console.info("datas3",datas);
+            
             const token = datas.jwt;
             res.cookie('sky', token, {
                 httpOnly: true,
