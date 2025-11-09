@@ -757,7 +757,7 @@ async function new_customer(new_cus) {
 
   try {
     logger.debug(`Validating credit card`)
-    const Credit_check = await dal_4.credit_check(new_cus.credit_card)
+    const Credit_check = await dal_4.credit_check(new_cus.credit_card,new_cus.user_id)
 
     if (Credit_check) {
 
@@ -807,36 +807,40 @@ async function get_by_id_customer(id) {
 
 /**
  * Updates customer details.
- * @param {number} id - Customer ID.
- * @param {object} update - Updated customer details.
- * @returns {Promise<string>} Update result.
+ * @param {number} user_id - The user's numeric ID (e.g., 49)
+ * @param {object} update_data - Updated customer details.
+ * @returns {Promise<object>} Update result { success: true/false, ... }
  */
-async function update_customer(id, update) {
-  logger.info(`Updating customer with ID: ${id}`)
+async function update_customer(user_id, update_data) {
+    logger.info(`BL: Updating customer for user_id: ${user_id}`);
+    
+    try {
+      
+        if (update_data.credit_card) { 
+            logger.debug(`Validating new credit card for user ${user_id}`);
+            
+            const check = await dal_4.credit_check(update_data.credit_card, user_id);
 
-  // הסתרת פרטי כרטיס אשראי בלוגים
-  const logSafeUpdate = { ...update }
-  if (logSafeUpdate.credit_card) {
-    logSafeUpdate.credit_card = `************${logSafeUpdate.credit_card.slice(-4)}`
-  }
-  logger.debug(`Update data: ${JSON.stringify(logSafeUpdate)}`)
+            if (!check.available) {
+                logger.warn(`Credit card validation failed: ${check.message}. Update aborted.`);
+                return { success: false, error: check.message };
+            }
+        }
+       
+        const result = await dal_4.update_customer(user_id, update_data);
+        
+        if (result === null) {
+             logger.warn(`BL: Customer update failed. DAL found no user for ID ${user_id}`);
+             return { success: false, error: 'Customer not found in DAL' };
+        }
 
-  try {
-    const get_by_id = await dal_4.get_by_id(id);
+        logger.info(`BL: Customer update successful for user_id: ${user_id}`);
+        return { success: true, data: { rowsAffected: result } }; 
 
-    if (get_by_id) {
-      logger.debug(`Customer found with ID ${id}, proceeding with update`)
-      const update_customer = await dal_4.update_customer(id, update);
-      logger.info(`Customer ${id} updated successfully`)
-      return `${get_by_id.id}${update_customer}`
-    } else {
-      logger.warn(`Customer update failed - no customer found with ID: ${id}`)
-      return `The ID ${id} you specified does not exist`;
+    } catch (error) {
+        logger.error(`Error in BL update_customer:`, error);
+        throw error;
     }
-  } catch (error) {
-    logger.error(`Error updating customer ${id}:`, error)
-    throw error
-  }
 }
 
 /**
