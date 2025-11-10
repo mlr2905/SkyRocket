@@ -12,7 +12,6 @@
         body { background-color: #f4f7f6; }
         .container { max-width: 800px; }
         #loading-spinner { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050; }
-        /* יישור שדות תשלום לשמאל */
         input[name="credit_card"], input[name="expiry_date"], input[name="cvv"], #cvv_verification_input, #phone_number { direction: ltr; text-align: left; }
         
         #cvv-gate { background-color: #f8f9fa; border: 1px dashed #ced4da; padding: 1.5rem; border-radius: 0.5rem; }
@@ -22,7 +21,7 @@
             text-align: left;
             font-weight: bold;
         }
-        /* במסכים קטנים, שנה ליישור רגיל */
+        
         @media (max-width: 576px) {
             .horizontal-label {
                 text-align: left;
@@ -110,7 +109,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <div class="row">
-                                <label class="col-sm-4 col-form-label horizontal-label">Existing Card:</label>
+                                <label class="col-sm-5 col-form-label horizontal-label">Existing Card:</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control-plaintext" id="credit_card_display" readonly>
                                 </div>
