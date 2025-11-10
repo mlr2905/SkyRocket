@@ -27,6 +27,7 @@ router.get('/flights/:id', usersController.getFlightById);
 
 // נתיב לאזור האישי
 router.get('/me', protect, usersController.getMyDetails);
+router.get('/my-tickets', protect, usersController.getMyTickets);
 
 // נתיבי ניהול משתמש (עדכון ומחיקה של החשבון האישי)
 router.get('/users/:id', protect, usersController.usersById);

@@ -1010,6 +1010,18 @@ async function new_chair_assignment(chairData) {
   }
 }
 
+async function get_my_tickets(numeric_id) {
+    logger.info(`BL: Fetching tickets for user ID: ${numeric_id}`);
+    try {
+        const tickets = await dal_7.get_tickets_by_user_id(numeric_id);
+        return tickets;
+    } catch (error) {
+        logger.error(`Error in BL get_my_tickets for user ${numeric_id}:`, error);
+        throw error;
+    }
+}
+
+
 /**
  * Purchases a ticket for a flight.
  * @param {object} new_ticket - Ticket details.
@@ -1130,6 +1142,7 @@ module.exports = {
   login_code,
   login,
   signup,
+  get_my_tickets,
   purchase_ticket,
   create_user,
   get_by_email_user,

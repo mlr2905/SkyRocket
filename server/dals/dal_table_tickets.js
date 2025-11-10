@@ -7,37 +7,63 @@ logger.info('Tickets DAL module initialized')
 
 // ---------------User functions only and admin---------------
 
+async function get_tickets_by_user_id(user_id) {
+    logger.info(`DAL: Fetching all tickets for user_id: ${user_id}`);
+    try {
+        const tickets = await connectedKnex('tickets as t')
+            .join('passengers as p', 't.passenger_id', 'p.id')
+            .join('flights as f', 't.flight_id', 'f.id')
+            .join('airlines as a', 'f.airline_id', 'a.id')
+            .join('countries as origin_c', 'f.origin_country_id', 'origin_c.id')
+            .join('countries as dest_c', 'f.destination_country_id', 'dest_c.id')
+            .select(
+                't.id as ticket_id',
+                't.ticket_code', 
+                'p.first_name',
+                'p.last_name',
+                'f.departure_time',
+                'f.landing_time',
+                'a.name as airline_name',
+                'origin_c.country_name as origin_country',
+                'dest_c.country_name as destination_country'
+            )
+            .where('t.user_id', user_id)
+            .orderBy('f.departure_time', 'desc'); 
 
-async function new_ticket(newTicketData) { // שנה את שם הפרמטר כדי שיהיה ברור
+        logger.debug(`DAL: Found ${tickets.length} tickets for user_id: ${user_id}`);
+        return tickets;
+
+    } catch (error) {
+        logger.error(`DAL: Error fetching tickets for user_id ${user_id}:`, error);
+        throw error;
+    }
+}
+
+
+async function new_ticket(newTicketData) { 
     logger.info('Creating new ticket');
-    // הדפס את הנתונים שהתקבלו (כבר אמורים להכיל את השדות החדשים)
     logger.debug(`New ticket data received: ${JSON.stringify(newTicketData)}`);
 
-    // --- **השינוי:** בנה אובייקט להכנסה עם שמות העמודות הנכונים ---
     const dataToInsert = {
         flight_id: newTicketData.flight_id,
         customer_id: newTicketData.customer_id,
         passenger_id: newTicketData.passenger_id,
         user_id: newTicketData.user_id,
-        outbound_chair_id: newTicketData.outbound_chair_id, // שם עמודה חדש
-        return_chair_id: newTicketData.return_chair_id     // שם עמודה חדש (יכול להיות null)
-        // שים לב: ticket_code כנראה נוצר אוטומטית ב-DB
+        outbound_chair_id: newTicketData.outbound_chair_id,
+        return_chair_id: newTicketData.return_chair_id     
     };
     logger.debug(`Data to insert into tickets table: ${JSON.stringify(dataToInsert)}`);
-    // --- סוף השינוי ---
 
     try {
-        // השתמש באובייקט המסונן dataToInsert
         const result = await connectedKnex('tickets')
-                             .insert(dataToInsert) // <<< הכנס את האובייקט החדש
+                             .insert(dataToInsert) 
                              .returning('*');
         logger.info(`Ticket created successfully with ID: ${result[0].id}`);
         logger.debug(`Created ticket details: ${JSON.stringify(result[0])}`);
         return result[0];
     } catch (error) {
-        // הלוג הזה ידפיס את השגיאה המדויקת ממסד הנתונים
         logger.error('Error creating new ticket in DAL:', error);
-        throw error; // זרוק את השגיאה כדי שה-Controller יתפוס אותה
+        throw error; 
     }
 }
 async function get_by_id(id) {
@@ -63,7 +89,6 @@ async function delete_ticket(id) {
     logger.info(`Deleting ticket with ID: ${id}`)
     
     try {
-        // תחילה בדוק אם הכרטיס קיים
         const ticket = await connectedKnex('tickets').select('id').where('id', id).first()
         
         if (!ticket) {
@@ -87,7 +112,6 @@ async function update_ticket(id, updated_ticket) {
     logger.debug(`Update data: ${JSON.stringify(updated_ticket)}`)
     
     try {
-        // תחילה בדוק אם הכרטיס קיים
         const ticket = await connectedKnex('tickets').select('id').where('id', id).first()
         
         if (!ticket) {
@@ -171,6 +195,7 @@ async function get_by_ticket_code(code) {
 }
 
 module.exports = { 
+    get_tickets_by_user_id,
     get_all, 
     get_by_id, 
     new_ticket, 

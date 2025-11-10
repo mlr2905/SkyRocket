@@ -615,6 +615,21 @@ exports.getAllChairsByFlightId = async (req, res) => {
     }
 };
 
+exports.getMyTickets = async (req, res) => {
+    logger.info('Controller: Received request for my-tickets');
+    try {
+        const numeric_id = await getNumericIdFromToken(req);
+        
+        const tickets = await bl.get_my_tickets(numeric_id);
+
+        res.status(200).json(tickets);
+        
+    } catch (error) {
+        logger.error('Error in getMyTickets controller:', error);
+        res.status(503).json({ "error": `The request failed, try again later` });
+    }
+};
+
 exports.PassengerById = async (req, res) => {
 
     const passenger_id = parseInt(req.params.id);
