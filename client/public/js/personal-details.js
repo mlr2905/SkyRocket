@@ -89,12 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     phoneInput.value = fullPhone;
                 }
 
-                // --- תיקנו את שתי השורות הבאות ---
-                // השרת כבר מחזיר את הכרטיס מפורמט (עם כוכביות)
                 creditCardDisplay.value = customer.credit_card || 'No card on file';
-                // השרת מחזיר את התוקף (תיקנו זאת ב-DAL)
                 expiryDateDisplay.value = customer.expiry_date || 'N/A';
-                // --- סוף התיקון ---
 
                 customerExists = true;
             } else if (customerRes.status === 404) {
@@ -118,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 4. Toggle Form Edit State ---
-    // (הלוגיקה הזו נשארת זהה, היא כבר מטפלת נכון בשער ה-CVV)
     function toggleEdit(enable = true) {
         personalFieldsFieldset.disabled = !enable;
         
