@@ -565,16 +565,25 @@ exports.createChairAssignment = async (req, res) => {
     }
 };
 
+
 exports.createTicket = async (req, res) => {
     logger.info('Creating new ticket');
     try {
         const numeric_id = await getNumericIdFromToken(req);
         const new_ticket = req.body;
         new_ticket.user_id = numeric_id;
+
+        const customer = await bl.get_by_id_customer(numeric_id); 
         
+        if (!customer || !customer.id) {
+            logger.warn(`Cannot create ticket: No customer record found for user_id: ${numeric_id}`);
+            return res.status(404).json({ error: "Customer details not found. Please complete your profile first." });
+        }
+        
+        new_ticket.customer_id = customer.id;
         logger.debug(`New ticket data for user ${numeric_id}: ${JSON.stringify(new_ticket)}`);
 
-        const result = await bl.purchase_ticket(new_ticket);
+     const result = await bl.purchase_ticket(new_ticket);
         logger.info('Ticket purchased successfully');
         res.status(201).json(result);
     } catch (error) {
