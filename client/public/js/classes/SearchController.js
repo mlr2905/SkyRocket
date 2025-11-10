@@ -491,9 +491,11 @@ export class SearchController {
     }
 
     #handleConfirmBooking = async () => {
-        console.log("Confirming booking..."); this.#ui.showLoading(true);
+        console.log("Confirming booking...");
+        this.#ui.showLoading(true);
         const forms = this.#elements.passengerFormsContainer.querySelectorAll('.passenger-form');
         let dataToSubmit = [];
+        
         for (const form of forms) {
             const idx = form.dataset.index;
             const data = {
@@ -505,18 +507,28 @@ export class SearchController {
                 seatOutbound: form.dataset.seatOutbound ? parseInt(form.dataset.seatOutbound, 10) : null,
                 seatReturn: form.dataset.seatReturn ? parseInt(form.dataset.seatReturn, 10) : null
             };
-            if (!data.first_name || !data.last_name || !data.passport_number || !data.date_of_birth || !data.seatOutbound) { alert(`Please fill in all details (including birth date and seat number) for the passenger.${idx}.`); this.#ui.showLoading(false); return; }
-            if (this.#state.tripType === 'round-trip' && !data.seatReturn) { alert(`Please select a seat for the passenger.${idx}.`); this.#ui.showLoading(false); return; }
+
+            if (!data.first_name || !data.last_name || !data.passport_number || !data.date_of_birth || !data.seatOutbound) {
+                alert(`Please fill in all details (including D.O.B. and outbound seat) for passenger ${idx}.`);
+                this.#ui.showLoading(false);
+                return;
+            }
+            if (this.#state.tripType === 'round-trip' && !data.seatReturn) {
+                alert(`Please select a return seat for passenger ${idx}.`);
+                this.#ui.showLoading(false);
+                return;
+            }
             dataToSubmit.push(data);
         }
         console.log("Data collected to submit (seat IDs are from 'seats' table):", dataToSubmit);
 
         try {
-            const customer_id = 1;
-
             for (const data of dataToSubmit) {
+                // --- 1. Create Passenger ---
                 const pRes = await fetch(C.API_PASSENGERS_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         first_name: data.first_name,
                         last_name: data.last_name,
@@ -529,9 +541,12 @@ export class SearchController {
                 if (!pRes.ok) throw new Error(`Passenger creation failed: ${newPassenger.error || 'Unknown error'}`);
                 const passengerId = newPassenger.id;
 
+                // --- 2. Assign Outbound Seat ---
                 const outboundSeatId = data.seatOutbound;
                 const cOutRes = await fetch(C.API_CHAIRS_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         flight_id: this.#state.selectedOutboundFlight.id,
                         char_id: outboundSeatId,
@@ -540,11 +555,14 @@ export class SearchController {
                 });
                 if (!cOutRes.ok) { const err = await cOutRes.json(); throw new Error(`Outbound seat assignment failed: ${err.error || cOutRes.statusText}`); }
 
+                // --- 3. Assign Return Seat (if applicable) ---
                 let returnSeatId = null;
                 if (data.seatReturn) {
                     returnSeatId = data.seatReturn;
                     const cRetRes = await fetch(C.API_CHAIRS_URL, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             flight_id: this.#state.selectedReturnFlight.id,
                             char_id: returnSeatId,
@@ -554,26 +572,42 @@ export class SearchController {
                     if (!cRetRes.ok) { const err = await cRetRes.json(); throw new Error(`Return seat assignment failed: ${err.error || cRetRes.statusText}`); }
                 }
 
-                const tRes = await fetch(C.API_TICKETS_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                // --- 4. Creating separate tickets ---
+
+                // Creating a return ticket
+                const tOutRes = await fetch(C.API_TICKETS_URL, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         flight_id: this.#state.selectedOutboundFlight.id,
-                        customer_id: customer_id,
                         passenger_id: passengerId,
-                        outbound_chair_id: outboundSeatId,
-                        return_chair_id: returnSeatId
+                        chair_id: outboundSeatId
                     })
                 });
-                if (!tRes.ok) { const err = await tRes.json(); throw new Error(`Ticket creation failed for passenger ${data.index}: ${err.error || tRes.statusText}`); }
+                if (!tOutRes.ok) { const err = await tOutRes.json(); throw new Error(`Outbound ticket creation failed: ${err.error || tOutRes.statusText}`); }
 
+                if (this.#state.tripType === 'round-trip' && returnSeatId) {
+                    const tRetRes = await fetch(C.API_TICKETS_URL, {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            flight_id: this.#state.selectedReturnFlight.id,
+                            passenger_id: passengerId,
+                            chair_id: returnSeatId
+                        })
+                    });
+                    if (!tRetRes.ok) { const err = await tRetRes.json(); throw new Error(`Return ticket creation failed: ${err.error || tRetRes.statusText}`); }
+                }
             }
 
-            alert("The order was placed successfully!");
-            window.location.reload();
+            alert("Booking was successful!");
+            window.location.href = '/my-tickets.html'; // העבר ישר לדף הכרטיסים
 
         } catch (error) {
             console.error("Booking failed:", error);
-            alert(`Order error: ${error.message}`);
+            alert(`Booking Error: ${error.message}`);
         } finally {
             this.#ui.showLoading(false);
         }

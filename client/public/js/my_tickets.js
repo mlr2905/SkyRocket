@@ -13,16 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function generateQRCode(element, text) {
         try {
-            const qr = qrcode(4, 'M'); 
+            const qr = qrcode(4, 'M');
             qr.addData(text, 'Byte');
             qr.make();
 
-            const cellSize = 2; 
-            const margin = 0;   
+            const cellSize = 2;
+            const margin = 0;
             element.innerHTML = qr.createTableTag(cellSize, margin);
-            
+
             const table = element.querySelector('table');
-            if(table) {
+            if (table) {
                 table.style.width = '100%';
                 table.style.height = '100%';
                 table.style.border = 'none';
@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
             element.innerHTML = "QR Error";
         }
     }
-    
- 
+
+
     function formatDateTime(dateTimeString) {
         if (!dateTimeString) return 'N/A';
         const date = new Date(dateTimeString);
@@ -44,11 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingSpinner.style.display = 'block';
         try {
             const response = await fetch('/role_users/my-tickets', {
-                credentials: 'include' 
+                credentials: 'include'
             });
 
             if (!response.ok) {
-                if (response.status === 401) { 
+                if (response.status === 401) {
                     showMessage('You are not logged in. Redirecting to login page...', 'warning');
                     setTimeout(() => window.location.href = '/login.html', 2000);
                 } else {
@@ -63,14 +63,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 showMessage('You have not purchased any tickets yet.', 'info');
                 return;
             }
-            
+
             ticketsContainer.innerHTML = '';
 
             tickets.forEach(ticket => {
                 const card = ticketTemplate.content.cloneNode(true);
-                
+
                 card.querySelector('[data-field="airline_name"]').textContent = ticket.airline_name || 'N/A';
                 card.querySelector('[data-field="passenger_name"]').textContent = `${ticket.first_name || ''} ${ticket.last_name || ''}`;
+                const seatNameEl = card.querySelector('[data-field="seat_name"]');
+                if (ticket.chair_name) {
+                    seatNameEl.textContent = `Seat: ${ticket.chair_name}`;
+                } else {
+                    seatNameEl.style.display = 'none'; 
+                }
                 card.querySelector('[data-field="origin_country"]').textContent = ticket.origin_country || 'N/A';
                 card.querySelector('[data-field="destination_country"]').textContent = ticket.destination_country || 'N/A';
                 card.querySelector('[data-field="departure_time"]').textContent = `Departs: ${formatDateTime(ticket.departure_time)}`;

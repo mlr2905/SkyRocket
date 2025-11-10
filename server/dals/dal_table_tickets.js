@@ -7,40 +7,7 @@ logger.info('Tickets DAL module initialized')
 
 // ---------------User functions only and admin---------------
 
-async function get_tickets_by_user_id(user_id) {
-    logger.info(`DAL: Fetching all tickets for user_id: ${user_id}`);
-    try {
-        const tickets = await connectedKnex('tickets as t')
-            .join('passengers as p', 't.passenger_id', 'p.id')
-            .join('flights as f', 't.flight_id', 'f.id')
-            .join('airlines as a', 'f.airline_id', 'a.id')
-            .join('countries as origin_c', 'f.origin_country_id', 'origin_c.id')
-            .join('countries as dest_c', 'f.destination_country_id', 'dest_c.id')
-            .select(
-                't.id as ticket_id',
-                't.ticket_code', 
-                'p.first_name',
-                'p.last_name',
-                'f.departure_time',
-                'f.landing_time',
-                'a.name as airline_name',
-                'origin_c.country_name as origin_country',
-                'dest_c.country_name as destination_country'
-            )
-            .where('t.user_id', user_id)
-            .orderBy('f.departure_time', 'desc'); 
-
-        logger.debug(`DAL: Found ${tickets.length} tickets for user_id: ${user_id}`);
-        return tickets;
-
-    } catch (error) {
-        logger.error(`DAL: Error fetching tickets for user_id ${user_id}:`, error);
-        throw error;
-    }
-}
-
-
-async function new_ticket(newTicketData) { 
+async function new_ticket(newTicketData) {
     logger.info('Creating new ticket');
     logger.debug(`New ticket data received: ${JSON.stringify(newTicketData)}`);
 
@@ -49,29 +16,53 @@ async function new_ticket(newTicketData) {
         customer_id: newTicketData.customer_id,
         passenger_id: newTicketData.passenger_id,
         user_id: newTicketData.user_id,
-        outbound_chair_id: newTicketData.outbound_chair_id,
-        return_chair_id: newTicketData.return_chair_id     
+        chair_id: newTicketData.chair_id
     };
-    logger.debug(`Data to insert into tickets table: ${JSON.stringify(dataToInsert)}`);
 
     try {
         const result = await connectedKnex('tickets')
-                             .insert(dataToInsert) 
-                             .returning('*');
+            .insert(dataToInsert)
+            .returning('*');
         logger.info(`Ticket created successfully with ID: ${result[0].id}`);
         logger.debug(`Created ticket details: ${JSON.stringify(result[0])}`);
         return result[0];
     } catch (error) {
         logger.error('Error creating new ticket in DAL:', error);
-        throw error; 
+        throw error;
+    }
+}
+
+async function new_ticket(newTicketData) {
+    logger.info('Creating new ticket');
+    logger.debug(`New ticket data received: ${JSON.stringify(newTicketData)}`);
+
+    const dataToInsert = {
+        flight_id: newTicketData.flight_id,
+        customer_id: newTicketData.customer_id,
+        passenger_id: newTicketData.passenger_id,
+        user_id: newTicketData.user_id,
+        chair_id: newTicketData.chair_id,
+    };
+    logger.debug(`Data to insert into tickets table: ${JSON.stringify(dataToInsert)}`);
+
+    try {
+        const result = await connectedKnex('tickets')
+            .insert(dataToInsert)
+            .returning('*');
+        logger.info(`Ticket created successfully with ID: ${result[0].id}`);
+        logger.debug(`Created ticket details: ${JSON.stringify(result[0])}`);
+        return result[0];
+    } catch (error) {
+        logger.error('Error creating new ticket in DAL:', error);
+        throw error;
     }
 }
 async function get_by_id(id) {
     logger.debug(`Looking up ticket by ID: ${id}`)
-    
+
     try {
         const ticket = await connectedKnex('tickets').select('*').where('id', id).first()
-        
+
         if (ticket) {
             logger.debug(`Ticket found by ID: ${id}`)
             return ticket
@@ -87,15 +78,15 @@ async function get_by_id(id) {
 
 async function delete_ticket(id) {
     logger.info(`Deleting ticket with ID: ${id}`)
-    
+
     try {
         const ticket = await connectedKnex('tickets').select('id').where('id', id).first()
-        
+
         if (!ticket) {
             logger.warn(`Ticket deletion failed - ticket not found: ${id}`)
             return 0
         }
-        
+
         const result = await connectedKnex('tickets').where('id', id).del()
         logger.info(`Ticket ${id} deleted successfully`)
         return result
@@ -110,15 +101,15 @@ async function delete_ticket(id) {
 async function update_ticket(id, updated_ticket) {
     logger.info(`Updating ticket with ID: ${id}`)
     logger.debug(`Update data: ${JSON.stringify(updated_ticket)}`)
-    
+
     try {
         const ticket = await connectedKnex('tickets').select('id').where('id', id).first()
-        
+
         if (!ticket) {
             logger.warn(`Ticket update failed - ticket not found: ${id}`)
             return 0
         }
-        
+
         const result = await connectedKnex('tickets').where('id', id).update(updated_ticket)
         logger.info(`Ticket ${id} updated successfully`)
         return result
@@ -130,7 +121,7 @@ async function update_ticket(id, updated_ticket) {
 
 async function get_all() {
     logger.info('Retrieving all tickets (admin only function)')
-    
+
     try {
         const tickets = await connectedKnex.raw(`SELECT get_all_tickets();`)
         const ticketsCount = tickets.rows[0].get_all_tickets ? tickets.rows[0].get_all_tickets.length : 0
@@ -145,14 +136,14 @@ async function get_all() {
 async function delete_all() {
     logger.info('Deleting all tickets (admin only function)')
     logger.warn('This operation will delete ALL tickets from the database')
-    
+
     try {
         const result = await connectedKnex('tickets').del()
         logger.debug(`Deleted ${result} tickets from database`)
-        
+
         await connectedKnex.raw('ALTER SEQUENCE "tickets_id_seq" RESTART WITH 1');
         logger.info('Reset ticket ID sequence to 1')
-        
+
         return result
     } catch (error) {
         logger.error('Error deleting all tickets:', error)
@@ -164,7 +155,7 @@ async function delete_all() {
 
 async function set_id(id) {
     logger.info(`Setting ticket ID sequence to: ${id} (test function)`)
-    
+
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE tickets_id_seq RESTART WITH ${id}`);
         logger.debug(`Successfully reset ticket ID sequence to ${id}`)
@@ -177,10 +168,10 @@ async function set_id(id) {
 
 async function get_by_ticket_code(code) {
     logger.debug(`Looking up ticket by code: ${code}`)
-    
+
     try {
         const ticket = await connectedKnex('tickets').select('*').where('ticket_code', code).first()
-        
+
         if (ticket) {
             logger.debug(`Ticket found by code: ${code}`)
             return ticket
@@ -194,14 +185,14 @@ async function get_by_ticket_code(code) {
     }
 }
 
-module.exports = { 
+module.exports = {
     get_tickets_by_user_id,
-    get_all, 
-    get_by_id, 
-    new_ticket, 
-    update_ticket, 
-    delete_ticket, 
-    set_id, 
-    delete_all, 
-    get_by_ticket_code 
+    get_all,
+    get_by_id,
+    new_ticket,
+    update_ticket,
+    delete_ticket,
+    set_id,
+    delete_all,
+    get_by_ticket_code
 }
