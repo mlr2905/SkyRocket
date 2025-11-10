@@ -129,34 +129,40 @@
         <div id="tickets-container">
         </div>
 
-        <template id="ticket-card-template">
-            <div class="ticket-card">
-                <div class="ticket-main">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="mb-0" data-field="airline_name">Airline Name</h5>
-                        <span class="badge bg-secondary" data-field="passenger_name">Passenger Name</span>
-
-                        <span class="badge bg-primary" data-field="seat_name"></span>
-                    </div>
-
-                    <div class="flight-path">
-                        <div class="flight-location">
-                            <div class="country" data-field="origin_country">Origin</div>
-                            <div class="time" data-field="departure_time">Departs: 10:00</div>
-                        </div>
-                        <div class="icon"><i class="bi bi-airplane-fill"></i></div>
-                        <div class="flight-location">
-                            <div class="country" data-field="destination_country">Destination</div>
-                            <div class="time" data-field="landing_time">Arrives: 14:30</div>
-                        </div>
-                    </div>
+       <template id="ticket-card-template">
+    <div class="ticket-card">
+        <div class="ticket-main">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0" data-field="airline_name">Airline Name</h5>
+                <span class="badge bg-secondary" data-field="passenger_name">Passenger Name</span>
+            </div>
+            
+            <div class="flight-path">
+                <div class="flight-location">
+                    <div class="country" data-field="origin_country">Origin</div>
+                    <div class="time" data-field="departure_time">Departs: 10:00</div>
                 </div>
-                <div class="ticket-qr">
-                    <div id="qrcode" class="qrcode-placeholder"></div>
-                    <p data-field="ticket_code">TICKET-CODE</p>
+                <div class="icon"><i class="bi bi-airplane-fill"></i></div>
+                <div class="flight-location">
+                    <div class="country" data-field="destination_country">Destination</div>
+                    <div class="time" data-field="landing_time">Arrives: 14:30</div>
                 </div>
             </div>
-        </template>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="badge bg-primary" data-field="seat_name" style="font-size: 1rem;">Seat: 1A</span>
+                <button class="btn btn-sm btn-outline-danger cancel-ticket-btn">
+                    <i class="bi bi-trash"></i> Cancel Ticket
+                </button>
+            </div>
+            </div>
+
+        <div class="ticket-qr">
+            <div id="qrcode" class="qrcode-placeholder"></div> 
+            <p data-field="ticket_code">TICKET-CODE</p>
+        </div>
+    </div>
+</template>
 
     </main>
 

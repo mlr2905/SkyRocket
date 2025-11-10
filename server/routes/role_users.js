@@ -42,6 +42,7 @@ router.put('/customers/:id', protect, usersController.updateCustomer);
 // נתיבי יצירת הזמנה (נוסעים, כרטיסים, כיסאות)
 router.post('/chairs', protect, usersController.createChairAssignment);
 router.post('/tickets', protect, usersController.createTicket);
+router.delete('/my-tickets/:id', protect, usersController.deleteMyTicket);
 router.post('/passengers', protect, usersController.createPassenger);
 
 // נתיבי קריאת מידע ספציפי להזמנה

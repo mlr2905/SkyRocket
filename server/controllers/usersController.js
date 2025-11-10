@@ -565,14 +565,12 @@ exports.createChairAssignment = async (req, res) => {
     }
 };
 
-
 exports.createTicket = async (req, res) => {
     logger.info('Creating new ticket');
     try {
         const numeric_id = await getNumericIdFromToken(req);
         const new_ticket = req.body;
         new_ticket.user_id = numeric_id;
-
         const customer = await bl.get_by_id_customer(numeric_id); 
         
         if (!customer || !customer.id) {
@@ -589,6 +587,30 @@ exports.createTicket = async (req, res) => {
     } catch (error) {
         logger.error('Error purchasing ticket:', error);
         res.status(503).json({ "error": `The request failed, try again later` });
+    }
+};
+
+exports.deleteMyTicket = async (req, res) => {
+    logger.info('Controller: Received request to delete my-ticket');
+    try {
+        const numeric_id = await getNumericIdFromToken(req);
+        
+        const ticket_id = parseInt(req.params.id, 10);
+        if (isNaN(ticket_id)) {
+            return res.status(400).json({ error: "Invalid ticket ID." });
+        }
+
+        const result = await bl.cancel_ticket(numeric_id, ticket_id);
+
+        res.status(200).json(result); 
+        
+    } catch (error) {
+        logger.error('Error in deleteMyTicket controller:', error);
+        if (error.message.includes("Not authorized")) {
+            res.status(403).json({ "error": error.message });
+        } else {
+            res.status(503).json({ "error": `The request failed, try again later` });
+        }
     }
 };
 

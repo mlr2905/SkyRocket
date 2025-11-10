@@ -120,6 +120,21 @@ async function get_all_chairs_by_flight(id) {
         throw error
     }
 }
+async function delete_chair_assignment(flight_id, chair_id) {
+    logger.info(`DAL: Deleting chair assignment for flight ${flight_id}, chair ${chair_id}`);
+    try {
+        const result = await connectedKnex('chairs_taken')
+            .where('flight_id', flight_id)
+            .andWhere('char_id', chair_id) 
+            .del();
+        
+        logger.debug(`DAL: Deleted ${result} chair assignment(s)`);
+        return result;
+    } catch (error) {
+        logger.error(`DAL: Error deleting chair assignment:`, error);
+        throw error;
+    }
+}
 
 async function delete_all() {
     logger.info('Deleting all chair assignments (admin only function)')
@@ -160,6 +175,7 @@ module.exports = {
     new_chair, 
     update_chair, 
     delete_chair, 
-    set_id, 
+    set_id,
+    delete_chair_assignment, 
     delete_all 
 }

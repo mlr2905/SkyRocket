@@ -1131,6 +1131,32 @@ async function get_by_id_passenger(id) {
     throw error
   }
 }
+async function cancel_ticket(numeric_user_id, ticket_id) {
+    logger.info(`BL: User ${numeric_user_id} attempting to cancel ticket ${ticket_id}`);
+    try {
+        const ticket = await dal_7.get_by_id(ticket_id); 
+        if (!ticket) {
+            throw new Error("Ticket not found.");
+        }
+
+        if (ticket.user_id !== numeric_user_id) {
+            logger.warn(`BL: Auth failed. User ${numeric_user_id} does not own ticket ${ticket_id}.`);
+            throw new Error("You are not authorized to cancel this ticket.");
+        }
+
+        await dal_6.delete_chair_assignment(ticket.flight_id, ticket.chair_id);
+
+        await dal_7.delete_ticket(ticket_id);
+
+        logger.info(`BL: Ticket ${ticket_id} and its seat assignment were successfully cancelled.`);
+        return { success: true, message: "Ticket cancelled successfully." };
+
+    } catch (error) {
+        logger.error(`Error in BL cancel_ticket for ticket ${ticket_id}:`, error);
+        throw error;
+    }
+}
+
 
 module.exports = {
   signupWebAuthn,
@@ -1162,5 +1188,6 @@ module.exports = {
   get_filtered_flights,
   get_all_origin_countries,
   get_destinations_from_origin,
-  new_chair_assignment
+  new_chair_assignment,
+  cancel_ticket
 }
