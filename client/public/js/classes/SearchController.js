@@ -347,14 +347,14 @@ export class SearchController {
     #handleDeleteAccount = async (event) => {
         event.preventDefault();
 
-        const isConfirmed = confirm("האם אתה בטוח שברצונך למחוק את החשבון? \nפעולה זו היא סופית ולא ניתן לשחזר אותה.");
+        const isConfirmed = confirm("Are you sure you want to delete the account?\nThis action is final and cannot be undone.");
 
         if (!isConfirmed) {
-        }
             return;
-
-            this.#ui.showLoading(true);
         }
+
+        this.#ui.showLoading(true);
+
         try {
             const response = await fetch('/role_users/me', {
                 method: 'DELETE',
@@ -362,17 +362,17 @@ export class SearchController {
 
             if (!response.ok) {
                 const errData = await response.json();
-                throw new Error(errData.error || 'שגיאה במחיקת החשבון');
+                throw new Error(errData.error || 'Error deleting account');
             }
 
-            alert('החשבון נמחק בהצלחה. הנך מועבר לדף הבית.');
+            alert('Account successfully deleted. You are being redirected to the home page.');
             window.location.href = '/';
 
         } catch (error) {
 
             console.error('Delete account failed:', error.message);
 
-            alert('מחיקת החשבון נכשלה. אנא פנה לשירות הלקוחות.');
+            alert('Account deletion failed. Please contact customer service.');
 
 
         } finally {
@@ -505,8 +505,8 @@ export class SearchController {
                 seatOutbound: form.dataset.seatOutbound ? parseInt(form.dataset.seatOutbound, 10) : null,
                 seatReturn: form.dataset.seatReturn ? parseInt(form.dataset.seatReturn, 10) : null
             };
-            if (!data.first_name || !data.last_name || !data.passport_number || !data.date_of_birth || !data.seatOutbound) { alert(`נא למלא את כל הפרטים (כולל ת. לידה וכיסא הלוך) לנוסע ${idx}.`); this.#ui.showLoading(false); return; }
-            if (this.#state.tripType === 'round-trip' && !data.seatReturn) { alert(`נא לבחור כיסא חזור לנוסע ${idx}.`); this.#ui.showLoading(false); return; }
+            if (!data.first_name || !data.last_name || !data.passport_number || !data.date_of_birth || !data.seatOutbound) { alert(`Please fill in all details (including birth date and seat number) for the passenger.${idx}.`); this.#ui.showLoading(false); return; }
+            if (this.#state.tripType === 'round-trip' && !data.seatReturn) { alert(`Please select a seat for the passenger.${idx}.`); this.#ui.showLoading(false); return; }
             dataToSubmit.push(data);
         }
         console.log("Data collected to submit (seat IDs are from 'seats' table):", dataToSubmit);
@@ -568,12 +568,12 @@ export class SearchController {
 
             }
 
-            alert("ההזמנה בוצעה בהצלחה!");
+            alert("The order was placed successfully!");
             window.location.reload();
 
         } catch (error) {
             console.error("Booking failed:", error);
-            alert(`שגיאה בהזמנה: ${error.message}`);
+            alert(`Order error: ${error.message}`);
         } finally {
             this.#ui.showLoading(false);
         }
