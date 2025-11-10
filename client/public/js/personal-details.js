@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function handleCvvVerification() {
         const cvv = cvvVerificationInput.value.trim();
         if (!cvv || cvv.length < 3) {
-            cvvVerifyError.textContent = 'Please enter a CVV (3-4 digits).';
+            cvvVerifyError.textContent = 'Please enter a CVV (3 digits).';
             return;
         }
         
