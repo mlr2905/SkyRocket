@@ -361,7 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 9. Attach Event Listeners ---
-    // (הלוגיקה הזו נשארת זהה)
     editButton.addEventListener('click', () => toggleEdit(true));
     form.addEventListener('submit', handleFormSubmit);
     cvvVerifyButton.addEventListener('click', handleCvvVerification); 
