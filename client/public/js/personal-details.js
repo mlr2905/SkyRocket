@@ -89,10 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     phoneInput.value = fullPhone;
                 }
 
-                creditCardDisplay.value = customer.credit_card || 'No card on file';
-                expiryDateDisplay.value = customer.expiry_date || 'N/A';
+               creditCardDisplay.value = customer.credit_card || 'No card on file';
 
+                let expiry = customer.expiry_date || 'N/A';
+                if (expiry && expiry.length === 4 && !expiry.includes('/')) {
+                    expiry = expiry.substring(0, 2) + '/' + expiry.substring(2, 4);
+                }
+                expiryDateDisplay.value = expiry;
                 customerExists = true;
+                
             } else if (customerRes.status === 404) {
                 customerExists = false; 
                 showMessage('It looks like this is your first time here. Please fill in your customer details.', 'info');
