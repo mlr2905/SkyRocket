@@ -571,21 +571,7 @@ async function create_user(user) {
   }
 }
 
-async function verify_cvv(user_id, cvv) {
-    logger.debug(`DAL: Verifying CVV for user_id: ${user_id}`);
-    try {
-        const customer = await connectedKnex('customers')
-            .select('id')
-            .where('user_id', user_id)
-            .andWhere('cvv', cvv) 
-            .first();
-        
-        return !!customer; 
-    } catch (error) {
-        logger.error('Error verifying CVV in DAL:', error);
-        throw error;
-    }
-}
+
 
 
 /**
@@ -700,6 +686,25 @@ async function get_qr(id) {
     throw error
   }
 }
+async function verify_cvv(user_id, cvv) {
+    logger.info(`BL: Verifying CVV for user ${user_id}`);
+    try {
+        const isCorrect = await dal_4.verify_cvv(user_id, cvv); 
+        
+        if (!isCorrect) {
+            logger.warn(`CVV verification failed for user ${user_id}`);
+            return { success: false, message: 'CVV שגוי' };
+        }
+
+        logger.info(`CVV verification successful for user ${user_id}`);
+        return { success: true, message: 'CVV אומת' };
+
+    } catch (error) {
+        logger.error(`Error in BL verify_cvv:`, error);
+        throw error;
+    }
+}
+
 
 /**
  * Updates user details.
@@ -1119,8 +1124,8 @@ module.exports = {
   signupWebAuthn,
   loginWebAuthn,
   get_all_chairs_by_flight,
-  verify_cvv,
   valid_email,
+  verify_cvv,
   authcode,
   login_code,
   login,

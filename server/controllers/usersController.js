@@ -454,7 +454,6 @@ exports.deleteUser = async (req, res) => {
 };
 
 // --- Secure paths (client) ---
-
 exports.verifyCustomerCvv = async (req, res) => {
     logger.info('Received request to verify CVV');
     try {

@@ -88,7 +88,24 @@ async function new_customer(new_cus) {
     }
 }
 
-//
+async function verify_cvv(user_id, cvv) {
+    logger.debug(`DAL: Verifying CVV for user_id: ${user_id}`);
+    try {
+        const customer = await connectedKnex('customers')
+            .select('id')
+            .where('user_id', user_id)
+            .andWhere('cvv', cvv)
+            .first();
+        
+        return !!customer; 
+    } catch (error) {
+        logger.error('Error verifying CVV in DAL:', error);
+        throw error;
+    }
+}
+
+
+
 async function get_by_id(id) {
     logger.debug(`Looking up customer by user_ID: ${id}`)
     
@@ -277,6 +294,7 @@ async function set_id(id) {
 module.exports = {
     get_all,
     get_by_id,
+    verify_cvv,
     new_customer,
     update_customer,
     delete_customer,
