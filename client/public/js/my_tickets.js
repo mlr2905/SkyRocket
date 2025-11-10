@@ -1,4 +1,4 @@
-// קובץ: js/my-tickets.js
+import { PLANE_LAYOUTS } from './planeLayouts.js'; 
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageContainer.className = `alert alert-${type}`;
         messageContainer.style.display = 'block';
     }
-
+   
     function generateQRCode(element, text) {
         try {
             const qr = qrcode(4, 'M');
@@ -31,12 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+ 
     function formatDateTime(dateTimeString) {
         if (!dateTimeString) return 'N/A';
         const date = new Date(dateTimeString);
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
+  
     async function handleCancelTicket(event) {
         const cardElement = event.target.closest('.ticket-card');
         const ticketId = cardElement.dataset.ticketId;
@@ -76,6 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             loadingSpinner.style.display = 'none';
         }
+    }
+
+    function getSeatName(plane_id, chair_id) {
+        if (!plane_id || !chair_id || !PLANE_LAYOUTS[plane_id]) {
+            return 'N/A';
+        }
+        const layout = PLANE_LAYOUTS[plane_id];
+        const seat = layout.find(s => s.id === chair_id);
+        return seat ? seat.name : 'N/A';
     }
 
     async function loadMyTickets() {
@@ -118,12 +129,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.querySelector('[data-field="landing_time"]').textContent = `Arrives: ${formatDateTime(ticket.landing_time)}`;
                 card.querySelector('[data-field="ticket_code"]').textContent = ticket.ticket_code || 'N/A';
 
-                // --- תיקון: הצגת שם הכיסא ---
                 const seatNameEl = card.querySelector('[data-field="seat_name"]');
-                if (ticket.chair_name) {
-                    seatNameEl.textContent = `Seat: ${ticket.chair_name}`;
+                const chairName = getSeatName(ticket.plane_id, ticket.chair_id);
+                if (chairName !== 'N/A') {
+                    seatNameEl.textContent = `Seat: ${chairName}`;
                 } else {
-                    seatNameEl.style.display = 'none';
+                    seatNameEl.style.display = 'none'; 
                 }
                 
                 const qrPlaceholder = card.querySelector('.qrcode-placeholder');

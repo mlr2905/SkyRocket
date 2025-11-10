@@ -7,7 +7,6 @@ logger.info('Tickets DAL module initialized')
 
 // ---------------User functions only and admin---------------
 
-//
 async function get_tickets_by_user_id(user_id) {
     logger.info(`DAL: Fetching all tickets for user_id: ${user_id}`);
     try {
@@ -17,18 +16,18 @@ async function get_tickets_by_user_id(user_id) {
             .join('airlines as a', 'f.airline_id', 'a.id')
             .join('countries as origin_c', 'f.origin_country_id', 'origin_c.id')
             .join('countries as dest_c', 'f.destination_country_id', 'dest_c.id')
-            .leftJoin('chairs', 't.chair_id', 'chairs.id') 
             .select(
                 't.id as ticket_id',
                 't.ticket_code',
+                't.chair_id', 
                 'p.first_name',
                 'p.last_name',
                 'f.departure_time',
                 'f.landing_time',
+                'f.plane_id', 
                 'a.name as airline_name',
                 'origin_c.country_name as origin_country',
-                'dest_c.country_name as destination_country',
-                'chairs.name as chair_name'
+                'dest_c.country_name as destination_country'
             )
             .where('t.user_id', user_id)
             .orderBy('f.departure_time', 'desc');
