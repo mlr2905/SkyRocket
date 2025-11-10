@@ -490,12 +490,13 @@ export class SearchController {
         modal.show();
     }
 
+    //
     #handleConfirmBooking = async () => {
         console.log("Confirming booking...");
         this.#ui.showLoading(true);
         const forms = this.#elements.passengerFormsContainer.querySelectorAll('.passenger-form');
         let dataToSubmit = [];
-        
+
         for (const form of forms) {
             const idx = form.dataset.index;
             const data = {
@@ -523,6 +524,7 @@ export class SearchController {
         console.log("Data collected to submit (seat IDs are from 'seats' table):", dataToSubmit);
 
         try {
+
             for (const data of dataToSubmit) {
                 // --- 1. Create Passenger ---
                 const pRes = await fetch(C.API_PASSENGERS_URL, {
@@ -571,7 +573,6 @@ export class SearchController {
                     });
                     if (!cRetRes.ok) { const err = await cRetRes.json(); throw new Error(`Return seat assignment failed: ${err.error || cRetRes.statusText}`); }
                 }
-
                 // --- 4. Creating separate tickets ---
 
                 // Creating a return ticket
@@ -587,15 +588,16 @@ export class SearchController {
                 });
                 if (!tOutRes.ok) { const err = await tOutRes.json(); throw new Error(`Outbound ticket creation failed: ${err.error || tOutRes.statusText}`); }
 
+                // Create a return ticket (if one exists)
                 if (this.#state.tripType === 'round-trip' && returnSeatId) {
                     const tRetRes = await fetch(C.API_TICKETS_URL, {
                         method: 'POST',
                         credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            flight_id: this.#state.selectedReturnFlight.id,
+                            flight_id: this.#state.selectedReturnFlight.id, 
                             passenger_id: passengerId,
-                            chair_id: returnSeatId
+                            chair_id: returnSeatId 
                         })
                     });
                     if (!tRetRes.ok) { const err = await tRetRes.json(); throw new Error(`Return ticket creation failed: ${err.error || tRetRes.statusText}`); }
@@ -603,7 +605,7 @@ export class SearchController {
             }
 
             alert("Booking was successful!");
-            window.location.href = '/my-tickets.html'; // העבר ישר לדף הכרטיסים
+            window.location.href = '/my-tickets.html'; 
 
         } catch (error) {
             console.error("Booking failed:", error);
