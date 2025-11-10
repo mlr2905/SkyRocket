@@ -230,12 +230,12 @@ export class SearchController {
     #state = {
         currentNumber: 1,
         tripType: 'round-trip',
-        selectedOutboundFlight: null, // Stores the full flight object
-        selectedReturnFlight: null,   // Stores the full flight object
+        selectedOutboundFlight: null,
+        selectedReturnFlight: null,
         selectedOrigin: { id: null, name: '' },
         selectedDestination: { id: null, name: '' },
-        uniqueCountriesCache: [], // Stores [{ id, name }]
-        destinationsCache: []   // Stores [{ id, name }]
+        uniqueCountriesCache: [],
+        destinationsCache: []
     };
     #ui;
 
@@ -342,24 +342,20 @@ export class SearchController {
         this.#elements.passengerFormsContainer?.addEventListener('click', this.#handleSelectSeatClick);
     }
 
-    // --- Event Handlers ---
     #handleLogout = () => { alert("You have been logged out!"); this.#ui.updateLoginStatus(false); }
-    // פונקציה חדשה לטיפול במחיקת חשבון
-    // פונקציה חדשה לטיפול במחיקת חשבון
-    #handleDeleteAccount = async (event) => {
-        event.preventDefault(); // מנע מהקישור לנווט
 
-        // 1. בקש אישור מהמשתמש (חשוב!)
+    #handleDeleteAccount = async (event) => {
+        event.preventDefault();
+
         const isConfirmed = confirm("האם אתה בטוח שברצונך למחוק את החשבון? \nפעולה זו היא סופית ולא ניתן לשחזר אותה.");
 
         if (!isConfirmed) {
-            return; // המשתמש ביטל
         }
+            return;
 
-        this.#ui.showLoading(true);
-
+            this.#ui.showLoading(true);
+        }
         try {
-            // 2. שלח בקשת DELETE לנתיב החדש שיצרנו
             const response = await fetch('/role_users/me', {
                 method: 'DELETE',
             });
@@ -370,14 +366,14 @@ export class SearchController {
             }
 
             alert('החשבון נמחק בהצלחה. הנך מועבר לדף הבית.');
-            window.location.href = '/'; 
+            window.location.href = '/';
 
         } catch (error) {
-                        
+
             console.error('Delete account failed:', error.message);
-            
+
             alert('מחיקת החשבון נכשלה. אנא פנה לשירות הלקוחות.');
-            
+
 
         } finally {
             this.#ui.showLoading(false);
@@ -498,7 +494,6 @@ export class SearchController {
         console.log("Confirming booking..."); this.#ui.showLoading(true);
         const forms = this.#elements.passengerFormsContainer.querySelectorAll('.passenger-form');
         let dataToSubmit = [];
-        // 1. איסוף וולידציה (כולל המרה למספר)
         for (const form of forms) {
             const idx = form.dataset.index;
             const data = {
@@ -507,8 +502,8 @@ export class SearchController {
                 last_name: form.querySelector('[name="last_name"]').value.trim(),
                 passport_number: form.querySelector('[name="passport_number"]').value.trim(),
                 date_of_birth: form.querySelector('[name="date_of_birth"]').value,
-                seatOutbound: form.dataset.seatOutbound ? parseInt(form.dataset.seatOutbound, 10) : null, // ID מספרי מטבלת seats
-                seatReturn: form.dataset.seatReturn ? parseInt(form.dataset.seatReturn, 10) : null     // ID מספרי מטבלת seats
+                seatOutbound: form.dataset.seatOutbound ? parseInt(form.dataset.seatOutbound, 10) : null,
+                seatReturn: form.dataset.seatReturn ? parseInt(form.dataset.seatReturn, 10) : null
             };
             if (!data.first_name || !data.last_name || !data.passport_number || !data.date_of_birth || !data.seatOutbound) { alert(`נא למלא את כל הפרטים (כולל ת. לידה וכיסא הלוך) לנוסע ${idx}.`); this.#ui.showLoading(false); return; }
             if (this.#state.tripType === 'round-trip' && !data.seatReturn) { alert(`נא לבחור כיסא חזור לנוסע ${idx}.`); this.#ui.showLoading(false); return; }
@@ -519,9 +514,7 @@ export class SearchController {
         try {
             const customer_id = 1;
 
-            // 2. עיבוד כל נוסע בלולאה
             for (const data of dataToSubmit) {
-                // A. יצירת נוסע
                 const pRes = await fetch(C.API_PASSENGERS_URL, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -536,43 +529,36 @@ export class SearchController {
                 if (!pRes.ok) throw new Error(`Passenger creation failed: ${newPassenger.error || 'Unknown error'}`);
                 const passengerId = newPassenger.id;
 
-                // B. הקצאת כיסא הלוך (לטבלת chairs_taken)
-                const outboundSeatId = data.seatOutbound; // ID מטבלת seats
+                const outboundSeatId = data.seatOutbound;
                 const cOutRes = await fetch(C.API_CHAIRS_URL, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         flight_id: this.#state.selectedOutboundFlight.id,
-                        char_id: outboundSeatId, // שולחים ID מטבלת seats ל-chairs_taken
+                        char_id: outboundSeatId,
                         passenger_id: passengerId
-                        // user_id: user_id
                     })
                 });
                 if (!cOutRes.ok) { const err = await cOutRes.json(); throw new Error(`Outbound seat assignment failed: ${err.error || cOutRes.statusText}`); }
-                // כאן אין צורך לקרוא את התגובה אם לא משתמשים ב-ID ההקצאה
 
-                // C. הקצאת כיסא חזור (לטבלת chairs_taken, אם קיים)
-                let returnSeatId = null; // אתחל כ-null
+                let returnSeatId = null;
                 if (data.seatReturn) {
-                    returnSeatId = data.seatReturn; // ID מטבלת seats
+                    returnSeatId = data.seatReturn;
                     const cRetRes = await fetch(C.API_CHAIRS_URL, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             flight_id: this.#state.selectedReturnFlight.id,
-                            char_id: returnSeatId, // שולחים ID מטבלת seats ל-chairs_taken
+                            char_id: returnSeatId,
                             passenger_id: passengerId
-                            // user_id: user_id
                         })
                     });
                     if (!cRetRes.ok) { const err = await cRetRes.json(); throw new Error(`Return seat assignment failed: ${err.error || cRetRes.statusText}`); }
-                    // כאן אין צורך לקרוא את התגובה אם לא משתמשים ב-ID ההקצאה
                 }
 
-                // D. יצירת כרטיס (עם השדות החדשים)
                 const tRes = await fetch(C.API_TICKETS_URL, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         flight_id: this.#state.selectedOutboundFlight.id,
-                        // customer_id: customer_id,
+                        customer_id: customer_id,
                         passenger_id: passengerId,
                         outbound_chair_id: outboundSeatId,
                         return_chair_id: returnSeatId
@@ -580,9 +566,8 @@ export class SearchController {
                 });
                 if (!tRes.ok) { const err = await tRes.json(); throw new Error(`Ticket creation failed for passenger ${data.index}: ${err.error || tRes.statusText}`); }
 
-            } // סוף הלולאה
+            }
 
-            // 3. הצלחה
             alert("ההזמנה בוצעה בהצלחה!");
             window.location.reload();
 
