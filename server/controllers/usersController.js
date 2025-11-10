@@ -455,6 +455,31 @@ exports.deleteUser = async (req, res) => {
 
 // --- Secure paths (client) ---
 
+exports.verifyCustomerCvv = async (req, res) => {
+    logger.info('Received request to verify CVV');
+    try {
+        const numeric_id = await getNumericIdFromToken(req);
+        
+        const { cvv } = req.body;
+        if (!cvv) {
+            return res.status(400).json({ "e": "yes", "error": "No CVV provided." });
+        }
+
+        const result = await bl.verify_cvv(numeric_id, cvv);
+
+        if (!result.success) {
+            res.status(401).json({ "e": "yes", "error": result.message });
+        } else {
+            
+            res.status(200).json({ "e": "no", "message": result.message });
+        }
+        
+    } catch (error) {
+        logger.error('Error in verifyCustomerCvv controller:', error);
+        res.status(503).json({ "error": `The request failed, try again later` });
+    }
+};
+
 exports.customersById = async (req, res) => {
     logger.info(`Customer details request`);
     try {

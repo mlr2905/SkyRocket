@@ -571,6 +571,23 @@ async function create_user(user) {
   }
 }
 
+async function verify_cvv(user_id, cvv) {
+    logger.debug(`DAL: Verifying CVV for user_id: ${user_id}`);
+    try {
+        const customer = await connectedKnex('customers')
+            .select('id')
+            .where('user_id', user_id)
+            .andWhere('cvv', cvv) 
+            .first();
+        
+        return !!customer; 
+    } catch (error) {
+        logger.error('Error verifying CVV in DAL:', error);
+        throw error;
+    }
+}
+
+
 /**
  * Validates an email address using external service.
  * @param {string} email - Email to validate.
@@ -1102,6 +1119,7 @@ module.exports = {
   signupWebAuthn,
   loginWebAuthn,
   get_all_chairs_by_flight,
+  verify_cvv,
   valid_email,
   authcode,
   login_code,

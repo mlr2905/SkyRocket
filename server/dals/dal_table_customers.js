@@ -88,29 +88,37 @@ async function new_customer(new_cus) {
     }
 }
 
+//
 async function get_by_id(id) {
-    logger.debug(`Looking up customer by ID: ${id}`)
-
+    logger.debug(`Looking up customer by user_ID: ${id}`)
+    
     try {
         const customer = await connectedKnex('customers')
             .select(
-                'customers.*',
+                'customers.id',
+                'customers.first_name',
+                'customers.last_name',
+                'customers.address',
+                'customers.phone',
+                'customers.expiry_date', 
+                'customers.user_id',
+            
                 'users.username as user_name',
-                connectedKnex.raw("CONCAT('************', RIGHT(customers.credit_card, 4)) AS credit_card")
+                connectedKnex.raw("CONCAT('************', RIGHT(customers.credit_card, 4)) AS credit_card") 
             )
             .leftJoin('users', 'users.id', '=', 'customers.user_id')
             .where('customers.user_id', id)
             .first();
-
+            
         if (customer) {
-            logger.debug(`Customer found by ID: ${id}`)
+            logger.debug(`Customer found by user_ID: ${id}`)
             return customer
         } else {
-            logger.debug(`No customer found with ID: ${id}`)
+            logger.debug(`No customer found with user_ID: ${id}`)
             return null
         }
     } catch (error) {
-        logger.error(`Error looking up customer by ID ${id}:`, error)
+        logger.error(`Error looking up customer by user_ID ${id}:`, error)
         throw error
     }
 }

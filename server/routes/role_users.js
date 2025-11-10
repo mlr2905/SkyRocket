@@ -34,6 +34,7 @@ router.put('/users/:id', protect, usersController.updateUser);
 router.delete('/me', protect, usersController.deleteMe); 
 // נתיבי לקוחות (פרטי לקוח קשורים למשתמש מחובר)
 router.get('/customers/:id', protect, usersController.customersById);
+router.post('/customers/verify-cvv', protect, usersController.verifyCustomerCvv);
 router.post('/customers', protect, usersController.createCustomer);
 router.put('/customers/:id', protect, usersController.updateCustomer);
 
