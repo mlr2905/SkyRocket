@@ -2,7 +2,7 @@
 import * as C from '../utils/constants.js';
 import * as SearchService from '../services/searchService.js';
 import { SearchUIHandler } from './SearchUIHandler.js';
-import { PLANE_LAYOUTS } from './planeLayouts.js';
+import { PLANE_LAYOUTS } from '../planeLayouts.js';
 
 export class SearchController {
     #elements = {};
