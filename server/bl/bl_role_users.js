@@ -13,11 +13,10 @@ async function signupWebAuthn(registrationData) {
   const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/register';
 
   try {
-    // Validate input data
     const payload = {
       email: registrationData.user.email,
-      credentialID: registrationData.body.credentialID,
-      publicKey: registrationData.body.publicKey || registrationData.attestationObject,
+      attestationObject: registrationData.body.attestationObject,
+      clientDataJSON: registrationData.body.clientDataJSON, publicKey: registrationData.body.attestationObject,
       credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
     };
 

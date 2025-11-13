@@ -34,11 +34,15 @@ export function redirectToGit() {
     window.location.href = C.GIT_AUTH_URL;
 }
 
-export async function registerBiometricAPI(email, credentialID, publicKey, clientData) {
+export async function registerBiometricAPI(credentialID, attestationObject, clientDataJSON) {
     return apiRequest(C.API_REG_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credentialID, publicKey, clientData }),
+        body: JSON.stringify({ 
+            credentialID, 
+            attestationObject,
+            clientDataJSON
+        }),
     });
 }
 

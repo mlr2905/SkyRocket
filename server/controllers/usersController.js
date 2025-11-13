@@ -71,6 +71,7 @@ if (!email || !credentialID || !signature || !clientDataJSON) {
     return res.status(400).json({ "e": "yes", "error": "Missing required fields" });
 }
 
+
 try {
     const { authenticatorData } = req.body;
 
