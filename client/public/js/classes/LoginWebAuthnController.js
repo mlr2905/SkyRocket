@@ -64,12 +64,16 @@ export class WebAuthnController {
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
 
-            const publicKeyOptions = {
+           const publicKeyOptions = {
                 challenge: challenge,
                 rp: { name: "Your biometric authentication system", id: window.location.hostname },
                 user: { id: new TextEncoder().encode(email), name: email, displayName: email },
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-                authenticatorSelection: { authenticatorAttachment: "platform", requireResidentKey: false, userVerification: "required" },
+                authenticatorSelection: {
+                    authenticatorAttachment: "platform",
+                    requireResidentKey: true, // <-- שנה ל-true
+                    userVerification: "required"
+                },
                 timeout: 60000,
                 attestation: "none"
             };
