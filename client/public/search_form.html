@@ -115,6 +115,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarUserMenu">
                         <li><a class="dropdown-item" href="/personal-details.html">פרטים אישיים</a></li>
                         <li><a class="dropdown-item" href="/my-tickets.html">כרטיסים שנרכשו</a></li>
+                        <li><a class="dropdown-item" id="register-biometric-link" href="#">הוספת טביעת אצבע</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -136,6 +137,8 @@
         <header class="text-center my-4">
             <h1 class="display-5 fw-light">Find your next flight</h1>
         </header>
+        <div id="webauthn-message-area" class="message"
+            style="display: none; padding: 15px; border-radius: 5px; margin-bottom: 20px;"></div>
 
         <div class="search-form-container shadow p-4 p-md-5 rounded-3" id="search-form-group">
             <form class="row g-3 align-items-end">

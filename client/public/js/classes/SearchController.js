@@ -3,6 +3,7 @@ import * as C from '../utils/constants.js';
 import * as SearchService from '../services/searchService.js';
 import { SearchUIHandler } from './SearchUIHandler.js';
 import { PLANE_LAYOUTS } from '../planeLayouts.js';
+import { WebAuthnController } from './LoginWebAuthnController.js'; 
 
 export class SearchController {
     #elements = {};
@@ -17,10 +18,16 @@ export class SearchController {
         destinationsCache: []
     };
     #ui;
+    #webAuthn;
 
     constructor() {
         this.#selectDOMElements();
         this.#ui = new SearchUIHandler(this.#elements);
+        this.#webAuthn = new WebAuthnController({
+            biometricStatus: null,
+            messageElement: this.#elements.webAuthnMessage, 
+            emailInput: null 
+        });
         this.#attachEventListeners();
         this.#initializePage();
     }
@@ -59,7 +66,9 @@ export class SearchController {
             seatMapModal: document.getElementById('seat-map-modal'),
             seatMapGrid: document.getElementById('seat-map-grid'),
             seatMapTitle: document.getElementById('seat-map-title'),
-            confirmSeatButton: document.getElementById('confirm-seat-btn')
+            confirmSeatButton: document.getElementById('confirm-seat-btn'),
+            registerBiometricLink: document.getElementById('register-biometric-link'),
+            webAuthnMessage: document.getElementById('webauthn-message-area')
         };
     }
 
@@ -119,6 +128,7 @@ export class SearchController {
         this.#elements.backToFlightsButton?.addEventListener('click', this.#handleBackToFlights);
         this.#elements.confirmBookingButton?.addEventListener('click', this.#handleConfirmBooking);
         this.#elements.passengerFormsContainer?.addEventListener('click', this.#handleSelectSeatClick);
+        this.#elements.registerBiometricLink?.addEventListener('click', this.#handleRegisterBiometricClick);
     }
 
     #handleLogout = () => { alert("You have been logged out!"); this.#ui.updateLoginStatus(false); }
@@ -391,6 +401,22 @@ export class SearchController {
             alert(`Booking Error: ${error.message}`);
         } finally {
             this.#ui.showLoading(false);
+        }
+    }
+    #handleRegisterBiometricClick = async (e) => {
+        e.preventDefault();
+      
+        const email = localStorage.getItem('userEmail');
+        
+        if (!email) {
+            alert('Could not find your user email. Please log in again.');
+            return;
+        }
+        const newCredentialID = await this.#webAuthn.handleRegisterBiometric(email);
+
+        if (newCredentialID) {
+        
+            localStorage.setItem('credentialID', newCredentialID);
         }
     }
 }

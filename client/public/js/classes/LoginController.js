@@ -152,7 +152,7 @@ export class LoginController {
 
         this.#connectButton.removeAttribute('onclick');
 
-        this.#connectButton.addEventListener('click', this.#boundHandleConnect); // Default handler
+        this.#connectButton.addEventListener('click', this.#boundHandleConnect);
 
         // --- Other Auth ---
 
@@ -173,24 +173,29 @@ export class LoginController {
     }
 
     // --- Main Auth Handlers ---
+
     async #handleBiometricLogin() {
         const email = this.#emailInput.value || this.userEmail;
+        if (!email) {
+             this.#successMessage.textContent = 'Please enter an email first.';
+             return;
+        }
+        
         const result = await this.#webAuthn.handleLoginBiometric(email);
 
         if (result.success) {
-            console.log("DDDDDD", JSON.stringify(result));
-
-         
             this.#successMessage.textContent = result.message;
             window.location.href = result.redirectUrl;
-
+        } else if (result.code === 'MUST_REGISTER') {
+            this.#successMessage.textContent = 'This device is not registered. The domain must be registered through the personal domain.';
+        
         } else if (result.newCredentialID) {
             this.credentialID = result.newCredentialID;
         } else if (result.message) {
             this.#successMessage.textContent = result.message;
         }
     }
-    
+
     async #handleAuthCode(event) {
         event.preventDefault();
         const email = this.#emailInput.value;

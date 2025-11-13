@@ -15,7 +15,7 @@ async function signupWebAuthn(registrationData) {
   try {
     // Validate input data
     const payload = {
-      email: registrationData.body.email,
+      email: registrationData.user.email,
       credentialID: registrationData.body.credentialID,
       publicKey: registrationData.body.publicKey || registrationData.attestationObject,
       credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
@@ -687,22 +687,22 @@ async function get_qr(id) {
   }
 }
 async function verify_cvv(user_id, cvv) {
-    logger.info(`BL: Verifying CVV for user ${user_id}`);
-    try {
-        const isCorrect = await dal_4.verify_cvv(user_id, cvv); 
-        
-        if (!isCorrect) {
-            logger.warn(`CVV verification failed for user ${user_id}`);
-            return { success: false, message: 'CVV שגוי' };
-        }
+  logger.info(`BL: Verifying CVV for user ${user_id}`);
+  try {
+    const isCorrect = await dal_4.verify_cvv(user_id, cvv);
 
-        logger.info(`CVV verification successful for user ${user_id}`);
-        return { success: true, message: 'CVV אומת' };
-
-    } catch (error) {
-        logger.error(`Error in BL verify_cvv:`, error);
-        throw error;
+    if (!isCorrect) {
+      logger.warn(`CVV verification failed for user ${user_id}`);
+      return { success: false, message: 'CVV שגוי' };
     }
+
+    logger.info(`CVV verification successful for user ${user_id}`);
+    return { success: true, message: 'CVV אומת' };
+
+  } catch (error) {
+    logger.error(`Error in BL verify_cvv:`, error);
+    throw error;
+  }
 }
 
 
@@ -779,7 +779,7 @@ async function new_customer(new_cus) {
 
   try {
     logger.debug(`Validating credit card`)
-    const Credit_check = await dal_4.credit_check(new_cus.credit_card,new_cus.user_id)
+    const Credit_check = await dal_4.credit_check(new_cus.credit_card, new_cus.user_id)
 
     if (Credit_check) {
 
@@ -834,35 +834,35 @@ async function get_by_id_customer(id) {
  * @returns {Promise<object>} Update result { success: true/false, ... }
  */
 async function update_customer(user_id, update_data) {
-    logger.info(`BL: Updating customer for user_id: ${user_id}`);
-    
-    try {
-      
-        if (update_data.credit_card) { 
-            logger.debug(`Validating new credit card for user ${user_id}`);
-            
-            const check = await dal_4.credit_check(update_data.credit_card, user_id);
+  logger.info(`BL: Updating customer for user_id: ${user_id}`);
 
-            if (!check.available) {
-                logger.warn(`Credit card validation failed: ${check.message}. Update aborted.`);
-                return { success: false, error: check.message };
-            }
-        }
-       
-        const result = await dal_4.update_customer(user_id, update_data);
-        
-        if (result === null) {
-             logger.warn(`BL: Customer update failed. DAL found no user for ID ${user_id}`);
-             return { success: false, error: 'Customer not found in DAL' };
-        }
+  try {
 
-        logger.info(`BL: Customer update successful for user_id: ${user_id}`);
-        return { success: true, data: { rowsAffected: result } }; 
+    if (update_data.credit_card) {
+      logger.debug(`Validating new credit card for user ${user_id}`);
 
-    } catch (error) {
-        logger.error(`Error in BL update_customer:`, error);
-        throw error;
+      const check = await dal_4.credit_check(update_data.credit_card, user_id);
+
+      if (!check.available) {
+        logger.warn(`Credit card validation failed: ${check.message}. Update aborted.`);
+        return { success: false, error: check.message };
+      }
     }
+
+    const result = await dal_4.update_customer(user_id, update_data);
+
+    if (result === null) {
+      logger.warn(`BL: Customer update failed. DAL found no user for ID ${user_id}`);
+      return { success: false, error: 'Customer not found in DAL' };
+    }
+
+    logger.info(`BL: Customer update successful for user_id: ${user_id}`);
+    return { success: true, data: { rowsAffected: result } };
+
+  } catch (error) {
+    logger.error(`Error in BL update_customer:`, error);
+    throw error;
+  }
 }
 
 /**
@@ -1011,14 +1011,14 @@ async function new_chair_assignment(chairData) {
 }
 
 async function get_my_tickets(numeric_id) {
-    logger.info(`BL: Fetching tickets for user ID: ${numeric_id}`);
-    try {
-        const tickets = await dal_7.get_tickets_by_user_id(numeric_id);
-        return tickets;
-    } catch (error) {
-        logger.error(`Error in BL get_my_tickets for user ${numeric_id}:`, error);
-        throw error;
-    }
+  logger.info(`BL: Fetching tickets for user ID: ${numeric_id}`);
+  try {
+    const tickets = await dal_7.get_tickets_by_user_id(numeric_id);
+    return tickets;
+  } catch (error) {
+    logger.error(`Error in BL get_my_tickets for user ${numeric_id}:`, error);
+    throw error;
+  }
 }
 
 
@@ -1132,29 +1132,29 @@ async function get_by_id_passenger(id) {
   }
 }
 async function cancel_ticket(numeric_user_id, ticket_id) {
-    logger.info(`BL: User ${numeric_user_id} attempting to cancel ticket ${ticket_id}`);
-    try {
-        const ticket = await dal_7.get_by_id(ticket_id); 
-        if (!ticket) {
-            throw new Error("Ticket not found.");
-        }
-
-        if (ticket.user_id !== numeric_user_id) {
-            logger.warn(`BL: Auth failed. User ${numeric_user_id} does not own ticket ${ticket_id}.`);
-            throw new Error("You are not authorized to cancel this ticket.");
-        }
-
-        await dal_6.delete_chair_assignment(ticket.flight_id, ticket.chair_id);
-
-        await dal_7.delete_ticket(ticket_id);
-
-        logger.info(`BL: Ticket ${ticket_id} and its seat assignment were successfully cancelled.`);
-        return { success: true, message: "Ticket cancelled successfully." };
-
-    } catch (error) {
-        logger.error(`Error in BL cancel_ticket for ticket ${ticket_id}:`, error);
-        throw error;
+  logger.info(`BL: User ${numeric_user_id} attempting to cancel ticket ${ticket_id}`);
+  try {
+    const ticket = await dal_7.get_by_id(ticket_id);
+    if (!ticket) {
+      throw new Error("Ticket not found.");
     }
+
+    if (ticket.user_id !== numeric_user_id) {
+      logger.warn(`BL: Auth failed. User ${numeric_user_id} does not own ticket ${ticket_id}.`);
+      throw new Error("You are not authorized to cancel this ticket.");
+    }
+
+    await dal_6.delete_chair_assignment(ticket.flight_id, ticket.chair_id);
+
+    await dal_7.delete_ticket(ticket_id);
+
+    logger.info(`BL: Ticket ${ticket_id} and its seat assignment were successfully cancelled.`);
+    return { success: true, message: "Ticket cancelled successfully." };
+
+  } catch (error) {
+    logger.error(`Error in BL cancel_ticket for ticket ${ticket_id}:`, error);
+    throw error;
+  }
 }
 
 

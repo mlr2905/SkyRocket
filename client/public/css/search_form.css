@@ -1,23 +1,14 @@
-/* =====================================================
-   הגדרות בסיס וגוף
-   ===================================================== */
+
 body {
     font-family: 'Raleway', Arial, sans-serif;
-    background-color: #f4f7f6; /* רקע אפור בהיר ונקי */
-    color: #333; /* צבע טקסט כהה */
+    background-color: #f4f7f6; 
+    color: #333; 
     margin: 0;
-    padding-top: 80px; /* מרווח עבור ה-Navbar הקבוע */
+    padding-top: 80px; 
 }
 
 h1, h2 {
-    font-weight: 300; /* פונט קליל יותר לכותרות */
-}
-
-/* =====================================================
-   Navbar
-   ===================================================== */
-.navbar {
-    /* העיצוב מגיע ישירות מ-Bootstrap (bg-white, shadow-sm, fixed-top) */
+    font-weight: 300;
 }
 
 .navbar-brand {
@@ -33,9 +24,6 @@ h1, h2 {
     color: #0066ff !important;
 }
 
-/* =====================================================
-   טופס חיפוש ("כרטיס")
-   ===================================================== */
 .search-form-container {
     background-color: #ffffff;
     border-radius: 12px;
@@ -50,7 +38,7 @@ h1, h2 {
 .search-form-container .form-control {
     background-color: #f8f9fa;
     border: 1px solid #ddd;
-    height: 48px; /* גובה אחיד לשדות */
+    height: 48px; 
 }
 
 .search-form-container .form-control:focus {
@@ -63,13 +51,12 @@ h1, h2 {
     background-color: #e9ecef;
 }
 
-/* כפתור חיפוש ראשי */
 #search {
     background-color: #0066ff;
     border-color: #0066ff;
     padding: 0.5rem 1rem;
-    height: 48px; /* גובה אחיד */
-    line-height: 1; /* ממקם את האייקון */
+    height: 48px; 
+    line-height: 1; 
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -84,18 +71,15 @@ h1, h2 {
     cursor: not-allowed;
 }
 
-/* =====================================================
-   תיקון רשימת השלמה אוטומטית
-   ===================================================== */
 #from-list, #to-list {
     max-height: 200px;
     overflow-y: auto;
     border: 1px solid #ddd;
-    background-color: #fff; /* רקע לבן */
-    color: #333; /* טקסט שחור */
+    background-color: #fff; 
+    color: #333;
     position: absolute;
     z-index: 1000;
-    top: 100%; /* מיקום מיד מתחת ל-input */
+    top: 100%;
     left: 0;
     right: 0;
     border-top: none;
@@ -109,12 +93,10 @@ h1, h2 {
 }
 
 .autocomplete-item:hover {
-    background-color: #f0f5ff; /* רקע כחלחל עדין */
+    background-color: #f0f5ff; 
 }
 
-/* =====================================================
-   כפתורי נוסעים
-   ===================================================== */
+
 .passengers-container {
     display: flex;
     align-items: center;
@@ -137,9 +119,9 @@ h1, h2 {
     font-size: 18px;
     cursor: pointer;
     color: #0066ff;
-    background-color: transparent; /* רקע שקוף */
+    background-color: transparent; 
     border: none;
-    border-radius: 50%; /* עיגול מושלם */
+    border-radius: 50%;
     width: 32px;
     height: 32px;
     display: flex;
@@ -157,14 +139,12 @@ h1, h2 {
     cursor: not-allowed;
 }
 
-/* =====================================================
-   אייקון טעינה וכפתורי התחברות
-   ===================================================== */
+
 #loading-icon {
-    display: none; /* מוסתר כברירת מחדל */
+    display: none; 
     width: 150px;
     height: 150px;
-    position: fixed; /* שינוי ל-fixed */
+    position: fixed; 
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -174,18 +154,14 @@ h1, h2 {
 #login-button,
 #logout-button,
 #signup-button {
-    display: none; /* מוסתר כברירת מחדל (הלוגיקה ב-JS תציג אותם) */
+    display: none; 
 }
 
-#logout-button .logout-text {
-    /* כבר מטופל על ידי `btn-outline-danger` של Bootstrap */
-}
 
-/* =====================================================
-   תוצאות חיפוש ("כרטיס")
-   ===================================================== */
+
+
 .main-container {
-    display: none; /* מוסתר כברירת מחדל */
+    display: none; 
     background-color: #ffffff;
     border-radius: 12px;
 }
@@ -197,51 +173,46 @@ h1, h2 {
     margin-top: 10px;
     padding: 8px;
     border-radius: 4px;
-    background-color: #f8f9fa; /* רקע אפרפר לתוצאות */
+    background-color: #f8f9fa; 
 }
 
-/* =====================================================
-   כרטיס טיסה (Flight Card) - עיצוב מחדש 3 עמודות
-   ===================================================== */
 .flight-card {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 16px;
     margin: 10px 0;
-    display: flex; /* <-- שימוש ב-Flexbox לעיצוב עמודות */
-    flex-wrap: wrap; /* <-- אפשור גלישה במובייל */
-    justify-content: space-between; /* <-- ריווח בין העמודות */
-    align-items: center; /* <-- יישור אנכי למרכז */
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+    align-items: center;
     font-family: Arial, sans-serif;
     background-color: #ffffff;
     color: #333;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    direction: rtl; /* <-- כיווניות קבועה משמאל לימין */
+    direction: rtl; 
 }
 
-/* עמודה 1: לוגו (שמאל) */
 .flight-card .airline-logo {
-    flex-basis: 100px; /* רוחב בסיס ללוגו */
+    flex-basis: 100px; 
     flex-grow: 0;
     flex-shrink: 0;
-    margin: 0; /* איפוס margin קודם */
+    margin: 0; 
 }
 
 .flight-card .airline-logo img {
-    width: 60px; /* גודל מומלץ ללוגו */
+    width: 60px;
     height: auto;
     display: block;
     margin: 0 auto;
 }
 
-/* עמודה 2: פרטי טיסה (אמצע) */
 .flight-card .flight-info-center {
-    flex: 1; /* לוקח את כל השטח הפנוי באמצע */
+    flex: 1; 
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0 20px;
-    min-width: 250px; /* רוחב מינימלי לפני גלישה */
+    min-width: 250px;
 }
 
 .flight-info-center .flight-leg {
@@ -280,14 +251,13 @@ h1, h2 {
     line-height: 1;
 }
 
-/* עמודה 3: מחיר ובחירה (ימין) */
 .flight-card .flight-selection {
-    flex-basis: 150px; /* רוחב בסיס למחיר */
+    flex-basis: 150px;
     flex-grow: 0;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* יישור לימין */
+    align-items: flex-end; 
 }
 
 .flight-selection .price {
@@ -305,32 +275,136 @@ h1, h2 {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 100%; /* רוחב מלא של העמודה שלו */
+    width: 100%; 
 }
 
 .flight-selection .select-button:hover {
     background-color: #0056d3;
 }
 
-
-/* כרטיס שנבחר */
 .flight-card.selected {
-    border: 2px solid #0066ff; /* הדגשה כחולה */
+    border: 2px solid #0066ff;
     box-shadow: 0 0 10px rgba(0, 102, 255, 0.2);
-    background-color: #f0f5ff; /* רקע כחלחל עדין */
+    background-color: #f0f5ff; 
 }
 
-/* =====================================================
-   עיצוב רספונסיבי
-   ===================================================== */
+#custom-alert {
+    display: flex;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    padding: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    border: none;
+    background: none;
+}
+
+
+#custom-alert .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+
+#custom-alert .alert-content {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+    min-width: 300px;
+    max-width: 450px;
+    animation: slideIn 0.3s ease-out;
+    border-top: 5px solid #0d6efd; 
+}
+
+#custom-alert .alert-content.success { border-top-color: #198754; }
+#custom-alert .alert-content.error   { border-top-color: #dc3545; } 
+#custom-alert .alert-content.warning { border-top-color: #ffc107; }
+
+#custom-alert .alert-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+#custom-alert h3 {
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+#custom-alert p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+#custom-alert .alert-button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0d6efd;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#custom-alert .alert-button:hover {
+    background-color: #0b5ed7;
+}
+
+#custom-alert .alert-progress {
+    height: 5px;
+    background-color: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+#custom-alert .alert-progress .progress-bar {
+    height: 100%;
+    width: 100%;
+    background-color: #0d6efd;
+    animation: progress-indeterminate 2s linear infinite;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes progress-indeterminate {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
 @media (max-width: 991.98px) {
     .navbar-nav {
-        align-items: center; /* ממקם את הפריטים במרכז כשהתפריט נפתח */
+        align-items: center; 
         padding-top: 1rem;
     }
     
     .d-flex.align-items-center {
-        /* גורם לכפתורי ההתחברות להיות ברוחב מלא במובייל */
+        
         flex-direction: column;
         width: 100%;
         padding: 1rem;
@@ -348,8 +422,8 @@ h1, h2 {
 
 @media (max-width: 767.98px) {
     .flight-card {
-        flex-direction: column; /* משנה לעמודה אחת במובייל */
-        align-items: stretch; /* מותח את הפריטים לרוחב מלא */
+        flex-direction: column;
+        align-items: stretch; 
     }
 
     .flight-card .airline-logo {
@@ -362,12 +436,12 @@ h1, h2 {
         padding: 0;
         margin-bottom: 15px;
         flex-basis: auto;
-        justify-content: space-around; /* ריווח יפה במובייל */
+        justify-content: space-around; 
     }
 
     .flight-card .flight-selection {
         flex-basis: auto;
-        align-items: stretch; /* מותח את המחיר והכפתור */
+        align-items: stretch;
         text-align: center;
     }
 
