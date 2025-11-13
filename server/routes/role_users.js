@@ -10,7 +10,7 @@ router.get('/users/search', usersController.usersSearch);
 router.post('/authcode', usersController.authCode);
 router.post('/validation', usersController.validation);
 router.post('/loginwebauthn', usersController.loginWebAuthn);
-router.post('/signupwebauthn', usersController.signupWebAuthn);
+router.post('/signupwebauthn',protect, usersController.signupWebAuthn);
 router.post('/login', usersController.login);
 router.post('/signup', usersController.signup);
 router.post('/users', usersController.createUser);

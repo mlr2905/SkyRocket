@@ -10,14 +10,14 @@ const logger = require('../logger/my_logger');
 */
 async function getNumericIdFromToken(req) {
     const mongoIdFromToken = req.user.id; // This is the Mongo ID (string)
-    
+
     // Calling BL to get the full user information
     const user = await bl.get_by_id_user(mongoIdFromToken);
-    
+
     if (user && user.id) {
-        return user.id; 
+        return user.id;
     }
-    
+
     logger.warn(`User in token (mongo_id: ${mongoIdFromToken}) not found in PostgreSQL DB.`);
     throw new Error(`User not found for token.`);
 }
@@ -30,16 +30,32 @@ exports.signupWebAuthn = async (req, res) => {
         const result = await bl.signupWebAuthn(req);
         logger.debug("BL signupWebAuthn result:", result);
 
-        if (result && result.e === "yes") {
+        
+        if (result && result.success === false) {
+
             logger.warn(`Registration failed: ${result.error}`);
-            return res.status(400).json({ "e": "yes", "error": result.error });
+            return res.status(400).json({ "e": "yes", "error": result.error, "success": false });
+
         } else {
-            logger.info('Registration successful');
-            return res.status(201).json(result);
+            logger.info('Registration successful'); 
+
+            const token = result.data?.token;
+
+            if (token) {
+                logger.info('Setting login cookie after registration');
+                res.cookie('sky', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'strict',
+                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
+                });
+            }
+
+            return res.status(201).json(result.data); 
         }
     } catch (error) {
         logger.error('Error in WebAuthn registration:', error);
-        res.status(500).json({ "e": "yes", "error": "Internal server error" });
+        res.status(500).json({ "e": "yes", "error": "Internal server error", "success": false });
     }
 };
 
@@ -78,7 +94,7 @@ exports.loginWebAuthn = async (req, res) => {
                     "e": "no",
                     "jwt": token,
                     "id": user.id,
-                    "mongo_id": user.mongo_id, 
+                    "mongo_id": user.mongo_id,
                     "email": user.email,
                     "redirectUrl": "https://skyrocket.onrender.com/search_form.html"
                 });
@@ -142,7 +158,7 @@ exports.validation = async (req, res) => {
             });
             logger.debug(`JWT cookie set for ${email}`);
 
-           
+
             res.status(200).json({
                 "e": "no",
                 "jwt": token,
@@ -180,13 +196,13 @@ exports.login = async (req, res) => {
         } else {
             logger.info(`Login successful for ${email}`);
             const token = datas.jwt;
-            
+
             logger.debug(`Returning JWT and user data to caller (HandleAuth) for ${email}`);
-            
+
             res.status(200).json({
                 "e": datas.e,
                 "jwt": token,
-                "id": datas.id, 
+                "id": datas.id,
                 "mongo_id": datas.mongo_id,
                 "email": datas.email,
                 "redirectUrl": 'https://skyrocket.onrender.com/search_form.html'
@@ -325,7 +341,7 @@ exports.getFlightById = async (req, res) => {
 // --- Secure paths (requires 'protect' middleware) ---
 
 exports.getMyDetails = async (req, res) => {
-    const mongoIdFromToken = req.user.id; 
+    const mongoIdFromToken = req.user.id;
     logger.info(`Fetching details for user (mongo_id): ${mongoIdFromToken}`);
 
     try {
@@ -349,7 +365,7 @@ exports.getMyDetails = async (req, res) => {
 
 exports.usersById = async (req, res) => {
     // This is a secure path, but it reads details by ID from the URL
-// This is useful for admins, but for a regular user it is better to use /me
+    // This is useful for admins, but for a regular user it is better to use /me
     const user_id = req.params.id;
     logger.info(`User details request for ID: ${user_id}`);
     try {
@@ -387,10 +403,10 @@ exports.updateUser = async (req, res) => {
     logger.info(`Attempting user self-update`);
     try {
         const numeric_id = await getNumericIdFromToken(req);
-        
+
         const updated_user_req = req.body;
         logger.debug(`Update data for user ID ${numeric_id}: ${JSON.stringify(updated_user_req)}`);
-        
+
         const result = await bl.update_user(numeric_id, updated_user_req);
         if (result) {
             logger.info(`User ${numeric_id} updated successfully`);
@@ -414,7 +430,7 @@ exports.deleteMe = async (req, res) => {
         if (user && user.id) {
             const numeric_id = user.id;
             logger.debug(`Found numeric ID ${numeric_id} for mongo_id ${mongo_id_from_token}`);
-            
+
             const result = await bl.delete_account(numeric_id);
             logger.info(`User ${numeric_id} deleted successfully`);
 
@@ -431,14 +447,14 @@ exports.deleteMe = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-    
+
     logger.warn(`Manual delete request for user ID: ${req.params.id}. This should be an admin function.`);
     try {
         const numeric_id = parseInt(req.params.id, 10);
         if (isNaN(numeric_id)) {
             return res.status(400).json({ error: "Invalid numeric ID" });
         }
-        
+
         const numeric_id_from_token = await getNumericIdFromToken(req);
         if (numeric_id !== numeric_id_from_token) {
             logger.warn(`Security violation: User ${numeric_id_from_token} tried to delete user ${numeric_id}`);
@@ -458,7 +474,7 @@ exports.verifyCustomerCvv = async (req, res) => {
     logger.info('Received request to verify CVV');
     try {
         const numeric_id = await getNumericIdFromToken(req);
-        
+
         const { cvv } = req.body;
         if (!cvv) {
             return res.status(400).json({ "e": "yes", "error": "No CVV provided." });
@@ -469,10 +485,10 @@ exports.verifyCustomerCvv = async (req, res) => {
         if (!result.success) {
             res.status(401).json({ "e": "yes", "error": result.message });
         } else {
-            
+
             res.status(200).json({ "e": "no", "message": result.message });
         }
-        
+
     } catch (error) {
         logger.error('Error in verifyCustomerCvv controller:', error);
         res.status(503).json({ "error": `The request failed, try again later` });
@@ -483,7 +499,7 @@ exports.customersById = async (req, res) => {
     logger.info(`Customer details request`);
     try {
         const numeric_id = await getNumericIdFromToken(req);
-        
+
         const customer = await bl.get_by_id_customer(numeric_id);
         if (customer) {
             logger.info(`Customer details found for user ID: ${numeric_id}`);
@@ -504,9 +520,9 @@ exports.createCustomer = async (req, res) => {
         const numeric_id = await getNumericIdFromToken(req);
         const new_customer = req.body;
         new_customer.user_id = numeric_id;
-        
+
         logger.debug(`New customer data for user ${numeric_id}: ${JSON.stringify(new_customer)}`);
-        
+
         const user = await bl.new_customer(new_customer);
         if (user) {
             logger.info('Customer created successfully');
@@ -530,7 +546,7 @@ exports.updateCustomer = async (req, res) => {
     try {
         const numeric_id = await getNumericIdFromToken(req);
         const updated_customer_req = req.body;
-        
+
         logger.debug(`Update data for customer (user_id ${numeric_id}): ${JSON.stringify(updated_customer_req)}`);
 
         const result = await bl.update_customer(numeric_id, updated_customer_req);
@@ -548,9 +564,9 @@ exports.createChairAssignment = async (req, res) => {
     logger.info('Received request to create chair assignment');
     try {
         const numeric_id = await getNumericIdFromToken(req);
-        const chairData = req.body; 
+        const chairData = req.body;
         chairData.user_id = numeric_id;
-        
+
         logger.debug(`Chair assignment data for user ${numeric_id}: ${JSON.stringify(chairData)}`);
 
         const assignment = await bl.new_chair_assignment(chairData);
@@ -571,17 +587,17 @@ exports.createTicket = async (req, res) => {
         const numeric_id = await getNumericIdFromToken(req);
         const new_ticket = req.body;
         new_ticket.user_id = numeric_id;
-        const customer = await bl.get_by_id_customer(numeric_id); 
-        
+        const customer = await bl.get_by_id_customer(numeric_id);
+
         if (!customer || !customer.id) {
             logger.warn(`Cannot create ticket: No customer record found for user_id: ${numeric_id}`);
             return res.status(404).json({ error: "Customer details not found. Please complete your profile first." });
         }
-        
+
         new_ticket.customer_id = customer.id;
         logger.debug(`New ticket data for user ${numeric_id}: ${JSON.stringify(new_ticket)}`);
 
-     const result = await bl.purchase_ticket(new_ticket);
+        const result = await bl.purchase_ticket(new_ticket);
         logger.info('Ticket purchased successfully');
         res.status(201).json(result);
     } catch (error) {
@@ -594,7 +610,7 @@ exports.deleteMyTicket = async (req, res) => {
     logger.info('Controller: Received request to delete my-ticket');
     try {
         const numeric_id = await getNumericIdFromToken(req);
-        
+
         const ticket_id = parseInt(req.params.id, 10);
         if (isNaN(ticket_id)) {
             return res.status(400).json({ error: "Invalid ticket ID." });
@@ -602,8 +618,8 @@ exports.deleteMyTicket = async (req, res) => {
 
         const result = await bl.cancel_ticket(numeric_id, ticket_id);
 
-        res.status(200).json(result); 
-        
+        res.status(200).json(result);
+
     } catch (error) {
         logger.error('Error in deleteMyTicket controller:', error);
         if (error.message.includes("Not authorized")) {
@@ -622,7 +638,7 @@ exports.createPassenger = async (req, res) => {
         new_passenger.user_id = numeric_id;
 
         logger.debug(`New passenger data for user ${numeric_id}: ${JSON.stringify(new_passenger)}`);
-        
+
         const result = await bl.new_passenger(new_passenger);
         logger.info('Passenger created successfully');
         res.status(201).json(result);
@@ -650,11 +666,11 @@ exports.getMyTickets = async (req, res) => {
     logger.info('Controller: Received request for my-tickets');
     try {
         const numeric_id = await getNumericIdFromToken(req);
-        
+
         const tickets = await bl.get_my_tickets(numeric_id);
 
         res.status(200).json(tickets);
-        
+
     } catch (error) {
         logger.error('Error in getMyTickets controller:', error);
         res.status(503).json({ "error": `The request failed, try again later` });
