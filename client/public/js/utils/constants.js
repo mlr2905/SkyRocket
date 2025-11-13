@@ -18,7 +18,9 @@ export const API_USER_SEARCH_URL = "role_users/users/search";
 export const API_EMAIL_CHECK_URL = "role_users/email";
 
 // --- Search Form Endpoints & Constants ---
-export const API_ACTIVATION_URL = "activation";
+export const API_ACTIVATION_URL = "role_users/me";
+export const API_DELETE_URL = "role_users/me";
+
 export const API_FLIGHTS_URL = "role_users/flights";
 export const API_FLIGHTS_SEARCH_URL = 'role_users/flights/search'; 
 export const API_ORIGIN_COUNTRIES_URL = 'role_users/countries/origins'; 

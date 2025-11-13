@@ -367,8 +367,7 @@ exports.getMyDetails = async (req, res) => {
 };
 
 exports.usersById = async (req, res) => {
-    // This is a secure path, but it reads details by ID from the URL
-    // This is useful for admins, but for a regular user it is better to use /me
+    
     const user_id = req.params.id;
     logger.info(`User details request for ID: ${user_id}`);
     try {

@@ -1,16 +1,19 @@
-// File: searchService.js
 import * as C from '../utils/constants.js';
 
-/**
- * Checks login status against the server.
- */
 export async function checkActivationStatus() {
     try {
-        const response = await fetch(C.API_ACTIVATION_URL);
-        return response.status;
+        const response = await fetch(C.API_ACTIVATION_URL, {
+             credentials: 'include' 
+        });
+        
+        if (!response.ok) {
+            return { status: response.status, isLoggedIn: false, email: null };
+        }
+        const data = await response.json(); 
+        return { status: response.status, isLoggedIn: true, email: data.email };
     } catch (error) {
         console.error('Problem executing activation check:', error);
-        return 500;
+        return { status: 500, isLoggedIn: false, email: null };
     }
 }
 
