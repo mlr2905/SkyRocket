@@ -6,7 +6,7 @@ export class WebAuthnController {
     #messageElement;
     #emailInput;
     #isWebAuthnSupported = false;
-    #credentialID; // Private state for this controller
+    #credentialID; 
 
     constructor(elements, initialCredentialID) {
         this.#biometricStatus = elements.biometricStatus;
@@ -16,19 +16,16 @@ export class WebAuthnController {
         this.#checkWebAuthnSupport();
     }
 
-    // Getter for support status
     get isWebAuthnSupported() {
         return this.#isWebAuthnSupported;
     }
 
-    // Getter/Setter for credentialID to sync with LoginController and localStorage
     get credentialID() {
         return this.#credentialID;
     }
 
     set credentialID(id) {
         this.#credentialID = id;
-        // The LoginController will be responsible for saving to localStorage
     }
 
     #checkWebAuthnSupport() {
@@ -63,8 +60,6 @@ export class WebAuthnController {
             return ;
         }
 
-        Utils.showRegistrationAlert();
-
         try {
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
@@ -78,9 +73,9 @@ export class WebAuthnController {
                 timeout: 60000,
                 attestation: "none"
             };
-
             const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
             
+            Utils.showRegistrationAlert();
             Utils.updateRegistrationAlert('Sending data to server...');
 
             const credentialID = Utils.bufferToBase64(credential.rawId);
@@ -89,19 +84,24 @@ export class WebAuthnController {
 
             const data = await AuthService.registerBiometricAPI(email, credentialID, attestationObject, clientDataJSON);
 
-            Utils.hideRegistrationAlert();
+            Utils.hideRegistrationAlert(); 
 
             if (!data.e || data.e === 'no') {
                 Utils.showMessage(this.#messageElement, 'Biometric identification registration completed successfully!', 'success');
-                this.credentialID = credentialID; // Update internal state
-                return credentialID; // Return new ID to LoginController
+                this.credentialID = credentialID; 
+                return credentialID;
+            
+            } else if (data.success === false && data.error) {
+                 Utils.showMessage(this.#messageElement, 'Error in biometric registration: ' + (data.error || 'An error occurred'), 'error');
+                 return;
+
             } else {
                 Utils.showMessage(this.#messageElement, 'Error in biometric registration: ' + (data.error || 'An error occurred'), 'error');
                 return ;
             }
         } catch (error) {
             console.error('Error in biometric identification registration:', error);
-            Utils.hideRegistrationAlert();
+            Utils.hideRegistrationAlert(); 
             Utils.showMessage(this.#messageElement, 'An error occurred: ' + error.message, 'error');
             return ;
         }

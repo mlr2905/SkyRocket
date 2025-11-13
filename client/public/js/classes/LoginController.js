@@ -190,6 +190,7 @@ export class LoginController {
             this.#successMessage.textContent = result.message;
         }
     }
+    
     async #handleAuthCode(event) {
         event.preventDefault();
         const email = this.#emailInput.value;
