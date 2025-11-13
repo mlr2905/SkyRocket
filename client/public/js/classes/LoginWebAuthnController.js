@@ -79,7 +79,7 @@ export class WebAuthnController {
 
             const publicKeyOptions = {
                 challenge: challenge,
-                rp: { rp: { name: "SkyRocket", id: window.location.hostname }, id: window.location.hostname },
+                rp: { name: "SkyRocket", id: window.location.hostname },
                 user: { id: new TextEncoder().encode(email), name: email, displayName: email },
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
                 authenticatorSelection: {
