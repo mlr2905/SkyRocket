@@ -42,11 +42,19 @@ export async function registerBiometricAPI(email, credentialID, publicKey, clien
     });
 }
 
-export async function loginBiometricAPI(credentialID, publicKey, clientData) {
+export async function loginBiometricAPI(credentialID, email, authenticatorData, clientData, signature) {
     return apiRequest(C.API_LOGIN_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credentialID, publicKey, clientData }),
+        body: JSON.stringify({ 
+            credentialID, 
+            email, 
+            authenticatorData, 
+            clientDataJSON: clientData, 
+            signature 
+        }),
+
+
     });
 }
 
