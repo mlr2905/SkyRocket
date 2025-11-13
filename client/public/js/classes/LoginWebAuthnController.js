@@ -1,3 +1,4 @@
+
 import * as Utils from '../utils/utils.js';
 import * as AuthService from '../services/authService.js';
 
@@ -64,19 +65,20 @@ export class WebAuthnController {
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
 
-           const publicKeyOptions = {
+            const publicKeyOptions = {
                 challenge: challenge,
                 rp: { name: "Your biometric authentication system", id: window.location.hostname },
                 user: { id: new TextEncoder().encode(email), name: email, displayName: email },
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-                authenticatorSelection: {
-                    authenticatorAttachment: "platform",
-                    requireResidentKey: true, // <-- שנה ל-true
-                    userVerification: "required"
+                authenticatorSelection: { 
+                    authenticatorAttachment: "platform", 
+                    requireResidentKey: true, 
+                    userVerification: "required" 
                 },
                 timeout: 60000,
                 attestation: "none"
             };
+
             const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
             
             Utils.showRegistrationAlert();
@@ -88,24 +90,19 @@ export class WebAuthnController {
 
             const data = await AuthService.registerBiometricAPI(email, credentialID, attestationObject, clientDataJSON);
 
-            Utils.hideRegistrationAlert(); 
+            Utils.hideRegistrationAlert();
 
             if (!data.e || data.e === 'no') {
                 Utils.showMessage(this.#messageElement, 'Biometric identification registration completed successfully!', 'success');
                 this.credentialID = credentialID; 
-                return credentialID;
-            
-            } else if (data.success === false && data.error) {
-                 Utils.showMessage(this.#messageElement, 'Error in biometric registration: ' + (data.error || 'An error occurred'), 'error');
-                 return;
-
+                return credentialID; 
             } else {
-                Utils.showMessage(this.#messageElement, 'Error in biometric registration: ' + (data.error || 'An error occurred'), 'error');
+                Utils.showMessage(this.#messageElement, 'Error in biometric registration: ' (data.error || 'An error occurred'), 'error');
                 return ;
             }
         } catch (error) {
             console.error('Error in biometric identification registration:', error);
-            Utils.hideRegistrationAlert(); 
+            Utils.hideRegistrationAlert();
             Utils.showMessage(this.#messageElement, 'An error occurred: ' + error.message, 'error');
             return ;
         }
@@ -119,10 +116,12 @@ export class WebAuthnController {
 
         try {
             const credentialID = this.#credentialID;
-            if (!credentialID) {
-                // If no ID, trigger registration
+
+            if (!credentialID || credentialID === "null") {
+            
+                Utils.showMessage(this.#messageElement, 'No passkey found for this email. Please register your device.', 'info');
                 const newCredentialID = await this.handleRegisterBiometric(email);
-                return { success: false, newCredentialID: newCredentialID }; // Inform controller registration happened
+                return { success: false, newCredentialID: newCredentialID }; // עדכן את הבקר הראשי
             }
 
             const challenge = new Uint8Array(32);
@@ -153,7 +152,7 @@ export class WebAuthnController {
             }
         } catch (error) {
             console.error('Error connecting with biometric identification:', error);
-            Utils.showMessage(this.#messageElement, 'An error occurred during the login process: ' + error.message, 'error');
+            Utils.showMessage(this.#messageElement, 'Login failed: ' + error.message, 'error');
             return { success: false, message: error.message };
         }
     }

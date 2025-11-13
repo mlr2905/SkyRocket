@@ -6,14 +6,14 @@ const { protect } = require('../middleware/authMiddleware');
 // --- נתיבים ציבוריים (לא דורשים התחברות) ---
 router.get('/ip', usersController.ip);
 router.get('/email', usersController.email);
-router.get('/users/search', usersController.usersSearch); // הערה: אולי כדאי לאבטח גם את זה
+router.get('/users/search', usersController.usersSearch);
 router.post('/authcode', usersController.authCode);
 router.post('/validation', usersController.validation);
 router.post('/loginwebauthn', usersController.loginWebAuthn);
 router.post('/signupwebauthn', usersController.signupWebAuthn);
 router.post('/login', usersController.login);
 router.post('/signup', usersController.signup);
-router.post('/users', usersController.createUser); // יצירת משתמש (הרשמה) צריכה להיות ציבורית
+router.post('/users', usersController.createUser);
 
 // --- נתיבי חיפוש ציבוריים (כל אחד יכול לחפש טיסות) ---
 router.get('/flights/search', usersController.getFilteredFlights);
