@@ -1,6 +1,7 @@
 const bl = require('../bl/bl_role_users');
 const logger = require('../logger/my_logger');
 
+
 // --- Internal helper function for ID translation ---
 /**
 * Calls BL to translate the mongo_id (from the token) to the PostgreSQL numeric ID.
@@ -34,7 +35,7 @@ exports.signupWebAuthn = async (req, res) => {
             logger.warn(`Registration failed: ${result.error}`);
             return res.status(400).json({ "e": "yes", "error": result.error, "success": false });
         } else {
-            logger.info('Registration successful'); 
+            logger.info('Registration successful');
 
             const token = result.data?.token;
             if (token) {
@@ -111,13 +112,17 @@ exports.loginWebAuthn = async (req, res) => {
     }
 };
 
+
 exports.authCode = async (req, res) => {
     try {
-        const email = req.body.email;
+        const email = req.user.email;
+
         logger.info(`Processing auth code request for ${email}`);
+
+
         if (!email) {
-            logger.warn('Auth code request with no email');
-            return res.status(400).json({ "e": "yes", "error": "Email is required" });
+            logger.warn('Auth code request with no email (from token)');
+            return res.status(400).json({ "e": "yes", "error": "Authenticated user has no email" });
         }
 
         const datas = await bl.authcode(email);
@@ -133,7 +138,6 @@ exports.authCode = async (req, res) => {
         res.status(503).json({ 'error': 'The request failed, try again later', error });
     }
 };
-
 exports.validation = async (req, res) => {
     try {
         const email = req.body.email;
