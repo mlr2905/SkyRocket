@@ -15,8 +15,13 @@ async function signupWebAuthn(registrationData) {
   try {
     const payload = {
       email: registrationData.user.email,
-      attestationObject: registrationData.body.attestationObject,
-      clientDataJSON: registrationData.body.clientDataJSON, publicKey: registrationData.body.attestationObject,
+
+
+      credentialID: registrationData.body.credentialID,
+
+
+      publicKey: registrationData.body.attestationObject,
+
       credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
     };
 

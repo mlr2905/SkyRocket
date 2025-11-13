@@ -28,19 +28,15 @@ exports.signupWebAuthn = async (req, res) => {
     logger.info('WebAuthn registration request received');
     try {
         const result = await bl.signupWebAuthn(req);
-        logger.debug("BL signupWebAuthn result:", result);
-
+        logger.debug("BL signupWebAuthn result:", result.message || result.error);
 
         if (result && result.success === false) {
-
             logger.warn(`Registration failed: ${result.error}`);
             return res.status(400).json({ "e": "yes", "error": result.error, "success": false });
-
         } else {
-            logger.info('Registration successful');
+            logger.info('Registration successful'); 
 
             const token = result.data?.token;
-
             if (token) {
                 logger.info('Setting login cookie after registration');
                 res.cookie('sky', token, {
@@ -59,61 +55,60 @@ exports.signupWebAuthn = async (req, res) => {
     }
 };
 
-
 exports.loginWebAuthn = async (req, res) => {
-const { email, credentialID, signature, clientDataJSON } = req.body;
+    const { email, credentialID, signature, clientDataJSON } = req.body;
 
-logger.info(`WebAuthn login attempt for: ${email || 'unknown'}`);
+    logger.info(`WebAuthn login attempt for: ${email || 'unknown'}`);
 
-if (!email || !credentialID || !signature || !clientDataJSON) {
-    logger.warn(`Missing required fields for ${email || 'unknown'}.`);
-    logger.debug(`[Debug] Email: ${!!email}, CredID: ${!!credentialID}, Sig: ${!!signature}, CData: ${!!clientDataJSON}`);
-    return res.status(400).json({ "e": "yes", "error": "Missing required fields" });
-}
-
-
-try {
-    const { authenticatorData } = req.body;
-
-    const authData = { credentialID, email, signature, authenticatorData, clientDataJSON };
-    const result = await bl.loginWebAuthn(authData); 
-
-    if (result && result.success === true) {
-        const token = result.token || result.data?.jwt;
-        const user = result.user || result.data?.user;
-
-        if (token && user) {
-            logger.info(`WebAuthn login successful for ${email}`);
-
-            // 1. Setting the secure cookie
-            res.cookie('sky', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
-            });
-            logger.debug(`JWT cookie set for ${email}`);
-
-            res.status(200).json({
-                "e": "no",
-                "jwt": token,
-                "id": user.id,
-                "mongo_id": user.mongo_id,
-                "email": user.email,
-                "redirectUrl": "https://skyrocket.onrender.com/search_form.html"
-            });
-        } else {
-            logger.warn(`No JWT/user object in successful response for ${email}`);
-            res.status(500).json({ "e": "yes", "error": "Auth succeeded but no token/user received" });
-        }
-    } else {
-        logger.warn(`WebAuthn login failed for ${email}: ${result.error}`);
-        res.status(401).json({ "e": "yes", "error": result.error || "Authentication failed" });
+    if (!email || !credentialID || !signature || !clientDataJSON) {
+        logger.warn(`Missing required fields for ${email || 'unknown'}.`);
+        logger.debug(`[Debug] Email: ${!!email}, CredID: ${!!credentialID}, Sig: ${!!signature}, CData: ${!!clientDataJSON}`);
+        return res.status(400).json({ "e": "yes", "error": "Missing required fields" });
     }
-} catch (error) {
-    logger.error(`Error in WebAuthn login for ${email}:`, error);
-    res.status(500).json({ "e": "yes", "error": "Internal server error" });
-}
+
+
+    try {
+        const { authenticatorData } = req.body;
+
+        const authData = { credentialID, email, signature, authenticatorData, clientDataJSON };
+        const result = await bl.loginWebAuthn(authData);
+
+        if (result && result.success === true) {
+            const token = result.token || result.data?.jwt;
+            const user = result.user || result.data?.user;
+
+            if (token && user) {
+                logger.info(`WebAuthn login successful for ${email}`);
+
+                // 1. Setting the secure cookie
+                res.cookie('sky', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'strict',
+                    maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
+                });
+                logger.debug(`JWT cookie set for ${email}`);
+
+                res.status(200).json({
+                    "e": "no",
+                    "jwt": token,
+                    "id": user.id,
+                    "mongo_id": user.mongo_id,
+                    "email": user.email,
+                    "redirectUrl": "https://skyrocket.onrender.com/search_form.html"
+                });
+            } else {
+                logger.warn(`No JWT/user object in successful response for ${email}`);
+                res.status(500).json({ "e": "yes", "error": "Auth succeeded but no token/user received" });
+            }
+        } else {
+            logger.warn(`WebAuthn login failed for ${email}: ${result.error}`);
+            res.status(401).json({ "e": "yes", "error": result.error || "Authentication failed" });
+        }
+    } catch (error) {
+        logger.error(`Error in WebAuthn login for ${email}:`, error);
+        res.status(500).json({ "e": "yes", "error": "Internal server error" });
+    }
 };
 
 exports.authCode = async (req, res) => {
