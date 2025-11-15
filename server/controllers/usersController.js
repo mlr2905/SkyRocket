@@ -241,13 +241,48 @@ exports.signup = async (req, res) => {
 // --- Search functions (public) ---
 
 exports.ip = async (req, res) => {
-    let country = req.headers['cf-ipcountry'] || "il";
-        console.log("req",req);
+    const COUNTRY_API_URL = 'https://restcountries.com/v3.1/alpha/';
+const API_FIELDS = '?fields=name';
+    const defaultResponse = { id: "IL", name: "Israel" };
 
-    console.log("req.headers",req.headers);
-    
-    logger.debug(`IP lookup request. Country code: ${country}`);
-    res.status(200).json({ country });
+    try {
+        const countryCode = req.headers['cf-ipcountry'];
+        
+        if (!countryCode) {
+            logger.debug(`IP lookup request. No header, returning default.`);
+            return res.status(200).json(defaultResponse);
+        }
+
+        logger.debug(`IP lookup request. Received code: ${countryCode}`);
+
+        try {
+            const externalResponse = await fetch(`${COUNTRY_API_URL}${countryCode}${API_FIELDS}`);
+            
+            if (!externalResponse.ok) {
+                logger.warn(`External API error for code ${countryCode}. Status: ${externalResponse.status}. Returning default.`);
+                return res.status(200).json(defaultResponse);
+            }
+
+            const data = await externalResponse.json();
+            
+            if (data && data.name && data.name.common) {
+                const countryName = data.name.common;
+                logger.debug(`External API success. Found: ${countryName}`);
+                return res.status(200).json({ id: countryCode, name: countryName });
+            } else {
+                logger.warn(`External API response for ${countryCode} was malformed. Returning default.`);
+                return res.status(200).json(defaultResponse);
+            }
+
+        } catch (fetchError) {
+            logger.error(`Error calling external country API: ${fetchError.message}. Returning default.`);
+            return res.status(200).json(defaultResponse);
+        }
+
+    } catch (error) {
+        logger.error(`General error in /ip lookup: ${error.message}. Returning default.`);
+        return res.status(200).json(defaultResponse);
+    }
 };
 
 exports.email = async (req, res) => {
@@ -371,7 +406,7 @@ exports.getMyDetails = async (req, res) => {
 };
 
 exports.usersById = async (req, res) => {
-    
+
     const user_id = req.params.id;
     logger.info(`User details request for ID: ${user_id}`);
     try {
