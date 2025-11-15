@@ -3,7 +3,7 @@ import * as C from '../utils/constants.js';
 import * as SearchService from '../services/searchService.js';
 import { SearchUIHandler } from './SearchUIHandler.js';
 import { PLANE_LAYOUTS } from '../planeLayouts.js';
-import { WebAuthnController } from './LoginWebAuthnController.js'; 
+import { WebAuthnController } from './LoginWebAuthnController.js';
 
 export class SearchController {
     #elements = {};
@@ -26,8 +26,8 @@ export class SearchController {
         this.#ui = new SearchUIHandler(this.#elements);
         this.#webAuthn = new WebAuthnController({
             biometricStatus: null,
-            messageElement: this.#elements.webAuthnMessage, 
-            emailInput: null 
+            messageElement: this.#elements.webAuthnMessage,
+            emailInput: null
         });
         this.#attachEventListeners();
         this.#initializePage();
@@ -73,35 +73,86 @@ export class SearchController {
         };
     }
 
-async #initializePage() {
+    async #initializePage() {
         this.#ui.showLoading(true);
-        this.#ui.updateInputDisabledState();
+        this.#ui.updateInputDisabledState(); 
         this.#ui.toggleSearchView(false);
         this.#ui.togglePassengerView(false);
 
+        let statusResult; 
+
         try {
-            const statusResult = await SearchService.checkActivationStatus();
+            const [status, countries, ipCountryData] = await Promise.all([
+                SearchService.checkActivationStatus(),
+                SearchService.fetchOriginCountries(),
+                AuthService.getCountryCode()
+            ]);
+
+            statusResult = status;
+
             this.#ui.updateLoginStatus(statusResult.isLoggedIn);
-            
             if (statusResult.isLoggedIn && statusResult.email) {
-                this.#state.email = statusResult.email; 
-                localStorage.setItem('userEmail', statusResult.email); 
+                this.#state.email = statusResult.email;
+                localStorage.setItem('userEmail', statusResult.email);
             }
+
+            this.#state.uniqueCountriesCache = countries || [];
+
+            let defaultCountrySet = false; 
+
+            if (ipCountryData && ipCountryData.name && ipCountryData.name !== "Unknown" && this.#state.uniqueCountriesCache.length > 0) {
+
+                const userCountryName = ipCountryData.name; 
+
+                const matchedCountry = this.#state.uniqueCountriesCache.find(
+                    c => c.name.toLowerCase() === userCountryName.toLowerCase()
+                );
+
+                if (matchedCountry) {
+                    this.#state.selectedOrigin = matchedCountry;
+                    if (this.#elements.fromInput) {
+                        this.#elements.fromInput.value = matchedCountry.name;
+                    }
+                    await this.#handleToFocus();
+                    defaultCountrySet = true; 
+                } else {
+                    console.warn(`User country '${userCountryName}' from IP not found in origins list. Will attempt to set 'Israel'.`);
+                }
+            } else {
+                console.log("Could not determine default country from IP. Will attempt to set 'Israel'.");
+            }
+
+            if (!defaultCountrySet && this.#state.uniqueCountriesCache.length > 0) {
+
+                const israelCountry = this.#state.uniqueCountriesCache.find(
+                    c => c.name.toLowerCase() === "israel"
+                );
+
+                if (israelCountry) {
+                    console.log("Setting default 'From' country to 'Israel':", israelCountry);
+                    this.#state.selectedOrigin = israelCountry;
+                    if (this.#elements.fromInput) {
+                        this.#elements.fromInput.value = israelCountry.name;
+                    }
+                    await this.#handleToFocus(); 
+                } else {
+                    console.error("'Israel' not found in the unique countries list. 'From' field will remain empty.");
+                }
+            }
+        
         } catch (error) {
-            console.error("Failed to check activation status:", error);
-            this.#ui.updateLoginStatus(false);
+            console.error("Failed to initialize page data:", error);
+            if (!statusResult) {
+                this.#ui.updateLoginStatus(false);
+            }
+            if (!this.#state.uniqueCountriesCache || this.#state.uniqueCountriesCache.length === 0) {
+                console.error("Failed to initialize origin countries.");
+            }
+        } finally {
+            
+            this.#ui.updateInputDisabledState();
+            this.#ui.showLoading(false);
         }
-
-        try {
-            this.#state.uniqueCountriesCache = await SearchService.fetchOriginCountries();
-            console.log("Initialization complete. Countries loaded:", this.#state.uniqueCountriesCache.length);
-        } catch (error) {
-            console.error("Failed to initialize origin countries:", error);
-        }
-
-        // ... (המשך הפונקציה ללא שינוי - daterangepicker) ...
-
-        this.#ui.showLoading(false);
     }
     #attachEventListeners() {
         this.#elements.logoutButton?.addEventListener('click', this.#handleLogout);
@@ -380,9 +431,9 @@ async #initializePage() {
                         credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            flight_id: this.#state.selectedReturnFlight.id, 
+                            flight_id: this.#state.selectedReturnFlight.id,
                             passenger_id: passengerId,
-                            chair_id: returnSeatId 
+                            chair_id: returnSeatId
                         })
                     });
                     if (!tRetRes.ok) { const err = await tRetRes.json(); throw new Error(`Return ticket creation failed: ${err.error || tRetRes.statusText}`); }
@@ -390,7 +441,7 @@ async #initializePage() {
             }
 
             alert("Booking was successful!");
-            window.location.href = '/my-tickets.html'; 
+            window.location.href = '/my-tickets.html';
 
         } catch (error) {
             console.error("Booking failed:", error);
@@ -399,11 +450,11 @@ async #initializePage() {
             this.#ui.showLoading(false);
         }
     }
-  #handleRegisterBiometricClick = async (e) => {
+    #handleRegisterBiometricClick = async (e) => {
         e.preventDefault();
-        
-        const email = this.#state.email; 
-        
+
+        const email = this.#state.email;
+
         if (!email || email === "null") {
             Utils.showCustomAlert(
                 'לא זוהה משתמש. יש להתחבר לחשבונך לפני הוספת טביעת אצבע.',
@@ -414,7 +465,7 @@ async #initializePage() {
         }
 
         const existingCredentialID = localStorage.getItem('credentialID');
-        let shouldProceed = true; 
+        let shouldProceed = true;
 
         if (existingCredentialID && existingCredentialID !== "null") {
             shouldProceed = await Utils.showConfirmAlert(
@@ -423,12 +474,12 @@ async #initializePage() {
                 'כן, הוסף עוד אחת'
             );
         }
-        
+
         if (!shouldProceed) {
             Utils.showCustomAlert('הרישום בוטל', 'תהליך הרישום בוטל על ידך.', 'info');
             return;
         }
-        
+
         const newCredentialID = await this.#webAuthn.handleRegisterBiometric(email);
 
         if (newCredentialID) {
