@@ -22,7 +22,6 @@ export async function checkActivationStatus() {
  * @returns {Promise<Array<{id: number, name: string}>>}
  */
 export async function fetchOriginCountries() {
-    console.log("Fetching origin countries from:", C.API_ORIGIN_COUNTRIES_URL);
     try {
         const response = await fetch(C.API_ORIGIN_COUNTRIES_URL);
         if (!response.ok) {
@@ -30,7 +29,7 @@ export async function fetchOriginCountries() {
         }
         const data = await response.json();
         localStorage.setItem('uniqueCountries', JSON.stringify(data));
-        console.log("Stored unique countries:", data);
+        console.log("Stored unique countries:", data.length);
         return data;
     } catch (error) {
         console.error("Error fetching origin countries:", error);
@@ -46,7 +45,6 @@ export async function fetchOriginCountries() {
 export async function fetchDestinations(originId) {
     if (!originId) return [];
     const url = `${C.API_DESTINATIONS_URL}?origin_id=${originId}`;
-    console.log("Fetching destinations from:", url);
     try {
         const response = await fetch(url);
         if (!response.ok) {
