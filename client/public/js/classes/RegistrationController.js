@@ -83,7 +83,7 @@ export class RegistrationController {
 
         try {
             const data = await AuthService.getCountryCode();
-            const country = String.prototype.toLowerCase.call(data.country);
+            const country = String.prototype.toLowerCase.call(data.id);
             this.#initializeIntlTelInput(country);
         } catch (error) {
             console.error('Error fetching IP:', error);
