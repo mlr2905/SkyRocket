@@ -242,6 +242,10 @@ exports.signup = async (req, res) => {
 
 exports.ip = async (req, res) => {
     let country = req.headers['cf-ipcountry'] || "il";
+        console.log("req",req);
+
+    console.log("req.headers",req.headers);
+    
     logger.debug(`IP lookup request. Country code: ${country}`);
     res.status(200).json({ country });
 };
