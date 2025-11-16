@@ -63,10 +63,6 @@ export class WebAuthnController {
         }
     }
 
-    /*
- * קובץ: LoginWebAuthnController.js (צד לקוח)
- * תיקון: מעדכנים את הקריאה ל-AuthService כך שלא תכלול אימייל.
- */
     async handleRegisterBiometric(email) {
         if (!email) {
             this.#showAlert('You must enter an email or register first', 'error', 'error');
