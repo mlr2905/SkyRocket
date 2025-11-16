@@ -1,4 +1,3 @@
-// File: utils.js
 
 // --- Base64 Helpers ---
 export function bufferToBase64(buffer) {
