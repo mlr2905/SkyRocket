@@ -1,4 +1,3 @@
-// File: authService.js
 import * as C from '../utils/constants.js';
 
 /**
@@ -6,7 +5,7 @@ import * as C from '../utils/constants.js';
  * @param {string} url
  * @param {object} options
  */
-async function apiRequest(url, options) {
+ async function apiRequest(url, options) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
