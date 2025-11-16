@@ -3,10 +3,10 @@ const router = express.Router()
 const usersController = require('../controllers/usersController');
 const { protect } = require('../middleware/authMiddleware'); 
 
-// --- נתיבים ציבוריים (לא דורשים התחברות) ---
 router.get('/ip', usersController.ip);
 router.get('/email', usersController.email);
 router.get('/users/search', usersController.usersSearch);
+
 router.post('/authcode',protect, usersController.authCode);
 router.post('/validation', usersController.validation);
 router.post('/loginwebauthn', usersController.loginWebAuthn);
@@ -23,7 +23,6 @@ router.get('/flights', usersController.get_all_flights);
 router.get('/flights/:id', usersController.getFlightById);
 
 
-// --- נתיבים מאובטחים (דורשים התחברות - הוספנו 'protect') ---
 
 // נתיב לאזור האישי
 router.get('/me', protect, usersController.getMyDetails);
