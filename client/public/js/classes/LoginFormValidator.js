@@ -1,4 +1,3 @@
-
 export class FormValidator {
     #emailInput;
     #passwordInput;
