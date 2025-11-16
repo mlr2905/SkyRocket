@@ -9,9 +9,9 @@ export class UIHandler {
     #connectButton;
     #emailCheckIcon;
     #passContainer;
-    #passwordFormContainer; // The element with ID 'pass'
-    #validationHandler; // Function to be called for validation
-    #connectHandler; // Function to be called for connect
+    #passwordFormContainer; 
+    #validationHandler; 
+    #connectHandler; 
 
     constructor(elements) {
         this.#emailInput = elements.emailInput;
@@ -22,11 +22,10 @@ export class UIHandler {
         this.#verificationButton = elements.verificationButton;
         this.#connectButton = elements.connectButton;
         this.#emailCheckIcon = elements.emailCheckIcon;
-        this.#passContainer = elements.passContainer; // Assumes 'pass_'
-        this.#passwordFormContainer = document.getElementById('pass'); // ID from original code
+        this.#passContainer = elements.passContainer;
+        this.#passwordFormContainer = document.getElementById('pass'); 
     }
 
-    // Methods to set the event handlers from LoginController
     setValidationHandler(handler) {
         this.#validationHandler = handler;
     }
