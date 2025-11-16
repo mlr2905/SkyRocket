@@ -1,4 +1,3 @@
-// File: constants.js
 
 // --- Login Endpoints ---
 export const API_LOGIN_URL = "role_users/loginWebAuthn";
@@ -10,14 +9,12 @@ export const GOOGLE_AUTH_URL = "google";
 export const GIT_AUTH_URL = "/git";
 export const LOGIN_PAGE_URL = "login.html";
 
-// --- Registration Endpoints ---
 export const API_IP_URL = "role_users/ip";
 export const API_SIGNUP_URL = "/role_users/signup";
 export const API_CUSTOMERS_URL = "/role_users/customers";
 export const API_USER_SEARCH_URL = "role_users/users/search";
 export const API_EMAIL_CHECK_URL = "role_users/email";
 
-// --- Search Form Endpoints & Constants ---
 export const API_ACTIVATION_URL = "role_users/me";
 export const API_DELETE_URL = "role_users/me";
 
@@ -29,6 +26,6 @@ export const DB_NAME = 'FlightDB';
 export const DB_VERSION = 1;
 export const FLIGHT_STORE_NAME = 'flights';
 
-export const API_PASSENGERS_URL = 'role_users/passengers'; // ליצירת נוסע חדש
-export const API_CHAIRS_URL = 'role_users/chairs';         // לשמירת כיסא (POST) ולטעינת כיסאות תפוסים (GET)
+export const API_PASSENGERS_URL = 'role_users/passengers';
+export const API_CHAIRS_URL = 'role_users/chairs';         
 export const API_TICKETS_URL = 'role_users/tickets';
