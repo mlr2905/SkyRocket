@@ -96,7 +96,7 @@ exports.loginWebAuthn = async (req, res) => {
                     "id": user.id,
                     "mongo_id": user.mongo_id,
                     "email": user.email,
-                    "redirectUrl": "https://skyrocket.onrender.com/search_form.html"
+                    "redirectUrl": "https://skyrocket.onrender.com"
                 });
             } else {
                 logger.warn(`No JWT/user object in successful response for ${email}`);
@@ -168,7 +168,7 @@ exports.validation = async (req, res) => {
                 "id": datas.id,
                 "mongo_id": datas.mongo_id,
                 "email": datas.email,
-                "redirectUrl": 'https://skyrocket.onrender.com/search_form.html'
+                "redirectUrl": 'https://skyrocket.onrender.com'
             });
         }
     } catch (error) {
@@ -208,7 +208,7 @@ exports.login = async (req, res) => {
                 "id": datas.id,
                 "mongo_id": datas.mongo_id,
                 "email": datas.email,
-                "redirectUrl": 'https://skyrocket.onrender.com/search_form.html'
+                "redirectUrl": 'https://skyrocket.onrender.com'
             });
         }
     } catch (error) {
