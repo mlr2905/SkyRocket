@@ -28,7 +28,8 @@ require('dotenv').config();
 // Middlewares
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
+const clientPath = path.join(__dirname, '..', 'client', 'public');
+app.use(express.static(clientPath));
 app.use(session({
     secret: process.env.SESSION_SECRET || 'keyboard',
     resave: false,
@@ -66,8 +67,13 @@ const options = {
 const specs = swaggerJsdoc(options);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(clientPath, 'index.html'));
+});
+
 // Start Server
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Serving client from: ${clientPath}`); // Debug log
 });

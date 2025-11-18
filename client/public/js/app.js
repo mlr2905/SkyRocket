@@ -1,87 +1,71 @@
 // js/app.js - The main SPA Router
 
-// Store the currently active controller instance and style path
 let currentController = null;
 let currentStylePath = null;
 const styleElement = document.getElementById('page-style');
 const appRoot = document.getElementById('app-root');
 const loadingIcon = document.getElementById('loading-icon');
 
-/**
- * Defines the application routes.
- * Maps URL paths to views, controllers, and styles.
- */
 const routes = {
-    '/': {
-        view: '/views/search.html',
-        style: '/css/search_form.css',
-        controllerPath: '/js/classes/SearchController.js',
-        controllerName: 'SearchController'
-    },
-    '/login': {
-        view: '/views/login.html',
-        style: '/css/login.css',
-        controllerPath: '/js/classes/LoginController.js',
-        controllerName: 'LoginController'
-    },
-    '/register': {
-        view: '/views/registration.html',
-        style: '/css/registration.css',
-        controllerPath: '/js/classes/RegistrationController.js',
-        controllerName: 'RegistrationController'
-    },
-    '/my-tickets': {
-        view: '/views/my-tickets.html',
-style: '/css/my_tickets.css', // <--- ודא ששורה זו קיימת
-        controllerPath: '/js/my_tickets.js',
-        controllerName: 'myTickets' // Special name for non-class module
-    },
-    '/personal-details': {
-        view: '/views/personal-details.html',
-        style: null, // Uses global styles
-        controllerPath: '/js/personal_details.js',
-        controllerName: 'personalDetails' // Special name
-    },
-    '/database': {
-        view: '/views/database.html',
-        style: null, // Uses inline styles
-        controllerPath: '/js/database.js',
-        controllerName: 'database' // Special name
-    },
-    '/about': {
-        view: '/views/about.html',
-        style: null,
-        controllerPath: null // Static page
-    },
-    '/check-in': {
-        view: '/views/check-in.html',
-        style: null,
-        controllerPath: null // Static page
-    },
-    '/customer-service': {
-        view: '/views/customer-service.html',
-        style: null,
-        controllerPath: null // Static page
-    },
-    '/terms': {
-        view: '/views/terms.html',
-        style: null,
-        controllerPath: null // Static page
-    }
+    '/': { view: '/views/search.html', style: '/css/search_form.css', controllerPath: '/js/classes/SearchController.js', controllerName: 'SearchController' },
+    '/login': { view: '/views/login.html', style: '/css/login.css', controllerPath: '/js/classes/LoginController.js', controllerName: 'LoginController' },
+    '/register': { view: '/views/registration.html', style: '/css/registration.css', controllerPath: '/js/classes/RegistrationController.js', controllerName: 'RegistrationController' },
+    '/my-tickets': { view: '/views/my-tickets.html', style: '/css/my_tickets.css', controllerPath: '/js/my_tickets.js', controllerName: 'myTickets' },
+    '/personal-details': { view: '/views/personal-details.html', style: null, controllerPath: '/js/personal_details.js', controllerName: 'personalDetails' },
+    '/database': { view: '/views/database.html', style: null, controllerPath: '/js/database.js', controllerName: 'database' },
+    '/about': { view: '/views/about.html', style: null, controllerPath: null },
+    '/check-in': { view: '/views/check-in.html', style: null, controllerPath: null },
+    '/customer-service': { view: '/views/customer-service.html', style: null, controllerPath: null },
+    '/terms': { view: '/views/terms.html', style: null, controllerPath: null }
 };
 
-/**
- * Fetches and loads a CSS stylesheet dynamically.
- */
-async function loadStyle(path) {
-    if (path === currentStylePath) {
-        return; // Style is already loaded
-    }
 
-    // Always clear old styles
+export function updateNavbarAuth() {
+    const loginBtn = document.getElementById('login-button');
+    const signupBtn = document.getElementById('signup-button');
+    const personalArea = document.getElementById('personal-area-dropdown');
+    const logoutBtn = document.getElementById('logout-button');
+
+    if (!loginBtn || !personalArea) return;
+
+    // --- התיקון מתחיל כאן ---
+    
+    // בדיקה האם קיים מידע ב-LocalStorage (למשל user_id או user_data)
+    // ודא שבפונקציית ההתחברות (LoginController) אתה אכן שומר את הנתון הזה!
+// בתוך app.js -> updateNavbarAuth
+const hasLocalStorageData = localStorage.getItem('userEmail') !== null;    
+    // אופציונלי: בדיקת עוגייה רגילה (רק אם אתה בטוח שאתה יוצר עוגייה בשם 'token' שאינה HttpOnly)
+    const hasTokenCookie = typeof Cookies !== 'undefined' && Cookies.get('token') !== undefined;
+
+    const isLoggedIn = hasLocalStorageData || hasTokenCookie;
+    
+    // דיבוג לקונסול כדי שתראה בדיוק מה קורה בכל דף
+    console.log('Auth Check:', { 
+        page: window.location.pathname, 
+        hasLocalStorage: hasLocalStorageData, 
+        hasCookie: hasTokenCookie, 
+        isLoggedIn: isLoggedIn 
+    });
+
+    // --- התיקון מסתיים כאן ---
+
+    if (isLoggedIn) {
+        loginBtn.style.display = 'none';
+        signupBtn.style.display = 'none';
+        personalArea.style.display = 'block';
+        logoutBtn.style.display = 'block';
+    } else {
+        loginBtn.style.display = 'block';
+        signupBtn.style.display = 'block';
+        personalArea.style.display = 'none';
+        logoutBtn.style.display = 'none';
+    }
+}
+
+async function loadStyle(path) {
+    if (path === currentStylePath) return;
     styleElement.innerHTML = '';
     currentStylePath = path;
-
     if (path) {
         try {
             const response = await fetch(path);
@@ -93,15 +77,9 @@ async function loadStyle(path) {
     }
 }
 
-/**
- * Main navigation function.
- * Loads the view, style, and initializes the controller.
- */
 const navigateTo = async (path) => {
-    // 1. Find the route or default to '/'
     const route = routes[path] || routes['/'];
     
-    // 2. Clean up the old controller (if it exists)
     if (currentController) {
         if (typeof currentController.destroy === 'function') {
             currentController.destroy();
@@ -109,10 +87,11 @@ const navigateTo = async (path) => {
         currentController = null;
     }
 
-    // 3. Show loading spinner
+    // Update Navbar state on every navigation
+    updateNavbarAuth();
+
     loadingIcon.style.display = 'block';
 
-    // 4. Load Style and View in parallel
     try {
         const [viewResponse] = await Promise.all([
             fetch(route.view),
@@ -121,25 +100,21 @@ const navigateTo = async (path) => {
 
         if (!viewResponse.ok) throw new Error(`Failed to fetch view: ${route.view}`);
 
-        // 5. Inject the new HTML content
         appRoot.innerHTML = await viewResponse.text();
 
-        // 6. Load and initialize the new controller (if defined)
         if (route.controllerPath) {
             const module = await import(route.controllerPath);
             
-            // Handle non-class modules that export an init() function
-            if (route.controllerName === 'myTickets' || route.controllerName === 'personalDetails' || route.controllerName === 'database') {
+            if (['myTickets', 'personalDetails', 'database'].includes(route.controllerName)) {
                 if (module.init) {
-                    currentController = module; // Store the module itself
-                    currentController.init();   // Call its init function
+                    currentController = module;
+                    currentController.init();
                 }
             } else {
-                // Standard class-based controller
                 const ControllerClass = module[route.controllerName];
                 if (ControllerClass) {
                     currentController = new ControllerClass();
-                    currentController.init(); // Call the init method
+                    currentController.init();
                 }
             }
         }
@@ -147,25 +122,21 @@ const navigateTo = async (path) => {
         console.error('Error during navigation:', err);
         appRoot.innerHTML = `<h2>Error loading page</h2><p>${err.message}</p>`;
     } finally {
-        // 7. Hide loading spinner
         loadingIcon.style.display = 'none';
     }
 };
 
-/**
- * Intercepts clicks on all links with a 'data-nav' attribute.
- */
+// Handle clicks on [data-nav] elements (both <a> and others)
 document.body.addEventListener('click', event => {
     let target = event.target;
-    // Handle clicks inside SVGs or other elements inside the <a> tag
     while (target && target !== document.body) {
-        if (target.matches('a[data-nav]')) {
+        // FIX: Removed 'a' prefix to support buttons or other elements if needed
+        if (target.matches('[data-nav]')) {
             event.preventDefault();
             const href = target.getAttribute('href');
-            // Don't navigate if it's the same page
-            if (href !== window.location.pathname) {
-                history.pushState(null, null, href); // Update URL
-                navigateTo(href); // Navigate
+            if (href && href !== window.location.pathname) {
+                history.pushState(null, null, href);
+                navigateTo(href);
             }
             return;
         }
@@ -173,19 +144,24 @@ document.body.addEventListener('click', event => {
     }
 });
 
-/**
- * Handles browser back/forward button clicks.
- */
+// Handle Logout Click
+document.body.addEventListener('click', event => {
+    if (event.target.id === 'logout-button') {
+        // Clear Auth Data
+        Cookies.remove('token'); 
+        Cookies.remove('connect.sid');
+        localStorage.clear(); // Optional: Clear local storage too
+        
+        // Redirect to home and update navbar
+        history.pushState(null, null, '/');
+        navigateTo('/');
+    }
+});
+
 window.addEventListener('popstate', () => {
     navigateTo(window.location.pathname);
 });
 
-/**
- * Initial load:
- * Navigate to the path currently in the browser's URL bar.
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // We don't need 'DOMContentLoaded' for our app logic,
-    // but we use it to trigger the *first* navigation.
     navigateTo(window.location.pathname);
 });

@@ -9,13 +9,13 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link rel="stylesheet" href="css/global.css">
+    
+    <link rel="stylesheet" href="/css/global.css">
     <style id="page-style"></style>
-
-    </head>
+</head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
@@ -26,27 +26,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/" data-nav>Flight Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/check-in" data-nav>Check In</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/customer-service" data-nav>Customer Service</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about" data-nav>About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/database" data-nav>Database (Admin)</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/" data-nav>Flight Search</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/check-in" data-nav>Check In</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/customer-service" data-nav>Customer Service</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about" data-nav>About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/database" data-nav>Database (Admin)</a></li>
                 </ul>
             </div>
 
             <div class="d-flex align-items-center" id="nav-auth-section">
-                <button class="btn btn-light me-2" id="login-button" data-nav href="/login">Login</button>
-                <button class="btn btn-primary" id="signup-button" data-nav href="/register">Sign Up</button>
+                <a class="btn btn-light me-2" id="login-button" href="/login" data-nav>Login</a>
+                <a class="btn btn-primary" id="signup-button" href="/register" data-nav>Sign Up</a>
 
                 <div class="nav-item dropdown me-2" id="personal-area-dropdown" style="display: none;">
                     <a class="nav-link dropdown-toggle btn btn-outline-secondary" href="#" id="navbarUserMenu" role="button" data-bs-toggle="dropdown">
@@ -65,24 +55,20 @@
         </div>
     </nav>
 
-    <img id="loading-icon" src="./img/loading.gif" alt="Loading..." style="display: none; width: 150px; height: 150px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+    <img id="loading-icon" src="/img/loading.gif" alt="Loading..." style="display: none; width: 150px; height: 150px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
 
-    
     <main id="app-root" class="" style="padding-top: 80px;">
-        </main>
+    </main>
 
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-    <script src="./build/js/intlTelInputWithUtils.js"></script>
     
-    <script type="module" src="js/app.js"></script>
+    <script src="/build/js/intlTelInputWithUtils.js"></script>
+    <script type="module" src="/js/app.js"></script>
 </body>
-
 </html>

@@ -91,10 +91,10 @@ export class LoginController {
         this.#attachEventListeners();
 
         if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
-        
+
         if (this.#storedEmail) {
             this.#elements.emailInput.value = this.#storedEmail;
-            this.#validator.validateEmail(); 
+            this.#validator.validateEmail();
         }
     }
 
@@ -202,7 +202,7 @@ export class LoginController {
 
     set userEmail(email) {
         this.#storedEmail = email;
-        if(email) {
+        if (email) {
             localStorage.setItem('userEmail', email);
         } else {
             localStorage.removeItem('userEmail');
@@ -215,7 +215,7 @@ export class LoginController {
 
     set credentialID(id) {
         this.#storedCredentialID = id;
-        if(id) {
+        if (id) {
             localStorage.setItem('credentialID', id);
         } else {
             localStorage.removeItem('credentialID');
@@ -231,24 +231,24 @@ export class LoginController {
         event.preventDefault();
         const email = this.#elements.emailInput.value || this.userEmail;
         if (!email) {
-             if(this.#elements.successMessage) this.#elements.successMessage.textContent = 'Please enter an email first.';
-             return;
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = 'Please enter an email first.';
+            return;
         }
-        
+
         const result = await this.#webAuthn.handleLoginBiometric(email);
 
         if (result.success) {
-            if(this.#elements.successMessage) this.#elements.successMessage.textContent = result.message;
-            // Navigate using router
+            this.userEmail = email;
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = result.message;
             history.pushState(null, null, result.redirectUrl);
             window.dispatchEvent(new PopStateEvent('popstate'));
         } else if (result.code === 'MUST_REGISTER') {
-            if(this.#elements.successMessage) this.#elements.successMessage.textContent = 'This device is not registered. The domain must be registered through the personal domain.';
-        
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = 'This device is not registered. The domain must be registered through the personal domain.';
+
         } else if (result.newCredentialID) {
             this.credentialID = result.newCredentialID;
         } else if (result.message) {
-            if(this.#elements.successMessage) this.#elements.successMessage.textContent = result.message;
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = result.message;
         }
     }
 
@@ -256,20 +256,20 @@ export class LoginController {
         event.preventDefault();
         const email = this.#elements.emailInput.value;
 
-        if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
-        if(this.#elements.resendButton) this.#elements.resendButton.style.display = 'none';
+        if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
+        if (this.#elements.resendButton) this.#elements.resendButton.style.display = 'none';
 
         try {
             const data = await AuthService.sendAuthCodeAPI(email);
-            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
 
             if (data.datas.code === "succeeded") {
-                if(this.#elements.verificationButton) this.#elements.verificationButton.style.display = 'none';
-                if(this.#elements.codeInputContainer) this.#elements.codeInputContainer.style.display = 'block';
-                if(this.#elements.toggleAuthButton) this.#elements.toggleAuthButton.style.display = 'none';
-                if(this.#elements.successMessage) this.#elements.successMessage.textContent = "Code sent successfully! Will expire in: ";
-                if(this.#elements.verificationCodeInput) this.#elements.verificationCodeInput.removeAttribute("readonly");
-                if(this.#elements.successMessage) this.#elements.successMessage.style.display = 'block';
+                if (this.#elements.verificationButton) this.#elements.verificationButton.style.display = 'none';
+                if (this.#elements.codeInputContainer) this.#elements.codeInputContainer.style.display = 'block';
+                if (this.#elements.toggleAuthButton) this.#elements.toggleAuthButton.style.display = 'none';
+                if (this.#elements.successMessage) this.#elements.successMessage.textContent = "Code sent successfully! Will expire in: ";
+                if (this.#elements.verificationCodeInput) this.#elements.verificationCodeInput.removeAttribute("readonly");
+                if (this.#elements.successMessage) this.#elements.successMessage.style.display = 'block';
 
                 if (this.#authCodeInterval) clearInterval(this.#authCodeInterval);
                 if (this.#resendTimerInterval) clearInterval(this.#resendTimerInterval);
@@ -278,23 +278,23 @@ export class LoginController {
                 this.#authCodeInterval = setInterval(() => {
                     let minutes = parseInt(totalSeconds / 60, 10);
                     let seconds = parseInt(totalSeconds % 60, 10);
-                    if(this.#elements.timerDiv) this.#elements.timerDiv.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+                    if (this.#elements.timerDiv) this.#elements.timerDiv.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
                     if (--totalSeconds < 0) {
                         clearInterval(this.#authCodeInterval);
-                        if(this.#elements.timerDiv) this.#elements.timerDiv.textContent = "Expired";
+                        if (this.#elements.timerDiv) this.#elements.timerDiv.textContent = "Expired";
                     }
                 }, 1000);
 
-                if(this.#elements.timerElement && this.#elements.resendButton) {
+                if (this.#elements.timerElement && this.#elements.resendButton) {
                     this.#resendTimerInterval = Utils.startTimer(1 * 30, this.#elements.timerElement, this.#elements.resendButton);
                     this.#elements.timerElement.style.display = 'block';
                 }
             } else {
-                if(this.#elements.successMessage) this.#elements.successMessage.textContent = "Failed to send code. Please try again.";
+                if (this.#elements.successMessage) this.#elements.successMessage.textContent = "Failed to send code. Please try again.";
             }
         } catch (error) {
-            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
-            if(this.#elements.successMessage) this.#elements.successMessage.textContent = `Try again! Error: ${error.message}`;
+            if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = `Try again! Error: ${error.message}`;
         }
     }
 
@@ -302,47 +302,49 @@ export class LoginController {
         event.preventDefault();
         const email = this.#elements.emailInput.value;
         const code = this.#elements.verificationCodeInput.value;
-        if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
+        if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
 
         try {
             const data = await AuthService.validateCodeAPI(email, code);
-            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
 
             if (data.redirectUrl) {
-                if(this.#elements.successMessage) this.#elements.successMessage.textContent = data.datas.code;
+                this.userEmail = email;
+
+                if (this.#elements.successMessage) this.#elements.successMessage.textContent = data.datas.code;
+
                 history.pushState(null, null, data.redirectUrl);
                 window.dispatchEvent(new PopStateEvent('popstate'));
             } else {
-                if(this.#elements.successMessage) this.#elements.successMessage.textContent = data.datas.code || "Validation failed";
+                if (this.#elements.successMessage) this.#elements.successMessage.textContent = data.datas.code || "Validation failed";
             }
         } catch (error) {
-            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
-            if(this.#elements.successMessage) this.#elements.successMessage.textContent = error.message;
+            if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = error.message;
             console.error('Error:', error);
         }
     }
-
     async #handleConnect(event) {
         event.preventDefault();
         const email = this.#elements.emailInput.value;
         const password = this.#elements.passwordInput.value;
-        if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
+        if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
 
         try {
             const data = await AuthService.loginWithPasswordAPI(email, password);
-            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
 
             if (data.e === "no") {
-                this.userEmail = email; 
-                if(this.#elements.successMessage) this.#elements.successMessage.textContent = 'Login successful!';
+                this.userEmail = email;
+                if (this.#elements.successMessage) this.#elements.successMessage.textContent = 'Login successful!';
                 history.pushState(null, null, data.redirectUrl);
                 window.dispatchEvent(new PopStateEvent('popstate'));
             } else {
-                if(this.#elements.successMessage) this.#elements.successMessage.textContent = data.error;
+                if (this.#elements.successMessage) this.#elements.successMessage.textContent = data.error;
             }
         } catch (error) {
-            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
-            if(this.#elements.successMessage) this.#elements.successMessage.textContent = error.message;
+            if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = error.message;
         }
     }
 }
