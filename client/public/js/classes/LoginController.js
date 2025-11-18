@@ -81,10 +81,10 @@ export class LoginController {
             passContainer: this.#elements.passContainer
         });
 
-       
+
         // Bind all event handlers
         this.#bindEventHandlers();
-        
+
         this.#ui.setConnectHandler(this.#bound.handleConnect);
         this.#ui.setValidationHandler(this.#bound.handleValidation);
 
@@ -108,7 +108,7 @@ export class LoginController {
         // Clear any running intervals
         if (this.#authCodeInterval) clearInterval(this.#authCodeInterval);
         if (this.#resendTimerInterval) clearInterval(this.#resendTimerInterval);
-        
+
         // Nullify references
         this.#elements = {};
         this.#validator = null;
