@@ -56,7 +56,7 @@ class HandAuth {
           });
           
           logger.info(`User successfully registered: ${email}`);
-          return res.redirect('https://skyrocket.onrender.com/search_form.html');
+          return res.redirect('https://skyrocket.onrender.com');
         } catch (signupError) {
           logger.error(`Signup failed for ${email}: ${signupError.message}`);
           if (signupError.response) {
@@ -95,7 +95,7 @@ class HandAuth {
           });
           
           logger.info(`Redirecting authenticated user to search form: ${email}`);
-          return res.redirect('https://skyrocket.onrender.com/search_form.html');
+          return res.redirect('https://skyrocket.onrender.com');
         } catch (loginError) {
           logger.error(`Login failed for ${email}: ${loginError.message}`);
           if (loginError.response) {
