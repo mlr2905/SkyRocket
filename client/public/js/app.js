@@ -1,4 +1,5 @@
-// js/app.js - The main SPA Router
+
+import { WebAuthnController } from './classes/LoginWebAuthnController.js'; // שים לב לנתיב, ודא שהוא תקין אצלך
 
 let currentController = null;
 let currentStylePath = null;
@@ -19,7 +20,6 @@ const routes = {
     '/terms': { view: '/views/terms.html', style: null, controllerPath: null }
 };
 
-
 export function updateNavbarAuth() {
     const loginBtn = document.getElementById('login-button');
     const signupBtn = document.getElementById('signup-button');
@@ -28,26 +28,11 @@ export function updateNavbarAuth() {
 
     if (!loginBtn || !personalArea) return;
 
-    // --- התיקון מתחיל כאן ---
-    
-    // בדיקה האם קיים מידע ב-LocalStorage (למשל user_id או user_data)
-    // ודא שבפונקציית ההתחברות (LoginController) אתה אכן שומר את הנתון הזה!
-// בתוך app.js -> updateNavbarAuth
-const hasLocalStorageData = localStorage.getItem('userEmail') !== null;    
-    // אופציונלי: בדיקת עוגייה רגילה (רק אם אתה בטוח שאתה יוצר עוגייה בשם 'token' שאינה HttpOnly)
+    const hasLocalStorageData = localStorage.getItem('userEmail') !== null;
+
     const hasTokenCookie = typeof Cookies !== 'undefined' && Cookies.get('token') !== undefined;
 
     const isLoggedIn = hasLocalStorageData || hasTokenCookie;
-    
-    // דיבוג לקונסול כדי שתראה בדיוק מה קורה בכל דף
-    console.log('Auth Check:', { 
-        page: window.location.pathname, 
-        hasLocalStorage: hasLocalStorageData, 
-        hasCookie: hasTokenCookie, 
-        isLoggedIn: isLoggedIn 
-    });
-
-    // --- התיקון מסתיים כאן ---
 
     if (isLoggedIn) {
         loginBtn.style.display = 'none';
@@ -79,7 +64,7 @@ async function loadStyle(path) {
 
 const navigateTo = async (path) => {
     const route = routes[path] || routes['/'];
-    
+
     if (currentController) {
         if (typeof currentController.destroy === 'function') {
             currentController.destroy();
@@ -87,7 +72,6 @@ const navigateTo = async (path) => {
         currentController = null;
     }
 
-    // Update Navbar state on every navigation
     updateNavbarAuth();
 
     loadingIcon.style.display = 'block';
@@ -104,7 +88,7 @@ const navigateTo = async (path) => {
 
         if (route.controllerPath) {
             const module = await import(route.controllerPath);
-            
+
             if (['myTickets', 'personalDetails', 'database'].includes(route.controllerName)) {
                 if (module.init) {
                     currentController = module;
@@ -126,11 +110,9 @@ const navigateTo = async (path) => {
     }
 };
 
-// Handle clicks on [data-nav] elements (both <a> and others)
 document.body.addEventListener('click', event => {
     let target = event.target;
     while (target && target !== document.body) {
-        // FIX: Removed 'a' prefix to support buttons or other elements if needed
         if (target.matches('[data-nav]')) {
             event.preventDefault();
             const href = target.getAttribute('href');
@@ -144,17 +126,43 @@ document.body.addEventListener('click', event => {
     }
 });
 
-// Handle Logout Click
 document.body.addEventListener('click', event => {
     if (event.target.id === 'logout-button') {
-        // Clear Auth Data
-        Cookies.remove('token'); 
+        Cookies.remove('token');
         Cookies.remove('connect.sid');
-        localStorage.clear(); // Optional: Clear local storage too
-        
-        // Redirect to home and update navbar
+        localStorage.clear();
+
         history.pushState(null, null, '/');
         navigateTo('/');
+    }
+});
+
+document.body.addEventListener('click', async (event) => {
+    if (event.target.id === 'register-biometric-link') {
+        event.preventDefault();
+
+        const userEmail = localStorage.getItem('userEmail');
+
+        if (!userEmail) {
+            alert("לא נמצא משתמש מחובר. אנא התחבר מחדש.");
+            history.pushState(null, null, '/login');
+            navigateTo('/login');
+            return;
+        }
+
+        console.log("Starting global biometric registration for:", userEmail);
+
+        try {
+            const webAuthn = new WebAuthnController({
+                biometricStatus: null,
+                emailInput: null
+            }, null);
+
+            await webAuthn.handleRegisterBiometric(userEmail);
+
+        } catch (error) {
+            console.error("Global biometric registration failed:", error);
+        }
     }
 });
 

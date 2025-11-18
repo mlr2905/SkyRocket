@@ -326,7 +326,7 @@ export class LoginController {
     }
     async #handleConnect(event) {
         event.preventDefault();
-        const email = this.#elements.emailInput.value;
+        const email = this.#elements.emailInput.value;;
         const password = this.#elements.passwordInput.value;
         if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
 
