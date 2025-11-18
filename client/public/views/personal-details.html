@@ -1,0 +1,133 @@
+<main class="container my-5 pt-4">
+    <header class="text-center mb-4">
+        <h1 class="display-6 fw-light">Personal details</h1>
+    </header>
+
+    <div id="message-container" class="alert" role="alert" style="display: none;"></div>
+
+    <div class="card shadow-sm"> <div class="card-body p-4 p-md-5">
+            
+            <form id="details-form">
+                
+                <fieldset id="personal-fields-fieldset" disabled>
+                    <h5 class="mb-3">Account details</h5>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label for="email" class="col-sm-4 col-form-label horizontal-label">Email:</label>
+                                <div class="col-sm-8">
+                                    <input type="email" class="form-control-plaintext" id="email" name="email" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label for="username" class="col-sm-4 col-form-label horizontal-label">User Name:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control-plaintext" id="username" name="username" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="mb-3">Customer details</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name">
+                        </div>
+                        <div class="col-6">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Street, city, country">
+                        </div>
+                        <div class="col-6">
+                            <label for="phone_number" class="form-label">Phone</label>
+                            <div class="input-group">
+                                <select class="form-select" id="phone_prefix" style="max-width: 120px;">
+                                    <option value="972" selected>+972 (IL)</option>
+                                    <option value="1">+1 (US)</option>
+                                    <option value="44">+44 (UK)</option>
+                                    <option value="33">+33 (FR)</option>
+                                    <option value="49">+49 (DE)</option>
+                                </select>
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="501234567" pattern="[0-9]*">
+                            </div>
+                            <div id="phone_error" class="form-text text-danger"></div>
+                        </div>
+                    </div>
+                    </fieldset>
+
+                <hr class="my-4">
+
+                <h5 class="mb-3">Payment details</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-sm-5 col-form-label horizontal-label">Existing Card:</label>
+                            <div class="col-sm-7"> <input type="text" class="form-control-plaintext" id="credit_card_display" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label horizontal-label">Expiry:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control-plaintext" id="expiry_date_display" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="cvv-gate" style="display: none;">
+                    <p class="fw-bold">To edit payment details, please enter the CVV of the existing card:</p>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-4">
+                            <label for="cvv_verification_input" class="form-label visually-hidden">CVV</label>
+                            <input type="password" class="form-control" id="cvv_verification_input" maxlength="4" placeholder="123">
+                            <div id="cvv_verify_error" class="form-text text-danger"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-dark" id="cvv_verify_button">
+                                <i class="bi bi-shield-lock"></i> Verify CVV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <fieldset id="payment-fields-fieldset" disabled style="display: none;">
+                    <h6 class="mt-4">Enter new card details:</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="credit_card" class="form-label">New card number</label>
+                            <input type="text" class="form-control" id="credit_card" name="credit_card" placeholder="•••• •••• •••• ••••">
+                            <div id="credit_card_error" class="form-text text-danger"></div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="expiry_date" class="form-label">Validity (MM/YY)</label>
+                            <input type="text" class="form-control" id="expiry_date" name="expiry_date" placeholder="MM/YY" maxlength="5">
+                            <div id="expiry_date_error" class="form-text text-danger"></div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123" maxlength="3">
+                            <div id="cvv_error" class="form-text text-danger"></div>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <hr class="my-4">
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-primary btn-lg" id="edit-button">
+                        <i class="bi bi-pencil-fill"></i> Editing
+                    </button>
+                    <button type="submit" class="btn btn-success btn-lg" id="save-button" style="display: none;">
+                        <i class="bi bi-check-lg"></i> Save changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

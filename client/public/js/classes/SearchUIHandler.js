@@ -1,144 +1,144 @@
-// File: SearchUIHandler.js
+// js/classes/SearchUIHandler.js
 export class SearchUIHandler {
-    #elements;
+    _elements;
     selectedOutboundCard = null;
     selectedReturnCard = null;
+    
+    // אחסון מקומי של פונקציות ה-callback
+    _callbacks = {
+        onSelectFrom: null,
+        onSelectTo: null,
+        onSelectOutbound: null,
+        onSelectReturn: null
+    };
 
     constructor(elements) {
-        this.#elements = elements;
+        this._elements = elements;
+    }
+
+    /**
+     * NEW: Receives callbacks from the controller
+     */
+    setAutocompleteCallbacks(onSelectFrom, onSelectTo) {
+        this._callbacks.onSelectFrom = onSelectFrom;
+        this._callbacks.onSelectTo = onSelectTo;
+    }
+
+    /**
+     * NEW: Receives callbacks from the controller
+     */
+    setFlightSelectCallbacks(onSelectOutbound, onSelectReturn) {
+        this._callbacks.onSelectOutbound = onSelectOutbound;
+        this._callbacks.onSelectReturn = onSelectReturn;
     }
 
     /**
      * Toggles between the search form view and the flight results view.
-     * @param {boolean} showResults - True to show results, false to show the form.
      */
     toggleSearchView(showResults) {
-        if (this.#elements.flightContainer) { // זהו ה-main-container
-            this.#elements.flightContainer.style.display = showResults ? 'block' : 'none';
+        if (this._elements.flightContainer) { 
+            this._elements.flightContainer.style.display = showResults ? 'block' : 'none';
         }
-        if (this.#elements.searchFormGroup) {
-            this.#elements.searchFormGroup.style.display = showResults ? 'none' : 'block';
+        if (this._elements.searchFormGroup) {
+            this._elements.searchFormGroup.style.display = showResults ? 'none' : 'block';
         }
     }
 
     /**
-     * מחליף בין תצוגת הטיסות לתצוגת פרטי הנוסעים
-     * @param {boolean} showPassengers - True to show passenger form, false to show flight results.
+     * Toggle between flight results and passenger details
      */
     togglePassengerView(showPassengers) {
-        if (this.#elements.mainFlightContainer) { // ה-div שמכיל את תוצאות הטיסה
-            this.#elements.mainFlightContainer.style.display = showPassengers ? 'none' : 'block';
+        if (this._elements.mainFlightContainer) { 
+            this._elements.mainFlightContainer.style.display = showPassengers ? 'none' : 'block';
         }
-        if (this.#elements.passengerDetailsSection) { // ה-div החדש של פרטי הנוסעים
-            this.#elements.passengerDetailsSection.style.display = showPassengers ? 'block' : 'none';
+        if (this._elements.passengerDetailsSection) { 
+            this._elements.passengerDetailsSection.style.display = showPassengers ? 'block' : 'none';
         }
 
-        // גלול לראש הטופס החדש
         if (showPassengers) {
-            this.#elements.passengerDetailsSection.scrollIntoView({ behavior: 'smooth' });
+            this._elements.passengerDetailsSection.scrollIntoView({ behavior: 'smooth' });
         }
     }
 
-
     /**
-     * מייצר את הטפסים עבור כל נוסע
-     * @param {number} passengerCount - כמות הנוסעים
-     * @param {'one-way' | 'round-trip'} tripType - סוג הטיסה
+     * Render passenger forms
      */
     renderPassengerForms(passengerCount, tripType) {
-        const container = this.#elements.passengerFormsContainer;
+        const container = this._elements.passengerFormsContainer;
         if (!container) return;
 
-        container.innerHTML = ''; // נקה טפסים קודמים
+        container.innerHTML = ''; 
 
         for (let i = 1; i <= passengerCount; i++) {
             const formDiv = document.createElement('div');
             formDiv.className = 'passenger-form mb-3 p-3 border rounded';
-            formDiv.dataset.index = i; // שמירת אינדקס הנוסע
+            formDiv.dataset.index = i; 
 
             const returnButtonDisplay = (tripType === 'round-trip') ? 'inline-block' : 'none';
 
-            // --- שונה ---
-            // הוספנו שדה תאריך לידה ושינינו את פריסת הרשת
             formDiv.innerHTML = `
-                <h5>נוסע ${i}</h5>
+                <h5>Passenger ${i}</h5>
                 <div class="row g-2">
                     <div class="col-md-4">
-                        <label class="form-label">שם פרטי</label>
+                        <label class="form-label">First Name</label>
                         <input type="text" class="form-control" name="first_name" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">שם משפחה</label>
+                        <label class="form-label">Last Name</label>
                         <input type="text" class="form-control" name="last_name" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">מספר דרכון</label>
+                        <label class="form-label">Passport Number</label>
                         <input type="text" class="form-control" name="passport_number" required>
                     </div>
-                  <div class="col-md"> <label class="form-label">תאריך לידה</label>
-    <input type="date" class="form-control" name="date_of_birth" required>
-</div>
+                  <div class="col-md"> <label class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" name="date_of_birth" required>
+                  </div>
                 </div>
                 <div class="mt-3 d-flex align-items-center gap-2 flex-wrap">
                     <button type="button" class="btn btn-outline-secondary btn-sm select-seat-btn" data-passenger-index="${i}" data-flight-type="outbound">
-                        בחר כיסא (הלוך)
+                        Select Seat (Outbound)
                     </button>
                     <span class="seat-selection-display" id="seat-selection-outbound-${i}"></span>
                     
                     <button type="button" class="btn btn-outline-secondary btn-sm select-seat-btn" data-passenger-index="${i}" data-flight-type="return" style="display: ${returnButtonDisplay};">
-                        בחר כיסא (חזור)
+                        Select Seat (Return)
                     </button>
                     <span class="seat-selection-display" id="seat-selection-return-${i}"></span>
                 </div>
             `;
-            // --- סוף שינוי ---
             container.appendChild(formDiv);
         }
     }
 
-    /**
-     * Updates the disabled state of input fields based on selections.
-     */
     updateInputDisabledState() {
-        const fromValue = this.#elements.fromInput?.value.trim() ?? '';
-        const toValue = this.#elements.toInput?.value.trim() ?? '';
+        const fromValue = this._elements.fromInput?.value.trim() ?? '';
+        const toValue = this._elements.toInput?.value.trim() ?? '';
 
         const disableTo = (fromValue === '');
         const disableDate = (fromValue === '' || toValue === '');
         const disableSearch = disableDate;
 
-        if (this.#elements.toInput) this.#elements.toInput.disabled = disableTo;
-        if (this.#elements.dateRangeInput) this.#elements.dateRangeInput.disabled = disableDate;
-        if (this.#elements.searchButton) this.#elements.searchButton.disabled = disableSearch;
+        if (this._elements.toInput) this._elements.toInput.disabled = disableTo;
+        if (this._elements.dateRangeInput) this._elements.dateRangeInput.disabled = disableDate;
+        if (this._elements.searchButton) this._elements.searchButton.disabled = disableSearch;
     }
 
-    /**
-     * Updates the displayed passenger count.
-     * @param {number} count - The new count.
-     */
     updatePassengerCount(count) {
-        if (this.#elements.numberElement) {
-            this.#elements.numberElement.textContent = count;
+        if (this._elements.numberElement) {
+            this._elements.numberElement.textContent = count;
         }
-        if (this.#elements.subtractButton) {
-            this.#elements.subtractButton.disabled = count <= 1;
+        if (this._elements.subtractButton) {
+            this._elements.subtractButton.disabled = count <= 1;
         }
     }
 
-    /**
-     * Shows or hides the loading icon.
-     * @param {boolean} show
-     */
     showLoading(show) {
-        if (this.#elements.loadingIcon) {
-            this.#elements.loadingIcon.style.display = show ? 'block' : 'none';
+        if (this._elements.loadingIcon) {
+            this._elements.loadingIcon.style.display = show ? 'block' : 'none';
         }
     }
 
-    /**
-     * Clears an autocomplete list container.
-     * @param {HTMLElement} listElement
-     */
     clearAutocomplete(listElement) {
         if (listElement) {
             listElement.innerHTML = '';
@@ -146,12 +146,6 @@ export class SearchUIHandler {
         }
     }
 
-    /**
-     * Renders items into an autocomplete list container.
-     * @param {HTMLElement} listElement - The container (e.g., div).
-     * @param {Array<string>} items - The list of strings to display.
-     * @param {Function} onSelectCallback - Callback function when an item is clicked.
-     */
     renderAutocompleteList(listElement, items, onSelectCallback) {
         if (!listElement) return;
         this.clearAutocomplete(listElement);
@@ -164,7 +158,8 @@ export class SearchUIHandler {
             item.className = 'autocomplete-item';
             item.textContent = itemName;
             item.addEventListener('click', () => {
-                onSelectCallback(itemName);
+                // Use the passed callback OR the stored one
+                if (onSelectCallback) onSelectCallback(itemName);
                 this.clearAutocomplete(listElement);
             });
             listElement.appendChild(item);
@@ -172,12 +167,7 @@ export class SearchUIHandler {
         listElement.style.display = 'block';
     }
 
-    /**
-     * Creates and returns a flight card DOM element.
-     * @param {Object} flight - Flight data object.
-     * @returns {HTMLElement} The flight card element.
-     */
-    #createFlightCardElement(flight) {
+    _createFlightCardElement(flight) {
         const formatOptionsTime = { hour: '2-digit', minute: '2-digit' };
         const departureTime = flight.departure_time ? new Date(flight.departure_time).toLocaleTimeString([], formatOptionsTime) : 'N/A';
         const departureDate = flight.departure_time ? new Date(flight.departure_time).toLocaleDateString() : 'N/A';
@@ -196,7 +186,6 @@ export class SearchUIHandler {
                 price = Math.ceil(totalMinutes / 60) * 150;
             }
         }
-
 
         const card = document.createElement('div');
         card.className = 'flight-card';
@@ -226,12 +215,6 @@ export class SearchUIHandler {
         return card;
     }
 
-    /**
-     * Renders flight cards into a specified container.
-     * @param {HTMLElement} container - The container element (outbound or return).
-     * @param {Array<Object>} flights - Array of flight objects.
-     * @param {Function} onSelectCallback - Callback function for when a card's select button is clicked.
-     */
     renderFlightCards(container, flights, onSelectCallback) {
         if (!container) return;
         container.innerHTML = '';
@@ -245,11 +228,11 @@ export class SearchUIHandler {
         grid.className = 'flight-grid';
 
         flights.forEach(flight => {
-            const card = this.#createFlightCardElement(flight);
+            const card = this._createFlightCardElement(flight);
             const selectButton = card.querySelector('.select-button');
             if (selectButton) {
                 selectButton.addEventListener('click', () => {
-                    onSelectCallback(flight, card);
+                    if(onSelectCallback) onSelectCallback(flight, card);
                 });
             }
             grid.appendChild(card);
@@ -259,11 +242,6 @@ export class SearchUIHandler {
         container.style.maxHeight = (flights.length <= 2) ? 'none' : '400px';
     }
 
-    /**
-     * Updates the visual selection state of flight cards.
-     * @param {HTMLElement} selectedCard - The newly selected card.
-     * @param {'outbound' | 'return'} cardType - The type of flight selected.
-     */
     updateSelectedCardVisuals(selectedCard, cardType) {
         const previouslySelected = (cardType === 'outbound')
             ? this.selectedOutboundCard
@@ -283,36 +261,8 @@ export class SearchUIHandler {
         }
     }
 
-
-    /**
-    * Shows the return flights section after an outbound flight is selected.
-    */
     showReturnFlightsSection() {
-        if (this.#elements.outboundSection) this.#elements.outboundSection.style.display = 'none';
-        if (this.#elements.returnSection) this.#elements.returnSection.style.display = 'block';
-    }
-
-
-   /**
-     * Updates the display of login/logout buttons.
-     * @param {boolean} isLoggedIn
-     */
-    updateLoginStatus(isLoggedIn) {
-        // הגדרת משתנים לקריאות טובה יותר
-        const displayLoggedIn = isLoggedIn ? 'block' : 'none';
-        const displayLoggedOut = isLoggedIn ? 'none' : 'block';
-
-        if (this.#elements.loginButton) {
-            this.#elements.loginButton.style.display = displayLoggedOut;
-        }
-        if (this.#elements.signupButton) { 
-            this.#elements.signupButton.style.display = displayLoggedOut;
-        }
-        if (this.#elements.logoutButton) {
-            this.#elements.logoutButton.style.display = displayLoggedIn;
-        }
-        if (this.#elements.personalAreaDropdown) { 
-            this.#elements.personalAreaDropdown.style.display = displayLoggedIn;
-        }
+        if (this._elements.outboundSection) this._elements.outboundSection.style.display = 'none';
+        if (this._elements.returnSection) this._elements.returnSection.style.display = 'block';
     }
 }

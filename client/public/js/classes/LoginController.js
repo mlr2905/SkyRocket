@@ -1,3 +1,4 @@
+// js/classes/LoginController.js (Refactored - FULL)
 
 import * as Utils from '../utils/utils.js';
 import * as AuthService from '../services/authService.js';
@@ -6,44 +7,50 @@ import { WebAuthnController } from './LoginWebAuthnController.js';
 import { UIHandler } from './LoginUIHandler.js';
 
 export class LoginController {
+    // --- Private Fields ---
     #storedEmail;
     #storedCredentialID;
     #authCodeInterval;
     #resendTimerInterval;
 
-    #emailInput;
-    #passwordInput;
-    #verificationCodeInput;
-    #connectButton;
-    #gitButton;
-    #biometricButton;
-    #googleButton;
-    #messageElement;
-    #successMessage;
-    #loadingIcon;
-    #timerElement;
-    #timerDiv;
-    #resendButton;
-    #verificationButton;
-    #codeInputContainer;
-
+    #elements = {}; // Store all DOM elements here
     #validator;
     #webAuthn;
     #ui;
 
-    #boundHandleConnect;
-    #boundHandleValidation;
+    // Store bound functions for event removal
+    #bound = {
+        validateEmail: null,
+        validatePassword: null,
+        validateCode: null,
+        changeEmail: null,
+        togglePassword: null,
+        toggleAuthType: null,
+        handleAuthCode: null,
+        handleConnect: null,
+        handleValidation: null,
+        handleBiometricLogin: null,
+        handleGitLogin: null,
+        handleGoogleLogin: null,
+    };
 
     constructor() {
+        // Constructor is now minimal
+    }
+
+    /**
+     * NEW: Called by the router when the page is loaded
+     */
+    init() {
         this.#selectDOMElements();
         this.#loadStateFromStorage();
 
         // --- Instantiate Sub-Controllers ---
         this.#validator = new FormValidator({
-            emailInput: this.#emailInput,
-            passwordInput: this.#passwordInput,
-            verificationCodeInput: this.#verificationCodeInput,
-            toggleAuthButton: document.getElementById('toggle-auth-type'),
+            emailInput: this.#elements.emailInput,
+            passwordInput: this.#elements.passwordInput,
+            verificationCodeInput: this.#elements.verificationCodeInput,
+            toggleAuthButton: this.#elements.toggleAuthButton,
             forgotPasswordLink: document.getElementById('forgot-password-link'),
             emailCheckIcon: document.getElementById('email_'),
             emailErrorIcon: document.getElementById('email_error'),
@@ -52,41 +59,140 @@ export class LoginController {
             passErrorIcon: document.getElementById('password_error'),
             codeCheckIcon: document.getElementById('code_'),
             codeErrorIcon: document.getElementById('code_error'),
-            connectButton: this.#connectButton,
-            changeButton: document.getElementById('Change')
+            connectButton: this.#elements.connectButton,
+            changeButton: this.#elements.changeButton
         });
 
         this.#webAuthn = new WebAuthnController({
             biometricStatus: document.getElementById('biometricStatus'),
-            messageElement: this.#messageElement,
-            emailInput: this.#emailInput,
+            messageElement: this.#elements.messageElement,
+            emailInput: this.#elements.emailInput,
         }, this.#storedCredentialID);
 
         this.#ui = new UIHandler({
-            emailInput: this.#emailInput,
-            passwordInput: this.#passwordInput,
-            changeButton: document.getElementById('Change'),
-            eyeIcon: document.getElementById('eyeicon'),
-            toggleAuthButton: document.getElementById('toggle-auth-type'),
-            verificationButton: this.#verificationButton,
-            connectButton: this.#connectButton,
+            emailInput: this.#elements.emailInput,
+            passwordInput: this.#elements.passwordInput,
+            changeButton: this.#elements.changeButton,
+            eyeIcon: this.#elements.eyeIcon,
+            toggleAuthButton: this.#elements.toggleAuthButton,
+            verificationButton: this.#elements.verificationButton,
+            connectButton: this.#elements.connectButton,
             emailCheckIcon: document.getElementById('email_'),
-            passContainer: document.getElementById('pass_')
+            passContainer: this.#elements.passContainer
         });
 
        
-        this.#boundHandleConnect = this.#handleConnect.bind(this);
-        this.#boundHandleValidation = this.#handleValidation.bind(this);
-
-        this.#ui.setConnectHandler(this.#boundHandleConnect);
-        this.#ui.setValidationHandler(this.#boundHandleValidation);
+        // Bind all event handlers
+        this.#bindEventHandlers();
+        
+        this.#ui.setConnectHandler(this.#bound.handleConnect);
+        this.#ui.setValidationHandler(this.#bound.handleValidation);
 
         this.#attachEventListeners();
 
-        this.#loadingIcon.style.display = 'none';
+        if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+        
         if (this.#storedEmail) {
+            this.#elements.emailInput.value = this.#storedEmail;
             this.#validator.validateEmail(); 
         }
+    }
+
+    /**
+     * NEW: Called by the router before navigating away
+     */
+    destroy() {
+        // Detach all event listeners
+        this.#removeEventListeners();
+
+        // Clear any running intervals
+        if (this.#authCodeInterval) clearInterval(this.#authCodeInterval);
+        if (this.#resendTimerInterval) clearInterval(this.#resendTimerInterval);
+        
+        // Nullify references
+        this.#elements = {};
+        this.#validator = null;
+        this.#webAuthn = null;
+        this.#ui = null;
+        this.#bound = {};
+    }
+
+    // --- Setup Methods (Called by init) ---
+
+    #selectDOMElements() {
+        this.#elements = {
+            emailInput: document.getElementById('email'),
+            passwordInput: document.getElementById('password'),
+            verificationCodeInput: document.getElementById('verification-code'),
+            connectButton: document.getElementById('connect-button'),
+            gitButton: document.getElementById('git'),
+            biometricButton: document.getElementById('fingerprint'),
+            googleButton: document.getElementById('google'),
+            messageElement: document.getElementById('Message'),
+            successMessage: document.getElementById('success-message'),
+            loadingIcon: document.getElementById('loading-icon'),
+            timerElement: document.getElementById('timer'),
+            timerDiv: document.getElementById('timer_'),
+            resendButton: document.getElementById('resend-message'),
+            verificationButton: document.getElementById('Verification'),
+            codeInputContainer: document.getElementById('verification-code-input'),
+            changeButton: document.getElementById('Change'),
+            eyeIcon: document.getElementById('eyeicon'),
+            toggleAuthButton: document.getElementById('toggle-auth-type'),
+            passContainer: document.getElementById('pass_')
+        };
+    }
+
+    #loadStateFromStorage() {
+        this.userEmail = localStorage.getItem('userEmail');
+        this.credentialID = localStorage.getItem('credentialID');
+    }
+
+    #bindEventHandlers() {
+        // Bind methods to 'this'
+        this.#bound.validateEmail = () => this.#validator.validateEmail();
+        this.#bound.validatePassword = () => this.#validator.validatePassword();
+        this.#bound.validateCode = () => this.#validator.validateCode();
+        this.#bound.changeEmail = () => this.#ui.changeEmail();
+        this.#bound.togglePassword = () => this.#ui.togglePasswordVisibility();
+        this.#bound.toggleAuthType = () => this.#ui.toggleAuthType();
+        this.#bound.handleAuthCode = (e) => this.#handleAuthCode(e);
+        this.#bound.handleConnect = (e) => this.#handleConnect(e);
+        this.#bound.handleValidation = (e) => this.#handleValidation(e);
+        this.#bound.handleBiometricLogin = (e) => this.#handleBiometricLogin(e);
+        this.#bound.handleGitLogin = (e) => AuthService.redirectToGit(e);
+        this.#bound.handleGoogleLogin = (e) => AuthService.redirectToGoogle(e);
+    }
+
+    #attachEventListeners() {
+        this.#elements.emailInput?.addEventListener('input', this.#bound.validateEmail);
+        this.#elements.passwordInput?.addEventListener('input', this.#bound.validatePassword);
+        this.#elements.verificationCodeInput?.addEventListener('input', this.#bound.validateCode);
+        this.#elements.changeButton?.addEventListener('click', this.#bound.changeEmail);
+        this.#elements.eyeIcon?.addEventListener('click', this.#bound.togglePassword);
+        this.#elements.toggleAuthButton?.addEventListener('click', this.#bound.toggleAuthType);
+        this.#elements.verificationButton?.addEventListener('click', this.#bound.handleAuthCode);
+        this.#elements.resendButton?.addEventListener('click', this.#bound.handleAuthCode);
+        this.#elements.connectButton?.addEventListener('click', this.#bound.handleConnect);
+        this.#elements.gitButton?.addEventListener('click', this.#bound.handleGitLogin);
+        this.#elements.googleButton?.addEventListener('click', this.#bound.handleGoogleLogin);
+        this.#elements.biometricButton?.addEventListener('click', this.#bound.handleBiometricLogin);
+    }
+
+    #removeEventListeners() {
+        this.#elements.emailInput?.removeEventListener('input', this.#bound.validateEmail);
+        this.#elements.passwordInput?.removeEventListener('input', this.#bound.validatePassword);
+        this.#elements.verificationCodeInput?.removeEventListener('input', this.#bound.validateCode);
+        this.#elements.changeButton?.removeEventListener('click', this.#bound.changeEmail);
+        this.#elements.eyeIcon?.removeEventListener('click', this.#bound.togglePassword);
+        this.#elements.toggleAuthButton?.removeEventListener('click', this.#bound.toggleAuthType);
+        this.#elements.verificationButton?.removeEventListener('click', this.#bound.handleAuthCode);
+        this.#elements.resendButton?.removeEventListener('click', this.#bound.handleAuthCode);
+        this.#elements.connectButton?.removeEventListener('click', this.#bound.handleConnect);
+        this.#elements.connectButton?.removeEventListener('click', this.#bound.handleValidation); // Remove both
+        this.#elements.gitButton?.removeEventListener('click', this.#bound.handleGitLogin);
+        this.#elements.googleButton?.removeEventListener('click', this.#bound.handleGoogleLogin);
+        this.#elements.biometricButton?.removeEventListener('click', this.#bound.handleBiometricLogin);
     }
 
     // --- Getters & Setters for State ---
@@ -96,7 +202,11 @@ export class LoginController {
 
     set userEmail(email) {
         this.#storedEmail = email;
-        localStorage.setItem('userEmail', email);
+        if(email) {
+            localStorage.setItem('userEmail', email);
+        } else {
+            localStorage.removeItem('userEmail');
+        }
     }
 
     get credentialID() {
@@ -105,115 +215,61 @@ export class LoginController {
 
     set credentialID(id) {
         this.#storedCredentialID = id;
-        localStorage.setItem('credentialID', id);
+        if(id) {
+            localStorage.setItem('credentialID', id);
+        } else {
+            localStorage.removeItem('credentialID');
+        }
         if (this.#webAuthn) {
             this.#webAuthn.credentialID = id; // Keep WebAuthn controller in sync
         }
     }
 
-    // --- Setup ---
-    #selectDOMElements() {
-        this.#emailInput = document.getElementById('email');
-        this.#passwordInput = document.getElementById('password');
-        this.#verificationCodeInput = document.getElementById('verification-code');
-        this.#connectButton = document.getElementById('connect-button');
-        this.#gitButton = document.getElementById('git');
-        this.#biometricButton = document.getElementById('fingerprint');
-        this.#googleButton = document.getElementById('google');;
-        this.#messageElement = document.getElementById('Message');
-        this.#successMessage = document.getElementById('success-message');
-        this.#loadingIcon = document.getElementById('loading-icon');
-        this.#timerElement = document.getElementById('timer');
-        this.#timerDiv = document.getElementById('timer_');
-        this.#resendButton = document.getElementById('resend-message');
-        this.#verificationButton = document.getElementById('Verification');
-        this.#codeInputContainer = document.getElementById('verification-code-input');
-    }
-
-    #loadStateFromStorage() {
-        this.userEmail = localStorage.getItem('userEmail');
-        this.credentialID = localStorage.getItem('credentialID');
-    }
-
-    #attachEventListeners() {
-        // --- Validation Listeners (delegated to Validator) ---
-        this.#emailInput.addEventListener('input', () => this.#validator.validateEmail());
-        this.#passwordInput.addEventListener('input', () => this.#validator.validatePassword());
-        this.#verificationCodeInput.addEventListener('input', () => this.#validator.validateCode());
-
-        // --- UI Handlers (delegated to UIHandler) ---
-        document.getElementById('Change').addEventListener('click', () => this.#ui.changeEmail());
-        document.getElementById('eyeicon').addEventListener('click', () => this.#ui.togglePasswordVisibility());
-        document.getElementById('toggle-auth-type').addEventListener('click', () => this.#ui.toggleAuthType());
-
-        // --- Auth Action Listeners (handled by this Controller) ---
-        this.#verificationButton.addEventListener('click', (e) => this.#handleAuthCode(e));
-        this.#resendButton.addEventListener('click', (e) => this.#handleAuthCode(e));
-
-        this.#connectButton.removeAttribute('onclick');
-
-        this.#connectButton.addEventListener('click', this.#boundHandleConnect);
-
-        // --- Other Auth ---
-
-        this.#gitButton.addEventListener('click', (event) => {
-            AuthService.redirectToGit(event);
-        });
-
-        this.#googleButton.addEventListener('click', (event) => {
-            AuthService.redirectToGoogle(event);
-
-        });
-
-        this.#biometricButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            this.#handleBiometricLogin();
-        });
-    
-    }
-
     // --- Main Auth Handlers ---
 
-    async #handleBiometricLogin() {
-        const email = this.#emailInput.value || this.userEmail;
+    async #handleBiometricLogin(event) {
+        event.preventDefault();
+        const email = this.#elements.emailInput.value || this.userEmail;
         if (!email) {
-             this.#successMessage.textContent = 'Please enter an email first.';
+             if(this.#elements.successMessage) this.#elements.successMessage.textContent = 'Please enter an email first.';
              return;
         }
         
         const result = await this.#webAuthn.handleLoginBiometric(email);
 
         if (result.success) {
-            this.#successMessage.textContent = result.message;
-            window.location.href = result.redirectUrl;
+            if(this.#elements.successMessage) this.#elements.successMessage.textContent = result.message;
+            // Navigate using router
+            history.pushState(null, null, result.redirectUrl);
+            window.dispatchEvent(new PopStateEvent('popstate'));
         } else if (result.code === 'MUST_REGISTER') {
-            this.#successMessage.textContent = 'This device is not registered. The domain must be registered through the personal domain.';
+            if(this.#elements.successMessage) this.#elements.successMessage.textContent = 'This device is not registered. The domain must be registered through the personal domain.';
         
         } else if (result.newCredentialID) {
             this.credentialID = result.newCredentialID;
         } else if (result.message) {
-            this.#successMessage.textContent = result.message;
+            if(this.#elements.successMessage) this.#elements.successMessage.textContent = result.message;
         }
     }
 
     async #handleAuthCode(event) {
         event.preventDefault();
-        const email = this.#emailInput.value;
+        const email = this.#elements.emailInput.value;
 
-        this.#loadingIcon.style.display = 'block';
-        this.#resendButton.style.display = 'none';
+        if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
+        if(this.#elements.resendButton) this.#elements.resendButton.style.display = 'none';
 
         try {
             const data = await AuthService.sendAuthCodeAPI(email);
-            this.#loadingIcon.style.display = 'none';
+            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
 
             if (data.datas.code === "succeeded") {
-                this.#verificationButton.style.display = 'none';
-                this.#codeInputContainer.style.display = 'block';
-                document.getElementById('toggle-auth-type').style.display = 'none';
-                this.#successMessage.textContent = "Code sent successfully! Will expire in: ";
-                this.#verificationCodeInput.removeAttribute("readonly");
-                this.#successMessage.style.display = 'block';
+                if(this.#elements.verificationButton) this.#elements.verificationButton.style.display = 'none';
+                if(this.#elements.codeInputContainer) this.#elements.codeInputContainer.style.display = 'block';
+                if(this.#elements.toggleAuthButton) this.#elements.toggleAuthButton.style.display = 'none';
+                if(this.#elements.successMessage) this.#elements.successMessage.textContent = "Code sent successfully! Will expire in: ";
+                if(this.#elements.verificationCodeInput) this.#elements.verificationCodeInput.removeAttribute("readonly");
+                if(this.#elements.successMessage) this.#elements.successMessage.style.display = 'block';
 
                 if (this.#authCodeInterval) clearInterval(this.#authCodeInterval);
                 if (this.#resendTimerInterval) clearInterval(this.#resendTimerInterval);
@@ -222,68 +278,71 @@ export class LoginController {
                 this.#authCodeInterval = setInterval(() => {
                     let minutes = parseInt(totalSeconds / 60, 10);
                     let seconds = parseInt(totalSeconds % 60, 10);
-                    this.#timerDiv.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+                    if(this.#elements.timerDiv) this.#elements.timerDiv.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
                     if (--totalSeconds < 0) {
                         clearInterval(this.#authCodeInterval);
-                        this.#timerDiv.textContent = "Expired";
+                        if(this.#elements.timerDiv) this.#elements.timerDiv.textContent = "Expired";
                     }
                 }, 1000);
 
-                this.#resendTimerInterval = Utils.startTimer(1 * 30, this.#timerElement, this.#resendButton);
-                this.#timerElement.style.display = 'block';
+                if(this.#elements.timerElement && this.#elements.resendButton) {
+                    this.#resendTimerInterval = Utils.startTimer(1 * 30, this.#elements.timerElement, this.#elements.resendButton);
+                    this.#elements.timerElement.style.display = 'block';
+                }
             } else {
-                this.#successMessage.textContent = "Failed to send code. Please try again.";
+                if(this.#elements.successMessage) this.#elements.successMessage.textContent = "Failed to send code. Please try again.";
             }
         } catch (error) {
-            this.#loadingIcon.style.display = 'none';
-            this.#successMessage.textContent = `Try again! Error: ${error.message}`;
+            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if(this.#elements.successMessage) this.#elements.successMessage.textContent = `Try again! Error: ${error.message}`;
         }
     }
 
     async #handleValidation(event) {
         event.preventDefault();
-        const email = this.#emailInput.value;
-        const code = this.#verificationCodeInput.value;
-        this.#loadingIcon.style.display = 'block';
+        const email = this.#elements.emailInput.value;
+        const code = this.#elements.verificationCodeInput.value;
+        if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
 
         try {
             const data = await AuthService.validateCodeAPI(email, code);
-            this.#loadingIcon.style.display = 'none';
+            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
 
             if (data.redirectUrl) {
-
-                this.#successMessage.textContent = data.datas.code;
-                window.location.href = data.redirectUrl;
+                if(this.#elements.successMessage) this.#elements.successMessage.textContent = data.datas.code;
+                history.pushState(null, null, data.redirectUrl);
+                window.dispatchEvent(new PopStateEvent('popstate'));
             } else {
-                this.#successMessage.textContent = data.datas.code || "Validation failed";
+                if(this.#elements.successMessage) this.#elements.successMessage.textContent = data.datas.code || "Validation failed";
             }
         } catch (error) {
-            this.#loadingIcon.style.display = 'none';
-            this.#successMessage.textContent = error.message;
+            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if(this.#elements.successMessage) this.#elements.successMessage.textContent = error.message;
             console.error('Error:', error);
         }
     }
 
     async #handleConnect(event) {
         event.preventDefault();
-        const email = this.#emailInput.value;
-        const password = this.#passwordInput.value;
-        this.#loadingIcon.style.display = 'block';
+        const email = this.#elements.emailInput.value;
+        const password = this.#elements.passwordInput.value;
+        if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
 
         try {
             const data = await AuthService.loginWithPasswordAPI(email, password);
-            this.#loadingIcon.style.display = 'none';
+            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
 
             if (data.e === "no") {
                 this.userEmail = email; 
-                this.#successMessage.textContent = 'Login successful!';
-                window.location.href = data.redirectUrl;
+                if(this.#elements.successMessage) this.#elements.successMessage.textContent = 'Login successful!';
+                history.pushState(null, null, data.redirectUrl);
+                window.dispatchEvent(new PopStateEvent('popstate'));
             } else {
-                this.#successMessage.textContent = data.error;
+                if(this.#elements.successMessage) this.#elements.successMessage.textContent = data.error;
             }
         } catch (error) {
-            this.#loadingIcon.style.display = 'none';
-            this.#successMessage.textContent = error.message;
+            if(this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
+            if(this.#elements.successMessage) this.#elements.successMessage.textContent = error.message;
         }
     }
 }

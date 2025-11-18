@@ -1,0 +1,171 @@
+<style>
+    .seat-map {
+        display: grid;
+        grid-template-columns: repeat(6, 40px);
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .seat-row {
+        display: contents;
+    }
+
+    .seat {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 12px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s ease;
+    }
+
+    .seat.available {
+        background-color: #f1f1f1;
+    }
+
+    .seat.available:hover {
+        background-color: #d1ecf1;
+        border-color: #17a2b8;
+    }
+
+    .seat.taken {
+        background-color: #6c757d;
+        color: white;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .seat.selected {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0a58ca;
+        box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+    }
+
+    .seat-map-legend .seat {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+        cursor: default;
+    }
+    
+    /* Ensure modal shows on top of everything */
+    .modal {
+        z-index: 10055; 
+    }
+    .modal-backdrop {
+        z-index: 10050;
+    }
+</style>
+
+<header class="text-center my-4">
+    <h1 class="display-5 fw-light">Find your next flight</h1>
+</header>
+
+<div id="webauthn-message-area" class="message" style="display: none; padding: 15px; border-radius: 5px; margin-bottom: 20px;"></div>
+
+<div class="search-form-container shadow p-4 p-md-5 rounded-3" id="search-form-group">
+    <form class="row g-3 align-items-end">
+        <div class="col-lg col-md-6 col-12 position-relative">
+            <label for="from" class="form-label">From</label>
+            <input type="text" class="form-control" id="from" placeholder="Israel..." name="from" autocomplete="off">
+            <div id="from-list" class="autocomplete-list"></div>
+        </div>
+        <div class="col-lg col-md-6 col-12 position-relative">
+            <label for="to" class="form-label">To</label>
+            <input type="text" class="form-control" id="to" placeholder="Greece..." name="to" disabled autocomplete="off">
+            <div id="to-list" class="autocomplete-list"></div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-12">
+            <label for="daterange" class="form-label">Date</label>
+            <input type="text" class="form-control" id="daterange" name="daterange" placeholder="Select dates" disabled autocomplete="off">
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-12">
+            <label class="form-label">Type</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="trip-type" id="trip-type-roundtrip" value="round-trip" checked>
+                <label class="form-check-label" for="trip-type-roundtrip">Round Trip</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="trip-type" id="trip-type-oneway" value="one-way">
+                <label class="form-check-label" for="trip-type-oneway">One Way</label>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-12">
+            <label for="Number_passengers" class="form-label">Passengers</label>
+            <div class="passengers-container">
+                <button id="button-subtract" class="button-" type="button" disabled><b>-</b></button>
+                <span id="number">1</span>
+                <button id="button-add" class="button-" type="button"><b>+</b></button>
+            </div>
+        </div>
+        <div class="col-lg-auto col-md-12 col-12 d-grid">
+            <button type="button" disabled id="search" class="btn btn-primary btn-lg" aria-label="Search Flights">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                </svg>
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="main-container shadow p-4 p-md-5 rounded-3 mt-4" style="display: none;">
+    <div id="outbound">
+        <h2>Outbound Flights</h2>
+        <div id="flights-container"></div>
+    </div>
+    <div id="return" class="mt-4">
+        <h2>Return Flights</h2>
+        <div id="flights-container2"></div>
+    </div>
+</div>
+
+<div class="passenger-details-container shadow p-4 p-md-5 rounded-3 mt-4" id="passenger-details-section" style="display: none;">
+    <header class="text-center my-4">
+        <h2 class="display-6 fw-light">Passenger Details</h2>
+    </header>
+
+    <div id="passenger-forms-container">
+        </div>
+
+    <hr class="my-4">
+
+    <div class="d-grid gap-2">
+        <button type="button" id="confirm-booking-btn" class="btn btn-success btn-lg">Confirm & Book</button>
+        <button type="button" id="back-to-flights-btn" class="btn btn-link">Back to Flights</button>
+    </div>
+</div>
+
+<div class="modal fade" id="seat-map-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="seat-map-title">Select Seat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="seat-map-legend d-flex justify-content-center gap-3 mb-3">
+                    <div><span class="seat available"></span> Available</div>
+                    <div><span class="seat taken"></span> Taken</div>
+                    <div><span class="seat selected"></span> Selected</div>
+                </div>
+                <div id="seat-map-grid" class="seat-map">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirm-seat-btn">Confirm Seat</button>
+            </div>
+        </div>
+    </div>
+</div>

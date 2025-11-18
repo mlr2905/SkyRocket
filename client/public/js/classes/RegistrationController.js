@@ -1,3 +1,5 @@
+// js/classes/RegistrationController.js (Refactored - FULL)
+
 import * as C from '../utils/constants.js';
 import * as Utils from '../utils/utils.js';
 import * as AuthService from '../services/authService.js';
@@ -6,24 +8,52 @@ import { RegistrationUIHandler } from './RegistrationUIHandler.js';
 
 export class RegistrationController {
     #currentTab = 0;
-    #iti; // Instance for intl-tel-input
+    #iti; 
     #elements = {}; 
-    
     #validator;
     #ui;
 
-    #boundNextPrev;
-    #boundSubmitForm;
+    // Store bound functions
+    #bound = {
+        submitForm: null,
+        validateTerms: null,
+        validateFirstName: null,
+        validateLastName: null,
+        validateEmail: null,
+        goToLogin: null,
+        validatePassword: null,
+        confirmPassword: null,
+        preventPaste: null,
+        togglePass1: null,
+        togglePass2: null,
+        validatePhone: null,
+        validateID: null,
+        restrictToNumbers: null,
+        validateCreditCard: null,
+        formatExpiry: null,
+        validateExpiry: null,
+        validateCVV: null,
+        validateBirthday: null,
+        handleBack: null,
+        handleNext: null
+    };
 
     constructor() {
+        // Minimal constructor
+    }
+
+    /**
+     * NEW: Called by the router when the page is loaded
+     */
+    init() {
+        this.#currentTab = 0;
         this.#selectDOMElements();
         this.#validator = new RegistrationValidator(this.#elements);
-        
-        this.#boundNextPrev = () => this.#nextPrev(1); 
-        this.#boundSubmitForm = this.#submitForm.bind(this);
-        
-        this.#elements.nextPrevHandler = this.#boundNextPrev;
-        this.#elements.submitHandler = this.#boundSubmitForm;
+
+        this.#bindEventHandlers();
+
+        this.#elements.nextPrevHandler = this.#bound.handleNext; // Use bound next
+        this.#elements.submitHandler = this.#bound.submitForm;
 
         this.#ui = new RegistrationUIHandler(this.#elements);
 
@@ -31,54 +61,153 @@ export class RegistrationController {
         this.#attachEventListeners();
     }
 
-    #selectDOMElements() {
-        this.#elements.tabs = document.getElementsByClassName("tab");
-        this.#elements.steps = document.getElementsByClassName("step");
+    /**
+     * NEW: Called by the router before navigating away
+     */
+    destroy() {
+        this.#removeEventListeners();
         
-        // Navigation
-        this.#elements.backBtn = document.getElementById('backBtn');
-        this.#elements.nextBtn = document.getElementById('nextBtn');
-        
-        // Tab 0 (Terms)
-        this.#elements.termsCheckbox = document.getElementById('terms_checkbox');
-        
-        // Tab 1 (User)
-        this.#elements.firstName = document.getElementById('first_name');
-        this.#elements.lastName = document.getElementById('last_name');
-        this.#elements.email = document.getElementById('email');
-        this.#elements.loginButton = document.getElementById('login-button');
-        this.#elements.password = document.getElementById('password');
-        this.#elements.password2 = document.getElementById('password2');
-        this.#elements.eyeIcon1 = document.getElementById('eyeicon');
-        this.#elements.eyeIcon2 = document.getElementById('eyeicon2');
-        this.#elements.emailErrorIcon = document.getElementById('email_error');
-        this.#elements.emailCheckIcon = document.getElementById('email_');
-        this.#elements.passContainer = document.getElementById('pass');
-        this.#elements.passErrorContainer = document.getElementById('password_error');
-        this.#elements.passSuccessContainer = document.getElementById('password_');
+        if (this.#iti) {
+            this.#iti.destroy();
+            this.#iti = null;
+        }
 
-        // Tab 2 (Contact/Payment)
-        this.#elements.phone = document.getElementById('phone');
-        this.#elements.idNumber = document.getElementById('id_number_input'); 
-        this.#elements.creditCard = document.getElementById('credit_card');
-        this.#elements.expiryDate = document.getElementById('expiry_date');
-        this.#elements.cvv = document.getElementById('cvv');
-        this.#elements.birthday = document.getElementById('birthday');
-        this.#elements.phoneErrorIcon = document.getElementById('phone_error');
-        this.#elements.phoneCheckIcon = document.getElementById('phone_');
-        this.#elements.idNumberErrorIcon = document.getElementById('id_number_error');
-        this.#elements.idNumberCheckIcon = document.getElementById('id_number');
-        this.#elements.cardErrorIcon = document.getElementById('card_error');
-        this.#elements.cardCheckIcon = document.getElementById('card_');
-        
-        // General
-        this.#elements.loadingIcon = document.getElementById('loading-icon');
-        this.#elements.successMessage = document.getElementById('success-message');
+        this.#elements = {};
+        this.#validator = null;
+        this.#ui = null;
+        this.#bound = {};
     }
 
+    // --- Setup Methods (Called by init) ---
+
+    #selectDOMElements() {
+        this.#elements = {
+            tabs: document.getElementsByClassName("tab"),
+            steps: document.getElementsByClassName("step"),
+            backBtn: document.getElementById('backBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            termsCheckbox: document.getElementById('terms_checkbox'),
+            firstName: document.getElementById('first_name'),
+            lastName: document.getElementById('last_name'),
+            email: document.getElementById('email'),
+            loginButton: document.getElementById('login-button'),
+            password: document.getElementById('password'),
+            password2: document.getElementById('password2'),
+            eyeIcon1: document.getElementById('eyeicon'),
+            eyeIcon2: document.getElementById('eyeicon2'),
+            emailErrorIcon: document.getElementById('email_error'),
+            emailCheckIcon: document.getElementById('email_'),
+            passContainer: document.getElementById('pass'),
+            passErrorContainer: document.getElementById('password_error'),
+            passSuccessContainer: document.getElementById('password_'),
+            phone: document.getElementById('phone'),
+            idNumber: document.getElementById('id_number_input'), 
+            creditCard: document.getElementById('credit_card'),
+            expiryDate: document.getElementById('expiry_date'),
+            cvv: document.getElementById('cvv'),
+            birthday: document.getElementById('birthday'),
+            phoneErrorIcon: document.getElementById('phone_error'),
+            phoneCheckIcon: document.getElementById('phone_'),
+            idNumberErrorIcon: document.getElementById('id_number_error'),
+            idNumberCheckIcon: document.getElementById('id_number'),
+            cardErrorIcon: document.getElementById('card_error'),
+            cardCheckIcon: document.getElementById('card_'),
+            loadingIcon: document.getElementById('loading-icon'),
+            successMessage: document.getElementById('success-message')
+        };
+    }
+
+    #bindEventHandlers() {
+        this.#bound.submitForm = () => this.#submitForm();
+        this.#bound.validateTerms = () => this.#validator.validateTerms();
+        this.#bound.validateFirstName = (e) => this.#validator.validateSimpleInput(e.target);
+        this.#bound.validateLastName = (e) => this.#validator.validateSimpleInput(e.target);
+        this.#bound.validateEmail = () => this.#validator.validateEmail();
+        this.#bound.goToLogin = () => this.#goToPage('/login');
+        this.#bound.validatePassword = () => this.#validator.validatePassword();
+        this.#bound.confirmPassword = () => this.#validator.confirmPassword();
+        this.#bound.preventPaste = (e) => e.preventDefault();
+        this.#bound.togglePass1 = () => this.#ui.togglePasswordVisibility(this.#elements.eyeIcon1);
+        this.#bound.togglePass2 = () => this.#ui.togglePasswordVisibility(this.#elements.eyeIcon2);
+        this.#bound.validatePhone = () => this.#validator.validatePhone();
+        this.#bound.validateID = () => this.#validator.validateID();
+        this.#bound.restrictToNumbers = (e) => Utils.restrictToNumbers(e);
+        this.#bound.validateCreditCard = () => this.#validator.validateCreditCard();
+        this.#bound.formatExpiry = () => this.#validator.formatExpiry();
+        this.#bound.validateExpiry = () => this.#validator.validateExpiry();
+        this.#bound.validateCVV = (e) => this.#validator.validateSimpleInput(e.target);
+        this.#bound.validateBirthday = (e) => this.#validator.validateSimpleInput(e.target);
+        this.#bound.handleBack = () => this.#nextPrev(-1);
+        this.#bound.handleNext = () => this.#nextPrev(1);
+    }
+
+    #attachEventListeners() {
+        this.#elements.termsCheckbox?.addEventListener('input', this.#bound.validateTerms);
+        this.#elements.firstName?.addEventListener('input', this.#bound.validateFirstName);
+        this.#elements.lastName?.addEventListener('input', this.#bound.validateLastName);
+        this.#elements.email?.addEventListener('input', this.#bound.validateEmail);
+        this.#elements.email?.addEventListener('keypress', (e) => {
+             if (!/^[a-z0-9._\-@]$/.test(e.key)) e.preventDefault();
+        });
+        this.#elements.loginButton?.addEventListener('click', this.#bound.goToLogin);
+        this.#elements.password?.addEventListener('input', this.#bound.validatePassword);
+        this.#elements.password2?.addEventListener('input', this.#bound.confirmPassword);
+        this.#elements.password2?.addEventListener('paste', this.#bound.preventPaste);
+        this.#elements.eyeIcon1?.addEventListener('click', this.#bound.togglePass1);
+        this.#elements.eyeIcon2?.addEventListener('click', this.#bound.togglePass2);
+        this.#elements.phone?.addEventListener('input', this.#bound.validatePhone);
+        this.#elements.idNumber?.addEventListener('input', this.#bound.validateID);
+        this.#elements.idNumber?.addEventListener('keypress', this.#bound.restrictToNumbers);
+        this.#elements.creditCard?.addEventListener('input', this.#bound.validateCreditCard);
+        this.#elements.creditCard?.addEventListener('keypress', this.#bound.restrictToNumbers);
+        this.#elements.expiryDate?.addEventListener('input', this.#bound.formatExpiry);
+        this.#elements.expiryDate?.addEventListener('change', this.#bound.validateExpiry);
+        this.#elements.expiryDate?.addEventListener('keypress', this.#bound.restrictToNumbers);
+        this.#elements.cvv?.addEventListener('input', this.#bound.validateCVV);
+        this.#elements.cvv?.addEventListener('keypress', this.#bound.restrictToNumbers);
+        this.#elements.birthday?.addEventListener('input', this.#bound.validateBirthday);
+        this.#elements.backBtn?.addEventListener('click', this.#bound.handleBack);
+        this.#elements.nextBtn?.addEventListener('click', this.#bound.handleNext);
+    }
+
+    #removeEventListeners() {
+        // Remove all listeners
+        this.#elements.termsCheckbox?.removeEventListener('input', this.#bound.validateTerms);
+        this.#elements.firstName?.removeEventListener('input', this.#bound.validateFirstName);
+        this.#elements.lastName?.removeEventListener('input', this.#bound.validateLastName);
+        this.#elements.email?.removeEventListener('input', this.#bound.validateEmail);
+        this.#elements.loginButton?.removeEventListener('click', this.#bound.goToLogin);
+        this.#elements.password?.removeEventListener('input', this.#bound.validatePassword);
+        this.#elements.password2?.removeEventListener('input', this.#bound.confirmPassword);
+        this.#elements.password2?.removeEventListener('paste', this.#bound.preventPaste);
+        this.#elements.eyeIcon1?.removeEventListener('click', this.#bound.togglePass1);
+        this.#elements.eyeIcon2?.removeEventListener('click', this.#bound.togglePass2);
+        this.#elements.phone?.removeEventListener('input', this.#bound.validatePhone);
+        this.#elements.idNumber?.removeEventListener('input', this.#bound.validateID);
+        this.#elements.idNumber?.removeEventListener('keypress', this.#bound.restrictToNumbers);
+        this.#elements.creditCard?.removeEventListener('input', this.#bound.validateCreditCard);
+        this.#elements.creditCard?.removeEventListener('keypress', this.#bound.restrictToNumbers);
+        this.#elements.expiryDate?.removeEventListener('input', this.#bound.formatExpiry);
+        this.#elements.expiryDate?.removeEventListener('change', this.#bound.validateExpiry);
+        this.#elements.expiryDate?.removeEventListener('keypress', this.#bound.restrictToNumbers);
+        this.#elements.cvv?.removeEventListener('input', this.#bound.validateCVV);
+        this.#elements.cvv?.removeEventListener('keypress', this.#bound.restrictToNumbers);
+        this.#elements.birthday?.removeEventListener('input', this.#bound.validateBirthday);
+        this.#elements.backBtn?.removeEventListener('click', this.#bound.handleBack);
+        this.#elements.nextBtn?.removeEventListener('click', this.#bound.handleNext);
+        this.#elements.nextBtn?.removeEventListener('click', this.#bound.submitForm); // Remove submit too
+    }
+
+    // NEW: Helper for navigation
+    #goToPage(path) {
+        history.pushState(null, null, path);
+        window.dispatchEvent(new PopStateEvent('popstate')); 
+    }
+
+    // --- All your original methods ---
     async #initializePage() {
         this.#ui.hideLoading();
-        this.#ui.showTab(this.#currentTab, this.#boundSubmitForm);
+        this.#ui.showTab(this.#currentTab, this.#bound.submitForm);
         this.#setupDatePickers();
 
         try {
@@ -87,55 +216,23 @@ export class RegistrationController {
             this.#initializeIntlTelInput(country);
         } catch (error) {
             console.error('Error fetching IP:', error);
-            this.#initializeIntlTelInput('en'); 
+            this.#initializeIntlTelInput('us'); // Fallback
         }
     }
 
     #initializeIntlTelInput(countryCode) {
-        if (window.intlTelInput) {
-            this.#iti = window.intlTelInput(this.#elements.phone, { initialCountry: countryCode });
+        if (window.intlTelInput && this.#elements.phone) {
+            this.#iti = window.intlTelInput(this.#elements.phone, { 
+                initialCountry: countryCode,
+                utilsScript: "./build/js/intlTelInputWithUtils.js" // Ensure this path is correct
+            });
         } else {
-            console.error("intlTelInput library not loaded");
+            console.error("intlTelInput library not loaded or phone element not found");
         }
     }
 
     #setupDatePickers() {
-        
-    }
-
-    #attachEventListeners() {
-        // --- Tab 0 ---
-        this.#elements.termsCheckbox.addEventListener('input', () => this.#validator.validateTerms());
-
-        // --- Tab 1 ---
-        this.#elements.firstName.addEventListener('input', (e) => this.#validator.validateSimpleInput(e.target));
-        this.#elements.lastName.addEventListener('input', (e) => this.#validator.validateSimpleInput(e.target));
-        this.#elements.email.addEventListener('input', () => this.#validator.validateEmail());
-        this.#elements.email.addEventListener('keypress', (e) => {
-             if (!/^[a-z0-9._\-@]$/.test(e.key)) e.preventDefault();
-        });
-        this.#elements.loginButton.addEventListener('click', () => { location.href = C.LOGIN_PAGE_URL; });
-        this.#elements.password.addEventListener('input', () => this.#validator.validatePassword());
-        this.#elements.password2.addEventListener('input', () => this.#validator.confirmPassword());
-        this.#elements.password2.addEventListener('paste', (e) => e.preventDefault());
-        this.#elements.eyeIcon1.addEventListener('click', () => this.#ui.togglePasswordVisibility(this.#elements.eyeIcon1));
-        this.#elements.eyeIcon2.addEventListener('click', () => this.#ui.togglePasswordVisibility(this.#elements.eyeIcon2));
-
-        // --- Tab 2 ---
-        this.#elements.phone.addEventListener('input', () => this.#validator.validatePhone());
-        this.#elements.idNumber.addEventListener('input', () => this.#validator.validateID());
-        this.#elements.idNumber.addEventListener('keypress', Utils.restrictToNumbers);
-        this.#elements.creditCard.addEventListener('input', () => this.#validator.validateCreditCard());
-        this.#elements.creditCard.addEventListener('keypress', Utils.restrictToNumbers);
-        this.#elements.expiryDate.addEventListener('input', () => this.#validator.formatExpiry());
-        this.#elements.expiryDate.addEventListener('change', () => this.#validator.validateExpiry()); // Validate on blur
-        this.#elements.expiryDate.addEventListener('keypress', Utils.restrictToNumbers);
-        this.#elements.cvv.addEventListener('input', (e) => this.#validator.validateSimpleInput(e.target));
-        this.#elements.cvv.addEventListener('keypress', Utils.restrictToNumbers);
-        this.#elements.birthday.addEventListener('input', (e) => this.#validator.validateSimpleInput(e.target));
-
-        this.#elements.backBtn.addEventListener('click', () => this.#nextPrev(-1));
-        this.#elements.nextBtn.addEventListener('click', this.#boundNextPrev); 
+        // ... (your logic)
     }
 
     async #validateCurrentTab() {
@@ -171,23 +268,30 @@ export class RegistrationController {
     }
 
     async #nextPrev(n) {
-      
         if (this.#currentTab === 0 && n === -1) {
             return;
         }
 
+        // Prevent moving next if validation fails
         if (n === 1 && !(await this.#validateCurrentTab())) {
             return false; 
         }
 
-        this.#elements.tabs[this.#currentTab].style.display = "none";
+        // Hide current tab
+        if(this.#elements.tabs[this.#currentTab]) {
+            this.#elements.tabs[this.#currentTab].style.display = "none";
+        }
+        
         this.#currentTab = this.#currentTab + n;
 
         if (this.#currentTab >= this.#elements.tabs.length) {
+            // This case should be handled by the submit button logic
+            this.#currentTab = this.#elements.tabs.length - 1; 
             return;
         }
 
-        this.#ui.showTab(this.#currentTab, this.#boundSubmitForm);
+        // Show new tab
+        this.#ui.showTab(this.#currentTab, this.#bound.submitForm);
     }
 
     async #submitForm() {
@@ -205,7 +309,7 @@ export class RegistrationController {
 
             if (signupData.e === "yes") {
                 this.#ui.showMessage(signupData.error);
-                if (signupData.loginUrl) window.location.href = signupData.loginUrl;
+                if (signupData.loginUrl) this.#goToPage('/login'); // Use router
                 this.#ui.hideLoading();
                 return;
             }
@@ -233,8 +337,9 @@ export class RegistrationController {
             if (registrationData.e === "yes") {
                 this.#ui.showMessage(registrationData.error);
             } else if (registrationData.signupUrl) { 
-                this.#ui.showMessage('Signup successful!');
-                window.location.href = registrationData.signupUrl;
+                this.#ui.showMessage('Signup successful! Redirecting to login...');
+                // Use router to navigate
+                this.#goToPage(registrationData.signupUrl.replace('.html', '')); // Go to /login
             }
 
         } catch (error) {

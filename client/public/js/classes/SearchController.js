@@ -1,41 +1,81 @@
-// File: SearchController.js
+// js/classes/SearchController.js (Fixed Race Conditions)
 import * as C from '../utils/constants.js';
 import * as SearchService from '../services/searchService.js';
+import * as AuthService from '../services/authService.js';
+import * as Utils from '../utils/utils.js';
 import { SearchUIHandler } from './SearchUIHandler.js';
 import { PLANE_LAYOUTS } from '../planeLayouts.js';
 import { WebAuthnController } from './LoginWebAuthnController.js';
 
 export class SearchController {
-    #elements = {};
-    #state = {
-        currentNumber: 1,
-        tripType: 'round-trip',
-        selectedOutboundFlight: null,
-        selectedReturnFlight: null,
-        selectedOrigin: { id: null, name: '' },
-        selectedDestination: { id: null, name: '' },
-        email: null,
-        uniqueCountriesCache: [],
-        destinationsCache: []
-    };
-    #ui;
-    #webAuthn;
+    _elements = {};
+    _state = {};
+    _ui;
+    _webAuthn;
+    _bound = {};
+    _isActive = false; // <--- FIX 1: Flag to track if controller is active
+    
+    _handleAutocompleteSelectFrom = null;
+    _handleAutocompleteSelectTo = null;
+    _handleFlightSelectOutbound = null;
+    _handleFlightSelectReturn = null;
+    _seatMapModalInstance = null;
+    _boundConfirmSeat = null;
 
-    constructor() {
-        this.#selectDOMElements();
-        this.#ui = new SearchUIHandler(this.#elements);
-        this.#webAuthn = new WebAuthnController({
-            biometricStatus: null,
-            messageElement: this.#elements.webAuthnMessage,
-            emailInput: null
+    constructor() {}
+
+    init() {
+        this._isActive = true; // <--- FIX 2: Mark as active
+
+        this._state = {
+            currentNumber: 1,
+            tripType: 'round-trip',
+            selectedOutboundFlight: null,
+            selectedReturnFlight: null,
+            selectedOrigin: { id: null, name: '' },
+            selectedDestination: { id: null, name: '' },
+            email: null,
+            uniqueCountriesCache: [],
+            destinationsCache: []
+        };
+        
+        this._selectDOMElements();
+        this._ui = new SearchUIHandler(this._elements);
+        this._webAuthn = new WebAuthnController({
+            biometricStatus: null, 
+            messageElement: this._elements.webAuthnMessage,
+            emailInput: null 
         });
-        this.#attachEventListeners();
-        this.#initializePage();
+        
+        this._bindEventHandlers();
+        this._attachEventListeners();
+        this._initializePage(); 
     }
 
-    #selectDOMElements() {
-        this.#elements = {
+    destroy() {
+        this._isActive = false; // <--- FIX 3: Mark as inactive immediately
 
+        this._removeEventListeners();
+        
+        if (this._seatMapModalInstance) {
+            this._seatMapModalInstance.dispose();
+            this._seatMapModalInstance = null;
+        }
+        
+        if (this._elements.dateRangeInput && $(this._elements.dateRangeInput).data('daterangepicker')) {
+            $(this._elements.dateRangeInput).data('daterangepicker').remove();
+        }
+
+        this._elements = {};
+        this._ui = null; // This becomes null, causing your error
+        this._webAuthn = null;
+        this._bound = {};
+    }
+    
+    // --- Setup Methods ---
+
+    _selectDOMElements() {
+        this._elements = {
             logoutButton: document.getElementById('logout-button'),
             loginButton: document.getElementById('login-button'),
             signupButton: document.getElementById('signup-button'),
@@ -51,7 +91,7 @@ export class SearchController {
             addButton: document.getElementById('button-add'),
             fromList: document.getElementById('from-list'),
             toList: document.getElementById('to-list'),
-            loadingIcon: document.getElementById('loading-icon'),
+            loadingIcon: document.getElementById('loading-icon'), 
             searchButton: document.getElementById('search'),
             outboundContainer: document.getElementById('flights-container'),
             returnContainer: document.getElementById('flights-container2'),
@@ -73,11 +113,118 @@ export class SearchController {
         };
     }
 
-    async #initializePage() {
-        this.#ui.showLoading(true);
-        this.#ui.updateInputDisabledState(); 
-        this.#ui.toggleSearchView(false);
-        this.#ui.togglePassengerView(false);
+    _bindEventHandlers() {
+        this._bound.handleLogout = () => this._handleLogout();
+        this._bound.goToLogin = () => this._goToPage('/login');
+        this._bound.goToRegister = () => this._goToPage('/register');
+        this._bound.handleDeleteAccount = (e) => this._handleDeleteAccount(e);
+        this._bound.handlePassengerChangeSubtract = (e) => this._handlePassengerChange(e, 'subtract');
+        this._bound.handlePassengerChangeAdd = (e) => this._handlePassengerChange(e, 'add');
+        this._bound.handleSearch = () => this._handleSearch();
+        this._bound.handleFromInput = (e) => this._handleFromInput(e.target.value);
+        this._bound.handleFromFocus = () => this._handleFromFocus();
+        this._bound.handleToInput = (e) => this._handleToInput(e.target.value);
+        this._bound.handleToFocus = () => this._handleToFocus();
+        this._bound.handleTripTypeChange = (e) => this._handleTripTypeChange(e);
+        this._bound.handleBackToFlights = () => this._handleBackToFlights();
+        this._bound.handleConfirmBooking = () => this._handleConfirmBooking();
+        this._bound.handleSelectSeatClick = (e) => this._handleSelectSeatClick(e);
+        this._bound.handleRegisterBiometricClick = (e) => this._handleRegisterBiometricClick(e);
+        
+        this._handleAutocompleteSelectFrom = (name) => this._handleAutocompleteSelectFrom(name);
+        this._handleAutocompleteSelectTo = (name) => this._handleAutocompleteSelectTo(name);
+        this._handleFlightSelectOutbound = (flight, card) => this._handleFlightSelect(flight, card, 'outbound');
+        this._handleFlightSelectReturn = (flight, card) => this._handleFlightSelect(flight, card, 'return');
+        
+        this._bound.handleDocumentClick = (e) => {
+            if (!this._isActive) return; // Safety check
+            if (!this._elements.fromInput?.contains(e.target) && !this._elements.fromList?.contains(e.target) && this._elements.fromList) {
+                this._ui.clearAutocomplete(this._elements.fromList);
+            }
+            if (!this._elements.toInput?.contains(e.target) && !this._elements.toList?.contains(e.target) && this._elements.toList) {
+                this._ui.clearAutocomplete(this._elements.toList);
+            }
+        };
+    }
+
+    _attachEventListeners() {
+        document.getElementById('logout-button')?.addEventListener('click', this._bound.handleLogout);
+        document.getElementById('login-button')?.addEventListener('click', this._bound.goToLogin);
+        document.getElementById('signup-button')?.addEventListener('click', this._bound.goToRegister);
+        document.getElementById('delete-account-link')?.addEventListener('click', this._bound.handleDeleteAccount);
+        document.getElementById('register-biometric-link')?.addEventListener('click', this._bound.handleRegisterBiometricClick);
+        
+        this._elements.subtractButton?.addEventListener('click', this._bound.handlePassengerChangeSubtract);
+        this._elements.addButton?.addEventListener('click', this._bound.handlePassengerChangeAdd);
+        this._elements.searchButton?.addEventListener('click', this._bound.handleSearch);
+        this._elements.fromInput?.addEventListener('input', this._bound.handleFromInput);
+        this._elements.fromInput?.addEventListener('focus', this._bound.handleFromFocus);
+        document.addEventListener('click', this._bound.handleDocumentClick);
+        this._elements.toInput?.addEventListener('input', this._bound.handleToInput);
+        this._elements.toInput?.addEventListener('focus', this._bound.handleToFocus);
+        this._elements.roundTripRadio?.addEventListener('change', this._bound.handleTripTypeChange);
+        this._elements.oneWayRadio?.addEventListener('change', this._bound.handleTripTypeChange);
+        this._elements.backToFlightsButton?.addEventListener('click', this._bound.handleBackToFlights);
+        this._elements.confirmBookingButton?.addEventListener('click', this._bound.handleConfirmBooking);
+        this._elements.passengerFormsContainer?.addEventListener('click', this._bound.handleSelectSeatClick);
+        
+        this._ui.setAutocompleteCallbacks(this._handleAutocompleteSelectFrom, this._handleAutocompleteSelectTo);
+        this._ui.setFlightSelectCallbacks(this._handleFlightSelectOutbound, this._handleFlightSelectReturn);
+    }
+    
+    _removeEventListeners() {
+        document.getElementById('logout-button')?.removeEventListener('click', this._bound.handleLogout);
+        document.getElementById('login-button')?.removeEventListener('click', this._bound.goToLogin);
+        document.getElementById('signup-button')?.removeEventListener('click', this._bound.goToRegister);
+        document.getElementById('delete-account-link')?.removeEventListener('click', this._bound.handleDeleteAccount);
+        document.getElementById('register-biometric-link')?.removeEventListener('click', this._bound.handleRegisterBiometricClick);
+
+        this._elements.subtractButton?.removeEventListener('click', this._bound.handlePassengerChangeSubtract);
+        this._elements.addButton?.removeEventListener('click', this._bound.handlePassengerChangeAdd);
+        this._elements.searchButton?.removeEventListener('click', this._bound.handleSearch);
+        this._elements.fromInput?.removeEventListener('input', this._bound.handleFromInput);
+        this._elements.fromInput?.removeEventListener('focus', this._bound.handleFromFocus);
+        document.removeEventListener('click', this._bound.handleDocumentClick);
+        this._elements.toInput?.removeEventListener('input', this._bound.handleToInput);
+        this._elements.toInput?.removeEventListener('focus', this._bound.handleToFocus);
+        this._elements.roundTripRadio?.removeEventListener('change', this._bound.handleTripTypeChange);
+        this._elements.oneWayRadio?.removeEventListener('change', this._bound.handleTripTypeChange);
+        this._elements.backToFlightsButton?.removeEventListener('click', this._bound.handleBackToFlights);
+        this._elements.confirmBookingButton?.removeEventListener('click', this._bound.handleConfirmBooking);
+        this._elements.passengerFormsContainer?.removeEventListener('click', this._bound.handleSelectSeatClick);
+        
+        if (this._elements.confirmSeatButton && this._boundConfirmSeat) {
+             this._elements.confirmSeatButton.removeEventListener('click', this._boundConfirmSeat);
+             this._boundConfirmSeat = null;
+        }
+    }
+
+    _goToPage(path) {
+        history.pushState(null, null, path);
+        window.dispatchEvent(new PopStateEvent('popstate')); 
+    }
+    
+    async _initializePage() {
+        if (!this._isActive || !this._ui) return; // <--- Check active
+
+        this._ui.showLoading(true);
+        this._ui.updateInputDisabledState(); 
+        this._ui.toggleSearchView(false); // Show form
+        this._ui.togglePassengerView(false);
+
+        if (this._elements.dateRangeInput && $.fn.daterangepicker) {
+             $(this._elements.dateRangeInput).daterangepicker({
+                opens: 'left',
+                autoUpdateInput: false,
+                locale: { cancelLabel: 'Clear' }
+             });
+             $(this._elements.dateRangeInput).on('apply.daterangepicker', (ev, picker) => {
+                 $(this._elements.dateRangeInput).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+             });
+             $(this._elements.dateRangeInput).on('cancel.daterangepicker', (ev, picker) => {
+                 $(this._elements.dateRangeInput).val('');
+             });
+        }
 
         let statusResult; 
 
@@ -88,250 +235,357 @@ export class SearchController {
                 AuthService.getCountryCode()
             ]);
 
-            statusResult = status;
+            if (!this._isActive) return; // <--- Stop if navigated away during fetch
 
-            this.#ui.updateLoginStatus(statusResult.isLoggedIn);
+            statusResult = status;
+            this._updateGlobalAuthUI(statusResult.isLoggedIn, statusResult.email);
+            
             if (statusResult.isLoggedIn && statusResult.email) {
-                this.#state.email = statusResult.email;
+                this._state.email = statusResult.email;
                 localStorage.setItem('userEmail', statusResult.email);
             }
 
-            this.#state.uniqueCountriesCache = countries || [];
-
-            let defaultCountrySet = false; 
-
-            if (ipCountryData && ipCountryData.name && ipCountryData.name !== "Unknown" && this.#state.uniqueCountriesCache.length > 0) {
-
+            this._state.uniqueCountriesCache = countries || [];
+            
+             let defaultCountrySet = false; 
+            if (ipCountryData && ipCountryData.name && ipCountryData.name !== "Unknown" && this._state.uniqueCountriesCache.length > 0) {
                 const userCountryName = ipCountryData.name; 
-
-                const matchedCountry = this.#state.uniqueCountriesCache.find(
+                const matchedCountry = this._state.uniqueCountriesCache.find(
                     c => c.name.toLowerCase() === userCountryName.toLowerCase()
                 );
-
                 if (matchedCountry) {
-                    this.#state.selectedOrigin = matchedCountry;
-                    if (this.#elements.fromInput) {
-                        this.#elements.fromInput.value = matchedCountry.name;
-                    }
-                    await this.#handleToFocus();
+                    this._state.selectedOrigin = matchedCountry;
+                    if (this._elements.fromInput) this._elements.fromInput.value = matchedCountry.name;
+                    await this._handleToFocus();
                     defaultCountrySet = true; 
-                } else {
-                    console.warn(`User country '${userCountryName}' from IP not found in origins list. Will attempt to set 'Israel'.`);
                 }
-            } else {
-                console.log("Could not determine default country from IP. Will attempt to set 'Israel'.");
             }
-
-            if (!defaultCountrySet && this.#state.uniqueCountriesCache.length > 0) {
-
-                const israelCountry = this.#state.uniqueCountriesCache.find(
+            if (!defaultCountrySet && this._state.uniqueCountriesCache.length > 0) {
+                const israelCountry = this._state.uniqueCountriesCache.find(
                     c => c.name.toLowerCase() === "israel"
                 );
-
                 if (israelCountry) {
-                    console.log("Setting default 'From' country to 'Israel':", israelCountry);
-                    this.#state.selectedOrigin = israelCountry;
-                    if (this.#elements.fromInput) {
-                        this.#elements.fromInput.value = israelCountry.name;
-                    }
-                    await this.#handleToFocus(); 
-                } else {
-                    console.error("'Israel' not found in the unique countries list. 'From' field will remain empty.");
+                    this._state.selectedOrigin = israelCountry;
+                    if (this._elements.fromInput) this._elements.fromInput.value = israelCountry.name;
+                    await this._handleToFocus(); 
                 }
             }
         
         } catch (error) {
             console.error("Failed to initialize page data:", error);
-            if (!statusResult) {
-                this.#ui.updateLoginStatus(false);
-            }
-            if (!this.#state.uniqueCountriesCache || this.#state.uniqueCountriesCache.length === 0) {
-                console.error("Failed to initialize origin countries.");
+            if (this._isActive && !statusResult) { // Check active
+                this._updateGlobalAuthUI(false);
             }
         } finally {
-            
-            this.#ui.updateInputDisabledState();
-            this.#ui.showLoading(false);
-        }
-    }
-    #attachEventListeners() {
-        this.#elements.logoutButton?.addEventListener('click', this.#handleLogout);
-        this.#elements.loginButton?.addEventListener('click', () => { window.location.href = '/login.html'; });
-        this.#elements.signupButton?.addEventListener('click', () => { window.location.href = '/registration.html'; });
-        this.#elements.deleteAccountLink?.addEventListener('click', this.#handleDeleteAccount);
-        this.#elements.subtractButton?.addEventListener('click', (e) => this.#handlePassengerChange(e, 'subtract'));
-        this.#elements.addButton?.addEventListener('click', (e) => this.#handlePassengerChange(e, 'add'));
-        this.#elements.searchButton?.addEventListener('click', this.#handleSearch);
-        this.#elements.fromInput?.addEventListener('input', (e) => this.#handleFromInput(e.target.value));
-        this.#elements.fromInput?.addEventListener('focus', this.#handleFromFocus);
-        document.addEventListener('click', (e) => {
-            if (!this.#elements.fromInput?.contains(e.target) && !this.#elements.fromList?.contains(e.target)) this.#ui.clearAutocomplete(this.#elements.fromList);
-            if (!this.#elements.toInput?.contains(e.target) && !this.#elements.toList?.contains(e.target)) this.#ui.clearAutocomplete(this.#elements.toList);
-        });
-        this.#elements.toInput?.addEventListener('input', (e) => this.#handleToInput(e.target.value));
-        this.#elements.toInput?.addEventListener('focus', this.#handleToFocus);
-        this.#elements.roundTripRadio?.addEventListener('change', this.#handleTripTypeChange);
-        this.#elements.oneWayRadio?.addEventListener('change', this.#handleTripTypeChange);
-        this.#elements.backToFlightsButton?.addEventListener('click', this.#handleBackToFlights);
-        this.#elements.confirmBookingButton?.addEventListener('click', this.#handleConfirmBooking);
-        this.#elements.passengerFormsContainer?.addEventListener('click', this.#handleSelectSeatClick);
-        this.#elements.registerBiometricLink?.addEventListener('click', this.#handleRegisterBiometricClick);
-    }
-
-    #handleLogout = () => { alert("You have been logged out!"); this.#ui.updateLoginStatus(false); }
-
-    #handleDeleteAccount = async (event) => {
-        event.preventDefault();
-
-        const isConfirmed = confirm("Are you sure you want to delete the account?\nThis action is final and cannot be undone.");
-
-        if (!isConfirmed) {
-            return;
-        }
-
-        this.#ui.showLoading(true);
-
-        try {
-            const response = await fetch(C.API_DELETE_URL, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || 'Error deleting account');
+            // FIX 4: Check active before accessing UI in finally
+            if (this._isActive && this._ui) {
+                this._ui.updateInputDisabledState();
+                this._ui.showLoading(false);
             }
-
-            alert('Account successfully deleted. You are being redirected to the home page.');
-            window.location.href = '/';
-
-        } catch (error) {
-
-            console.error('Delete account failed:', error.message);
-
-            alert('Account deletion failed. Please contact customer service.');
-
-
-        } finally {
-            this.#ui.showLoading(false);
         }
     }
-    #handlePassengerChange = (e, action) => { e.preventDefault(); if (action === 'add') this.#state.currentNumber++; else if (action === 'subtract' && this.#state.currentNumber > 1) this.#state.currentNumber--; this.#ui.updatePassengerCount(this.#state.currentNumber); }
-    #handleTripTypeChange = (e) => { if (e.target.checked) { this.#state.tripType = e.target.value; console.log("Trip type set to:", this.#state.tripType); } }
 
-    // --- Autocomplete ---
-    #handleFromInput = (q) => { this.#ui.updateInputDisabledState(); const f = this.#state.uniqueCountriesCache.filter(c => c.name?.toLowerCase().includes(q.toLowerCase())); this.#ui.renderAutocompleteList(this.#elements.fromList, f.map(c => c.name), this.#handleAutocompleteSelectFrom); }
-    #handleAutocompleteSelectFrom = async (n) => { if (this.#elements.fromInput) this.#elements.fromInput.value = n; const s = this.#state.uniqueCountriesCache.find(c => c.name === n); this.#state.selectedOrigin = s || { id: null, name: n }; this.#state.selectedDestination = { id: null, name: '' }; if (this.#elements.toInput) this.#elements.toInput.value = ''; this.#state.destinationsCache = []; this.#ui.updateInputDisabledState(); this.#ui.clearAutocomplete(this.#elements.fromList); await this.#handleToFocus(); this.#elements.toInput?.focus(); }
-    #handleFromFocus = () => { this.#ui.renderAutocompleteList(this.#elements.fromList, this.#state.uniqueCountriesCache.map(c => c.name), this.#handleAutocompleteSelectFrom); }
-    #handleToInput = (q) => { this.#ui.updateInputDisabledState(); if (!this.#state.selectedOrigin.id) return; const f = this.#state.destinationsCache.filter(d => d.name?.toLowerCase().includes(q.toLowerCase())); this.#ui.renderAutocompleteList(this.#elements.toList, f.map(c => c.name), this.#handleAutocompleteSelectTo); }
-    #handleAutocompleteSelectTo = (n) => { if (this.#elements.toInput) this.#elements.toInput.value = n; const s = this.#state.destinationsCache.find(c => c.name === n); this.#state.selectedDestination = s || { id: null, name: n }; this.#ui.updateInputDisabledState(); this.#ui.clearAutocomplete(this.#elements.toList); }
-    #handleToFocus = async () => { const oId = this.#state.selectedOrigin.id; if (!oId) { this.#ui.clearAutocomplete(this.#elements.toList); return; } if (this.#state.destinationsCache.length === 0) { this.#ui.showLoading(true); this.#state.destinationsCache = await SearchService.fetchDestinations(oId); this.#ui.showLoading(false); } this.#ui.renderAutocompleteList(this.#elements.toList, this.#state.destinationsCache.map(c => c.name), this.#handleAutocompleteSelectTo); }
+    _updateGlobalAuthUI(isLoggedIn, email = null) {
+        const loginButton = document.getElementById('login-button');
+        const signupButton = document.getElementById('signup-button');
+        const logoutButton = document.getElementById('logout-button');
+        const personalAreaDropdown = document.getElementById('personal-area-dropdown');
 
-    // --- Search ---
-    #handleSearch = async () => {
-        console.log("Search button clicked");
-        this.#ui.toggleSearchView(true); this.#ui.togglePassengerView(false); this.#ui.showLoading(true);
-        const originId = this.#state.selectedOrigin.id; const destId = this.#state.selectedDestination.id;
-        const date = this.#elements.dateRangeInput?.value || null; const tripType = this.#state.tripType;
-        if (!originId || !destId) { alert("Please select origin and destination."); this.#ui.showLoading(false); this.#ui.toggleSearchView(false); return; }
-        try {
-            let outbound = []; let returns = [];
-            const outFilters = { origin_id: originId, destination_id: destId, date: date };
-            if (tripType === 'round-trip') { const retFilters = { origin_id: destId, destination_id: originId, date: date };[outbound, returns] = await Promise.all([SearchService.searchFlights(outFilters), SearchService.searchFlights(retFilters)]); }
-            else { outbound = await SearchService.searchFlights(outFilters); }
-            console.log("Outbound flights:", outbound.length, "Return flights:", returns.length);
-            this.#ui.renderFlightCards(this.#elements.outboundContainer, outbound, this.#handleFlightSelect);
-            this.#ui.renderFlightCards(this.#elements.returnContainer, returns, (f, c) => this.#handleFlightSelect(f, c, 'return'));
-            this.#state.selectedOutboundFlight = null; this.#state.selectedReturnFlight = null; this.#ui.selectedOutboundCard = null; this.#ui.selectedReturnCard = null;
-            if (this.#elements.outboundSection) this.#elements.outboundSection.style.display = 'block'; if (this.#elements.returnSection) this.#elements.returnSection.style.display = 'none';
-        } catch (error) { console.error("Flight search error:", error); } finally { this.#ui.showLoading(false); }
-    }
-
-    // --- Passenger/Seat Logic ---
-    #handleFlightSelect = (flight, card, type = 'outbound') => {
-        console.log(`${type} flight selected: ID ${flight.id}, Plane ID: ${flight.plane_id}`);
-        this.#ui.updateSelectedCardVisuals(card, type);
-        if (type === 'outbound') {
-            this.#state.selectedOutboundFlight = flight;
-            if (this.#state.tripType === 'round-trip') this.#ui.showReturnFlightsSection();
-            else this.#showPassengerDetailsForm();
+        if (isLoggedIn) {
+            if(loginButton) loginButton.style.display = 'none';
+            if(signupButton) signupButton.style.display = 'none';
+            if(logoutButton) logoutButton.style.display = 'block';
+            if(personalAreaDropdown) personalAreaDropdown.style.display = 'block';
+            this._state.email = email;
         } else {
-            this.#state.selectedReturnFlight = flight;
-            this.#showPassengerDetailsForm();
+            if(loginButton) loginButton.style.display = 'block';
+            if(signupButton) signupButton.style.display = 'block';
+            if(logoutButton) logoutButton.style.display = 'none';
+            if(personalAreaDropdown) personalAreaDropdown.style.display = 'none';
+            this._state.email = null;
+        }
+    }
+    
+    async _handleLogout() { 
+        this._updateGlobalAuthUI(false);
+        Utils.showCustomAlert('Logged Out', 'You have been logged out.', 'success');
+    }
+
+    async _handleDeleteAccount(event) {
+        event.preventDefault();
+        const result = await Swal.fire({
+            title: 'Delete Account',
+            text: "Are you sure? This action is final.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Yes, Delete'
+        });
+
+        if (!result.isConfirmed) return;
+
+        this._ui.showLoading(true);
+        try {
+            await fetch(C.API_DELETE_URL, { method: 'DELETE', credentials: 'include' });
+            await Utils.showCustomAlert('Deleted', 'Account deleted.', 'success');
+            this._updateGlobalAuthUI(false);
+            this._goToPage('/'); 
+        } catch (error) {
+            await Utils.showCustomAlert('Error', error.message, 'error');
+        } finally {
+            if (this._isActive) this._ui.showLoading(false);
+        }
+    }
+    
+    _handlePassengerChange(e, action) { 
+        e.preventDefault(); 
+        if (action === 'add') this._state.currentNumber++; 
+        else if (action === 'subtract' && this._state.currentNumber > 1) this._state.currentNumber--; 
+        this._ui.updatePassengerCount(this._state.currentNumber); 
+    }
+    
+    _handleTripTypeChange(e) { 
+        if (e.target.checked) { 
+            this._state.tripType = e.target.value; 
+        } 
+    }
+
+    _handleFromInput(q) { 
+        this._ui.updateInputDisabledState(); 
+        const f = this._state.uniqueCountriesCache.filter(c => c.name?.toLowerCase().includes(q.toLowerCase())); 
+        this._ui.renderAutocompleteList(this._elements.fromList, f.map(c => c.name), this._handleAutocompleteSelectFrom); 
+    }
+    
+    async _handleAutocompleteSelectFrom(n) { 
+        if (this._elements.fromInput) this._elements.fromInput.value = n; 
+        const s = this._state.uniqueCountriesCache.find(c => c.name === n); 
+        this._state.selectedOrigin = s || { id: null, name: n }; 
+        this._state.selectedDestination = { id: null, name: '' }; 
+        if (this._elements.toInput) this._elements.toInput.value = ''; 
+        this._state.destinationsCache = []; 
+        this._ui.updateInputDisabledState(); 
+        this._ui.clearAutocomplete(this._elements.fromList); 
+        await this._handleToFocus(); 
+        this._elements.toInput?.focus(); 
+    }
+    
+    _handleFromFocus() { 
+        this._ui.renderAutocompleteList(this._elements.fromList, this._state.uniqueCountriesCache.map(c => c.name), this._handleAutocompleteSelectFrom); 
+    }
+    
+    _handleToInput(q) { 
+        this._ui.updateInputDisabledState(); 
+        if (!this._state.selectedOrigin.id) return; 
+        const f = this._state.destinationsCache.filter(d => d.name?.toLowerCase().includes(q.toLowerCase())); 
+        this._ui.renderAutocompleteList(this._elements.toList, f.map(c => c.name), this._handleAutocompleteSelectTo); 
+    }
+    
+    _handleAutocompleteSelectTo(n) { 
+        if (this._elements.toInput) this._elements.toInput.value = n; 
+        const s = this._state.destinationsCache.find(c => c.name === n); 
+        this._state.selectedDestination = s || { id: null, name: n }; 
+        this._ui.updateInputDisabledState(); 
+        this._ui.clearAutocomplete(this._elements.toList); 
+    }
+    
+    async _handleToFocus() { 
+        if (!this._isActive) return; // Safety check
+
+        const oId = this._state.selectedOrigin.id; 
+        if (!oId) { 
+            if (this._elements.toList) this._ui.clearAutocomplete(this._elements.toList); 
+            return; 
+        } 
+        if (this._state.destinationsCache.length === 0) { 
+            this._ui.showLoading(true); 
+            this._state.destinationsCache = await SearchService.fetchDestinations(oId); 
+            
+            if (!this._isActive) return; // Stop if navigated away
+            this._ui.showLoading(false); 
+        } 
+        this._ui.renderAutocompleteList(this._elements.toList, this._state.destinationsCache.map(c => c.name), this._handleAutocompleteSelectTo); 
+    }
+
+    async _handleSearch() {
+        this._ui.toggleSearchView(false); 
+        this._ui.togglePassengerView(false); 
+        this._ui.showLoading(true);
+        
+        const originId = this._state.selectedOrigin.id; 
+        const destId = this._state.selectedDestination.id;
+        const date = this._elements.dateRangeInput?.value || null; 
+        const tripType = this._state.tripType;
+        
+        if (!originId || !destId) { 
+            Utils.showCustomAlert("Input Error", "Please select origin and destination.", "warning");
+            this._ui.showLoading(false); 
+            this._ui.toggleSearchView(true); 
+            return; 
+        }
+        
+        try {
+            let outbound = []; 
+            let returns = [];
+            const outFilters = { origin_id: originId, destination_id: destId, date: date };
+            
+            if (tripType === 'round-trip') { 
+                const retFilters = { origin_id: destId, destination_id: originId, date: date };
+                [outbound, returns] = await Promise.all([
+                    SearchService.searchFlights(outFilters), 
+                    SearchService.searchFlights(retFilters)
+                ]); 
+            } else { 
+                outbound = await SearchService.searchFlights(outFilters); 
+            }
+            
+            if (!this._isActive) return; // Stop if navigated away
+
+            this._ui.renderFlightCards(this._elements.outboundContainer, outbound, this._handleFlightSelectOutbound);
+            this._ui.renderFlightCards(this._elements.returnContainer, returns, this._handleFlightSelectReturn);
+            
+            this._state.selectedOutboundFlight = null; 
+            this._state.selectedReturnFlight = null; 
+            this._ui.selectedOutboundCard = null; 
+            this._ui.selectedReturnCard = null;
+            
+            if (this._elements.outboundSection) this._elements.outboundSection.style.display = 'block'; 
+            
+            const showReturn = tripType === 'round-trip';
+            if (this._elements.returnSection) this._elements.returnSection.style.display = showReturn ? 'block' : 'none';
+            
+            if (tripType === 'one-way') {
+                this._ui.showReturnFlightsSection(); 
+            }
+
+        } catch (error) { 
+            console.error("Flight search error:", error); 
+            if(this._isActive) Utils.showCustomAlert("Search Error", "Could not fetch flight data.", "error");
+        } finally { 
+            if(this._isActive) this._ui.showLoading(false); 
         }
     }
 
-    #showPassengerDetailsForm = () => { console.log("Showing passenger details form for", this.#state.currentNumber); this.#ui.togglePassengerView(true); this.#ui.renderPassengerForms(this.#state.currentNumber, this.#state.tripType); }
-    #handleBackToFlights = () => { this.#ui.togglePassengerView(false); }
+    _handleFlightSelect(flight, card, type = 'outbound') {
+        this._ui.updateSelectedCardVisuals(card, type);
+        if (type === 'outbound') {
+            this._state.selectedOutboundFlight = flight;
+            if (this._state.tripType === 'round-trip') {
+                this._ui.showReturnFlightsSection();
+            } else {
+                this._showPassengerDetailsForm();
+            }
+        } else {
+            this._state.selectedReturnFlight = flight;
+            this._showPassengerDetailsForm();
+        }
+    }
 
-    #handleSelectSeatClick = (e) => {
+    _showPassengerDetailsForm() { 
+        this._ui.togglePassengerView(true); 
+        this._ui.renderPassengerForms(this._state.currentNumber, this._state.tripType); 
+    }
+    
+    _handleBackToFlights() { 
+        this._ui.togglePassengerView(false); 
+    }
+
+    _handleSelectSeatClick(e) {
         const target = e.target;
         if (target.classList.contains('select-seat-btn')) {
-            const pIndex = target.dataset.passengerIndex; const fType = target.dataset.flightType || 'outbound';
-            const flight = (fType === 'outbound') ? this.#state.selectedOutboundFlight : this.#state.selectedReturnFlight;
-            if (!flight) { alert("Error: Flight not selected"); return; }
-            console.log(`Opening seat map for P${pIndex}, Type: ${fType}, Flight: ${flight.id}`);
-            this.#openSeatMap(pIndex, fType, flight);
+            const pIndex = target.dataset.passengerIndex; 
+            const fType = target.dataset.flightType || 'outbound';
+            const flight = (fType === 'outbound') ? this._state.selectedOutboundFlight : this._state.selectedReturnFlight;
+            if (!flight) { 
+                Utils.showCustomAlert("Error", "Flight not selected", "error"); 
+                return; 
+            }
+            this._openSeatMap(pIndex, fType, flight);
         }
     }
 
-    #openSeatMap = async (passengerIndex, flightType, flight) => {
-        this.#ui.showLoading(true);
-        this.#elements.seatMapTitle.textContent = `Select Seat (Passenger ${passengerIndex}, ${flightType === 'outbound' ? 'Outbound' : 'Return'})`;
-        this.#elements.seatMapGrid.innerHTML = 'Loading seat map...';
+    async _openSeatMap(passengerIndex, flightType, flight) {
+        this._ui.showLoading(true);
+        if (this._elements.seatMapTitle) this._elements.seatMapTitle.textContent = `Select Seat (Passenger ${passengerIndex}, ${flightType === 'outbound' ? 'Outbound' : 'Return'})`;
+        if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = 'Loading seat map...';
 
         const planeId = flight.plane_id;
         const flightIdForTaken = flight.id;
 
         const seatLayout = PLANE_LAYOUTS[planeId];
-        if (!seatLayout) { alert(`Error: Seat layout not found for plane ID ${planeId}`); this.#elements.seatMapGrid.innerHTML = 'Error loading map layout.'; this.#ui.showLoading(false); return; }
+        if (!seatLayout) { 
+            Utils.showCustomAlert("Error", `Seat layout not found for plane ID ${planeId}`, "error");
+            if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = 'Error loading map layout.'; 
+            this._ui.showLoading(false); 
+            return; 
+        }
 
         let allAssignments = [];
         try {
             allAssignments = await SearchService.getTakenSeats(flightIdForTaken);
-        } catch (error) { console.error("Error loading seat assignments:", error); this.#elements.seatMapGrid.innerHTML = 'Error loading seat assignments.'; this.#ui.showLoading(false); return; }
+        } catch (error) { 
+            console.error("Error loading seat assignments:", error); 
+            if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = 'Error loading seat assignments.'; 
+            this._ui.showLoading(false); 
+            return; 
+        }
+
+        if (!this._isActive) return; // Safety check
 
         const takenSeatIds = new Set(allAssignments.filter(a => a.passenger_id !== null).map(a => a.char_id));
-        console.log("Taken Seat IDs Set (Filtered):", takenSeatIds);
-
-        this.#elements.seatMapGrid.innerHTML = '';
+        if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = '';
 
         seatLayout.forEach(seat => {
             const seatDiv = document.createElement('div');
             seatDiv.className = 'seat available';
             seatDiv.textContent = seat.name;
             seatDiv.dataset.seatId = seat.id;
-            if (takenSeatIds.has(seat.id)) { seatDiv.classList.replace('available', 'taken'); }
-            else { seatDiv.addEventListener('click', () => { this.#elements.seatMapGrid.querySelector('.seat.selected')?.classList.remove('selected'); seatDiv.classList.add('selected'); }); }
-            this.#elements.seatMapGrid.appendChild(seatDiv);
+            if (takenSeatIds.has(seat.id)) { 
+                seatDiv.classList.replace('available', 'taken'); 
+            } else { 
+                seatDiv.addEventListener('click', () => { 
+                    this._elements.seatMapGrid.querySelector('.seat.selected')?.classList.remove('selected'); 
+                    seatDiv.classList.add('selected'); 
+                }); 
+            }
+            this._elements.seatMapGrid.appendChild(seatDiv);
         });
 
-        this.#ui.showLoading(false);
-        const modal = new bootstrap.Modal(this.#elements.seatMapModal);
-        const newConfirmBtn = this.#elements.confirmSeatButton.cloneNode(true);
-        this.#elements.confirmSeatButton.parentNode.replaceChild(newConfirmBtn, this.#elements.confirmSeatButton);
-        this.#elements.confirmSeatButton = newConfirmBtn;
-
-        this.#elements.confirmSeatButton.addEventListener('click', () => {
-            const selected = this.#elements.seatMapGrid.querySelector('.seat.selected');
+        this._ui.showLoading(false);
+        
+        if (this._elements.seatMapModal && !this._seatMapModalInstance) {
+            this._seatMapModalInstance = new bootstrap.Modal(this._elements.seatMapModal);
+        }
+        
+        if (this._elements.confirmSeatButton && this._boundConfirmSeat) {
+             this._elements.confirmSeatButton.removeEventListener('click', this._boundConfirmSeat);
+        }
+        
+        this._boundConfirmSeat = () => {
+            const selected = this._elements.seatMapGrid.querySelector('.seat.selected');
             if (selected) {
                 const seatId = selected.dataset.seatId;
                 const seatName = selected.textContent;
-                console.log(`Seat ID ${seatId} (Name ${seatName}) confirmed for P${passengerIndex}, Type ${flightType}`);
-                document.getElementById(`seat-selection-${flightType}-${passengerIndex}`).textContent = ` (${seatName})`;
+                const seatDisplay = document.getElementById(`seat-selection-${flightType}-${passengerIndex}`);
+                if (seatDisplay) seatDisplay.textContent = ` (${seatName})`;
+                
                 const form = document.querySelector(`.passenger-form[data-index="${passengerIndex}"]`);
-                form.dataset[flightType === 'outbound' ? 'seatOutbound' : 'seatReturn'] = seatId;
-                modal.hide();
-            } else { alert("Please select a seat."); }
-        });
-        modal.show();
+                if (form) form.dataset[flightType === 'outbound' ? 'seatOutbound' : 'seatReturn'] = seatId;
+                
+                this._seatMapModalInstance.hide();
+            } else { 
+                Utils.showCustomAlert("Wait", "Please select a seat.", "warning"); 
+            }
+        };
+        
+        this._elements.confirmSeatButton.addEventListener('click', this._boundConfirmSeat);
+        this._seatMapModalInstance.show();
     }
 
-    //
-    #handleConfirmBooking = async () => {
-        console.log("Confirming booking...");
-        this.#ui.showLoading(true);
-        const forms = this.#elements.passengerFormsContainer.querySelectorAll('.passenger-form');
+    async _handleConfirmBooking() {
+        this._ui.showLoading(true);
+        const forms = this._elements.passengerFormsContainer.querySelectorAll('.passenger-form');
         let dataToSubmit = [];
+        let isValid = true;
 
         for (const form of forms) {
             const idx = form.dataset.index;
@@ -346,23 +600,25 @@ export class SearchController {
             };
 
             if (!data.first_name || !data.last_name || !data.passport_number || !data.date_of_birth || !data.seatOutbound) {
-                alert(`Please fill in all details (including D.O.B. and outbound seat) for passenger ${idx}.`);
-                this.#ui.showLoading(false);
-                return;
+                Utils.showCustomAlert("Missing Info", `Please fill in all details for passenger ${idx}.`, "warning");
+                isValid = false;
+                break;
             }
-            if (this.#state.tripType === 'round-trip' && !data.seatReturn) {
-                alert(`Please select a return seat for passenger ${idx}.`);
-                this.#ui.showLoading(false);
-                return;
+            if (this._state.tripType === 'round-trip' && !data.seatReturn) {
+                Utils.showCustomAlert("Missing Info", `Please select a return seat for passenger ${idx}.`, "warning");
+                isValid = false;
+                break;
             }
             dataToSubmit.push(data);
         }
-        console.log("Data collected to submit (seat IDs are from 'seats' table):", dataToSubmit);
+        
+        if (!isValid) {
+            this._ui.showLoading(false);
+            return;
+        }
 
         try {
-
             for (const data of dataToSubmit) {
-                // --- 1. Create Passenger ---
                 const pRes = await fetch(C.API_PASSENGERS_URL, {
                     method: 'POST',
                     credentials: 'include',
@@ -371,7 +627,7 @@ export class SearchController {
                         first_name: data.first_name,
                         last_name: data.last_name,
                         passport_number: data.passport_number,
-                        flight_id: this.#state.selectedOutboundFlight.id,
+                        flight_id: this._state.selectedOutboundFlight.id,
                         date_of_birth: data.date_of_birth,
                     })
                 });
@@ -379,109 +635,77 @@ export class SearchController {
                 if (!pRes.ok) throw new Error(`Passenger creation failed: ${newPassenger.error || 'Unknown error'}`);
                 const passengerId = newPassenger.id;
 
-                // --- 2. Assign Outbound Seat ---
                 const outboundSeatId = data.seatOutbound;
-                const cOutRes = await fetch(C.API_CHAIRS_URL, {
+                await fetch(C.API_CHAIRS_URL, {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        flight_id: this.#state.selectedOutboundFlight.id,
+                        flight_id: this._state.selectedOutboundFlight.id,
                         char_id: outboundSeatId,
                         passenger_id: passengerId
                     })
                 });
-                if (!cOutRes.ok) { const err = await cOutRes.json(); throw new Error(`Outbound seat assignment failed: ${err.error || cOutRes.statusText}`); }
 
-                // --- 3. Assign Return Seat (if applicable) ---
                 let returnSeatId = null;
                 if (data.seatReturn) {
                     returnSeatId = data.seatReturn;
-                    const cRetRes = await fetch(C.API_CHAIRS_URL, {
+                    await fetch(C.API_CHAIRS_URL, {
                         method: 'POST',
                         credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            flight_id: this.#state.selectedReturnFlight.id,
+                            flight_id: this._state.selectedReturnFlight.id,
                             char_id: returnSeatId,
                             passenger_id: passengerId
                         })
                     });
-                    if (!cRetRes.ok) { const err = await cRetRes.json(); throw new Error(`Return seat assignment failed: ${err.error || cRetRes.statusText}`); }
                 }
-                // --- 4. Creating separate tickets ---
-
-                // Creating a return ticket
-                const tOutRes = await fetch(C.API_TICKETS_URL, {
+                
+                await fetch(C.API_TICKETS_URL, {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        flight_id: this.#state.selectedOutboundFlight.id,
+                        flight_id: this._state.selectedOutboundFlight.id,
                         passenger_id: passengerId,
                         chair_id: outboundSeatId
                     })
                 });
-                if (!tOutRes.ok) { const err = await tOutRes.json(); throw new Error(`Outbound ticket creation failed: ${err.error || tOutRes.statusText}`); }
 
-                // Create a return ticket (if one exists)
-                if (this.#state.tripType === 'round-trip' && returnSeatId) {
-                    const tRetRes = await fetch(C.API_TICKETS_URL, {
+                if (this._state.tripType === 'round-trip' && returnSeatId) {
+                    await fetch(C.API_TICKETS_URL, {
                         method: 'POST',
                         credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            flight_id: this.#state.selectedReturnFlight.id,
+                            flight_id: this._state.selectedReturnFlight.id,
                             passenger_id: passengerId,
                             chair_id: returnSeatId
                         })
                     });
-                    if (!tRetRes.ok) { const err = await tRetRes.json(); throw new Error(`Return ticket creation failed: ${err.error || tRetRes.statusText}`); }
                 }
             }
 
-            alert("Booking was successful!");
-            window.location.href = '/my-tickets.html';
+            await Utils.showCustomAlert("Success", "Booking was successful! Redirecting to My Tickets...", "success");
+            this._goToPage('/my-tickets');
 
         } catch (error) {
             console.error("Booking failed:", error);
-            alert(`Booking Error: ${error.message}`);
+            await Utils.showCustomAlert("Booking Error", error.message, "error");
         } finally {
-            this.#ui.showLoading(false);
+            if(this._isActive) this._ui.showLoading(false);
         }
     }
-    #handleRegisterBiometricClick = async (e) => {
+    
+    async _handleRegisterBiometricClick(e) {
         e.preventDefault();
-
-        const email = this.#state.email;
-
+        const email = this._state.email;
         if (!email || email === "null") {
-            Utils.showCustomAlert(
-                'לא זוהה משתמש. יש להתחבר לחשבונך לפני הוספת טביעת אצבע.',
-                'error',
-                'נדרשת התחברות'
-            );
+            Utils.showCustomAlert('Login Required', 'You must be logged in to add biometric ID.', 'error');
             return;
         }
-
-        const existingCredentialID = localStorage.getItem('credentialID');
-        let shouldProceed = true;
-
-        if (existingCredentialID && existingCredentialID !== "null") {
-            shouldProceed = await Utils.showConfirmAlert(
-                'מכשיר רשום',
-                'טביעת אצבע כבר רשומה בדפדפן זה. האם ברצונך לרשום טביעת אצבע נוספת?',
-                'כן, הוסף עוד אחת'
-            );
-        }
-
-        if (!shouldProceed) {
-            Utils.showCustomAlert('הרישום בוטל', 'תהליך הרישום בוטל על ידך.', 'info');
-            return;
-        }
-
-        const newCredentialID = await this.#webAuthn.handleRegisterBiometric(email);
-
+        const newCredentialID = await this._webAuthn.handleRegisterBiometric(email);
         if (newCredentialID) {
             localStorage.setItem('credentialID', newCredentialID);
         }

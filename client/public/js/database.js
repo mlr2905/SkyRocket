@@ -1,14 +1,14 @@
+// js/database.js (Refactored)
 
-// --- DOM Elements ---
-const tableHead = document.getElementById('trbody');
-const tableBody = document.getElementById('dataTableBody');
-const filterInput = document.getElementById('filter');
-const loadingIndicator = document.getElementById('loading-indicator');
-const dbName = "DatabaseCache";
-const dbVersion = 1; 
-
+// Store elements
+let tableHead, tableBody, filterInput, loadingIndicator;
 let allData = null; 
 
+// Store bound handler
+let boundHandleFilterInput;
+
+const dbName = "DatabaseCache";
+const dbVersion = 1; 
 
 const TABLE_CONFIG = {
   0: {
@@ -47,13 +47,43 @@ const TABLE_CONFIG = {
     dataMap: ['id', 'first_name', 'last_name', 'date_of_birth', 'passport_number']
   }
 };
-
 const MAX_TABLE_ID = Object.keys(TABLE_CONFIG).length - 1;
 
 /**
- * Fetches initial data from the server and caches it locally and in IndexedDB.
- * Manages the loading indicator and input state.
+ * NEW: Called by the router to initialize the page
  */
+export function init() {
+    // 1. Select DOM elements
+    tableHead = document.getElementById('trbody');
+    tableBody = document.getElementById('dataTableBody');
+    filterInput = document.getElementById('filter');
+    loadingIndicator = document.getElementById('loading-indicator');
+    
+    // 2. Bind handler
+    boundHandleFilterInput = handleFilterInput.bind(this);
+    
+    // 3. Attach listener
+    filterInput?.addEventListener('input', boundHandleFilterInput);
+    
+    // 4. Run app logic
+    initApp();
+}
+
+/**
+ * NEW: Called by the router to clean up the page
+ */
+export function destroy() {
+    filterInput?.removeEventListener('input', boundHandleFilterInput);
+    allData = null;
+    tableHead = null;
+    tableBody = null;
+    filterInput = null;
+    loadingIndicator = null;
+    boundHandleFilterInput = null;
+}
+
+// --- All your original functions remain ---
+
 async function initApp() {
     console.log('[App] Initializing...');
     
@@ -71,13 +101,14 @@ async function initApp() {
         await saveAllDataToIndexedDB(allData);
 
         console.log('[App] Initialization successful.');
-        filterInput.disabled = false; 
-        filterInput.placeholder = `Enter ID 0-${MAX_TABLE_ID}`; 
+        if (filterInput) {
+            filterInput.disabled = false; 
+            filterInput.placeholder = `Enter ID 0-${MAX_TABLE_ID}`; 
+        }
 
     } catch (e) {
         console.error('[Fetch Error]', e);
-        alert("Error fetching initial data. Check the console for more info.");
-        filterInput.placeholder = "Data load failed";
+        if (filterInput) filterInput.placeholder = "Data load failed";
 
     } finally {
       
@@ -91,6 +122,7 @@ async function initApp() {
  * Handles user input in the filter box.
  */
 function handleFilterInput() {
+    if (!filterInput) return;
     const val = filterInput.value;
     const valNum = Number(val);
 
@@ -101,12 +133,11 @@ function handleFilterInput() {
                 console.log(`[Input] Filter ID entered: ${valNum}`);
                 renderTable(valNum); 
             } else {
-                tableHead.innerHTML = '';
-                tableBody.innerHTML = '';
+                if (tableHead) tableHead.innerHTML = '';
+                if (tableBody) tableBody.innerHTML = '';
                 console.log('[Input] Filter cleared — table reset');
             }
         } else {
-            alert(`There is no such table, enter a number between 0-${MAX_TABLE_ID}`);
             console.warn(`[Input] Invalid value entered: "${val}"`);
             filterInput.value = '';
         }
@@ -115,9 +146,6 @@ function handleFilterInput() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
-filterInput.addEventListener('input', handleFilterInput);
-
 /**
  * Renders the entire table (headers and body) for a given table ID.
  * @param {number} filterid - The ID of the table to render (e.g., 0, 1, 2...).
@@ -125,7 +153,6 @@ filterInput.addEventListener('input', handleFilterInput);
 function renderTable(filterid) {
     if (!allData) {
         console.warn('[Display] Data not loaded yet.');
-        alert("Data is still loading, please wait.");
         return;
     }
 
@@ -134,9 +161,9 @@ function renderTable(filterid) {
         console.error(`[Render Error] No config found for table ID ${filterid}`);
         return;
     }
-
-    tableHead.innerHTML = '';
-    tableBody.innerHTML = '';
+    
+    if (tableHead) tableHead.innerHTML = '';
+    if (tableBody) tableBody.innerHTML = '';
 
     try {
         const headerRow = document.createElement('tr');
@@ -145,7 +172,7 @@ function renderTable(filterid) {
             th.textContent = header;
             headerRow.appendChild(th);
         });
-        tableHead.appendChild(headerRow);
+        if (tableHead) tableHead.appendChild(headerRow);
     } catch (e) {
         console.error(`[Header Error] Failed to render headers for table ${filterid}`, e);
         return;
@@ -156,10 +183,6 @@ function renderTable(filterid) {
 
 /**
  * Renders all rows for a specific table into the <tbody>.
- * This function is now dynamic and uses the TABLE_CONFIG.
- * @param {object} records - The main `allData` object.
- * @param {number} filterid - The ID of the table (e.g., 0).
- * @param {object} config - The `TABLE_CONFIG` entry for this table.
  */
 const displayRecords = (records, filterid, config) => {
     const tableKey = config.tableName.toLowerCase(); 
@@ -176,13 +199,9 @@ const displayRecords = (records, filterid, config) => {
     rowsToDisplay.forEach((row, index) => {
         try {
             const tableIdentifier = `${filterid}-${config.tableName}`;
-            
             const dataValues = config.dataMap.map(key => row[key]);
-
             const fullRowValues = [tableIdentifier, ...dataValues];
-            
             appendRow(fullRowValues);
-
         } catch (e) {
             console.error(`[Row Error] Failed to render row ${index} in table ${filterid}:`, e, row);
         }
@@ -192,8 +211,6 @@ const displayRecords = (records, filterid, config) => {
 
 /**
  * Creates a single <td> cell.
- * @param {string | number} text
- * @returns {HTMLTableCellElement}
  */
 const createCell = (text) => {
     const td = document.createElement('td');
@@ -203,19 +220,17 @@ const createCell = (text) => {
 
 /**
  * Creates a <tr> row from an array of values and appends it to the table body.
- * @param {Array<string | number>} values - An array of values for the cells.
  */
 const appendRow = (values) => {
     const tr = document.createElement('tr');
     values.forEach(value => tr.appendChild(createCell(value)));
-    tableBody.appendChild(tr);
+    if (tableBody) tableBody.appendChild(tr);
 };
 
 
 
 /**
  * Opens (and upgrades if necessary) the IndexedDB.
- * @returns {Promise<IDBDatabase>}
  */
 function openAppDB() {
     return new Promise((resolve, reject) => {
@@ -247,7 +262,6 @@ function openAppDB() {
 
 /**
  * Saves the fetched data into their respective object stores in IndexedDB.
- * @param {object} data - The `allData` object from the fetch.
  */
 async function saveAllDataToIndexedDB(data) {
     try {
@@ -258,7 +272,7 @@ async function saveAllDataToIndexedDB(data) {
         const transaction = db.transaction(storeNames, 'readwrite');
         
         transaction.onerror = (e) => console.error('[IndexedDB Transaction Error]', e.target.error);
-        transaction.oncomplete = () => console.log('[IndexedDB] All data saved successfully.');
+        transaction.oncomplete = () => console.log('[IndexedXDB] All data saved successfully.');
 
         Object.keys(TABLE_CONFIG).forEach(filterid => {
             const config = TABLE_CONFIG[filterid];
