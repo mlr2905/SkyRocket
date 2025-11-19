@@ -336,6 +336,9 @@ export class LoginController {
 
             if (data.e === "no") {
                 this.userEmail = email;
+                if (data.role_id) {
+                localStorage.setItem('user_role', data.role_id);
+            }
                 if (this.#elements.successMessage) this.#elements.successMessage.textContent = 'Login successful!';
                 history.pushState(null, null, data.redirectUrl);
                 window.dispatchEvent(new PopStateEvent('popstate'));

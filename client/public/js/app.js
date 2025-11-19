@@ -25,25 +25,43 @@ export function updateNavbarAuth() {
     const signupBtn = document.getElementById('signup-button');
     const personalArea = document.getElementById('personal-area-dropdown');
     const logoutBtn = document.getElementById('logout-button');
+    
+    // 1. Select the admin link
+    const adminLink = document.getElementById('nav-admin-link');
 
     if (!loginBtn || !personalArea) return;
 
-    const hasLocalStorageData = localStorage.getItem('userEmail') !== null;
+    const userEmail = localStorage.getItem('userEmail');
+    // 2. Get the role from storage
+    const userRole = localStorage.getItem('user_role'); 
 
-    const hasTokenCookie = typeof Cookies !== 'undefined' && Cookies.get('token') !== undefined;
-
-    const isLoggedIn = hasLocalStorageData || hasTokenCookie;
+    // Check if user is logged in
+    const isLoggedIn = userEmail !== null;
 
     if (isLoggedIn) {
         loginBtn.style.display = 'none';
         signupBtn.style.display = 'none';
         personalArea.style.display = 'block';
         logoutBtn.style.display = 'block';
+
+        // 3. Admin Link Logic: Show only if role is 3
+        if (adminLink) {
+            // Using '==' to allow both string "3" and number 3
+            if (userRole == 3) {
+                adminLink.style.display = 'block';
+            } else {
+                adminLink.style.display = 'none';
+            }
+        }
+
     } else {
         loginBtn.style.display = 'block';
         signupBtn.style.display = 'block';
         personalArea.style.display = 'none';
         logoutBtn.style.display = 'none';
+        
+        // Hide admin link if not logged in
+        if (adminLink) adminLink.style.display = 'none';
     }
 }
 
@@ -128,8 +146,9 @@ document.body.addEventListener('click', event => {
 
 document.body.addEventListener('click', event => {
     if (event.target.id === 'logout-button') {
-        Cookies.remove('token');
+        Cookies.remove('sky');
         Cookies.remove('connect.sid');
+        localStorage.removeItem('user_role'); 
         localStorage.clear();
 
         history.pushState(null, null, '/');
