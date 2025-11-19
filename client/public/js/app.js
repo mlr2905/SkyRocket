@@ -209,3 +209,4 @@ async function initializeAppState() {
     
     navigateTo(window.location.pathname);
 }
+initializeAppState();
