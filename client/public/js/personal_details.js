@@ -1,36 +1,25 @@
-// js/personal_details.js (Refactored)
+import * as C from './utils/constants.js'; 
 
-// Store elements and handlers so we can clean them up
 let elements = {};
 let boundHandlers = {};
 let debounceTimer;
 let currentUserId = null; 
 let customerExists = false; 
 
-/**
- * NEW: Called by the router to initialize the page
- */
+
 export function init() {
-    // 1. Reset state
     currentUserId = null;
     customerExists = false;
 
-    // 2. Select DOM elements
     selectDOMElements();
     
-    // 3. Bind all event handlers
     bindEventHandlers();
     
-    // 4. Attach event listeners
     attachEventListeners();
     
-    // 5. Initial Load
     fetchUserAndCustomerData();
 }
 
-/**
- * NEW: Called by the router to clean up the page
- */
 export function destroy() {
     removeEventListeners();
     clearTimeout(debounceTimer);
@@ -131,7 +120,7 @@ function showMessage(message, type = 'danger') {
 async function fetchUserAndCustomerData() {
     if(elements.loadingSpinner) elements.loadingSpinner.style.display = 'block';
     try {
-        const userRes = await fetch('/role_users/me', { credentials: 'include' });
+        const userRes = await fetch(C.API_ACTIVATION_URL, { credentials: 'include' });
         if (!userRes.ok) throw new Error('Not authenticated');
 
         const user = await userRes.json();
@@ -184,7 +173,7 @@ async function fetchUserAndCustomerData() {
         if (error.message === 'Not authenticated') {
             showMessage('You are not logged in. Redirecting to login page.', 'warning');
             setTimeout(() => {
-                history.pushState(null, null, '/login');
+                history.pushState(null, null,C.API_LOGOUT_URL);
                 window.dispatchEvent(new PopStateEvent('popstate'));
             }, 2000);
         } else {
@@ -232,7 +221,7 @@ async function handleCvvVerification() {
     if(elements.cvvVerifyError) elements.cvvVerifyError.textContent = '';
     
     try {
-        const response = await fetch('/role_users/customers/verify-cvv', {
+        const response = await fetch(C.API_VERIFY_CVV_URL, {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -352,7 +341,7 @@ async function handleCreditCardBlur() {
     debounceTimer = setTimeout(async () => {
         if(elements.creditCardError) elements.creditCardError.textContent = 'Checking card...';
         try {
-            const response = await fetch('/role_users/customers/check-card', {
+            const response = await fetch(C.API_CHECK_CARD_URL, {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },

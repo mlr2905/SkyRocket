@@ -1,10 +1,7 @@
-// js/database.js (Refactored)
-
-// Store elements
+import * as C from './utils/constants.js'; 
 let tableHead, tableBody, filterInput, loadingIndicator;
 let allData = null; 
 
-// Store bound handler
 let boundHandleFilterInput;
 
 const dbName = "DatabaseCache";
@@ -92,7 +89,7 @@ async function initApp() {
     }
     
     try {
-        const res = await fetch('/all_tables');
+        const res = await fetch(c.API_ALL_TABLES_URL);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         
         allData = await res.json(); 

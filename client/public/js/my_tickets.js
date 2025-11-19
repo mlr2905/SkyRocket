@@ -1,43 +1,31 @@
-// js/my_tickets.js (Refactored)
-
+import * as C from './utils/constants.js'; 
 import { PLANE_LAYOUTS } from './planeLayouts.js'; 
 
-// Store elements and handlers so we can clean them up
 let ticketsContainer, ticketTemplate, messageContainer, loadingSpinner;
 let boundHandleClick;
 
-/**
- * NEW: Called by the router to initialize the page
- */
+
 export function init() {
-    // 1. Select DOM elements
     ticketsContainer = document.getElementById('tickets-container');
     ticketTemplate = document.getElementById('ticket-card-template');
     messageContainer = document.getElementById('message-container');
     loadingSpinner = document.getElementById('loading-spinner'); // Global one
 
-    // 2. Bind the single event handler
     boundHandleClick = handleTicketClick.bind(this);
 
-    // 3. Use event delegation for all clicks inside the container
     if (ticketsContainer) {
         ticketsContainer.addEventListener('click', boundHandleClick);
     }
     
-    // 4. Load the tickets
     loadMyTickets();
 }
 
-/**
- * NEW: Called by the router to clean up the page
- */
+
 export function destroy() {
-    // Remove the single event listener
     if (ticketsContainer) {
         ticketsContainer.removeEventListener('click', boundHandleClick);
     }
 
-    // Clear references
     ticketsContainer = null;
     ticketTemplate = null;
     messageContainer = null;
@@ -45,15 +33,11 @@ export function destroy() {
     boundHandleClick = null;
 }
 
-// --- All your original functions remain, with one change ---
 
-/**
-* NEW: Single click handler for the container
-*/
 function handleTicketClick(event) {
     const cancelButton = event.target.closest('.cancel-ticket-btn');
     if (cancelButton) {
-        handleCancelTicket(event); // Call your original function
+        handleCancelTicket(event);
     }
 }
 
@@ -93,7 +77,6 @@ async function handleCancelTicket(event) {
     const cardElement = event.target.closest('.ticket-card');
     const ticketId = cardElement.dataset.ticketId;
     
-    // Use SweetAlert for confirmation
     const result = await Swal.fire({
         title: 'Are you sure?',
         text: `You want to cancel ticket ${ticketId}? This action cannot be undone.`,
@@ -154,7 +137,7 @@ function getSeatName(plane_id, chair_id) {
 async function loadMyTickets() {
     if (loadingSpinner) loadingSpinner.style.display = 'block';
     try {
-        const response = await fetch('/role_users/my-tickets', {
+        const response = await fetch(C.API_MY_TICKETS_URL, {
             credentials: 'include' 
         });
 
@@ -162,7 +145,7 @@ async function loadMyTickets() {
             if (response.status === 401) {
                 showMessage('You are not logged in. Redirecting to login page...', 'warning');
                 setTimeout(() => {
-                    history.pushState(null, null, '/login');
+                    history.pushState(null, null, C.API_LOGOUT_URL);
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 }, 2000);
             } else {
@@ -175,7 +158,7 @@ async function loadMyTickets() {
 
         if (!tickets || tickets.length === 0) {
             showMessage('You have not purchased any tickets yet.', 'info');
-            if (ticketsContainer) ticketsContainer.innerHTML = ''; // Clear old tickets
+            if (ticketsContainer) ticketsContainer.innerHTML = '';
             return;
         }
         

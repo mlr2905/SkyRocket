@@ -1,4 +1,3 @@
-// File: DatabaseService.js
 import * as C from '../utils/constants.js';
 
 export class DatabaseService {
