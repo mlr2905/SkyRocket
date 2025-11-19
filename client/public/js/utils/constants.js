@@ -15,6 +15,7 @@ export const API_CUSTOMERS_URL = "/role_users/customers";
 export const API_USER_SEARCH_URL = "role_users/users/search";
 export const API_EMAIL_CHECK_URL = "role_users/email";
 
+export const API_LOGOUT_URL = "/logout"
 export const API_ACTIVATION_URL = "role_users/me";
 export const API_DELETE_URL = "role_users/me";
 

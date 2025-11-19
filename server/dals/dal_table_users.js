@@ -242,6 +242,23 @@ async function set_id(id) {
     }
 }
 
+async function logLogoutEvent(userId) {
+    logger.debug(`DAL Auth: Logging logout event for user ID: ${userId}`);
+    
+    try {
+        const result = await connectedKnex('audit_logs').insert({
+            user_id: userId,
+            action: 'USER_LOGOUT',
+            timestamp: connectedKnex.fn.now() 
+        });
+
+        logger.info(`DAL Auth: Logout event successfully logged.`); 
+        return true;
+    } catch (error) {
+        logger.error(`Error logging out event for user ${userId}:`, error);
+        throw error;
+    }
+}
 module.exports = {
     get_by_name, 
     get_all, 
@@ -253,5 +270,6 @@ module.exports = {
     delete_user, 
     checkPassword, 
     delete_all, 
-    set_id
+    set_id,
+    logLogoutEvent
 }

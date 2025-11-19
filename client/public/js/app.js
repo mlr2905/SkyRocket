@@ -1,6 +1,7 @@
 
-import { WebAuthnController } from './classes/LoginWebAuthnController.js'; // שים לב לנתיב, ודא שהוא תקין אצלך
-
+import { WebAuthnController } from './classes/LoginWebAuthnController.js'; 
+import { logoutAPI } from './services/authService.js'; 
+import { checkActivationStatus } from './services/searchService.js'; 
 let currentController = null;
 let currentStylePath = null;
 const styleElement = document.getElementById('page-style');
@@ -144,15 +145,21 @@ document.body.addEventListener('click', event => {
     }
 });
 
-document.body.addEventListener('click', event => {
+document.body.addEventListener('click', async (event) => { 
     if (event.target.id === 'logout-button') {
-        Cookies.remove('sky');
-        Cookies.remove('connect.sid');
-        localStorage.removeItem('user_role'); 
+        
+        try {
+            await logoutAPI();
+            console.log("Server logout successful.");
+            
+        } catch (error) {
+            console.error("Logout API failed, proceeding with local cleanup:", error);
+        }
+        
         localStorage.clear();
 
-        history.pushState(null, null, '/');
-        navigateTo('/');
+        history.pushState(null, null, '/login');
+        navigateTo('/login');
     }
 });
 
@@ -189,6 +196,16 @@ window.addEventListener('popstate', () => {
     navigateTo(window.location.pathname);
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+async function initializeAppState() {
+    const activationResult = await checkActivationStatus();
+
+    if (activationResult.isLoggedIn) {
+        if (activationResult.email) {
+            localStorage.setItem('userEmail', activationResult.email);
+        }
+    } else {
+        localStorage.clear();
+    }
+    
     navigateTo(window.location.pathname);
-});
+}

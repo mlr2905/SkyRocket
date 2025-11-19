@@ -1,5 +1,6 @@
 const axios = require('axios');
 const moment = require('moment-timezone');
+const bl = require('../bl/bl_auth');
 
 function redirectToLogin(req, res) {
     res.status(200).send(`
@@ -10,32 +11,31 @@ function redirectToLogin(req, res) {
     `);
 }
 
-exports.activation = async (req, res) => {
-    try {
-        const cookies = req.headers.cookie?.split(';').map(cookie => cookie.trim()) || [];
-        const skyToken = cookies.find(cookie =>
-            cookie.startsWith('sky=') || cookie.startsWith('sky-jwt=')
-        ); if (!skyToken) {
-            return res.status(404).json('on');
-        }
-        res.status(200).json('ok');
-    } catch (e) {
-        res.status(500).json(e);
-    }
-};
-
 exports.logout = async (req, res) => {
+    const userId = req.user ? req.user.id : null; 
+    
     try {
-        res.clearCookie('sky');
-        redirectToLogin(req, res);
-    } catch (e) {
-        res.status(500).json(e);
+        await bl.processUserLogout(userId); 
+    } catch (Error) {
+        console.error('Logout BL error:', Error.message);
     }
+
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Session destruction failed:', err);
+            return res.status(500).json({ success: false, message: 'Could not log out due to server session error.' });
+        }
+   
+        res.clearCookie('connect.sid'); 
+        res.clearCookie('sky');        
+        
+        return res.status(200).json({ success: true, message: 'Logged out successfully, cookies deleted.' });
+    });
 };
 
 exports.rootHandler = async (req, res, next) => {
     try {
-        const allowedPaths = ['/login.html', '/search_form.html', '/registration.html', '/git', '/google'];
+        const allowedPaths = ['/login.html', '/search.html', '/registration.html', '/git', '/google','/about','/customer-service'];
         if (allowedPaths.includes(req.path)) return next();
 
         const cookies = req.headers.cookie?.split(';').map(cookie => cookie.trim()) || [];
@@ -54,13 +54,14 @@ exports.rootHandler = async (req, res, next) => {
             res.cookie('sky', token, {
                 httpOnly: true,
                 sameSite: 'strict',
-                expires: israelTime.add(3, 'hours').add(15, 'minutes').toDate()
+                expires: israelTime.add(1, 'days').toDate()
             });
-            return next();
+            next();
         } else {
-            return res.status(200).redirect(302, './login.html');
+            redirectToLogin(req, res);
         }
     } catch (e) {
-        return res.status(500).send({ error: e, message: 'Internal Server Error' });
+        console.error("Root handler error:", e.message);
+        redirectToLogin(req, res);
     }
 };

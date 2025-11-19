@@ -32,6 +32,12 @@ export function redirectToGoogle() {
 export function redirectToGit() {
     window.location.href = C.GIT_AUTH_URL;
 }
+export async function logoutAPI() {
+    return apiRequest(C.API_LOGOUT_URL, {
+        method: 'POST',
+        credentials: 'include' 
+    });
+}
 
 export async function registerBiometricAPI(credentialID, attestationObject, clientDataJSON) {
     return apiRequest(C.API_REG_URL, {
