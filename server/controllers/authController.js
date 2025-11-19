@@ -35,7 +35,7 @@ exports.logout = async (req, res) => {
 
 exports.rootHandler = async (req, res, next) => {
     try {
-        const allowedPaths = ['/login.html', '/search.html', '/registration.html', '/git', '/google','/about','/customer-service'];
+        const allowedPaths = ['/index.html','/login.html', '/search.html', '/registration.html', '/git', '/google','/about','/customer-service'];
         if (allowedPaths.includes(req.path)) return next();
 
         const cookies = req.headers.cookie?.split(';').map(cookie => cookie.trim()) || [];
