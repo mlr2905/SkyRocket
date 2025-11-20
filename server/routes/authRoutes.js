@@ -4,6 +4,5 @@ const { protect } = require('../middleware/authMiddleware');
 const authController = require('../controllers/authController'); 
 
 router.post('/logout',protect, authController.logout); 
-router.get('/', authController.rootHandler);
-
+router.use(authController.rootHandler);
 module.exports = router;

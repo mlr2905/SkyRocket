@@ -1,6 +1,6 @@
-import { WebAuthnController } from './classes/LoginWebAuthnController.js'; 
-import { logoutAPI } from './services/authService.js'; 
-import { checkActivationStatus } from './services/searchService.js'; 
+import { WebAuthnController } from './classes/LoginWebAuthnController.js';
+import { logoutAPI } from './services/authService.js';
+import { checkActivationStatus } from './services/searchService.js';
 
 let currentController = null;
 let currentStylePath = null;
@@ -14,8 +14,7 @@ const routes = {
     '/register': { view: '/views/registration.html', style: '/css/registration.css', controllerPath: '/js/classes/RegistrationController.js', controllerName: 'RegistrationController' },
     '/my-tickets': { view: '/views/my-tickets.html', style: '/css/my_tickets.css', controllerPath: '/js/classes/MyTicketsController.js', controllerName: 'MyTicketsController' },
     '/personal-details': { view: '/views/personal-details.html', style: null, controllerPath: '/js/classes/PersonalDetailsController.js', controllerName: 'PersonalDetailsController' },
-    '/database': { view: '/views/database.html', style: null, controllerPath: '/js/classes/DatabaseController.js', controllerName: 'DatabaseController' },
-    '/about': { view: '/views/about.html', style: null, controllerPath: null },
+    '/database': { view: '/views/database.html', style: '/css/database.css', controllerPath: '/js/classes/DatabaseController.js', controllerName: 'DatabaseController' }, '/about': { view: '/views/about.html', style: null, controllerPath: null },
     '/check-in': { view: '/views/check-in.html', style: null, controllerPath: null },
     '/customer-service': { view: '/views/customer-service.html', style: null, controllerPath: null },
     '/terms': { view: '/views/terms.html', style: null, controllerPath: null }
@@ -26,13 +25,13 @@ export function updateNavbarAuth() {
     const signupBtn = document.getElementById('signup-button');
     const personalArea = document.getElementById('personal-area-dropdown');
     const logoutBtn = document.getElementById('logout-button');
-    
+
     const adminLink = document.getElementById('nav-admin-link');
 
     if (!loginBtn || !personalArea) return;
 
     const userEmail = localStorage.getItem('userEmail');
-    const userRole = localStorage.getItem('user_role'); 
+    const userRole = localStorage.getItem('user_role');
     const isLoggedIn = userEmail !== null;
 
     if (isLoggedIn) {
@@ -42,7 +41,7 @@ export function updateNavbarAuth() {
         logoutBtn.style.display = 'block';
 
         if (adminLink) {
-          
+
             if (userRole == 3) {
                 adminLink.style.display = 'block';
             } else {
@@ -55,7 +54,7 @@ export function updateNavbarAuth() {
         signupBtn.style.display = 'block';
         personalArea.style.display = 'none';
         logoutBtn.style.display = 'none';
-        
+
         if (adminLink) adminLink.style.display = 'none';
     }
 }
@@ -136,7 +135,7 @@ document.body.addEventListener('click', event => {
     }
 });
 
-document.body.addEventListener('click', async (event) => { 
+document.body.addEventListener('click', async (event) => {
     if (event.target.id === 'logout-button') {
         try {
             await logoutAPI();
@@ -144,7 +143,7 @@ document.body.addEventListener('click', async (event) => {
         } catch (error) {
             console.error("Logout API failed, proceeding with local cleanup:", error);
         }
-        
+
         localStorage.clear();
         history.pushState(null, null, '/login');
         navigateTo('/login');
@@ -197,9 +196,9 @@ async function initializeAppState() {
     } else {
         localStorage.clear();
     }
-    
+
     updateNavbarAuth();
-    
+
     navigateTo(window.location.pathname);
 }
 
