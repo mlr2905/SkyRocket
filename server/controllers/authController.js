@@ -1,6 +1,8 @@
 const axios = require('axios');
 const moment = require('moment-timezone');
 const bl = require('../bl/bl_auth');
+const {get_by_id_user} = require('../bl/bl_role_users');
+
 
 function redirectToLogin(req, res) {
     console.log(`[Auth] Redirecting to login from: ${req.originalUrl}`);
@@ -64,8 +66,13 @@ exports.rootHandler = async (req, res, next) => {
         });
 
         if (response.data.valid) {
-            const userData = response.data.data || response.data;
+            const id =response.data.user.id;
+            const userData = await get_by_id_user(id)
+            console.log("userData",userData);
+
             const userRole = userData.role_id;
+            console.log("userRole",userRole);
+            
             
             console.log(`[RootHandler] Token valid. User ID: ${userData.id}, Role: ${userRole}`);
 
