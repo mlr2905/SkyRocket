@@ -43,29 +43,24 @@ export class DatabaseService {
             const transaction = db.transaction(C.FLIGHT_STORE_NAME, 'readwrite');
             const store = transaction.objectStore(C.FLIGHT_STORE_NAME);
 
-            const clearRequest = store.clear(); // Clear old data
+            const clearRequest = store.clear();
 
             clearRequest.onsuccess = () => {
-                // Add new data only after clearing is successful
                 let count = 0;
                 flightsData.forEach(flight => {
                     const addRequest = store.add(flight);
                     addRequest.onsuccess = () => {
                         count++;
-                        if (count === flightsData.length) {
-                            // This check might be redundant if transaction.oncomplete works reliably
-                        }
                     };
                     addRequest.onerror = (event) => {
                          console.error('Error adding flight to store:', event.target.error);
-                         // Don't reject immediately, try adding others
                     };
                 });
             };
              clearRequest.onerror = (event) => {
                  console.error('Error clearing store:', event.target.error);
-                 reject(event.target.error); // Reject if clearing fails
-                 return; // Stop processing
+                 reject(event.target.error);
+                 return;
             };
 
 
@@ -75,7 +70,6 @@ export class DatabaseService {
             };
 
             transaction.onerror = (event) => {
-                // This might catch errors not caught by individual add requests
                 console.error('Transaction error during storage:', event.target.error);
                 reject(event.target.error);
             };
@@ -113,7 +107,6 @@ export class DatabaseService {
      */
     async getFilteredFlights(origin, destination) {
         const db = await this.#openDB();
-        // Ensure case-insensitivity *before* the loop
         const originLower = origin.toLowerCase();
         const destLower = destination.toLowerCase();
         const results = [];
@@ -127,7 +120,6 @@ export class DatabaseService {
                 const cursor = event.target.result;
                 if (cursor) {
                     const flight = cursor.value;
-                    // Check properties safely
                     const flightOrigin = flight.origin_country_name ? flight.origin_country_name.toLowerCase() : '';
                     const flightDest = flight.destination_country_name ? flight.destination_country_name.toLowerCase() : '';
 
@@ -136,7 +128,6 @@ export class DatabaseService {
                     }
                     cursor.continue();
                 } else {
-                    // Cursor finished
                     resolve(results);
                 }
             };

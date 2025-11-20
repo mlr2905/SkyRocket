@@ -24,7 +24,6 @@ import * as C from '../utils/constants.js';
     }
 }
 
-// --- Login Functions ---
 export function redirectToGoogle() {
     window.location.href = C.GOOGLE_AUTH_URL;
 }
@@ -91,7 +90,6 @@ export async function loginWithPasswordAPI(email, password) {
     });
 }
 
-// --- Registration Functions ---
 
 export async function getCountryCode() {
     return apiRequest(C.API_IP_URL);

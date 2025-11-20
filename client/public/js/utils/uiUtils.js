@@ -1,19 +1,9 @@
-
-// --- Base64 Helpers ---
-export function bufferToBase64(buffer) {
-    return btoa(String.fromCharCode(...new Uint8Array(buffer)));
-}
-
-export function base64ToBuffer(base64) {
-    const binaryString = atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes.buffer;
-}
-
-// --- UI Alert/Message Helpers ---
+/**
+ * Displays a temporary message on a specific element.
+ * @param {HTMLElement} element 
+ * @param {string} message 
+ * @param {string} type - css class suffix
+ */
 export function showMessage(element, message, type) {
     if (!element) return;
     element.textContent = message;
@@ -25,6 +15,7 @@ export function showMessage(element, message, type) {
     }, 5000);
 }
 
+
 export function showRegistrationAlert() {
     let alertElement = document.getElementById('registration-alert');
     if (!alertElement) {
@@ -34,8 +25,8 @@ export function showRegistrationAlert() {
             <div class="alert-overlay">
                 <div class="alert-content">
                     <div class="alert-icon"><div class="spinner"></div></div>
-                    <h3>רושם מכשיר חדש</h3>
-                    <p id="alert-message">מתבצע רישום למכשיר זה...</p>
+                    <h3>Registering New Device</h3>
+                    <p id="alert-message">Processing registration...</p>
                     <div class="alert-progress"><div class="progress-bar"></div></div>
                 </div>
             </div>
@@ -78,7 +69,7 @@ export function showCustomAlert(title, message, type = 'info') {
                 <h3>${title}</h3>
                 <p>${message}</p>
                 ${type === 'info' ? '<div class="alert-progress"><div class="progress-bar"></div></div>' : ''}
-                ${type !== 'info' ? '<button id="custom-alert-close-btn" class="alert-button">סגור</button>' : ''}
+                ${type !== 'info' ? '<button id="custom-alert-close-btn" class="alert-button">Close</button>' : ''}
             </div>
         </div>
     `;
@@ -97,25 +88,6 @@ export function hideCustomAlert() {
     }
 }
 
-// --- Timer Helpers ---
-export function startTimer(duration, display, resendDisplay) {
-    let timer = duration, minutes, seconds;
-    const interval = setInterval(() => {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        display.textContent = minutes + ":" + seconds;
-        if (--timer < 0) {
-            clearInterval(interval);
-            display.style.display = 'none';
-            resendDisplay.style.display = 'block';
-        }
-    }, 1000);
-    return interval;
-}
-
-// --- SweetAlert Notification ---
 export function showNotification() {
     let timerInterval;
     const fiveMinutes = 5 * 60 * 1000;
@@ -126,8 +98,8 @@ export function showNotification() {
     }
 
     Swal.fire({
-        title: "proactive disconnection!",
-        html: "Due to inactivity, the user will be disconnected. in: <b></b> minutes.",
+        title: "Proactive Disconnection",
+        html: "Due to inactivity, you will be disconnected in: <b></b> minutes.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -152,17 +124,4 @@ export function showNotification() {
             location.reload();
         }
     });
-}
-
-// --- Registration Helpers ---
-
-export function addDays(date, days) {
-    date.setDate(date.getDate() + days);
-    return date;
-}
-
-export function restrictToNumbers(event) {
-    if (event.charCode < 48 || event.charCode > 57) {
-        event.preventDefault();
-    }
 }

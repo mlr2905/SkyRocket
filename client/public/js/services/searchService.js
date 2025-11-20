@@ -88,7 +88,6 @@ export async function searchFlights(filters) {
  * @returns {Promise<Array<{char_id: number}>>} Expects an array of objects with the numeric seat ID.
  */
 export async function getTakenSeats(flightId) {
-    // Uses the existing C.API_CHAIRS_URL, assumes the GET /chairs/:id endpoint works
     const url = `${C.API_CHAIRS_URL}/${flightId}`;
     console.log("Fetching taken seats from:", url);
     try {
@@ -96,7 +95,6 @@ export async function getTakenSeats(flightId) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        // Expects response like [{ char_id: 1 }, { char_id: 15 }, ...]
         return await response.json();
     } catch (error) {
         console.error(`Error fetching taken seats for flight ${flightId}:`, error);

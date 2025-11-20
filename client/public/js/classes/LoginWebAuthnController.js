@@ -1,5 +1,6 @@
 
-import * as Utils from '../utils/utils.js';
+import * as uiUtils from '../utils/uiUtils.js';
+import * as base64 from '../utils/formatters.js';
 import * as AuthService from '../services/authService.js';
 
 export class WebAuthnController {
@@ -15,13 +16,14 @@ export class WebAuthnController {
         this.#checkWebAuthnSupport();
     }
 
+
     #showAlert(message, type, title) {
         if (type === 'success') {
-            Utils.showCustomAlert(title || 'הצלחה', message, 'success');
+            uiUtils.showCustomAlert(title || 'הצלחה', message, 'success');
         } else if (type === 'error') {
-            Utils.showCustomAlert(title || 'שגיאה', message, 'error');
+            uiUtils.showCustomAlert(title || 'שגיאה', message, 'error');
         } else {
-            Utils.showCustomAlert(title || 'מידע', message, 'warning');
+            uiUtils.showCustomAlert(title || 'מידע', message, 'warning');
         }
     }
 
@@ -89,15 +91,15 @@ export class WebAuthnController {
 
             const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
 
-            Utils.showRegistrationAlert();
-            Utils.updateRegistrationAlert('Sending data to server...');
+            uiUtils.showRegistrationAlert();
+            uiUtils.updateRegistrationAlert('Sending data to server...');
 
-            const credentialID = Utils.bufferToBase64(credential.rawId);
-            const clientDataJSON = Utils.bufferToBase64(credential.response.clientDataJSON);
-            const attestationObject = Utils.bufferToBase64(credential.response.attestationObject);
+            const credentialID = base64.bufferToBase64(credential.rawId);
+            const clientDataJSON = base64.bufferToBase64(credential.response.clientDataJSON);
+            const attestationObject = base64.bufferToBase64(credential.response.attestationObject);
 
             const data = await AuthService.registerBiometricAPI(credentialID, attestationObject, clientDataJSON);
-            Utils.hideRegistrationAlert();
+            uiUtils.hideRegistrationAlert();
 
             if (data && (data.success === true || data.code === 'credential_registered')) {
                 this.#showAlert('טביעת האצבע נרשמה בהצלחה!', 'success', 'רישום הושלם');
@@ -109,7 +111,7 @@ export class WebAuthnController {
             }
         } catch (error) {
             console.error('Error in biometric identification registration:', error);
-            Utils.hideRegistrationAlert();
+            uiUtils.hideRegistrationAlert();
 
             if (error.name === 'NotAllowedError') {
                 this.#showAlert('תהליך רישום טביעת האצבע בוטל על ידך.', 'info', 'הרישום בוטל');
@@ -138,17 +140,17 @@ export class WebAuthnController {
             const publicKeyOptions = {
                 challenge: challenge,
                 rpId: window.location.hostname,
-                allowCredentials: [{ id: Utils.base64ToBuffer(credentialID), type: 'public-key' }],
+                allowCredentials: [{ id: base64.base64ToBuffer(credentialID), type: 'public-key' }],
                 timeout: 60000,
                 userVerification: "required"
             };
 
             const assertion = await navigator.credentials.get({ publicKey: publicKeyOptions });
 
-            const assertionId = Utils.bufferToBase64(assertion.rawId);
-            const clientDataJSON = Utils.bufferToBase64(assertion.response.clientDataJSON);
-            const authenticatorData = Utils.bufferToBase64(assertion.response.authenticatorData);
-            const signature = Utils.bufferToBase64(assertion.response.signature);
+            const assertionId = base64.bufferToBase64(assertion.rawId);
+            const clientDataJSON = base64.bufferToBase64(assertion.response.clientDataJSON);
+            const authenticatorData = base64.bufferToBase64(assertion.response.authenticatorData);
+            const signature = base64.bufferToBase64(assertion.response.signature);
             const data = await AuthService.loginBiometricAPI(assertionId, email, authenticatorData, clientDataJSON, signature);
 
             if (!data.e || data.e === 'no') {

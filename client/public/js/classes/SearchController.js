@@ -1,10 +1,10 @@
-// js/classes/SearchController.js (Fixed Race Conditions)
 import * as C from '../utils/constants.js';
 import * as SearchService from '../services/searchService.js';
 import * as AuthService from '../services/authService.js';
-import * as Utils from '../utils/utils.js';
+import * as uiUtils from '../utils/uiUtils.js';
+
 import { SearchUIHandler } from './SearchUIHandler.js';
-import { PLANE_LAYOUTS } from '../planeLayouts.js';
+import { PLANE_LAYOUTS } from '../utils/planeLayouts.js';
 import { WebAuthnController } from './LoginWebAuthnController.js';
 
 export class SearchController {
@@ -13,8 +13,7 @@ export class SearchController {
     _ui;
     _webAuthn;
     _bound = {};
-    _isActive = false; // <--- FIX 1: Flag to track if controller is active
-    
+    _isActive = false;
     _handleAutocompleteSelectFrom = null;
     _handleAutocompleteSelectTo = null;
     _handleFlightSelectOutbound = null;
@@ -22,10 +21,9 @@ export class SearchController {
     _seatMapModalInstance = null;
     _boundConfirmSeat = null;
 
-    constructor() {}
 
     init() {
-        this._isActive = true; // <--- FIX 2: Mark as active
+        this._isActive = true;
 
         this._state = {
             currentNumber: 1,
@@ -53,8 +51,7 @@ export class SearchController {
     }
 
     destroy() {
-        this._isActive = false; // <--- FIX 3: Mark as inactive immediately
-
+        this._isActive = false;
         this._removeEventListeners();
         
         if (this._seatMapModalInstance) {
@@ -67,13 +64,11 @@ export class SearchController {
         }
 
         this._elements = {};
-        this._ui = null; // This becomes null, causing your error
+        this._ui = null;
         this._webAuthn = null;
         this._bound = {};
     }
     
-    // --- Setup Methods ---
-
     _selectDOMElements() {
         this._elements = {
             logoutButton: document.getElementById('logout-button'),
@@ -115,8 +110,8 @@ export class SearchController {
 
     _bindEventHandlers() {
         this._bound.handleLogout = () => this._handleLogout();
-        this._bound.goToLogin = () => this._goToPage('/login');
-        this._bound.goToRegister = () => this._goToPage('/register');
+        this._bound.goToLogin = () => this._goToPage(C.LOGIN_PAGE_URL);
+        this._bound.goToRegister = () => this._goToPage(C.REGISTER_PAGE_URL);
         this._bound.handleDeleteAccount = (e) => this._handleDeleteAccount(e);
         this._bound.handlePassengerChangeSubtract = (e) => this._handlePassengerChange(e, 'subtract');
         this._bound.handlePassengerChangeAdd = (e) => this._handlePassengerChange(e, 'add');
@@ -137,7 +132,7 @@ export class SearchController {
         this._handleFlightSelectReturn = (flight, card) => this._handleFlightSelect(flight, card, 'return');
         
         this._bound.handleDocumentClick = (e) => {
-            if (!this._isActive) return; // Safety check
+            if (!this._isActive) return;
             if (!this._elements.fromInput?.contains(e.target) && !this._elements.fromList?.contains(e.target) && this._elements.fromList) {
                 this._ui.clearAutocomplete(this._elements.fromList);
             }
@@ -205,11 +200,11 @@ export class SearchController {
     }
     
     async _initializePage() {
-        if (!this._isActive || !this._ui) return; // <--- Check active
+        if (!this._isActive || !this._ui) return;
 
         this._ui.showLoading(true);
         this._ui.updateInputDisabledState(); 
-        this._ui.toggleSearchView(false); // Show form
+        this._ui.toggleSearchView(false);
         this._ui.togglePassengerView(false);
 
         if (this._elements.dateRangeInput && $.fn.daterangepicker) {
@@ -235,7 +230,7 @@ export class SearchController {
                 AuthService.getCountryCode()
             ]);
 
-            if (!this._isActive) return; // <--- Stop if navigated away during fetch
+            if (!this._isActive) return;
 
             statusResult = status;
             this._updateGlobalAuthUI(statusResult.isLoggedIn, statusResult.email);
@@ -273,11 +268,10 @@ export class SearchController {
         
         } catch (error) {
             console.error("Failed to initialize page data:", error);
-            if (this._isActive && !statusResult) { // Check active
+            if (this._isActive && !statusResult) {
                 this._updateGlobalAuthUI(false);
             }
         } finally {
-            // FIX 4: Check active before accessing UI in finally
             if (this._isActive && this._ui) {
                 this._ui.updateInputDisabledState();
                 this._ui.showLoading(false);
@@ -308,7 +302,7 @@ export class SearchController {
     
     async _handleLogout() { 
         this._updateGlobalAuthUI(false);
-        Utils.showCustomAlert('Logged Out', 'You have been logged out.', 'success');
+        uiUtils.showCustomAlert('Logged Out', 'You have been logged out.', 'success');
     }
 
     async _handleDeleteAccount(event) {
@@ -327,11 +321,11 @@ export class SearchController {
         this._ui.showLoading(true);
         try {
             await fetch(C.API_DELETE_URL, { method: 'DELETE', credentials: 'include' });
-            await Utils.showCustomAlert('Deleted', 'Account deleted.', 'success');
+             uiUtils.showCustomAlert('Deleted', 'Account deleted.', 'success');
             this._updateGlobalAuthUI(false);
             this._goToPage('/'); 
         } catch (error) {
-            await Utils.showCustomAlert('Error', error.message, 'error');
+             uiUtils.showCustomAlert('Error', error.message, 'error');
         } finally {
             if (this._isActive) this._ui.showLoading(false);
         }
@@ -389,7 +383,7 @@ export class SearchController {
     }
     
     async _handleToFocus() { 
-        if (!this._isActive) return; // Safety check
+        if (!this._isActive) return;
 
         const oId = this._state.selectedOrigin.id; 
         if (!oId) { 
@@ -400,7 +394,7 @@ export class SearchController {
             this._ui.showLoading(true); 
             this._state.destinationsCache = await SearchService.fetchDestinations(oId); 
             
-            if (!this._isActive) return; // Stop if navigated away
+            if (!this._isActive) return;
             this._ui.showLoading(false); 
         } 
         this._ui.renderAutocompleteList(this._elements.toList, this._state.destinationsCache.map(c => c.name), this._handleAutocompleteSelectTo); 
@@ -417,7 +411,7 @@ export class SearchController {
         const tripType = this._state.tripType;
         
         if (!originId || !destId) { 
-            Utils.showCustomAlert("Input Error", "Please select origin and destination.", "warning");
+            uiUtils.showCustomAlert("Input Error", "Please select origin and destination.", "warning");
             this._ui.showLoading(false); 
             this._ui.toggleSearchView(true); 
             return; 
@@ -438,7 +432,7 @@ export class SearchController {
                 outbound = await SearchService.searchFlights(outFilters); 
             }
             
-            if (!this._isActive) return; // Stop if navigated away
+            if (!this._isActive) return;
 
             this._ui.renderFlightCards(this._elements.outboundContainer, outbound, this._handleFlightSelectOutbound);
             this._ui.renderFlightCards(this._elements.returnContainer, returns, this._handleFlightSelectReturn);
@@ -459,7 +453,7 @@ export class SearchController {
 
         } catch (error) { 
             console.error("Flight search error:", error); 
-            if(this._isActive) Utils.showCustomAlert("Search Error", "Could not fetch flight data.", "error");
+            if(this._isActive) uiUtils.showCustomAlert("Search Error", "Could not fetch flight data.", "error");
         } finally { 
             if(this._isActive) this._ui.showLoading(false); 
         }
@@ -496,7 +490,7 @@ export class SearchController {
             const fType = target.dataset.flightType || 'outbound';
             const flight = (fType === 'outbound') ? this._state.selectedOutboundFlight : this._state.selectedReturnFlight;
             if (!flight) { 
-                Utils.showCustomAlert("Error", "Flight not selected", "error"); 
+                uiUtils.showCustomAlert("Error", "Flight not selected", "error"); 
                 return; 
             }
             this._openSeatMap(pIndex, fType, flight);
@@ -513,7 +507,7 @@ export class SearchController {
 
         const seatLayout = PLANE_LAYOUTS[planeId];
         if (!seatLayout) { 
-            Utils.showCustomAlert("Error", `Seat layout not found for plane ID ${planeId}`, "error");
+            uiUtils.showCustomAlert("Error", `Seat layout not found for plane ID ${planeId}`, "error");
             if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = 'Error loading map layout.'; 
             this._ui.showLoading(false); 
             return; 
@@ -529,7 +523,7 @@ export class SearchController {
             return; 
         }
 
-        if (!this._isActive) return; // Safety check
+        if (!this._isActive) return;
 
         const takenSeatIds = new Set(allAssignments.filter(a => a.passenger_id !== null).map(a => a.char_id));
         if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = '';
@@ -573,7 +567,7 @@ export class SearchController {
                 
                 this._seatMapModalInstance.hide();
             } else { 
-                Utils.showCustomAlert("Wait", "Please select a seat.", "warning"); 
+                uiUtils.showCustomAlert("Wait", "Please select a seat.", "warning"); 
             }
         };
         
@@ -600,12 +594,12 @@ export class SearchController {
             };
 
             if (!data.first_name || !data.last_name || !data.passport_number || !data.date_of_birth || !data.seatOutbound) {
-                Utils.showCustomAlert("Missing Info", `Please fill in all details for passenger ${idx}.`, "warning");
+                uiUtils.showCustomAlert("Missing Info", `Please fill in all details for passenger ${idx}.`, "warning");
                 isValid = false;
                 break;
             }
             if (this._state.tripType === 'round-trip' && !data.seatReturn) {
-                Utils.showCustomAlert("Missing Info", `Please select a return seat for passenger ${idx}.`, "warning");
+                uiUtils.showCustomAlert("Missing Info", `Please select a return seat for passenger ${idx}.`, "warning");
                 isValid = false;
                 break;
             }
@@ -687,12 +681,12 @@ export class SearchController {
                 }
             }
 
-            await Utils.showCustomAlert("Success", "Booking was successful! Redirecting to My Tickets...", "success");
-            this._goToPage('/my-tickets');
+            await uiUtils.showCustomAlert("Success", "Booking was successful! Redirecting to My Tickets...", "success");
+            this._goToPage(C.API_MY_TICKETS_URL);
 
         } catch (error) {
             console.error("Booking failed:", error);
-            await Utils.showCustomAlert("Booking Error", error.message, "error");
+            await uiUtils.showCustomAlert("Booking Error", error.message, "error");
         } finally {
             if(this._isActive) this._ui.showLoading(false);
         }
@@ -702,7 +696,7 @@ export class SearchController {
         e.preventDefault();
         const email = this._state.email;
         if (!email || email === "null") {
-            Utils.showCustomAlert('Login Required', 'You must be logged in to add biometric ID.', 'error');
+            uiUtils.showCustomAlert('Login Required', 'You must be logged in to add biometric ID.', 'error');
             return;
         }
         const newCredentialID = await this._webAuthn.handleRegisterBiometric(email);

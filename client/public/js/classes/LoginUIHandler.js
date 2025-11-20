@@ -61,17 +61,14 @@ export class UIHandler {
             this.#toggleAuthButton.textContent = "Enter a password";
             this.#connectButton.textContent = 'connect';
             
-            // Re-bind connect button to validation handler
             if (this.#connectHandler) this.#connectButton.removeEventListener('click', this.#connectHandler);
             if (this.#validationHandler) this.#connectButton.addEventListener('click', this.#validationHandler);
             
             this.#connectButton.className = 'connect';
         } else {
-            // Switch to password mode
             this.#emailInput.disabled = false;
             this.#passContainer.style.display = "block";
 
-            // Re-bind connect button to connect handler
             if (this.#validationHandler) this.#connectButton.removeEventListener('click', this.#validationHandler);
             if (this.#connectHandler) this.#connectButton.addEventListener('click', this.#connectHandler);
 

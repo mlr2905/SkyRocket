@@ -39,11 +39,11 @@ export class FormValidator {
             this.#emailInput.className = '';
             this.#toggleAuthButton.className = 'change2';
             this.#passContainer.style.display = "block"; 
-            this.#forgotPasswordLink.href = `https://skyrocket.onrender.com/password?email=${encodeURIComponent(email)}`;
+            this.#forgotPasswordLink.href = `password?email=${encodeURIComponent(email)}`;
             this.#emailCheckIcon.style.display = "block";
             this.#emailErrorIcon.style.display = "none";
             this.#passwordInput.disabled = false;
-            this.#passErrorIcon.style.display = "block"; // Show validation rules container
+            this.#passErrorIcon.style.display = "block";
             this.#toggleAuthButton.disabled = false;
             return true;
         } else {

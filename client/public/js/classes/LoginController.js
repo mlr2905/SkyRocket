@@ -1,24 +1,21 @@
-// js/classes/LoginController.js (Refactored - FULL)
 
-import * as Utils from '../utils/utils.js';
+import * as formatters from '../utils/formatters.js';
 import * as AuthService from '../services/authService.js';
 import { FormValidator } from './LoginFormValidator.js';
 import { WebAuthnController } from './LoginWebAuthnController.js';
 import { UIHandler } from './LoginUIHandler.js';
 
 export class LoginController {
-    // --- Private Fields ---
     #storedEmail;
     #storedCredentialID;
     #authCodeInterval;
     #resendTimerInterval;
 
-    #elements = {}; // Store all DOM elements here
+    #elements = {};
     #validator;
     #webAuthn;
     #ui;
 
-    // Store bound functions for event removal
     #bound = {
         validateEmail: null,
         validatePassword: null,
@@ -34,18 +31,10 @@ export class LoginController {
         handleGoogleLogin: null,
     };
 
-    constructor() {
-        // Constructor is now minimal
-    }
-
-    /**
-     * NEW: Called by the router when the page is loaded
-     */
     init() {
         this.#selectDOMElements();
         this.#loadStateFromStorage();
 
-        // --- Instantiate Sub-Controllers ---
         this.#validator = new FormValidator({
             emailInput: this.#elements.emailInput,
             passwordInput: this.#elements.passwordInput,
@@ -81,13 +70,9 @@ export class LoginController {
             passContainer: this.#elements.passContainer
         });
 
-
-        // Bind all event handlers
         this.#bindEventHandlers();
-
         this.#ui.setConnectHandler(this.#bound.handleConnect);
         this.#ui.setValidationHandler(this.#bound.handleValidation);
-
         this.#attachEventListeners();
 
         if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
@@ -98,26 +83,18 @@ export class LoginController {
         }
     }
 
-    /**
-     * NEW: Called by the router before navigating away
-     */
     destroy() {
-        // Detach all event listeners
         this.#removeEventListeners();
 
-        // Clear any running intervals
         if (this.#authCodeInterval) clearInterval(this.#authCodeInterval);
         if (this.#resendTimerInterval) clearInterval(this.#resendTimerInterval);
 
-        // Nullify references
         this.#elements = {};
         this.#validator = null;
         this.#webAuthn = null;
         this.#ui = null;
         this.#bound = {};
     }
-
-    // --- Setup Methods (Called by init) ---
 
     #selectDOMElements() {
         this.#elements = {
@@ -149,7 +126,6 @@ export class LoginController {
     }
 
     #bindEventHandlers() {
-        // Bind methods to 'this'
         this.#bound.validateEmail = () => this.#validator.validateEmail();
         this.#bound.validatePassword = () => this.#validator.validatePassword();
         this.#bound.validateCode = () => this.#validator.validateCode();
@@ -189,13 +165,12 @@ export class LoginController {
         this.#elements.verificationButton?.removeEventListener('click', this.#bound.handleAuthCode);
         this.#elements.resendButton?.removeEventListener('click', this.#bound.handleAuthCode);
         this.#elements.connectButton?.removeEventListener('click', this.#bound.handleConnect);
-        this.#elements.connectButton?.removeEventListener('click', this.#bound.handleValidation); // Remove both
+        this.#elements.connectButton?.removeEventListener('click', this.#bound.handleValidation);
         this.#elements.gitButton?.removeEventListener('click', this.#bound.handleGitLogin);
         this.#elements.googleButton?.removeEventListener('click', this.#bound.handleGoogleLogin);
         this.#elements.biometricButton?.removeEventListener('click', this.#bound.handleBiometricLogin);
     }
 
-    // --- Getters & Setters for State ---
     get userEmail() {
         return this.#storedEmail;
     }
@@ -221,11 +196,9 @@ export class LoginController {
             localStorage.removeItem('credentialID');
         }
         if (this.#webAuthn) {
-            this.#webAuthn.credentialID = id; // Keep WebAuthn controller in sync
+            this.#webAuthn.credentialID = id;
         }
     }
-
-    // --- Main Auth Handlers ---
 
     async #handleBiometricLogin(event) {
         event.preventDefault();
@@ -286,7 +259,7 @@ export class LoginController {
                 }, 1000);
 
                 if (this.#elements.timerElement && this.#elements.resendButton) {
-                    this.#resendTimerInterval = Utils.startTimer(1 * 30, this.#elements.timerElement, this.#elements.resendButton);
+                    this.#resendTimerInterval = formatters.startTimer(1 * 30, this.#elements.timerElement, this.#elements.resendButton);
                     this.#elements.timerElement.style.display = 'block';
                 }
             } else {

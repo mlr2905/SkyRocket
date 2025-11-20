@@ -1,42 +1,42 @@
-
 import { WebAuthnController } from './classes/LoginWebAuthnController.js'; 
 import { logoutAPI } from './services/authService.js'; 
 import { checkActivationStatus } from './services/searchService.js'; 
+
 let currentController = null;
 let currentStylePath = null;
 const styleElement = document.getElementById('page-style');
 const appRoot = document.getElementById('app-root');
 const loadingIcon = document.getElementById('loading-icon');
 
+// Defined routes with updated Controller paths and names
 const routes = {
     '/': { view: '/views/search.html', style: '/css/search_form.css', controllerPath: '/js/classes/SearchController.js', controllerName: 'SearchController' },
     '/login': { view: '/views/login.html', style: '/css/login.css', controllerPath: '/js/classes/LoginController.js', controllerName: 'LoginController' },
     '/register': { view: '/views/registration.html', style: '/css/registration.css', controllerPath: '/js/classes/RegistrationController.js', controllerName: 'RegistrationController' },
-    '/my-tickets': { view: '/views/my-tickets.html', style: '/css/my_tickets.css', controllerPath: '/js/my_tickets.js', controllerName: 'myTickets' },
-    '/personal-details': { view: '/views/personal-details.html', style: null, controllerPath: '/js/personal_details.js', controllerName: 'personalDetails' },
-    '/database': { view: '/views/database.html', style: null, controllerPath: '/js/database.js', controllerName: 'database' },
+    '/my-tickets': { view: '/views/my-tickets.html', style: '/css/my_tickets.css', controllerPath: '/js/classes/MyTicketsController.js', controllerName: 'MyTicketsController' },
+    '/personal-details': { view: '/views/personal-details.html', style: null, controllerPath: '/js/classes/PersonalDetailsController.js', controllerName: 'PersonalDetailsController' },
+    '/database': { view: '/views/database.html', style: null, controllerPath: '/js/classes/DatabaseController.js', controllerName: 'DatabaseController' },
     '/about': { view: '/views/about.html', style: null, controllerPath: null },
     '/check-in': { view: '/views/check-in.html', style: null, controllerPath: null },
     '/customer-service': { view: '/views/customer-service.html', style: null, controllerPath: null },
     '/terms': { view: '/views/terms.html', style: null, controllerPath: null }
 };
 
+/**
+ * Updates the navigation bar based on authentication state and user role.
+ */
 export function updateNavbarAuth() {
     const loginBtn = document.getElementById('login-button');
     const signupBtn = document.getElementById('signup-button');
     const personalArea = document.getElementById('personal-area-dropdown');
     const logoutBtn = document.getElementById('logout-button');
     
-    // 1. Select the admin link
     const adminLink = document.getElementById('nav-admin-link');
 
     if (!loginBtn || !personalArea) return;
 
     const userEmail = localStorage.getItem('userEmail');
-    // 2. Get the role from storage
     const userRole = localStorage.getItem('user_role'); 
-
-    // Check if user is logged in
     const isLoggedIn = userEmail !== null;
 
     if (isLoggedIn) {
@@ -45,7 +45,7 @@ export function updateNavbarAuth() {
         personalArea.style.display = 'block';
         logoutBtn.style.display = 'block';
 
-        // 3. Admin Link Logic: Show only if role is 3
+        // Admin Link Logic: Show only if role is 3
         if (adminLink) {
             // Using '==' to allow both string "3" and number 3
             if (userRole == 3) {
@@ -66,6 +66,9 @@ export function updateNavbarAuth() {
     }
 }
 
+/**
+ * Dynamic CSS loader
+ */
 async function loadStyle(path) {
     if (path === currentStylePath) return;
     styleElement.innerHTML = '';
@@ -81,9 +84,13 @@ async function loadStyle(path) {
     }
 }
 
+/**
+ * Main Router Function
+ */
 const navigateTo = async (path) => {
     const route = routes[path] || routes['/'];
 
+    // Cleanup previous controller
     if (currentController) {
         if (typeof currentController.destroy === 'function') {
             currentController.destroy();
@@ -96,6 +103,7 @@ const navigateTo = async (path) => {
     loadingIcon.style.display = 'block';
 
     try {
+        // Fetch view and style in parallel
         const [viewResponse] = await Promise.all([
             fetch(route.view),
             loadStyle(route.style)
@@ -105,20 +113,20 @@ const navigateTo = async (path) => {
 
         appRoot.innerHTML = await viewResponse.text();
 
+        // Logic for initializing Controllers
         if (route.controllerPath) {
             const module = await import(route.controllerPath);
+            const ControllerClass = module[route.controllerName];
 
-            if (['myTickets', 'personalDetails', 'database'].includes(route.controllerName)) {
-                if (module.init) {
-                    currentController = module;
+            if (ControllerClass) {
+                // Instantiate the class
+                currentController = new ControllerClass();
+                // Call init method
+                if (typeof currentController.init === 'function') {
                     currentController.init();
                 }
             } else {
-                const ControllerClass = module[route.controllerName];
-                if (ControllerClass) {
-                    currentController = new ControllerClass();
-                    currentController.init();
-                }
+                console.warn(`Controller ${route.controllerName} not found in ${route.controllerPath}`);
             }
         }
     } catch (err) {
@@ -129,6 +137,7 @@ const navigateTo = async (path) => {
     }
 };
 
+// Handle navigation via links with [data-nav] attribute
 document.body.addEventListener('click', event => {
     let target = event.target;
     while (target && target !== document.body) {
@@ -145,24 +154,23 @@ document.body.addEventListener('click', event => {
     }
 });
 
+// Handle Logout
 document.body.addEventListener('click', async (event) => { 
     if (event.target.id === 'logout-button') {
-        
         try {
             await logoutAPI();
             console.log("Server logout successful.");
-            
         } catch (error) {
             console.error("Logout API failed, proceeding with local cleanup:", error);
         }
         
         localStorage.clear();
-
         history.pushState(null, null, '/login');
         navigateTo('/login');
     }
 });
 
+// Handle Global Biometric Registration
 document.body.addEventListener('click', async (event) => {
     if (event.target.id === 'register-biometric-link') {
         event.preventDefault();
@@ -170,7 +178,7 @@ document.body.addEventListener('click', async (event) => {
         const userEmail = localStorage.getItem('userEmail');
 
         if (!userEmail) {
-            alert("לא נמצא משתמש מחובר. אנא התחבר מחדש.");
+            alert("No logged-in user found. Please login again.");
             history.pushState(null, null, '/login');
             navigateTo('/login');
             return;
@@ -179,6 +187,7 @@ document.body.addEventListener('click', async (event) => {
         console.log("Starting global biometric registration for:", userEmail);
 
         try {
+            // Initialize ephemeral controller for this action
             const webAuthn = new WebAuthnController({
                 biometricStatus: null,
                 emailInput: null
@@ -192,10 +201,12 @@ document.body.addEventListener('click', async (event) => {
     }
 });
 
+// Handle browser Back/Forward buttons
 window.addEventListener('popstate', () => {
     navigateTo(window.location.pathname);
 });
 
+// Initialize App
 async function initializeAppState() {
     const activationResult = await checkActivationStatus();
 
@@ -209,4 +220,5 @@ async function initializeAppState() {
     
     navigateTo(window.location.pathname);
 }
+
 initializeAppState();

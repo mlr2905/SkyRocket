@@ -1,7 +1,6 @@
-// js/classes/RegistrationController.js (Refactored - FULL)
 
 import * as C from '../utils/constants.js';
-import * as Utils from '../utils/utils.js';
+import * as formatters from '../utils/formatters.js';
 import * as AuthService from '../services/authService.js';
 import { RegistrationValidator } from './RegistrationValidator.js';
 import { RegistrationUIHandler } from './RegistrationUIHandler.js';
@@ -13,7 +12,6 @@ export class RegistrationController {
     #validator;
     #ui;
 
-    // Store bound functions
     #bound = {
         submitForm: null,
         validateTerms: null,
@@ -38,32 +36,18 @@ export class RegistrationController {
         handleNext: null
     };
 
-    constructor() {
-        // Minimal constructor
-    }
-
-    /**
-     * NEW: Called by the router when the page is loaded
-     */
     init() {
         this.#currentTab = 0;
         this.#selectDOMElements();
         this.#validator = new RegistrationValidator(this.#elements);
-
         this.#bindEventHandlers();
-
-        this.#elements.nextPrevHandler = this.#bound.handleNext; // Use bound next
+        this.#elements.nextPrevHandler = this.#bound.handleNext;
         this.#elements.submitHandler = this.#bound.submitForm;
-
         this.#ui = new RegistrationUIHandler(this.#elements);
-
         this.#initializePage();
         this.#attachEventListeners();
     }
 
-    /**
-     * NEW: Called by the router before navigating away
-     */
     destroy() {
         this.#removeEventListeners();
         
@@ -77,8 +61,6 @@ export class RegistrationController {
         this.#ui = null;
         this.#bound = {};
     }
-
-    // --- Setup Methods (Called by init) ---
 
     #selectDOMElements() {
         this.#elements = {
@@ -123,7 +105,7 @@ export class RegistrationController {
         this.#bound.validateFirstName = (e) => this.#validator.validateSimpleInput(e.target);
         this.#bound.validateLastName = (e) => this.#validator.validateSimpleInput(e.target);
         this.#bound.validateEmail = () => this.#validator.validateEmail();
-        this.#bound.goToLogin = () => this.#goToPage('/login');
+        this.#bound.goToLogin = () => this.#goToPage(C.LOGIN_PAGE_URL);
         this.#bound.validatePassword = () => this.#validator.validatePassword();
         this.#bound.confirmPassword = () => this.#validator.confirmPassword();
         this.#bound.preventPaste = (e) => e.preventDefault();
@@ -131,7 +113,7 @@ export class RegistrationController {
         this.#bound.togglePass2 = () => this.#ui.togglePasswordVisibility(this.#elements.eyeIcon2);
         this.#bound.validatePhone = () => this.#validator.validatePhone();
         this.#bound.validateID = () => this.#validator.validateID();
-        this.#bound.restrictToNumbers = (e) => Utils.restrictToNumbers(e);
+        this.#bound.restrictToNumbers = (e) => formatters.restrictToNumbers(e);
         this.#bound.validateCreditCard = () => this.#validator.validateCreditCard();
         this.#bound.formatExpiry = () => this.#validator.formatExpiry();
         this.#bound.validateExpiry = () => this.#validator.validateExpiry();
@@ -171,7 +153,6 @@ export class RegistrationController {
     }
 
     #removeEventListeners() {
-        // Remove all listeners
         this.#elements.termsCheckbox?.removeEventListener('input', this.#bound.validateTerms);
         this.#elements.firstName?.removeEventListener('input', this.#bound.validateFirstName);
         this.#elements.lastName?.removeEventListener('input', this.#bound.validateLastName);
@@ -195,20 +176,17 @@ export class RegistrationController {
         this.#elements.birthday?.removeEventListener('input', this.#bound.validateBirthday);
         this.#elements.backBtn?.removeEventListener('click', this.#bound.handleBack);
         this.#elements.nextBtn?.removeEventListener('click', this.#bound.handleNext);
-        this.#elements.nextBtn?.removeEventListener('click', this.#bound.submitForm); // Remove submit too
+        this.#elements.nextBtn?.removeEventListener('click', this.#bound.submitForm);
     }
 
-    // NEW: Helper for navigation
     #goToPage(path) {
         history.pushState(null, null, path);
         window.dispatchEvent(new PopStateEvent('popstate')); 
     }
 
-    // --- All your original methods ---
     async #initializePage() {
         this.#ui.hideLoading();
         this.#ui.showTab(this.#currentTab, this.#bound.submitForm);
-        this.#setupDatePickers();
 
         try {
             const data = await AuthService.getCountryCode();
@@ -216,7 +194,7 @@ export class RegistrationController {
             this.#initializeIntlTelInput(country);
         } catch (error) {
             console.error('Error fetching IP:', error);
-            this.#initializeIntlTelInput('us'); // Fallback
+            this.#initializeIntlTelInput('us');
         }
     }
 
@@ -224,15 +202,11 @@ export class RegistrationController {
         if (window.intlTelInput && this.#elements.phone) {
             this.#iti = window.intlTelInput(this.#elements.phone, { 
                 initialCountry: countryCode,
-                utilsScript: "./build/js/intlTelInputWithUtils.js" // Ensure this path is correct
+                utilsScript: "./build/js/intlTelInputWithUtils.js"
             });
         } else {
             console.error("intlTelInput library not loaded or phone element not found");
         }
-    }
-
-    #setupDatePickers() {
-        // ... (your logic)
     }
 
     async #validateCurrentTab() {
@@ -272,12 +246,10 @@ export class RegistrationController {
             return;
         }
 
-        // Prevent moving next if validation fails
         if (n === 1 && !(await this.#validateCurrentTab())) {
             return false; 
         }
 
-        // Hide current tab
         if(this.#elements.tabs[this.#currentTab]) {
             this.#elements.tabs[this.#currentTab].style.display = "none";
         }
@@ -285,12 +257,10 @@ export class RegistrationController {
         this.#currentTab = this.#currentTab + n;
 
         if (this.#currentTab >= this.#elements.tabs.length) {
-            // This case should be handled by the submit button logic
             this.#currentTab = this.#elements.tabs.length - 1; 
             return;
         }
 
-        // Show new tab
         this.#ui.showTab(this.#currentTab, this.#bound.submitForm);
     }
 
@@ -309,7 +279,7 @@ export class RegistrationController {
 
             if (signupData.e === "yes") {
                 this.#ui.showMessage(signupData.error);
-                if (signupData.loginUrl) this.#goToPage('/login'); // Use router
+                if (signupData.loginUrl) this.#goToPage(C.LOGIN_PAGE_URL); 
                 this.#ui.hideLoading();
                 return;
             }
@@ -338,8 +308,7 @@ export class RegistrationController {
                 this.#ui.showMessage(registrationData.error);
             } else if (registrationData.signupUrl) { 
                 this.#ui.showMessage('Signup successful! Redirecting to login...');
-                // Use router to navigate
-                this.#goToPage(registrationData.signupUrl.replace('.html', '')); // Go to /login
+                this.#goToPage(registrationData.signupUrl.replace('.html', ''));
             }
 
         } catch (error) {

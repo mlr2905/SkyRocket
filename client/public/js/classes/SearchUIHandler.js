@@ -1,10 +1,8 @@
-// js/classes/SearchUIHandler.js
 export class SearchUIHandler {
     _elements;
     selectedOutboundCard = null;
     selectedReturnCard = null;
     
-    // אחסון מקומי של פונקציות ה-callback
     _callbacks = {
         onSelectFrom: null,
         onSelectTo: null,
@@ -16,25 +14,16 @@ export class SearchUIHandler {
         this._elements = elements;
     }
 
-    /**
-     * NEW: Receives callbacks from the controller
-     */
     setAutocompleteCallbacks(onSelectFrom, onSelectTo) {
         this._callbacks.onSelectFrom = onSelectFrom;
         this._callbacks.onSelectTo = onSelectTo;
     }
 
-    /**
-     * NEW: Receives callbacks from the controller
-     */
     setFlightSelectCallbacks(onSelectOutbound, onSelectReturn) {
         this._callbacks.onSelectOutbound = onSelectOutbound;
         this._callbacks.onSelectReturn = onSelectReturn;
     }
 
-    /**
-     * Toggles between the search form view and the flight results view.
-     */
     toggleSearchView(showResults) {
         if (this._elements.flightContainer) { 
             this._elements.flightContainer.style.display = showResults ? 'block' : 'none';
@@ -44,9 +33,6 @@ export class SearchUIHandler {
         }
     }
 
-    /**
-     * Toggle between flight results and passenger details
-     */
     togglePassengerView(showPassengers) {
         if (this._elements.mainFlightContainer) { 
             this._elements.mainFlightContainer.style.display = showPassengers ? 'none' : 'block';
@@ -60,9 +46,6 @@ export class SearchUIHandler {
         }
     }
 
-    /**
-     * Render passenger forms
-     */
     renderPassengerForms(passengerCount, tripType) {
         const container = this._elements.passengerFormsContainer;
         if (!container) return;

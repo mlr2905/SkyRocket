@@ -7,7 +7,6 @@ export class RegistrationValidator {
         this.#elements = elements;
     }
 
-    // --- Tab 0: Terms ---
     validateTerms() {
         const isValid = this.#elements.termsCheckbox.checked;
         this.#elements.nextBtn.disabled = !isValid;
@@ -15,7 +14,6 @@ export class RegistrationValidator {
         return isValid;
     }
 
-    // --- Tab 1: User Details ---
     async validateEmail() {
         this.#elements.loadingIcon.style.display = 'block';
         const email = this.#elements.email.value.trim();
@@ -143,7 +141,6 @@ export class RegistrationValidator {
         }
     }
 
-    // --- Tab 2: Contact & Payment ---
     validatePhone() {
         const phone_ = this.#elements.phone.value.trim();
         const phone = phone_.replace(/\D/g, '');
@@ -227,7 +224,7 @@ export class RegistrationValidator {
     formatExpiry() {
         const input = this.#elements.expiryDate;
         input.classList.remove('invalid');
-        this.#elements.cardCheckIcon.style.display = "none"; // Hide general check icon
+        this.#elements.cardCheckIcon.style.display = "none";
 
         const currentDate = new Date();
         const currentYear = parseInt(currentDate.getFullYear().toString().substring(2));
@@ -256,7 +253,7 @@ export class RegistrationValidator {
     validateExpiry() {
         const input = this.#elements.expiryDate;
         const expiryDate = input.value.trim();
-        const expiryRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/; // MM/YY
+        const expiryRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
         const today = new Date();
         const currentMonth = today.getMonth() + 1;
         const currentYear = today.getFullYear() % 100;
