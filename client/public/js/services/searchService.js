@@ -7,13 +7,19 @@ export async function checkActivationStatus() {
         });
         
         if (!response.ok) {
-            return { status: response.status, isLoggedIn: false, email: null };
+            return { status: response.status, isLoggedIn: false, email: null, role_id: null };
         }
         const data = await response.json(); 
-        return { status: response.status, isLoggedIn: true, email: data.email };
+        
+        return { 
+            status: response.status, 
+            isLoggedIn: true, 
+            email: data.email,
+            role_id: data.role_id 
+        };
     } catch (error) {
         console.error('Problem executing activation check:', error);
-        return { status: 500, isLoggedIn: false, email: null };
+        return { status: 500, isLoggedIn: false, email: null, role_id: null };
     }
 }
 

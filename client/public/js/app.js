@@ -8,7 +8,6 @@ const styleElement = document.getElementById('page-style');
 const appRoot = document.getElementById('app-root');
 const loadingIcon = document.getElementById('loading-icon');
 
-// Defined routes with updated Controller paths and names
 const routes = {
     '/': { view: '/views/search.html', style: '/css/search_form.css', controllerPath: '/js/classes/SearchController.js', controllerName: 'SearchController' },
     '/login': { view: '/views/login.html', style: '/css/login.css', controllerPath: '/js/classes/LoginController.js', controllerName: 'LoginController' },
@@ -22,9 +21,6 @@ const routes = {
     '/terms': { view: '/views/terms.html', style: null, controllerPath: null }
 };
 
-/**
- * Updates the navigation bar based on authentication state and user role.
- */
 export function updateNavbarAuth() {
     const loginBtn = document.getElementById('login-button');
     const signupBtn = document.getElementById('signup-button');
@@ -45,9 +41,8 @@ export function updateNavbarAuth() {
         personalArea.style.display = 'block';
         logoutBtn.style.display = 'block';
 
-        // Admin Link Logic: Show only if role is 3
         if (adminLink) {
-            // Using '==' to allow both string "3" and number 3
+          
             if (userRole == 3) {
                 adminLink.style.display = 'block';
             } else {
@@ -61,14 +56,10 @@ export function updateNavbarAuth() {
         personalArea.style.display = 'none';
         logoutBtn.style.display = 'none';
         
-        // Hide admin link if not logged in
         if (adminLink) adminLink.style.display = 'none';
     }
 }
 
-/**
- * Dynamic CSS loader
- */
 async function loadStyle(path) {
     if (path === currentStylePath) return;
     styleElement.innerHTML = '';
@@ -84,13 +75,9 @@ async function loadStyle(path) {
     }
 }
 
-/**
- * Main Router Function
- */
 const navigateTo = async (path) => {
     const route = routes[path] || routes['/'];
 
-    // Cleanup previous controller
     if (currentController) {
         if (typeof currentController.destroy === 'function') {
             currentController.destroy();
@@ -103,7 +90,6 @@ const navigateTo = async (path) => {
     loadingIcon.style.display = 'block';
 
     try {
-        // Fetch view and style in parallel
         const [viewResponse] = await Promise.all([
             fetch(route.view),
             loadStyle(route.style)
@@ -113,15 +99,12 @@ const navigateTo = async (path) => {
 
         appRoot.innerHTML = await viewResponse.text();
 
-        // Logic for initializing Controllers
         if (route.controllerPath) {
             const module = await import(route.controllerPath);
             const ControllerClass = module[route.controllerName];
 
             if (ControllerClass) {
-                // Instantiate the class
                 currentController = new ControllerClass();
-                // Call init method
                 if (typeof currentController.init === 'function') {
                     currentController.init();
                 }
@@ -137,7 +120,6 @@ const navigateTo = async (path) => {
     }
 };
 
-// Handle navigation via links with [data-nav] attribute
 document.body.addEventListener('click', event => {
     let target = event.target;
     while (target && target !== document.body) {
@@ -154,7 +136,6 @@ document.body.addEventListener('click', event => {
     }
 });
 
-// Handle Logout
 document.body.addEventListener('click', async (event) => { 
     if (event.target.id === 'logout-button') {
         try {
@@ -170,7 +151,6 @@ document.body.addEventListener('click', async (event) => {
     }
 });
 
-// Handle Global Biometric Registration
 document.body.addEventListener('click', async (event) => {
     if (event.target.id === 'register-biometric-link') {
         event.preventDefault();
@@ -187,7 +167,6 @@ document.body.addEventListener('click', async (event) => {
         console.log("Starting global biometric registration for:", userEmail);
 
         try {
-            // Initialize ephemeral controller for this action
             const webAuthn = new WebAuthnController({
                 biometricStatus: null,
                 emailInput: null
@@ -201,12 +180,10 @@ document.body.addEventListener('click', async (event) => {
     }
 });
 
-// Handle browser Back/Forward buttons
 window.addEventListener('popstate', () => {
     navigateTo(window.location.pathname);
 });
 
-// Initialize App
 async function initializeAppState() {
     const activationResult = await checkActivationStatus();
 
@@ -214,9 +191,14 @@ async function initializeAppState() {
         if (activationResult.email) {
             localStorage.setItem('userEmail', activationResult.email);
         }
+        if (activationResult.role_id) {
+            localStorage.setItem('user_role', activationResult.role_id);
+        }
     } else {
         localStorage.clear();
     }
+    
+    updateNavbarAuth();
     
     navigateTo(window.location.pathname);
 }
