@@ -36,29 +36,29 @@ export class SearchController {
             uniqueCountriesCache: [],
             destinationsCache: []
         };
-        
+
         this._selectDOMElements();
         this._ui = new SearchUIHandler(this._elements);
         this._webAuthn = new WebAuthnController({
-            biometricStatus: null, 
+            biometricStatus: null,
             messageElement: this._elements.webAuthnMessage,
-            emailInput: null 
+            emailInput: null
         });
-        
+
         this._bindEventHandlers();
         this._attachEventListeners();
-        this._initializePage(); 
+        this._initializePage();
     }
 
     destroy() {
         this._isActive = false;
         this._removeEventListeners();
-        
+
         if (this._seatMapModalInstance) {
             this._seatMapModalInstance.dispose();
             this._seatMapModalInstance = null;
         }
-        
+
         if (this._elements.dateRangeInput && $(this._elements.dateRangeInput).data('daterangepicker')) {
             $(this._elements.dateRangeInput).data('daterangepicker').remove();
         }
@@ -68,7 +68,7 @@ export class SearchController {
         this._webAuthn = null;
         this._bound = {};
     }
-    
+
     _selectDOMElements() {
         this._elements = {
             logoutButton: document.getElementById('logout-button'),
@@ -86,7 +86,7 @@ export class SearchController {
             addButton: document.getElementById('button-add'),
             fromList: document.getElementById('from-list'),
             toList: document.getElementById('to-list'),
-            loadingIcon: document.getElementById('loading-icon'), 
+            loadingIcon: document.getElementById('loading-icon'),
             searchButton: document.getElementById('search'),
             outboundContainer: document.getElementById('flights-container'),
             returnContainer: document.getElementById('flights-container2'),
@@ -125,12 +125,12 @@ export class SearchController {
         this._bound.handleConfirmBooking = () => this._handleConfirmBooking();
         this._bound.handleSelectSeatClick = (e) => this._handleSelectSeatClick(e);
         this._bound.handleRegisterBiometricClick = (e) => this._handleRegisterBiometricClick(e);
-        
-        this._handleAutocompleteSelectFrom = (name) => this._handleAutocompleteSelectFrom(name);
-        this._handleAutocompleteSelectTo = (name) => this._handleAutocompleteSelectTo(name);
+
+        this._handleAutocompleteSelectFrom = this._handleAutocompleteSelectFrom.bind(this);
+        this._handleAutocompleteSelectTo = this._handleAutocompleteSelectTo.bind(this);
         this._handleFlightSelectOutbound = (flight, card) => this._handleFlightSelect(flight, card, 'outbound');
         this._handleFlightSelectReturn = (flight, card) => this._handleFlightSelect(flight, card, 'return');
-        
+
         this._bound.handleDocumentClick = (e) => {
             if (!this._isActive) return;
             if (!this._elements.fromInput?.contains(e.target) && !this._elements.fromList?.contains(e.target) && this._elements.fromList) {
@@ -148,7 +148,7 @@ export class SearchController {
         document.getElementById('signup-button')?.addEventListener('click', this._bound.goToRegister);
         document.getElementById('delete-account-link')?.addEventListener('click', this._bound.handleDeleteAccount);
         document.getElementById('register-biometric-link')?.addEventListener('click', this._bound.handleRegisterBiometricClick);
-        
+
         this._elements.subtractButton?.addEventListener('click', this._bound.handlePassengerChangeSubtract);
         this._elements.addButton?.addEventListener('click', this._bound.handlePassengerChangeAdd);
         this._elements.searchButton?.addEventListener('click', this._bound.handleSearch);
@@ -162,11 +162,11 @@ export class SearchController {
         this._elements.backToFlightsButton?.addEventListener('click', this._bound.handleBackToFlights);
         this._elements.confirmBookingButton?.addEventListener('click', this._bound.handleConfirmBooking);
         this._elements.passengerFormsContainer?.addEventListener('click', this._bound.handleSelectSeatClick);
-        
+
         this._ui.setAutocompleteCallbacks(this._handleAutocompleteSelectFrom, this._handleAutocompleteSelectTo);
         this._ui.setFlightSelectCallbacks(this._handleFlightSelectOutbound, this._handleFlightSelectReturn);
     }
-    
+
     _removeEventListeners() {
         document.getElementById('logout-button')?.removeEventListener('click', this._bound.handleLogout);
         document.getElementById('login-button')?.removeEventListener('click', this._bound.goToLogin);
@@ -187,41 +187,41 @@ export class SearchController {
         this._elements.backToFlightsButton?.removeEventListener('click', this._bound.handleBackToFlights);
         this._elements.confirmBookingButton?.removeEventListener('click', this._bound.handleConfirmBooking);
         this._elements.passengerFormsContainer?.removeEventListener('click', this._bound.handleSelectSeatClick);
-        
+
         if (this._elements.confirmSeatButton && this._boundConfirmSeat) {
-             this._elements.confirmSeatButton.removeEventListener('click', this._boundConfirmSeat);
-             this._boundConfirmSeat = null;
+            this._elements.confirmSeatButton.removeEventListener('click', this._boundConfirmSeat);
+            this._boundConfirmSeat = null;
         }
     }
 
     _goToPage(path) {
         history.pushState(null, null, path);
-        window.dispatchEvent(new PopStateEvent('popstate')); 
+        window.dispatchEvent(new PopStateEvent('popstate'));
     }
-    
+
     async _initializePage() {
         if (!this._isActive || !this._ui) return;
 
         this._ui.showLoading(true);
-        this._ui.updateInputDisabledState(); 
+        this._ui.updateInputDisabledState();
         this._ui.toggleSearchView(false);
         this._ui.togglePassengerView(false);
 
         if (this._elements.dateRangeInput && $.fn.daterangepicker) {
-             $(this._elements.dateRangeInput).daterangepicker({
+            $(this._elements.dateRangeInput).daterangepicker({
                 opens: 'left',
                 autoUpdateInput: false,
                 locale: { cancelLabel: 'Clear' }
-             });
-             $(this._elements.dateRangeInput).on('apply.daterangepicker', (ev, picker) => {
-                 $(this._elements.dateRangeInput).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-             });
-             $(this._elements.dateRangeInput).on('cancel.daterangepicker', (ev, picker) => {
-                 $(this._elements.dateRangeInput).val('');
-             });
+            });
+            $(this._elements.dateRangeInput).on('apply.daterangepicker', (ev, picker) => {
+                $(this._elements.dateRangeInput).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            });
+            $(this._elements.dateRangeInput).on('cancel.daterangepicker', (ev, picker) => {
+                $(this._elements.dateRangeInput).val('');
+            });
         }
 
-        let statusResult; 
+        let statusResult;
 
         try {
             const [status, countries, ipCountryData] = await Promise.all([
@@ -234,17 +234,17 @@ export class SearchController {
 
             statusResult = status;
             this._updateGlobalAuthUI(statusResult.isLoggedIn, statusResult.email);
-            
+
             if (statusResult.isLoggedIn && statusResult.email) {
                 this._state.email = statusResult.email;
                 localStorage.setItem('userEmail', statusResult.email);
             }
 
             this._state.uniqueCountriesCache = countries || [];
-            
-             let defaultCountrySet = false; 
+
+            let defaultCountrySet = false;
             if (ipCountryData && ipCountryData.name && ipCountryData.name !== "Unknown" && this._state.uniqueCountriesCache.length > 0) {
-                const userCountryName = ipCountryData.name; 
+                const userCountryName = ipCountryData.name;
                 const matchedCountry = this._state.uniqueCountriesCache.find(
                     c => c.name.toLowerCase() === userCountryName.toLowerCase()
                 );
@@ -252,7 +252,7 @@ export class SearchController {
                     this._state.selectedOrigin = matchedCountry;
                     if (this._elements.fromInput) this._elements.fromInput.value = matchedCountry.name;
                     await this._handleToFocus();
-                    defaultCountrySet = true; 
+                    defaultCountrySet = true;
                 }
             }
             if (!defaultCountrySet && this._state.uniqueCountriesCache.length > 0) {
@@ -262,10 +262,10 @@ export class SearchController {
                 if (israelCountry) {
                     this._state.selectedOrigin = israelCountry;
                     if (this._elements.fromInput) this._elements.fromInput.value = israelCountry.name;
-                    await this._handleToFocus(); 
+                    await this._handleToFocus();
                 }
             }
-        
+
         } catch (error) {
             console.error("Failed to initialize page data:", error);
             if (this._isActive && !statusResult) {
@@ -286,21 +286,21 @@ export class SearchController {
         const personalAreaDropdown = document.getElementById('personal-area-dropdown');
 
         if (isLoggedIn) {
-            if(loginButton) loginButton.style.display = 'none';
-            if(signupButton) signupButton.style.display = 'none';
-            if(logoutButton) logoutButton.style.display = 'block';
-            if(personalAreaDropdown) personalAreaDropdown.style.display = 'block';
+            if (loginButton) loginButton.style.display = 'none';
+            if (signupButton) signupButton.style.display = 'none';
+            if (logoutButton) logoutButton.style.display = 'block';
+            if (personalAreaDropdown) personalAreaDropdown.style.display = 'block';
             this._state.email = email;
         } else {
-            if(loginButton) loginButton.style.display = 'block';
-            if(signupButton) signupButton.style.display = 'block';
-            if(logoutButton) logoutButton.style.display = 'none';
-            if(personalAreaDropdown) personalAreaDropdown.style.display = 'none';
+            if (loginButton) loginButton.style.display = 'block';
+            if (signupButton) signupButton.style.display = 'block';
+            if (logoutButton) logoutButton.style.display = 'none';
+            if (personalAreaDropdown) personalAreaDropdown.style.display = 'none';
             this._state.email = null;
         }
     }
-    
-    async _handleLogout() { 
+
+    async _handleLogout() {
         this._updateGlobalAuthUI(false);
         uiUtils.showCustomAlert('Logged Out', 'You have been logged out.', 'success');
     }
@@ -321,141 +321,141 @@ export class SearchController {
         this._ui.showLoading(true);
         try {
             await fetch(C.API_DELETE_URL, { method: 'DELETE', credentials: 'include' });
-             uiUtils.showCustomAlert('Deleted', 'Account deleted.', 'success');
+            uiUtils.showCustomAlert('Deleted', 'Account deleted.', 'success');
             this._updateGlobalAuthUI(false);
-            this._goToPage('/'); 
+            this._goToPage('/');
         } catch (error) {
-             uiUtils.showCustomAlert('Error', error.message, 'error');
+            uiUtils.showCustomAlert('Error', error.message, 'error');
         } finally {
             if (this._isActive) this._ui.showLoading(false);
         }
     }
-    
-    _handlePassengerChange(e, action) { 
-        e.preventDefault(); 
-        if (action === 'add') this._state.currentNumber++; 
-        else if (action === 'subtract' && this._state.currentNumber > 1) this._state.currentNumber--; 
-        this._ui.updatePassengerCount(this._state.currentNumber); 
-    }
-    
-    _handleTripTypeChange(e) { 
-        if (e.target.checked) { 
-            this._state.tripType = e.target.value; 
-        } 
+
+    _handlePassengerChange(e, action) {
+        e.preventDefault();
+        if (action === 'add') this._state.currentNumber++;
+        else if (action === 'subtract' && this._state.currentNumber > 1) this._state.currentNumber--;
+        this._ui.updatePassengerCount(this._state.currentNumber);
     }
 
-    _handleFromInput(q) { 
-        this._ui.updateInputDisabledState(); 
-        const f = this._state.uniqueCountriesCache.filter(c => c.name?.toLowerCase().includes(q.toLowerCase())); 
-        this._ui.renderAutocompleteList(this._elements.fromList, f.map(c => c.name), this._handleAutocompleteSelectFrom); 
+    _handleTripTypeChange(e) {
+        if (e.target.checked) {
+            this._state.tripType = e.target.value;
+        }
     }
-    
-    async _handleAutocompleteSelectFrom(n) { 
-        if (this._elements.fromInput) this._elements.fromInput.value = n; 
-        const s = this._state.uniqueCountriesCache.find(c => c.name === n); 
-        this._state.selectedOrigin = s || { id: null, name: n }; 
-        this._state.selectedDestination = { id: null, name: '' }; 
-        if (this._elements.toInput) this._elements.toInput.value = ''; 
-        this._state.destinationsCache = []; 
-        this._ui.updateInputDisabledState(); 
-        this._ui.clearAutocomplete(this._elements.fromList); 
-        await this._handleToFocus(); 
-        this._elements.toInput?.focus(); 
+
+    _handleFromInput(q) {
+        this._ui.updateInputDisabledState();
+        const f = this._state.uniqueCountriesCache.filter(c => c.name?.toLowerCase().includes(q.toLowerCase()));
+        this._ui.renderAutocompleteList(this._elements.fromList, f.map(c => c.name), this._handleAutocompleteSelectFrom);
     }
-    
-    _handleFromFocus() { 
-        this._ui.renderAutocompleteList(this._elements.fromList, this._state.uniqueCountriesCache.map(c => c.name), this._handleAutocompleteSelectFrom); 
+
+    async _handleAutocompleteSelectFrom(n) {
+        if (this._elements.fromInput) this._elements.fromInput.value = n;
+        const s = this._state.uniqueCountriesCache.find(c => c.name === n);
+        this._state.selectedOrigin = s || { id: null, name: n };
+        this._state.selectedDestination = { id: null, name: '' };
+        if (this._elements.toInput) this._elements.toInput.value = '';
+        this._state.destinationsCache = [];
+        this._ui.updateInputDisabledState();
+        this._ui.clearAutocomplete(this._elements.fromList);
+        await this._handleToFocus();
+        this._elements.toInput?.focus();
     }
-    
-    _handleToInput(q) { 
-        this._ui.updateInputDisabledState(); 
-        if (!this._state.selectedOrigin.id) return; 
-        const f = this._state.destinationsCache.filter(d => d.name?.toLowerCase().includes(q.toLowerCase())); 
-        this._ui.renderAutocompleteList(this._elements.toList, f.map(c => c.name), this._handleAutocompleteSelectTo); 
+
+    _handleFromFocus() {
+        this._ui.renderAutocompleteList(this._elements.fromList, this._state.uniqueCountriesCache.map(c => c.name), this._handleAutocompleteSelectFrom);
     }
-    
-    _handleAutocompleteSelectTo(n) { 
-        if (this._elements.toInput) this._elements.toInput.value = n; 
-        const s = this._state.destinationsCache.find(c => c.name === n); 
-        this._state.selectedDestination = s || { id: null, name: n }; 
-        this._ui.updateInputDisabledState(); 
-        this._ui.clearAutocomplete(this._elements.toList); 
+
+    _handleToInput(q) {
+        this._ui.updateInputDisabledState();
+        if (!this._state.selectedOrigin.id) return;
+        const f = this._state.destinationsCache.filter(d => d.name?.toLowerCase().includes(q.toLowerCase()));
+        this._ui.renderAutocompleteList(this._elements.toList, f.map(c => c.name), this._handleAutocompleteSelectTo);
     }
-    
-    async _handleToFocus() { 
+
+    _handleAutocompleteSelectTo(n) {
+        if (this._elements.toInput) this._elements.toInput.value = n;
+        const s = this._state.destinationsCache.find(c => c.name === n);
+        this._state.selectedDestination = s || { id: null, name: n };
+        this._ui.updateInputDisabledState();
+        this._ui.clearAutocomplete(this._elements.toList);
+    }
+
+    async _handleToFocus() {
         if (!this._isActive) return;
 
-        const oId = this._state.selectedOrigin.id; 
-        if (!oId) { 
-            if (this._elements.toList) this._ui.clearAutocomplete(this._elements.toList); 
-            return; 
-        } 
-        if (this._state.destinationsCache.length === 0) { 
-            this._ui.showLoading(true); 
-            this._state.destinationsCache = await SearchService.fetchDestinations(oId); 
-            
+        const oId = this._state.selectedOrigin.id;
+        if (!oId) {
+            if (this._elements.toList) this._ui.clearAutocomplete(this._elements.toList);
+            return;
+        }
+        if (this._state.destinationsCache.length === 0) {
+            this._ui.showLoading(true);
+            this._state.destinationsCache = await SearchService.fetchDestinations(oId);
+
             if (!this._isActive) return;
-            this._ui.showLoading(false); 
-        } 
-        this._ui.renderAutocompleteList(this._elements.toList, this._state.destinationsCache.map(c => c.name), this._handleAutocompleteSelectTo); 
+            this._ui.showLoading(false);
+        }
+        this._ui.renderAutocompleteList(this._elements.toList, this._state.destinationsCache.map(c => c.name), this._handleAutocompleteSelectTo);
     }
 
     async _handleSearch() {
-        this._ui.toggleSearchView(false); 
-        this._ui.togglePassengerView(false); 
+        this._ui.toggleSearchView(false);
+        this._ui.togglePassengerView(false);
         this._ui.showLoading(true);
-        
-        const originId = this._state.selectedOrigin.id; 
+
+        const originId = this._state.selectedOrigin.id;
         const destId = this._state.selectedDestination.id;
-        const date = this._elements.dateRangeInput?.value || null; 
+        const date = this._elements.dateRangeInput?.value || null;
         const tripType = this._state.tripType;
-        
-        if (!originId || !destId) { 
+
+        if (!originId || !destId) {
             uiUtils.showCustomAlert("Input Error", "Please select origin and destination.", "warning");
-            this._ui.showLoading(false); 
-            this._ui.toggleSearchView(true); 
-            return; 
+            this._ui.showLoading(false);
+            this._ui.toggleSearchView(true);
+            return;
         }
-        
+
         try {
-            let outbound = []; 
+            let outbound = [];
             let returns = [];
             const outFilters = { origin_id: originId, destination_id: destId, date: date };
-            
-            if (tripType === 'round-trip') { 
+
+            if (tripType === 'round-trip') {
                 const retFilters = { origin_id: destId, destination_id: originId, date: date };
                 [outbound, returns] = await Promise.all([
-                    SearchService.searchFlights(outFilters), 
+                    SearchService.searchFlights(outFilters),
                     SearchService.searchFlights(retFilters)
-                ]); 
-            } else { 
-                outbound = await SearchService.searchFlights(outFilters); 
+                ]);
+            } else {
+                outbound = await SearchService.searchFlights(outFilters);
             }
-            
+
             if (!this._isActive) return;
 
             this._ui.renderFlightCards(this._elements.outboundContainer, outbound, this._handleFlightSelectOutbound);
             this._ui.renderFlightCards(this._elements.returnContainer, returns, this._handleFlightSelectReturn);
-            
-            this._state.selectedOutboundFlight = null; 
-            this._state.selectedReturnFlight = null; 
-            this._ui.selectedOutboundCard = null; 
+
+            this._state.selectedOutboundFlight = null;
+            this._state.selectedReturnFlight = null;
+            this._ui.selectedOutboundCard = null;
             this._ui.selectedReturnCard = null;
-            
-            if (this._elements.outboundSection) this._elements.outboundSection.style.display = 'block'; 
-            
+
+            if (this._elements.outboundSection) this._elements.outboundSection.style.display = 'block';
+
             const showReturn = tripType === 'round-trip';
             if (this._elements.returnSection) this._elements.returnSection.style.display = showReturn ? 'block' : 'none';
-            
+
             if (tripType === 'one-way') {
-                this._ui.showReturnFlightsSection(); 
+                this._ui.showReturnFlightsSection();
             }
 
-        } catch (error) { 
-            console.error("Flight search error:", error); 
-            if(this._isActive) uiUtils.showCustomAlert("Search Error", "Could not fetch flight data.", "error");
-        } finally { 
-            if(this._isActive) this._ui.showLoading(false); 
+        } catch (error) {
+            console.error("Flight search error:", error);
+            if (this._isActive) uiUtils.showCustomAlert("Search Error", "Could not fetch flight data.", "error");
+        } finally {
+            if (this._isActive) this._ui.showLoading(false);
         }
     }
 
@@ -474,24 +474,24 @@ export class SearchController {
         }
     }
 
-    _showPassengerDetailsForm() { 
-        this._ui.togglePassengerView(true); 
-        this._ui.renderPassengerForms(this._state.currentNumber, this._state.tripType); 
+    _showPassengerDetailsForm() {
+        this._ui.togglePassengerView(true);
+        this._ui.renderPassengerForms(this._state.currentNumber, this._state.tripType);
     }
-    
-    _handleBackToFlights() { 
-        this._ui.togglePassengerView(false); 
+
+    _handleBackToFlights() {
+        this._ui.togglePassengerView(false);
     }
 
     _handleSelectSeatClick(e) {
         const target = e.target;
         if (target.classList.contains('select-seat-btn')) {
-            const pIndex = target.dataset.passengerIndex; 
+            const pIndex = target.dataset.passengerIndex;
             const fType = target.dataset.flightType || 'outbound';
             const flight = (fType === 'outbound') ? this._state.selectedOutboundFlight : this._state.selectedReturnFlight;
-            if (!flight) { 
-                uiUtils.showCustomAlert("Error", "Flight not selected", "error"); 
-                return; 
+            if (!flight) {
+                uiUtils.showCustomAlert("Error", "Flight not selected", "error");
+                return;
             }
             this._openSeatMap(pIndex, fType, flight);
         }
@@ -506,21 +506,21 @@ export class SearchController {
         const flightIdForTaken = flight.id;
 
         const seatLayout = PLANE_LAYOUTS[planeId];
-        if (!seatLayout) { 
+        if (!seatLayout) {
             uiUtils.showCustomAlert("Error", `Seat layout not found for plane ID ${planeId}`, "error");
-            if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = 'Error loading map layout.'; 
-            this._ui.showLoading(false); 
-            return; 
+            if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = 'Error loading map layout.';
+            this._ui.showLoading(false);
+            return;
         }
 
         let allAssignments = [];
         try {
             allAssignments = await SearchService.getTakenSeats(flightIdForTaken);
-        } catch (error) { 
-            console.error("Error loading seat assignments:", error); 
-            if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = 'Error loading seat assignments.'; 
-            this._ui.showLoading(false); 
-            return; 
+        } catch (error) {
+            console.error("Error loading seat assignments:", error);
+            if (this._elements.seatMapGrid) this._elements.seatMapGrid.innerHTML = 'Error loading seat assignments.';
+            this._ui.showLoading(false);
+            return;
         }
 
         if (!this._isActive) return;
@@ -533,27 +533,27 @@ export class SearchController {
             seatDiv.className = 'seat available';
             seatDiv.textContent = seat.name;
             seatDiv.dataset.seatId = seat.id;
-            if (takenSeatIds.has(seat.id)) { 
-                seatDiv.classList.replace('available', 'taken'); 
-            } else { 
-                seatDiv.addEventListener('click', () => { 
-                    this._elements.seatMapGrid.querySelector('.seat.selected')?.classList.remove('selected'); 
-                    seatDiv.classList.add('selected'); 
-                }); 
+            if (takenSeatIds.has(seat.id)) {
+                seatDiv.classList.replace('available', 'taken');
+            } else {
+                seatDiv.addEventListener('click', () => {
+                    this._elements.seatMapGrid.querySelector('.seat.selected')?.classList.remove('selected');
+                    seatDiv.classList.add('selected');
+                });
             }
             this._elements.seatMapGrid.appendChild(seatDiv);
         });
 
         this._ui.showLoading(false);
-        
+
         if (this._elements.seatMapModal && !this._seatMapModalInstance) {
             this._seatMapModalInstance = new bootstrap.Modal(this._elements.seatMapModal);
         }
-        
+
         if (this._elements.confirmSeatButton && this._boundConfirmSeat) {
-             this._elements.confirmSeatButton.removeEventListener('click', this._boundConfirmSeat);
+            this._elements.confirmSeatButton.removeEventListener('click', this._boundConfirmSeat);
         }
-        
+
         this._boundConfirmSeat = () => {
             const selected = this._elements.seatMapGrid.querySelector('.seat.selected');
             if (selected) {
@@ -561,16 +561,16 @@ export class SearchController {
                 const seatName = selected.textContent;
                 const seatDisplay = document.getElementById(`seat-selection-${flightType}-${passengerIndex}`);
                 if (seatDisplay) seatDisplay.textContent = ` (${seatName})`;
-                
+
                 const form = document.querySelector(`.passenger-form[data-index="${passengerIndex}"]`);
                 if (form) form.dataset[flightType === 'outbound' ? 'seatOutbound' : 'seatReturn'] = seatId;
-                
+
                 this._seatMapModalInstance.hide();
-            } else { 
-                uiUtils.showCustomAlert("Wait", "Please select a seat.", "warning"); 
+            } else {
+                uiUtils.showCustomAlert("Wait", "Please select a seat.", "warning");
             }
         };
-        
+
         this._elements.confirmSeatButton.addEventListener('click', this._boundConfirmSeat);
         this._seatMapModalInstance.show();
     }
@@ -605,7 +605,7 @@ export class SearchController {
             }
             dataToSubmit.push(data);
         }
-        
+
         if (!isValid) {
             this._ui.showLoading(false);
             return;
@@ -655,7 +655,7 @@ export class SearchController {
                         })
                     });
                 }
-                
+
                 await fetch(C.API_TICKETS_URL, {
                     method: 'POST',
                     credentials: 'include',
@@ -688,10 +688,10 @@ export class SearchController {
             console.error("Booking failed:", error);
             await uiUtils.showCustomAlert("Booking Error", error.message, "error");
         } finally {
-            if(this._isActive) this._ui.showLoading(false);
+            if (this._isActive) this._ui.showLoading(false);
         }
     }
-    
+
     async _handleRegisterBiometricClick(e) {
         e.preventDefault();
         const email = this._state.email;
