@@ -14,12 +14,6 @@ export class SearchController {
     _webAuthn;
     _bound = {};
     _isActive = false;
-    _handleAutocompleteSelectFrom = null;
-    _handleAutocompleteSelectTo = null;
-    _handleFlightSelectOutbound = null;
-    _handleFlightSelectReturn = null;
-    _seatMapModalInstance = null;
-    _boundConfirmSeat = null;
 
 
     init() {
