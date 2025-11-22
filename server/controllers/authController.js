@@ -47,7 +47,7 @@ exports.rootHandler = async (req, res, next) => {
     Log.info(FILE, func, null, `Incoming request: ${req.method} ${req.path}`);
 
     try {
-        const allowedPaths = ['/index.html', '/login.html', '/search.html', '/registration.html', '/git', '/google', '/about', '/customer-service'];
+        const allowedPaths = ['/index.html', '/login.html', '/registration.html', '/git', '/google', '/about', '/customer-service'];
 
         if (allowedPaths.includes(req.path)) {
             Log.info(FILE, func, null, `Path allowed without auth: ${req.path}`);
