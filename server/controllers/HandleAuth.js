@@ -1,5 +1,5 @@
 const axios = require('axios');
-const Log = require('../logger/logManager'); // ייבוא המנהל
+const Log = require('../logger/logManager');
 
 const FILE = 'HandleAuth';
 
@@ -10,8 +10,11 @@ class HandAuth {
 
         try {
             Log.info(FILE, func, email, 'Checking if user exists');
+            
+            const authServerUrl = 'https://skyrocket.onrender.com'; 
+
             const Check = await axios.get(
-                `https://skyrocket.onrender.com/role_users/users/search?email=${email}`,
+                `${authServerUrl}/role_users/users/search?email=${email}`,
                 {
                     validateStatus: function (status) {
                         return status < 500;
@@ -23,18 +26,18 @@ class HandAuth {
             Log.debug(FILE, func, email, `User check response: ${JSON.stringify(data)}`);
 
             if (data.error) {
-                Log.info(FILE, func, email, 'User not found, proceeding with signup');
+                Log.info(FILE, func, email, `User not found, proceeding with signup`);
 
                 try {
                     Log.info(FILE, func, email, `Creating new user with ${authProvider}`);
-                    await axios.post('https://skyrocket.onrender.com/role_users/signup', {
+                    await axios.post(`${authServerUrl}/role_users/signup`, {
                         email: email,
                         password: password,
                         authProvider: authProvider
                     });
 
                     Log.info(FILE, func, email, 'User successfully registered');
-                    return res.redirect('https://skyrocket.onrender.com');
+                    return res.redirect(authServerUrl);
                 } catch (signupError) {
                     Log.error(FILE, func, email, 'Signup failed', signupError);
                     if (signupError.response) {
@@ -49,14 +52,12 @@ class HandAuth {
 
                 if (data.authProvider !== authProvider) {
                     Log.warn(FILE, func, email, `Provider mismatch. Used: ${authProvider}, Required: ${data.authProvider}`);
-                    return res
-                        .status(403)
-                        .send(`Access denied. Please log in using ${data.authProvider}.`);
+                    return res.status(403).send(`Access denied. Please log in using ${data.authProvider}.`);
                 }
 
                 Log.info(FILE, func, email, 'Authenticating existing user');
                 try {
-                    const loginResponse = await axios.post('https://skyrocket.onrender.com/role_users/login', {
+                    const loginResponse = await axios.post(`${authServerUrl}/role_users/login`, {
                         email: email,
                         password: password,
                         authProvider: authProvider
@@ -65,15 +66,14 @@ class HandAuth {
                     const token = loginResponse.data.jwt;
                     Log.info(FILE, func, email, 'Authentication successful');
 
-                    // Set JWT cookie
                     res.cookie('sky', token, {
                         httpOnly: true,
                         sameSite: 'strict',
-                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3:15 שעות
+                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
                     });
 
-                    Log.info(FILE, func, email, 'Redirecting authenticated user to search form');
-                    return res.redirect('https://skyrocket.onrender.com');
+                    Log.info(FILE, func, email, 'Redirecting authenticated user');
+                    return res.redirect(authServerUrl);
                 } catch (loginError) {
                     Log.error(FILE, func, email, 'Login failed', loginError);
                     if (loginError.response) {
@@ -88,14 +88,12 @@ class HandAuth {
         } catch (error) {
             Log.error(FILE, func, email, 'Error during authentication process', error);
 
-            // Log detailed error information
             if (error.response) {
                 Log.error(FILE, func, email, `Error response: ${JSON.stringify(error.response.data)}`);
             } else if (error.request) {
                 Log.error(FILE, func, email, 'No response received from authentication server');
             }
 
-            // Check if response has already been sent
             if (!res.headersSent) {
                 return res.status(500).send('Error during signup or login');
             }
