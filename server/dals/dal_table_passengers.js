@@ -1,178 +1,185 @@
-const knex = require('knex')
-const db = require('../connect_db/default')
-const logger = require('../logger/my_logger')
-const connectedKnex = db.connect()
+const knex = require('knex');
+const db = require('../connect_db/default');
+const Log = require('../logger/logManager');
 
-logger.info('Passengers DAL module initialized')
+const connectedKnex = db.connect();
+const FILE = 'dal_table_passengers';
+
+Log.info(FILE, 'init', null, 'Passengers DAL module initialized');
 
 // ---------------User functions only and admin---------------
 
 async function new_passenger(new_passenger) {
-    logger.info('Creating new passenger')
-    logger.debug(`New passenger data: ${JSON.stringify(new_passenger)}`)
+    const func = 'new_passenger';
+    Log.info(FILE, func, null, 'Creating new passenger');
+    Log.debug(FILE, func, null, `New passenger data: ${JSON.stringify(new_passenger)}`);
     
     try {
         const result = await connectedKnex('passengers').insert(new_passenger).returning('*');
-        logger.info(`Passenger created successfully with ID: ${result[0].id}`)
-        logger.debug(`Created passenger details: ${JSON.stringify(result[0])}`)
-        return result[0]
+        Log.info(FILE, func, result[0].id, 'Passenger created successfully');
+        Log.debug(FILE, func, result[0].id, `Created passenger details: ${JSON.stringify(result[0])}`);
+        return result[0];
     } catch (error) {
-        logger.error('Error creating new passenger:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error creating new passenger', error);
+        throw error;
     }
 }
 
 async function get_by_id_passenger(id) {
-    logger.debug(`Looking up passenger by ID: ${id}`)
+    const func = 'get_by_id_passenger';
+    Log.debug(FILE, func, id, 'Looking up passenger by ID');
     
     try {
-        const passenger = await connectedKnex('passengers').select('*').where('id', id).first()
+        const passenger = await connectedKnex('passengers').select('*').where('id', id).first();
         
         if (passenger) {
-            logger.debug(`Passenger found by ID: ${id}`)
-            return passenger
+            Log.debug(FILE, func, id, 'Passenger found');
+            return passenger;
         } else {
-            logger.debug(`No passenger found with ID: ${id}`)
-            return null
+            Log.debug(FILE, func, id, 'No passenger found');
+            return null;
         }
     } catch (error) {
-        logger.error(`Error looking up passenger by ID ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error looking up passenger', error);
+        throw error;
     }
 }
 
 // ---------------Admin permission only---------------
 
 async function update_passenger(id, updated_passenger) {
-    logger.info(`Updating passenger with ID: ${id}`)
-    logger.debug(`Update data: ${JSON.stringify(updated_passenger)}`)
+    const func = 'update_passenger';
+    Log.info(FILE, func, id, 'Updating passenger');
+    Log.debug(FILE, func, id, `Update data: ${JSON.stringify(updated_passenger)}`);
     
     try {
-        // תחילה בדוק אם הנוסע קיים
-        const passenger = await connectedKnex('passengers').select('id').where('id', id).first()
+        const passenger = await connectedKnex('passengers').select('id').where('id', id).first();
         
         if (!passenger) {
-            logger.warn(`Passenger update failed - passenger not found: ${id}`)
-            return null
+            Log.warn(FILE, func, id, 'Passenger update failed - passenger not found');
+            return null;
         }
         
-        const result = await connectedKnex('passengers').where('id', id).update(updated_passenger)
-        logger.info(`Passenger ${id} updated successfully`)
-        return updated_passenger
+        const result = await connectedKnex('passengers').where('id', id).update(updated_passenger);
+        Log.info(FILE, func, id, 'Passenger updated successfully');
+        return updated_passenger;
     } catch (error) {
-        logger.error(`Error updating passenger ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error updating passenger', error);
+        throw error;
     }
 }
 
 async function delete_passenger(id) {
-    logger.info(`Deleting passenger with ID: ${id}`)
+    const func = 'delete_passenger';
+    Log.info(FILE, func, id, 'Deleting passenger');
     
     try {
-        // תחילה בדוק אם הנוסע קיים
-        const passenger = await connectedKnex('passengers').select('id').where('id', id).first()
+        const passenger = await connectedKnex('passengers').select('id').where('id', id).first();
         
         if (!passenger) {
-            logger.warn(`Passenger deletion failed - passenger not found: ${id}`)
-            return 0
+            Log.warn(FILE, func, id, 'Passenger deletion failed - passenger not found');
+            return 0;
         }
         
-        const result = await connectedKnex('passengers').where('id', id).del()
-        logger.info(`Passenger ${id} deleted successfully`)
-        return result
+        const result = await connectedKnex('passengers').where('id', id).del();
+        Log.info(FILE, func, id, 'Passenger deleted successfully');
+        return result;
     } catch (error) {
-        logger.error(`Error deleting passenger ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error deleting passenger', error);
+        throw error;
     }
 }
 
 async function get_all() {
-    logger.info('Retrieving all passengers (admin only function)')
+    const func = 'get_all';
+    Log.info(FILE, func, null, 'Retrieving all passengers (admin only)');
     
     try {
-        const passengers = await connectedKnex.raw(`SELECT get_all_passengers();`)
-        const passengersCount = passengers.rows[0].get_all_passengers ? passengers.rows[0].get_all_passengers.length : 0
-        logger.debug(`Retrieved ${passengersCount} passengers successfully`)
-        return passengers.rows[0].get_all_passengers
+        const passengers = await connectedKnex.raw(`SELECT get_all_passengers();`);
+        const passengersCount = passengers.rows[0].get_all_passengers ? passengers.rows[0].get_all_passengers.length : 0;
+        Log.debug(FILE, func, null, `Retrieved ${passengersCount} passengers successfully`);
+        return passengers.rows[0].get_all_passengers;
     } catch (error) {
-        logger.error('Error retrieving all passengers:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error retrieving all passengers', error);
+        throw error;
     }
 }
 
 async function get_by_id(id) {
-    // הערה: פונקציה זו נראית זהה ל-get_by_id_passenger
-    // יתכן שצריך לאחד אותן או להשתמש רק באחת מהן
-    logger.debug(`Looking up passenger by ID (duplicate function): ${id}`)
+    const func = 'get_by_id';
+    Log.debug(FILE, func, id, 'Looking up passenger by ID (duplicate function)');
     
     try {
-        const passenger = await connectedKnex('passengers').select('*').where('id', id).first()
+        const passenger = await connectedKnex('passengers').select('*').where('id', id).first();
         
         if (passenger) {
-            logger.debug(`Passenger found by ID: ${id}`)
-            return passenger
+            Log.debug(FILE, func, id, 'Passenger found');
+            return passenger;
         } else {
-            logger.debug(`No passenger found with ID: ${id}`)
-            return null
+            Log.debug(FILE, func, id, 'No passenger found');
+            return null;
         }
     } catch (error) {
-        logger.error(`Error looking up passenger by ID ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error looking up passenger', error);
+        throw error;
     }
 }
 
 async function delete_all() {
-    logger.info('Deleting all passengers (admin only function)')
-    logger.warn('This operation will delete ALL passengers from the database')
+    const func = 'delete_all';
+    Log.info(FILE, func, null, 'Deleting all passengers (admin only)');
+    Log.warn(FILE, func, null, 'This operation will delete ALL passengers from the database');
     
     try {
-        const result = await connectedKnex('passengers').del()
-        logger.debug(`Deleted ${result} passengers from database`)
+        const result = await connectedKnex('passengers').del();
+        Log.debug(FILE, func, null, `Deleted ${result} passengers`);
         
         await connectedKnex.raw('ALTER SEQUENCE "passengers_id_seq" RESTART WITH 1');
-        logger.info('Reset passenger ID sequence to 1')
+        Log.info(FILE, func, null, 'Reset passenger ID sequence to 1');
         
-        return result
+        return result;
     } catch (error) {
-        logger.error('Error deleting all passengers:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error deleting all passengers', error);
+        throw error;
     }
 }
 
 // ---------------Test functions only---------------
 
 async function set_id(id) {
-    logger.info(`Setting passenger ID sequence to: ${id} (test function)`)
+    const func = 'set_id';
+    Log.info(FILE, func, id, 'Setting passenger ID sequence');
     
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE passengers_id_seq RESTART WITH ${id}`);
-        logger.debug(`Successfully reset passenger ID sequence to ${id}`)
-        return result
+        Log.debug(FILE, func, id, 'Successfully reset passenger ID sequence');
+        return result;
     } catch (error) {
-        logger.error(`Error setting passenger ID sequence to ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error setting passenger ID sequence', error);
+        throw error;
     }
 }
 
 async function get_by_passport_number(passport_number) {
-    logger.debug(`Looking up passenger by passport number: ${passport_number}`)
+    const func = 'get_by_passport_number';
+    Log.debug(FILE, func, passport_number, 'Looking up passenger by passport number');
     
     try {
         const passenger = await connectedKnex('passengers')
                               .select('*')
                               .where('passport_number', passport_number)
-                              .first()
+                              .first();
         
         if (passenger) {
-            logger.debug(`Passenger found by passport number: ${passport_number}`)
-            return passenger
+            Log.debug(FILE, func, passenger.id, `Passenger found (Passport: ${passport_number})`);
+            return passenger;
         } else {
-            logger.debug(`No passenger found with passport number: ${passport_number}`)
-            return null
+            Log.debug(FILE, func, passport_number, 'No passenger found');
+            return null;
         }
     } catch (error) {
-        logger.error(`Error looking up passenger by passport number ${passport_number}:`, error)
-        throw error
+        Log.error(FILE, func, passport_number, 'Error looking up passenger by passport', error);
+        throw error;
     }
 }
 
@@ -186,4 +193,4 @@ module.exports = {
     get_by_id_passenger, 
     set_id, 
     get_by_passport_number
-}
+};

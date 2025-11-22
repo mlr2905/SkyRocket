@@ -1,171 +1,158 @@
-const knex = require('knex')
-const db = require('../connect_db/default')
-const logger = require('../logger/my_logger')
-const connectedKnex = db.connect()
+const knex = require('knex');
+const db = require('../connect_db/default');
+const Log = require('../logger/logManager');
 
-logger.info('Chairs DAL module initialized')
+const connectedKnex = db.connect();
+const FILE = 'dal_table_chairs_taken';
+
+Log.info(FILE, 'init', null, 'Chairs DAL module initialized');
 
 // ---------------User functions only and admin---------------
 
 async function new_chair(new_t) {
-    logger.info('Creating new chair assignment')
-    logger.debug(`New chair assignment data: ${JSON.stringify(new_t)}`)
+    const func = 'new_chair';
+    Log.info(FILE, func, new_t.user_id, 'Creating new chair assignment');
+    Log.debug(FILE, func, new_t.user_id, `Data: ${JSON.stringify(new_t)}`);
     
     try {
         const result = await connectedKnex('chairs_taken').insert(new_t).returning('*');
-        logger.info(`Chair assignment created successfully with ID: ${result[0].id}`)
-        logger.debug(`Created chair assignment details: Flight: ${result[0].flight_id}, Chair: ${result[0].char_id}, Passenger: ${result[0].passenger_id}`)
-        return result[0]
+        Log.info(FILE, func, new_t.user_id, `Chair assignment created (ID: ${result[0].id})`);
+        return result[0];
     } catch (error) {
-        logger.error('Error creating new chair assignment:', error)
-        throw error
+        Log.error(FILE, func, new_t.user_id, 'Error creating chair assignment', error);
+        throw error;
     }
 }
 
 // ---------------Admin permission only---------------
 
 async function get_by_id(id) {
-    logger.debug(`Looking up chair assignment by user ID: ${id}`)
+    const func = 'get_by_id';
+    Log.debug(FILE, func, id, 'Looking up chair assignment by user ID');
     
     try {
-        const chair = await connectedKnex('chairs_taken').select('*').where('user_id', id).first()
+        const chair = await connectedKnex('chairs_taken').select('*').where('user_id', id).first();
         
         if (chair) {
-            logger.debug(`Chair assignment found for user ID: ${id}`)
-            return chair
+            Log.debug(FILE, func, id, 'Chair assignment found');
+            return chair;
         } else {
-            logger.debug(`No chair assignment found for user ID: ${id}`)
-            return null
+            Log.debug(FILE, func, id, 'No chair assignment found');
+            return null;
         }
     } catch (error) {
-        logger.error(`Error looking up chair assignment by user ID ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error looking up chair assignment', error);
+        throw error;
     }
 }
 
 async function delete_chair(id) {
-    logger.info(`Deleting chair assignment with ID: ${id}`)
+    const func = 'delete_chair';
+    Log.info(FILE, func, id, 'Deleting chair assignment');
     
     try {
-        // תחילה בדוק אם ההקצאה קיימת
-        const chair = await connectedKnex('chairs_taken').select('*').where('id', id).first()
+        const chair = await connectedKnex('chairs_taken').select('*').where('id', id).first();
         
         if (!chair) {
-            logger.warn(`Chair assignment deletion failed - assignment not found: ${id}`)
-            return 0
+            Log.warn(FILE, func, id, 'Deletion failed - assignment not found');
+            return 0;
         }
         
-        const result = await connectedKnex('chairs_taken').where('id', id).del()
-        
-        if (result) {
-            logger.info(`Chair assignment ${id} deleted successfully (Flight: ${chair.flight_id}, Chair: ${chair.char_id})`)
-            return result
-        } else {
-            logger.warn(`Chair assignment ${id} deletion failed - no rows affected`)
-            return 0
-        }
+        const result = await connectedKnex('chairs_taken').where('id', id).del();
+        Log.info(FILE, func, id, 'Chair assignment deleted successfully');
+        return result;
     } catch (error) {
-        logger.error(`Error deleting chair assignment ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error deleting chair assignment', error);
+        throw error;
     }
 }
 
 async function update_chair(id, updated_chair) {
-    logger.info(`Updating chair assignment with ID: ${id}`)
-    logger.debug(`Update data: ${JSON.stringify(updated_chair)}`)
+    const func = 'update_chair';
+    Log.info(FILE, func, id, 'Updating chair assignment');
     
     try {
-        // תחילה בדוק אם ההקצאה קיימת
-        const chair = await connectedKnex('chairs_taken').select('*').where('id', id).first()
+        const chair = await connectedKnex('chairs_taken').select('*').where('id', id).first();
         
         if (!chair) {
-            logger.warn(`Chair assignment update failed - assignment not found: ${id}`)
-            return null
+            Log.warn(FILE, func, id, 'Update failed - assignment not found');
+            return null;
         }
         
-        const result = await connectedKnex('chairs_taken').where('id', id).update(updated_chair)
-        
-        if (result) {
-            logger.info(`Chair assignment ${id} updated successfully`)
-            const updatedChairInfo = { ...chair, ...updated_chair }
-            logger.debug(`Updated chair assignment details: Flight: ${updatedChairInfo.flight_id}, Chair: ${updatedChairInfo.char_id}, Passenger: ${updatedChairInfo.passenger_id}`)
-            return updated_chair
-        } else {
-            logger.warn(`Chair assignment ${id} update failed - no rows affected`)
-            return null
-        }
+        const result = await connectedKnex('chairs_taken').where('id', id).update(updated_chair);
+        Log.info(FILE, func, id, 'Chair assignment updated successfully');
+        return updated_chair;
     } catch (error) {
-        logger.error(`Error updating chair assignment ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error updating chair assignment', error);
+        throw error;
     }
 }
 
 async function get_all_chairs_by_flight(id) {
-    logger.info(`Retrieving all chair assignments for flight ID: ${id}`)
+    const func = 'get_all_chairs_by_flight';
+    Log.info(FILE, func, id, 'Retrieving chair assignments for flight');
     
     try {
-        // --- שינוי ---
-        // שימוש ב-Knex בצורה בטוחה (Parameterized Query)
         const chairs_taken = await connectedKnex('chairs_taken')
             .select('id', 'flight_id', 'char_id', 'passenger_id', 'user_id')
             .where('flight_id', id);
-        // --- סוף שינוי ---
 
-        const chairsCount = chairs_taken ? chairs_taken.length : 0
-        logger.debug(`Retrieved ${chairsCount} chair assignments for flight ${id}`)
-        
-        return chairs_taken // מחזיר ישירות את המערך
+        const chairsCount = chairs_taken ? chairs_taken.length : 0;
+        Log.debug(FILE, func, id, `Retrieved ${chairsCount} chair assignments`);
+        return chairs_taken;
     } catch (error) {
-        logger.error(`Error retrieving chair assignments for flight ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error retrieving chair assignments', error);
+        throw error;
     }
 }
+
 async function delete_chair_assignment(flight_id, chair_id) {
-    logger.info(`DAL: Deleting chair assignment for flight ${flight_id}, chair ${chair_id}`);
+    const func = 'delete_chair_assignment';
+    Log.info(FILE, func, null, `Deleting chair assignment (Flight: ${flight_id}, Chair: ${chair_id})`);
     try {
         const result = await connectedKnex('chairs_taken')
             .where('flight_id', flight_id)
             .andWhere('char_id', chair_id) 
             .del();
         
-        logger.debug(`DAL: Deleted ${result} chair assignment(s)`);
+        Log.debug(FILE, func, null, `Deleted ${result} assignment(s)`);
         return result;
     } catch (error) {
-        logger.error(`DAL: Error deleting chair assignment:`, error);
+        Log.error(FILE, func, null, 'Error deleting chair assignment', error);
         throw error;
     }
 }
 
 async function delete_all() {
-    logger.info('Deleting all chair assignments (admin only function)')
-    logger.warn('This operation will delete ALL chair assignments from the database')
+    const func = 'delete_all';
+    Log.info(FILE, func, null, 'Deleting all chair assignments (admin only)');
     
     try {
-        const result = await connectedKnex('chairs_taken').del()
-        logger.debug(`Deleted ${result} chair assignments from database`)
+        const result = await connectedKnex('chairs_taken').del();
+        Log.debug(FILE, func, null, `Deleted ${result} assignments`);
         
         await connectedKnex.raw('ALTER SEQUENCE "chairs_id_seq" RESTART WITH 1');
-        logger.info('Reset chair assignment ID sequence to 1')
-        
-        return result
+        Log.info(FILE, func, null, 'Reset chair assignment ID sequence');
+        return result;
     } catch (error) {
-        logger.error('Error deleting all chair assignments:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error deleting all chair assignments', error);
+        throw error;
     }
 }
 
 // ---------------Test functions only---------------
 
 async function set_id(id) {
-    logger.info(`Setting chair assignment ID sequence to: ${id} (test function)`)
+    const func = 'set_id';
+    Log.info(FILE, func, id, 'Setting chair assignment ID sequence');
     
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE chairs_id_seq RESTART WITH ${id}`);
-        logger.debug(`Successfully reset chair assignment ID sequence to ${id}`)
-        return result
+        Log.debug(FILE, func, id, 'Successfully reset ID sequence');
+        return result;
     } catch (error) {
-        logger.error(`Error setting chair assignment ID sequence to ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error setting ID sequence', error);
+        throw error;
     }
 }
 
@@ -178,4 +165,4 @@ module.exports = {
     set_id,
     delete_chair_assignment, 
     delete_all 
-}
+};

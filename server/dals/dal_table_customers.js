@@ -1,52 +1,52 @@
-const knex = require('knex')
-const db = require('../connect_db/default')
-const logger = require('../logger/my_logger')
-const connectedKnex = db.connect()
+const knex = require('knex');
+const db = require('../connect_db/default');
+const Log = require('../logger/logManager');
 
-logger.info('Customers DAL module initialized')
+const connectedKnex = db.connect();
+const FILE = 'dal_table_customers';
+
+Log.info(FILE, 'init', null, 'Customers DAL module initialized');
 
 // ---------------User functions only and admin---------------
 
-/**
- * מבצע בדיקה כפולה: תקינות (פורמט) וייחודיות (האם קיים אצל משתמש אחר).
- * @param {string} card - מספר כרטיס האשראי לבדיקה
- * @param {number} id - ה-ID המספרי (integer) של המשתמש הנוכחי
- * @returns {Promise<boolean>} - מחזיר true אם הכרטיס תקין ופנוי. מחזיר false אחרת.
- */
 async function credit_check(card, id) {
-    logger.info('Performing credit card validation and uniqueness check')
-    logger.debug(`Validating card: ************${card.slice(-4)} for user ID: ${id}`)
+    const func = 'credit_check';
+    const cardLast4 = card ? `************${card.slice(-4)}` : 'Unknown';
+    Log.info(FILE, func, id, 'Performing credit card validation');
+    Log.debug(FILE, func, id, `Validating card: ${cardLast4}`);
 
     try {
-    
-        const credit_check = await connectedKnex.raw(`SELECT checkcreditcardvalidity(?)`, [card])
-        const isValid = credit_check.rows[0].checkcreditcardvalidity
+        const credit_check = await connectedKnex.raw(`SELECT checkcreditcardvalidity(?)`, [card]);
+        const isValid = credit_check.rows[0].checkcreditcardvalidity;
 
         if (!isValid) {
-            logger.warn('Credit card validation failed (invalid format/checksum).')
-            return false
+            Log.warn(FILE, func, id, 'Credit card validation failed (invalid format/checksum)');
+            return false;
         }
         
-        logger.debug('Credit card format is valid. Checking uniqueness...')
-    
+        Log.debug(FILE, func, id, 'Credit card format is valid. Checking uniqueness...');
+        
         const card_exist = await get_by_credit_card(card, id); 
 
         if (card_exist) { 
-            logger.warn('Credit card check failed: Card already exists with another user.')
+            Log.warn(FILE, func, id, 'Credit card check failed: Card already exists with another user');
             return false; 
         }
 
-        logger.debug('Credit card is valid and available (unique).');
+        Log.debug(FILE, func, id, 'Credit card is valid and available');
         return true;
 
     } catch (error) {
-        logger.error('Error during credit card check:', error)
-        throw error 
+        Log.error(FILE, func, id, 'Error during credit card check', error);
+        throw error; 
     }
 }
 
 async function get_by_credit_card(card, current_user_id) {
-    logger.debug(`Checking credit card uniqueness: ************${card.slice(-4)} for user ID: ${current_user_id}`);
+    const func = 'get_by_credit_card';
+    const cardLast4 = card ? `************${card.slice(-4)}` : 'Unknown';
+    Log.debug(FILE, func, current_user_id, `Checking uniqueness for card: ${cardLast4}`);
+    
     try {
         const customer = await connectedKnex('customers')
             .select('id', 'user_id')
@@ -57,39 +57,42 @@ async function get_by_credit_card(card, current_user_id) {
         return !!customer;
 
     } catch (error) {
-        logger.error('Error checking credit card uniqueness:', error);
+        Log.error(FILE, func, current_user_id, 'Error checking uniqueness', error);
         throw error;
     }
 }
 
 async function new_customer(new_cus) {
-    logger.info('Creating new customer')
-    const logSafeData = { ...new_cus }
+    const func = 'new_customer';
+    Log.info(FILE, func, null, 'Creating new customer');
+    
+    const logSafeData = { ...new_cus };
     if (logSafeData.credit_card) {
-        logSafeData.credit_card = `************${logSafeData.credit_card.slice(-4)}`
+        logSafeData.credit_card = `************${logSafeData.credit_card.slice(-4)}`;
     }
-    logger.debug(`New customer data: ${JSON.stringify(logSafeData)}`)
+    Log.debug(FILE, func, null, `New customer data: ${JSON.stringify(logSafeData)}`);
 
     try {
         const result = await connectedKnex('customers').insert(new_cus).returning('*');
 
-        // השמט את מספר כרטיס האשראי מהלוג גם כאן
-        const logSafeResult = { ...result[0] }
+        const logSafeResult = { ...result[0] };
         if (logSafeResult.credit_card) {
-            logSafeResult.credit_card = `************${logSafeResult.credit_card.slice(-4)}`
+            logSafeResult.credit_card = `************${logSafeResult.credit_card.slice(-4)}`;
         }
 
-        logger.info(`Customer created successfully with ID: ${result[0].id}`)
-        logger.debug(`Created customer details: ${JSON.stringify(logSafeResult)}`)
-        return result[0]
+        Log.info(FILE, func, result[0].id, 'Customer created successfully');
+        Log.debug(FILE, func, result[0].id, `Details: ${JSON.stringify(logSafeResult)}`);
+        return result[0];
     } catch (error) {
-        logger.error('Error creating new customer:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error creating new customer', error);
+        throw error;
     }
 }
 
 async function verify_cvv(user_id, cvv) {
-    logger.debug(`DAL: Verifying CVV for user_id: ${user_id}`);
+    const func = 'verify_cvv';
+    Log.debug(FILE, func, user_id, 'Verifying CVV');
+    
     try {
         const customer = await connectedKnex('customers')
             .select('id')
@@ -99,15 +102,14 @@ async function verify_cvv(user_id, cvv) {
         
         return !!customer; 
     } catch (error) {
-        logger.error('Error verifying CVV in DAL:', error);
+        Log.error(FILE, func, user_id, 'Error verifying CVV', error);
         throw error;
     }
 }
 
-
-
 async function get_by_id(id) {
-    logger.debug(`Looking up customer by user_ID: ${id}`)
+    const func = 'get_by_id';
+    Log.debug(FILE, func, id, 'Looking up customer by user_ID');
     
     try {
         const customer = await connectedKnex('customers')
@@ -128,27 +130,21 @@ async function get_by_id(id) {
             .first();
             
         if (customer) {
-            logger.debug(`Customer found by user_ID: ${id}`)
-            return customer
+            Log.debug(FILE, func, id, 'Customer found');
+            return customer;
         } else {
-            logger.debug(`No customer found with user_ID: ${id}`)
-            return null
+            Log.debug(FILE, func, id, 'No customer found');
+            return null;
         }
     } catch (error) {
-        logger.error(`Error looking up customer by user_ID ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error looking up customer', error);
+        throw error;
     }
 }
 
-/**
- * Updates customer details based on their USER ID.
- * Performs a partial update.
- * @param {number} user_id - The user's numeric ID (e.g., 49)
- * @param {object} updated_customer_data - The fields to update.
- * @returns {Promise<number|null>} Rows affected or null if not found.
- */
 async function update_customer(user_id, updated_customer_data) {
-    logger.info(`DAL: Updating customer for user_ID: ${user_id}`);
+    const func = 'update_customer';
+    Log.info(FILE, func, user_id, 'Updating customer');
 
     const dataToUpdate = {
         first_name: updated_customer_data.first_name,
@@ -157,37 +153,35 @@ async function update_customer(user_id, updated_customer_data) {
         phone: updated_customer_data.phone
     };
 
-
     if (updated_customer_data.credit_card && updated_customer_data.expiry_date && updated_customer_data.cvv) {
-        logger.debug(`Payment details *are being* updated for user_id: ${user_id}`);
+        Log.debug(FILE, func, user_id, 'Payment details ARE being updated');
         dataToUpdate.credit_card = updated_customer_data.credit_card;
         dataToUpdate.expiry_date = updated_customer_data.expiry_date;
         dataToUpdate.cvv = updated_customer_data.cvv;
     } else {
-        logger.debug(`Payment details are *not being* updated for user_id: ${user_id}`);
+        Log.debug(FILE, func, user_id, 'Payment details are NOT being updated');
     }
 
     const logSafeData = { ...dataToUpdate };
     if (logSafeData.credit_card) {
         logSafeData.credit_card = `************${logSafeData.credit_card.slice(-4)}`;
     }
-    logger.debug(`DAL: Final update data: ${JSON.stringify(logSafeData)}`);
+    Log.debug(FILE, func, user_id, `Final update data: ${JSON.stringify(logSafeData)}`);
 
     try {
-
         const result = await connectedKnex('customers')
             .where('user_id', user_id)
             .update(dataToUpdate);
 
         if (result === 0) {
-            logger.warn(`DAL: Customer update failed - customer not found for user_id: ${user_id}`);
+            Log.warn(FILE, func, user_id, 'Customer update failed - customer not found');
             return null;
         }
 
-        logger.info(`DAL: Customer for user_id ${user_id} updated successfully. Rows affected: ${result}`);
+        Log.info(FILE, func, user_id, `Customer updated successfully. Rows affected: ${result}`);
         return result;
     } catch (error) {
-        logger.error(`DAL: Error updating customer for user_id ${user_id}:`, error);
+        Log.error(FILE, func, user_id, 'Error updating customer', error);
         throw error;
     }
 }
@@ -195,99 +189,100 @@ async function update_customer(user_id, updated_customer_data) {
 // ---------------Admin permission only---------------
 
 async function get_by_name(name) {
-    logger.debug(`Looking up customer by last name: ${name}`)
+    const func = 'get_by_name';
+    Log.debug(FILE, func, name, 'Looking up customer by last name');
 
     try {
-        const customer = await connectedKnex('customers').select('*').where('last_name', name).first()
+        const customer = await connectedKnex('customers').select('*').where('last_name', name).first();
 
         if (customer) {
-            // השמט את מספר כרטיס האשראי מהלוג
-            const logSafeCustomer = { ...customer }
+            const logSafeCustomer = { ...customer };
             if (logSafeCustomer.credit_card) {
-                logSafeCustomer.credit_card = `************${logSafeCustomer.credit_card.slice(-4)}`
+                logSafeCustomer.credit_card = `************${logSafeCustomer.credit_card.slice(-4)}`;
             }
 
-            logger.debug(`Customer found by last name: ${name}`)
-            logger.debug(`Customer details: ${JSON.stringify(logSafeCustomer)}`)
-            return customer
+            Log.debug(FILE, func, name, 'Customer found');
+            Log.debug(FILE, func, name, `Details: ${JSON.stringify(logSafeCustomer)}`);
+            return customer;
         } else {
-            logger.debug(`No customer found with last name: ${name}`)
-            return null
+            Log.debug(FILE, func, name, 'No customer found');
+            return null;
         }
     } catch (error) {
-        logger.error(`Error looking up customer by last name ${name}:`, error)
-        throw error
+        Log.error(FILE, func, name, 'Error looking up customer', error);
+        throw error;
     }
 }
 
 async function delete_customer(id) {
-    logger.info(`Deleting customer with ID: ${id}`)
+    const func = 'delete_customer';
+    Log.info(FILE, func, id, 'Deleting customer');
 
     try {
-        // תחילה בדוק אם הלקוח קיים
-        const customer = await connectedKnex('customers').select('id').where('id', id).first()
+        const customer = await connectedKnex('customers').select('id').where('id', id).first();
 
         if (!customer) {
-            logger.warn(`Customer deletion failed - customer not found: ${id}`)
-            return 0
+            Log.warn(FILE, func, id, 'Customer deletion failed - customer not found');
+            return 0;
         }
 
-        const result = await connectedKnex('customers').where('id', id).del()
-        logger.info(`Customer ${id} deleted successfully`)
-        return result
+        const result = await connectedKnex('customers').where('id', id).del();
+        Log.info(FILE, func, id, 'Customer deleted successfully');
+        return result;
     } catch (error) {
-        logger.error(`Error deleting customer ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error deleting customer', error);
+        throw error;
     }
 }
 
 async function delete_all() {
-    logger.info('Deleting all customers (admin only function)')
-    logger.warn('This operation will delete ALL customers from the database')
+    const func = 'delete_all';
+    Log.info(FILE, func, null, 'Deleting all customers (admin only)');
+    Log.warn(FILE, func, null, 'This operation will delete ALL customers from the database');
 
     try {
-        const result = await connectedKnex('customers').del()
-        logger.debug(`Deleted ${result} customers from database`)
+        const result = await connectedKnex('customers').del();
+        Log.debug(FILE, func, null, `Deleted ${result} customers`);
 
         await connectedKnex.raw('ALTER SEQUENCE "customers_id_seq" RESTART WITH 1');
-        logger.info('Reset customer ID sequence to 1')
+        Log.info(FILE, func, null, 'Reset customer ID sequence to 1');
 
-        return result
+        return result;
     } catch (error) {
-        logger.error('Error deleting all customers:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error deleting all customers', error);
+        throw error;
     }
 }
 
 async function get_all() {
-    logger.info('Retrieving all customers (admin only function)')
+    const func = 'get_all';
+    Log.info(FILE, func, null, 'Retrieving all customers (admin only)');
 
     try {
-        const customers = await connectedKnex.raw(`SELECT get_all_customers();`)
-        const customersCount = customers.rows[0].get_all_customers ? customers.rows[0].get_all_customers.length : 0
-        logger.debug(`Retrieved ${customersCount} customers successfully`)
+        const customers = await connectedKnex.raw(`SELECT get_all_customers();`);
+        const customersCount = customers.rows[0].get_all_customers ? customers.rows[0].get_all_customers.length : 0;
+        Log.debug(FILE, func, null, `Retrieved ${customersCount} customers successfully`);
 
-        // לא מדפיסים את כל פרטי הלקוחות ללוג מסיבות אבטחה ושמירה על פרטיות
-
-        return customers.rows[0].get_all_customers
+        return customers.rows[0].get_all_customers;
     } catch (error) {
-        logger.error('Error retrieving all customers:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error retrieving all customers', error);
+        throw error;
     }
 }
 
 // ---------------Test functions only---------------
 
 async function set_id(id) {
-    logger.info(`Setting customer ID sequence to: ${id} (test function)`)
+    const func = 'set_id';
+    Log.info(FILE, func, id, 'Setting customer ID sequence');
 
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE customers_id_seq RESTART WITH ${id}`);
-        logger.debug(`Successfully reset customer ID sequence to ${id}`)
-        return result
+        Log.debug(FILE, func, id, 'Successfully reset customer ID sequence');
+        return result;
     } catch (error) {
-        logger.error(`Error setting customer ID sequence to ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error setting customer ID sequence', error);
+        throw error;
     }
 }
 
@@ -302,4 +297,4 @@ module.exports = {
     set_id,
     credit_check,
     delete_all
-}
+};

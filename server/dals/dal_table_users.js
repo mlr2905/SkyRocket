@@ -1,124 +1,131 @@
-const knex = require('knex')
-const db = require('../connect_db/default')
-const logger = require('../logger/my_logger')
-const connectedKnex = db.connect()
+const knex = require('knex');
+const db = require('../connect_db/default');
+const Log = require('../logger/logManager');
 
-logger.info('User DAL module initialized')
+const connectedKnex = db.connect();
+const FILE = 'dal_table_users';
+
+Log.info(FILE, 'init', null, 'User DAL module initialized');
 
 // ---------------User functions only and admin---------------
 
 async function checkPassword(username, password) {
-    logger.debug(`Verifying password for user: ${username}`)
+    const func = 'checkPassword';
+    Log.debug(FILE, func, username, 'Verifying password');
+    
     try {
-        const user = await connectedKnex.raw('SELECT * FROM users WHERE username = ? AND password = ?', [username, password])
-        logger.debug(`Password verification result for ${username}: ${!!user && user.length > 0}`)
-        return user
+        const user = await connectedKnex.raw('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
+        Log.debug(FILE, func, username, `Password verification result: ${!!user && user.length > 0}`);
+        return user;
     } catch (error) {
-        logger.error(`Error verifying password for user ${username}:`, error)
-        throw error
+        Log.error(FILE, func, username, 'Error verifying password', error);
+        throw error;
     }
 }
 
 async function get_by_name(name) {
-    logger.debug(`Looking up user by username: ${name}`)
+    const func = 'get_by_name';
+    Log.debug(FILE, func, name, 'Looking up user by username');
+    
     try {
         const user = await connectedKnex('users').select('*').where('username', name).first();
-        logger.debug(`User lookup result for username ${name}: ${!!user}`)
+        Log.debug(FILE, func, name, `User lookup result: ${!!user}`);
         return user;
     } catch (error) {
-        logger.error(`Error looking up user by username ${name}:`, error)
-        throw error
+        Log.error(FILE, func, name, 'Error looking up user', error);
+        throw error;
     }
 }
 
 async function new_user_role1(user) {
-    logger.info(`Creating new user with role 1: ${user.username}`)
-    logger.debug(`New role 1 user data: ${JSON.stringify(user)}`)
+    const func = 'new_user_role1';
+    Log.info(FILE, func, user.username, 'Creating new user with role 1');
     
     try {
         if (user.password === 'null') {
-            logger.debug(`Generating password for new user: ${user.username}`)
-            const Result = await connectedKnex.raw(`CALL sp_pass_users('${user.username}','${user.email}','');`)
-            logger.info(`User created successfully with generated password: ${user.username}`)
-            return Result.rows[0]._generated_password
+            Log.debug(FILE, func, user.username, 'Generating password for new user');
+            const Result = await connectedKnex.raw(`CALL sp_pass_users('${user.username}','${user.email}','');`);
+            Log.info(FILE, func, user.username, 'User created successfully with generated password');
+            return Result.rows[0]._generated_password;
         }
         else {
-            logger.debug(`Creating user with provided password: ${user.username}`)
-            const Result = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`)
+            Log.debug(FILE, func, user.username, 'Creating user with provided password');
+            const Result = await connectedKnex.raw(`CALL sp_i_users('${user.username}','${user.email}','${user.password}');`);
             if (Result) {
-                logger.info(`User created successfully: ${user.username}`)
-                return true
+                Log.info(FILE, func, user.username, 'User created successfully');
+                return true;
             }
-            logger.warn(`User creation rejected - likely duplicate: ${user.username}`)
-            return 'rejected'
+            Log.warn(FILE, func, user.username, 'User creation rejected - likely duplicate');
+            return 'rejected';
         }
     }
     catch (e) {
-        logger.error(`Error creating user with role 1 (${user.username}):`, e)
-        return false
+        Log.error(FILE, func, user.username, 'Error creating user with role 1', e);
+        return false;
     }
 }
 
 async function new_user_role2(user) {
-    logger.info(`Creating new user with role 2: ${user.username}`)
-    logger.debug(`New role 2 user data: ${JSON.stringify(user)}`)
+    const func = 'new_user_role2';
+    Log.info(FILE, func, user.username, 'Creating new user with role 2');
     
     try {
         if (user.password === 'null') {
-            logger.debug(`Generating password for new user: ${user.username}`)
-            const Result = await connectedKnex.raw(`CALL sp_pass_users_airlines('${user.username}','${user.email}','');`)
-            logger.info(`User created successfully with generated password: ${user.username}`)
-            return Result.rows[0]._generated_password
+            Log.debug(FILE, func, user.username, 'Generating password for new user');
+            const Result = await connectedKnex.raw(`CALL sp_pass_users_airlines('${user.username}','${user.email}','');`);
+            Log.info(FILE, func, user.username, 'User created successfully with generated password');
+            return Result.rows[0]._generated_password;
         }
         else {
-            logger.debug(`Creating user with provided password: ${user.username}`)
-            const Result = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`)
+            Log.debug(FILE, func, user.username, 'Creating user with provided password');
+            const Result = await connectedKnex.raw(`CALL sp_i_users_airlines('${user.username}','${user.email}','${user.password}');`);
             if (Result) {
-                logger.info(`User created successfully: ${user.username}`)
-                return true
+                Log.info(FILE, func, user.username, 'User created successfully');
+                return true;
             }
-            logger.warn(`User creation failed: ${user.username}`)
-            return Result
+            Log.warn(FILE, func, user.username, 'User creation failed');
+            return Result;
         }
     } catch (error) {
-        logger.error(`Error creating user with role 2 (${user.username}):`, error)
-        throw error
+        Log.error(FILE, func, user.username, 'Error creating user with role 2', error);
+        throw error;
     }
 }
 
 async function update_user(id, user) {
-    logger.info(`Updating user with ID: ${id}`)
-    logger.debug(`Update data: ${JSON.stringify(user)}`)
+    const func = 'update_user';
+    Log.info(FILE, func, id, 'Updating user');
     
     try {
         if (user.email === 'null' || user.email === "null") {
-            logger.debug(`Updating only password for user ID: ${id}`)
-            const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`)
+            Log.debug(FILE, func, id, 'Updating only password');
+            const update = await connectedKnex.raw(`CALL update_user_info(${id}, ${user.email}, '${user.password}');`);
             if (update.name == "error") {
-                logger.warn(`User update failed: ${update.detail}`)
-                return update.detail
+                Log.warn(FILE, func, id, `User update failed: ${update.detail}`);
+                return update.detail;
             }
             else {
-                logger.info(`User ${id} updated successfully (password only)`)
-                return true
+                Log.info(FILE, func, id, 'User updated successfully (password only)');
+                return true;
             }
         }
         
         if (user.password === 'null' || user.password === "null") {
-            logger.debug(`Updating only email for user ID: ${id}`)
-            const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`)
-            logger.info(`User ${id} updated successfully (email only)`)
-            return update
+            Log.debug(FILE, func, id, 'Updating only email');
+            const update = await connectedKnex.raw(`CALL update_user_info(${id}, '${user.email}', ${user.password});`);
+            Log.info(FILE, func, id, 'User updated successfully (email only)');
+            return update;
         }
     }
     catch (e) {
-        logger.error(`Error updating user ${id}:`, e)
-        return e
+        Log.error(FILE, func, id, 'Error updating user', e);
+        return e;
     }
 }
 
 async function get_by_id_type(type, id) {
-    logger.debug(`Looking up user by ${type}: ${id}`)
+    const func = 'get_by_id_type';
+    Log.debug(FILE, func, id, `Looking up user by ${type}`);
     
     try {
         const user = await connectedKnex('users')
@@ -128,21 +135,22 @@ async function get_by_id_type(type, id) {
             .first();
             
         if (user) {
-            logger.debug(`User found by ${type}: ${id}`)
+            Log.debug(FILE, func, id, `User found by ${type}`);
             return user;
         }
         else {
-            logger.debug(`No user found by ${type}: ${id}`)
-            return false
+            Log.debug(FILE, func, id, `No user found by ${type}`);
+            return false;
         }
     } catch (error) {
-        logger.error(`Error looking up user by ${type}: ${id}`, error)
+        Log.error(FILE, func, id, `Error looking up user by ${type}`, error);
         return error;
     }
 }
 
 async function get_by_id(id) {
-    logger.debug(`Looking up user by ID: ${id}`)
+    const func = 'get_by_id';
+    Log.debug(FILE, func, id, 'Looking up user by ID');
     
     try {
         const user = await connectedKnex('users')
@@ -152,98 +160,102 @@ async function get_by_id(id) {
             .first();
             
         if (user) {
-            logger.debug(`User found by ID: ${id}`)
+            Log.debug(FILE, func, id, 'User found');
             return user;
         }
         else {
-            logger.debug(`No user found by ID: ${id}`)
-            return false
+            Log.debug(FILE, func, id, 'No user found');
+            return false;
         }
     } catch (error) {
-        logger.error(`Error looking up user by ID: ${id}`, error)
+        Log.error(FILE, func, id, 'Error looking up user', error);
         return error;
     }
 }
 
 async function delete_user(id) {
-    logger.info(`Deleting user with ID: ${id}`)
+    const func = 'delete_user';
+    Log.info(FILE, func, id, 'Deleting user');
     
     try {
-        const user = await connectedKnex('users').select('*').where('id', id).first()
+        const user = await connectedKnex('users').select('*').where('id', id).first();
         
         if (!user) {
-            logger.warn(`User deletion failed - user not found: ${id}`)
-            return false
+            Log.warn(FILE, func, id, 'User deletion failed - user not found');
+            return false;
         }
         
         if (user.role === 1) {
-            logger.debug(`Deleting user with role 1 using stored procedure: ${id}`)
-            const result = await connectedKnex.raw(`CALL delete_user(${id});`)
-            logger.info(`User ${id} deleted successfully (role 1)`)
-            return result
+            Log.debug(FILE, func, id, 'Deleting user with role 1 using stored procedure');
+            const result = await connectedKnex.raw(`CALL delete_user(${id});`);
+            Log.info(FILE, func, id, 'User deleted successfully (role 1)');
+            return result;
         }
         else {
-            logger.debug(`Deleting user with direct query: ${id}`)
-            const result = await connectedKnex('users').where('id', id).del()
-            logger.info(`User ${id} deleted successfully (role ${user.role})`)
-            return result
+            Log.debug(FILE, func, id, 'Deleting user with direct query');
+            const result = await connectedKnex('users').where('id', id).del();
+            Log.info(FILE, func, id, `User deleted successfully (role ${user.role})`);
+            return result;
         }
     } catch (error) {
-        logger.error(`Error deleting user ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error deleting user', error);
+        throw error;
     }
 }
 
 // ---------------Admin permission only---------------
 
 async function get_all() {
-    logger.info('Retrieving all users (admin only function)')
+    const func = 'get_all';
+    Log.info(FILE, func, null, 'Retrieving all users (admin only)');
     
     try {
-        const users = await connectedKnex.raw(`SELECT get_all_users();`)
-        logger.debug(`Retrieved all users successfully`)
-        return users.rows[0].get_all_users
+        const users = await connectedKnex.raw(`SELECT get_all_users();`);
+        Log.debug(FILE, func, null, 'Retrieved all users successfully');
+        return users.rows[0].get_all_users;
     } catch (error) {
-        logger.error('Error retrieving all users:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error retrieving all users', error);
+        throw error;
     }
 }
 
 async function delete_all() {
-    logger.info('Deleting all users (admin only function)')
-    logger.warn('This operation will delete ALL users from the database')
+    const func = 'delete_all';
+    Log.info(FILE, func, null, 'Deleting all users (admin only)');
     
     try {
-        const result = await connectedKnex('users').del()
-        logger.debug(`Deleted ${result} users from database`)
+        const result = await connectedKnex('users').del();
+        Log.debug(FILE, func, null, `Deleted ${result} users`);
         
         await connectedKnex.raw('ALTER SEQUENCE "users_id_seq" RESTART WITH 1');
-        logger.info('Reset user ID sequence to 1')
+        Log.info(FILE, func, null, 'Reset user ID sequence to 1');
         
-        return result
+        return result;
     } catch (error) {
-        logger.error('Error deleting all users:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error deleting all users', error);
+        throw error;
     }
 }
 
 // ---------------Test functions only---------------
 
 async function set_id(id) {
-    logger.info(`Setting user ID sequence to: ${id} (test function)`)
+    const func = 'set_id';
+    Log.info(FILE, func, id, 'Setting user ID sequence');
     
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE users_id_seq RESTART WITH ${id}`);
-        logger.debug(`Successfully reset user ID sequence to ${id}`)
+        Log.debug(FILE, func, id, 'Successfully reset user ID sequence');
         return result;
     } catch (error) {
-        logger.error(`Error setting user ID sequence to ${id}:`, error)
+        Log.error(FILE, func, id, 'Error setting user ID sequence', error);
         throw error;
     }
 }
 
 async function logLogoutEvent(userId) {
-    logger.debug(`DAL Auth: Logging logout event for user ID: ${userId}`);
+    const func = 'logLogoutEvent';
+    Log.debug(FILE, func, userId, 'Logging logout event');
     
     try {
         const result = await connectedKnex('audit_logs').insert({
@@ -252,13 +264,14 @@ async function logLogoutEvent(userId) {
             timestamp: connectedKnex.fn.now() 
         });
 
-        logger.info(`DAL Auth: Logout event successfully logged.`); 
+        Log.info(FILE, func, userId, 'Logout event successfully logged'); 
         return true;
     } catch (error) {
-        logger.error(`Error logging out event for user ${userId}:`, error);
+        Log.error(FILE, func, userId, 'Error logging out event', error);
         throw error;
     }
 }
+
 module.exports = {
     get_by_name, 
     get_all, 
@@ -272,4 +285,4 @@ module.exports = {
     delete_all, 
     set_id,
     logLogoutEvent
-}
+};

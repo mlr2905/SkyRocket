@@ -1,6 +1,11 @@
 const express = require('express')
 const router = express.Router()
+const Log = require('../logger/logManager');
 const adminsController = require('../controllers/adminsController');
+
+const FILE = 'routes/role_admins';
+
+Log.info(FILE, 'init', null, 'Role admins Router initialized');
 
 router.get('/users/search', adminsController.usersSearch);
 

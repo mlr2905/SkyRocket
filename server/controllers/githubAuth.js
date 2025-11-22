@@ -3,28 +3,13 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const axios = require('axios');
 require('dotenv').config();
 const HandAuth = require('./HandleAuth');
-const winston = require('winston');
+const Log = require('../logger/logManager');
 
-// Create a logger configuration
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(({ level, message, timestamp }) => {
-      return `${timestamp} ${level}: ${message}`;
-    })
-  ),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'server/logs/GitAuthError.log', level: 'error' }),
-    new winston.transports.File({ filename: 'server/logs/GitAuthcombined.log' })
-  ]
-});
+const FILE = 'githubAuth';
 
-// Store GitHub profile temporarily
 let a;
 
-logger.info('Initializing GitHub authentication strategy');
+Log.info(FILE, 'init', null, 'Initializing GitHub authentication strategy');
 
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
@@ -33,55 +18,46 @@ passport.use(new GitHubStrategy({
     scope: ['read:user', 'user:email', 'user:read:email']
 },
     function (accessToken, refreshToken, profile, done) {
-        logger.info(`GitHub authentication successful for user: ${profile.username || profile.displayName}`);
-        logger.debug(`Received profile data from GitHub for user ID: ${profile.id}`);
+        Log.info(FILE, 'GitHubStrategy', profile.id, `GitHub auth successful for: ${profile.username || profile.displayName}`);
         
-        // Store the profile for later use
         a = profile;
         
         return done(null, profile);
     }
 ));
 
-// Serialize and deserialize user for session management
 passport.serializeUser(function (user, done) {
-    logger.debug(`Serializing user: ${user.username || user.displayName}`);
     done(null, user);
 });
 
 passport.deserializeUser(function (obj, done) {
-    logger.debug(`Deserializing user: ${obj.username || obj.displayName}`);
     done(null, obj);
 });
 
-// פונקציה לטיפול באימות GitHub
 const handleGitHubLogin = async (req, res) => {
+    const func = 'handleGitHubLogin';
     try {
-        logger.info('Processing GitHub login');
-        
+        Log.info(FILE, func, null, 'Processing GitHub login');
+
         if (!a || !a.emails || !a.emails.length) {
-            logger.error('GitHub profile data is missing or incomplete');
+            Log.error(FILE, func, null, 'GitHub profile data is missing or incomplete');
             return res.status(400).send('Missing GitHub profile data');
         }
-        
+
         const email = a.emails[0].value;
         const password = a.nodeId;
-        
-        logger.info(`Attempting to login with GitHub for email: ${email}`);
-        
+
+        Log.info(FILE, func, email, 'Attempting to login with GitHub');
+
         await HandAuth.processLogin(req, res, email, password, "github");
-        
-        logger.info(`GitHub login process completed for user: ${email}`);
+
+        Log.info(FILE, func, email, 'GitHub login process completed');
     } catch (error) {
-        logger.error(`Error in GitHub login process: ${error.message}`);
-        // Determine if response has already been sent
+        Log.error(FILE, func, null, 'Error in GitHub login process', error);
         if (!res.headersSent) {
             res.status(500).send('Authentication error');
         }
     }
 };
-
-// Log application startup information
-logger.info('GitHub authentication module initialized');
 
 module.exports = { handleGitHubLogin };

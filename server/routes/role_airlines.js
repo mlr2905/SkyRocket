@@ -1,8 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const bl = require('../bl/bl_role_airlines')
-const logger = require('../logger/my_logger')
+const Log = require('../logger/logManager');
 const airlinesController = require('../controllers/airlinesController');
+
+const FILE = 'routes/role_airlines';
+
+Log.info(FILE, 'init', null, 'Role airlines Router initialized');
 
 router.get('/users/search', airlinesController.userAirlineBySearch);
 

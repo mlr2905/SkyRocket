@@ -1,14 +1,17 @@
-const knex = require('knex')
-const db = require('../connect_db/default')
-const logger = require('../logger/my_logger')
-const connectedKnex = db.connect()
+const knex = require('knex');
+const db = require('../connect_db/default');
+const Log = require('../logger/logManager');
+const connectedKnex = db.connect();
+const FILE = 'dal_table_tickets';
 
-logger.info('Tickets DAL module initialized')
+Log.info(FILE, 'init', null, 'Tickets DAL module initialized');
 
 // ---------------User functions only and admin---------------
 
 async function get_tickets_by_user_id(user_id) {
-    logger.info(`DAL: Fetching all tickets for user_id: ${user_id}`);
+    const func = 'get_tickets_by_user_id';
+    Log.info(FILE, func, user_id, 'Fetching all tickets for user');
+    
     try {
         const tickets = await connectedKnex('tickets as t')
             .join('passengers as p', 't.passenger_id', 'p.id')
@@ -32,19 +35,20 @@ async function get_tickets_by_user_id(user_id) {
             .where('t.user_id', user_id)
             .orderBy('f.departure_time', 'desc');
 
-        logger.debug(`DAL: Found ${tickets.length} tickets for user_id: ${user_id}`);
+        Log.debug(FILE, func, user_id, `Found ${tickets.length} tickets`);
         return tickets;
 
     } catch (error) {
-        logger.error(`DAL: Error fetching tickets for user_id ${user_id}:`, error);
+        Log.error(FILE, func, user_id, 'Error fetching tickets', error);
         throw error;
     }
 }
 
 
 async function new_ticket(newTicketData) {
-    logger.info('Creating new ticket');
-    logger.debug(`New ticket data received: ${JSON.stringify(newTicketData)}`);
+    const func = 'new_ticket';
+    Log.info(FILE, func, newTicketData.user_id, 'Creating new ticket');
+    Log.debug(FILE, func, newTicketData.user_id, `Ticket data: ${JSON.stringify(newTicketData)}`);
 
     const dataToInsert = {
         flight_id: newTicketData.flight_id,
@@ -58,140 +62,147 @@ async function new_ticket(newTicketData) {
         const result = await connectedKnex('tickets')
             .insert(dataToInsert)
             .returning('*');
-        logger.info(`Ticket created successfully with ID: ${result[0].id}`);
-        logger.debug(`Created ticket details: ${JSON.stringify(result[0])}`);
+        Log.info(FILE, func, newTicketData.user_id, `Ticket created successfully (ID: ${result[0].id})`);
+        Log.debug(FILE, func, newTicketData.user_id, `Created details: ${JSON.stringify(result[0])}`);
         return result[0];
     } catch (error) {
-        logger.error('Error creating new ticket in DAL:', error);
+        Log.error(FILE, func, newTicketData.user_id, 'Error creating ticket', error);
         throw error;
     }
 }
 
 async function get_by_id(id) {
-    logger.debug(`Looking up ticket by ID: ${id}`)
+    const func = 'get_by_id';
+    Log.debug(FILE, func, id, 'Looking up ticket by ID');
     
     try {
-        const ticket = await connectedKnex('tickets').select('*').where('id', id).first()
+        const ticket = await connectedKnex('tickets').select('*').where('id', id).first();
         
         if (ticket) {
-            logger.debug(`Ticket found by ID: ${id}`)
-            return ticket
+            Log.debug(FILE, func, id, 'Ticket found');
+            return ticket;
         } else {
-            logger.debug(`No ticket found with ID: ${id}`)
-            return null
+            Log.debug(FILE, func, id, 'No ticket found');
+            return null;
         }
     } catch (error) {
-        logger.error(`Error looking up ticket by ID ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error looking up ticket', error);
+        throw error;
     }
 }
 
 async function delete_ticket(id) {
-    logger.info(`Deleting ticket with ID: ${id}`)
+    const func = 'delete_ticket';
+    Log.info(FILE, func, id, 'Deleting ticket');
     
     try {
-        const ticket = await connectedKnex('tickets').select('id').where('id', id).first()
+        const ticket = await connectedKnex('tickets').select('id').where('id', id).first();
         
         if (!ticket) {
-            logger.warn(`Ticket deletion failed - ticket not found: ${id}`)
-            return 0
+            Log.warn(FILE, func, id, 'Ticket deletion failed - ticket not found');
+            return 0;
         }
         
-        const result = await connectedKnex('tickets').where('id', id).del()
-        logger.info(`Ticket ${id} deleted successfully`)
-        return result
+        const result = await connectedKnex('tickets').where('id', id).del();
+        Log.info(FILE, func, id, 'Ticket deleted successfully');
+        return result;
     } catch (error) {
-        logger.error(`Error deleting ticket ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error deleting ticket', error);
+        throw error;
     }
 }
 
 // ---------------Admin permission only---------------
 
 async function update_ticket(id, updated_ticket) {
-    logger.info(`Updating ticket with ID: ${id}`)
-    logger.debug(`Update data: ${JSON.stringify(updated_ticket)}`)
+    const func = 'update_ticket';
+    Log.info(FILE, func, id, 'Updating ticket');
+    Log.debug(FILE, func, id, `Update data: ${JSON.stringify(updated_ticket)}`);
     
     try {
-        const ticket = await connectedKnex('tickets').select('id').where('id', id).first()
+        const ticket = await connectedKnex('tickets').select('id').where('id', id).first();
         
         if (!ticket) {
-            logger.warn(`Ticket update failed - ticket not found: ${id}`)
-            return 0
+            Log.warn(FILE, func, id, 'Ticket update failed - ticket not found');
+            return 0;
         }
         
-        const result = await connectedKnex('tickets').where('id', id).update(updated_ticket)
-        logger.info(`Ticket ${id} updated successfully`)
-        return result
+        const result = await connectedKnex('tickets').where('id', id).update(updated_ticket);
+        Log.info(FILE, func, id, 'Ticket updated successfully');
+        return result;
     } catch (error) {
-        logger.error(`Error updating ticket ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error updating ticket', error);
+        throw error;
     }
 }
 
 async function get_all() {
-    logger.info('Retrieving all tickets (admin only function)')
+    const func = 'get_all';
+    Log.info(FILE, func, null, 'Retrieving all tickets (admin only)');
     
     try {
-        const tickets = await connectedKnex.raw(`SELECT get_all_tickets();`)
-        const ticketsCount = tickets.rows[0].get_all_tickets ? tickets.rows[0].get_all_tickets.length : 0
-        logger.debug(`Retrieved ${ticketsCount} tickets successfully`)
-        return tickets.rows[0].get_all_tickets
+        const tickets = await connectedKnex.raw(`SELECT get_all_tickets();`);
+        const ticketsCount = tickets.rows[0].get_all_tickets ? tickets.rows[0].get_all_tickets.length : 0;
+        Log.debug(FILE, func, null, `Retrieved ${ticketsCount} tickets successfully`);
+        return tickets.rows[0].get_all_tickets;
     } catch (error) {
-        logger.error('Error retrieving all tickets:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error retrieving all tickets', error);
+        throw error;
     }
 }
 
 async function delete_all() {
-    logger.info('Deleting all tickets (admin only function)')
-    logger.warn('This operation will delete ALL tickets from the database')
+    const func = 'delete_all';
+    Log.info(FILE, func, null, 'Deleting all tickets (admin only)');
+    Log.warn(FILE, func, null, 'This operation will delete ALL tickets from the database');
     
     try {
-        const result = await connectedKnex('tickets').del()
-        logger.debug(`Deleted ${result} tickets from database`)
+        const result = await connectedKnex('tickets').del();
+        Log.debug(FILE, func, null, `Deleted ${result} tickets`);
         
         await connectedKnex.raw('ALTER SEQUENCE "tickets_id_seq" RESTART WITH 1');
-        logger.info('Reset ticket ID sequence to 1')
+        Log.info(FILE, func, null, 'Reset ticket ID sequence to 1');
         
-        return result
+        return result;
     } catch (error) {
-        logger.error('Error deleting all tickets:', error)
-        throw error
+        Log.error(FILE, func, null, 'Error deleting all tickets', error);
+        throw error;
     }
 }
 
 // ---------------Test functions only---------------
 
 async function set_id(id) {
-    logger.info(`Setting ticket ID sequence to: ${id} (test function)`)
+    const func = 'set_id';
+    Log.info(FILE, func, id, 'Setting ticket ID sequence');
     
     try {
         const result = await connectedKnex.raw(`ALTER SEQUENCE tickets_id_seq RESTART WITH ${id}`);
-        logger.debug(`Successfully reset ticket ID sequence to ${id}`)
-        return result
+        Log.debug(FILE, func, id, 'Successfully reset ticket ID sequence');
+        return result;
     } catch (error) {
-        logger.error(`Error setting ticket ID sequence to ${id}:`, error)
-        throw error
+        Log.error(FILE, func, id, 'Error setting ticket ID sequence', error);
+        throw error;
     }
 }
 
 async function get_by_ticket_code(code) {
-    logger.debug(`Looking up ticket by code: ${code}`)
+    const func = 'get_by_ticket_code';
+    Log.debug(FILE, func, code, 'Looking up ticket by code');
     
     try {
-        const ticket = await connectedKnex('tickets').select('*').where('ticket_code', code).first()
+        const ticket = await connectedKnex('tickets').select('*').where('ticket_code', code).first();
         
         if (ticket) {
-            logger.debug(`Ticket found by code: ${code}`)
-            return ticket
+            Log.debug(FILE, func, ticket.id, 'Ticket found');
+            return ticket;
         } else {
-            logger.debug(`No ticket found with code: ${code}`)
-            return null
+            Log.debug(FILE, func, code, 'No ticket found');
+            return null;
         }
     } catch (error) {
-        logger.error(`Error looking up ticket by code ${code}:`, error)
-        throw error
+        Log.error(FILE, func, code, 'Error looking up ticket by code', error);
+        throw error;
     }
 }
 
@@ -205,4 +216,4 @@ module.exports = {
     set_id, 
     delete_all, 
     get_by_ticket_code 
-}
+};

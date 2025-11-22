@@ -3,79 +3,58 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const axios = require('axios');
 require('dotenv').config();
 const HandAuth = require('./HandleAuth');
-const winston = require('winston');
+const Log = require('../logger/logManager');
 
-// Create a logger configuration
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(({ level, message, timestamp }) => {
-      return `${timestamp} ${level}: ${message}`;
-    })
-  ),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'server/logs/GoogleAuthError.log', level: 'error' }),
-    new winston.transports.File({ filename: 'server/logs/GoogleAuthcombined.log' })
-  ]
-});
+const FILE = 'googleAuth';
 
-logger.info('Initializing Google authentication strategy');
+Log.info(FILE, 'init', null, 'Initializing Google authentication strategy');
 
-// GoogleStrategy הגדרת
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "https://skyrocket.onrender.com/google"
 },
     async function (accessToken, refreshToken, profile, cb) {
-        logger.info(`Google authentication successful for user: ${profile.displayName}`);
-        logger.debug(`Received profile data from Google for user ID: ${profile.id}`);
-        
+        Log.info(FILE, 'GoogleStrategy', profile.id, `Google auth successful for: ${profile.displayName}`);
         return cb(null, { profile, accessToken });
     }
 ));
 
 passport.serializeUser(function (user, cb) {
-    logger.debug(`Serializing user: ${user.profile?.displayName || 'unknown'}`);
+    Log.debug(FILE, 'serializeUser', user.profile?.id, `Serializing: ${user.profile?.displayName}`);
     cb(null, user);
 });
 
 passport.deserializeUser(function (obj, cb) {
-    logger.debug(`Deserializing user: ${obj.profile?.displayName || 'unknown'}`);
+    Log.debug(FILE, 'deserializeUser', obj.profile?.id, `Deserializing: ${obj.profile?.displayName}`);
     cb(null, obj);
 });
 
-// פונקציה לבדיקת משתמש והרשמה
 const handleGoogleLogin = async (req, res) => {
+    const func = 'handleGoogleLogin';
     try {
-        logger.info('Processing Google login');
-        
+        Log.info(FILE, func, null, 'Processing Google login');
+
         if (!req.user || !req.user.profile || !req.user.profile.emails || !req.user.profile.emails.length) {
-            logger.error('Google profile data is missing or incomplete');
+            Log.error(FILE, func, null, 'Google profile data is missing or incomplete');
             return res.status(400).send('Missing Google profile data');
         }
-        
+
         const { profile, accessToken } = req.user;
         const email = profile.emails[0].value;
         const password = profile.id;
-        
-        logger.info(`Attempting to login with Google for email: ${email}`);
-        
+
+        Log.info(FILE, func, email, 'Attempting to login with Google');
+
         await HandAuth.processLogin(req, res, email, password, "google");
-        
-        logger.info(`Google login process completed for user: ${email}`);
+
+        Log.info(FILE, func, email, 'Google login process completed');
     } catch (error) {
-        logger.error(`Error in Google login process: ${error.message}`);
-        // Determine if response has already been sent
+        Log.error(FILE, func, null, 'Error in Google login process', error);
         if (!res.headersSent) {
             res.status(500).send('Authentication error');
         }
     }
 };
-
-// Log application startup information
-logger.info('Google authentication module initialized');
 
 module.exports = { handleGoogleLogin };

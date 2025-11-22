@@ -1,11 +1,13 @@
 const axios = require('axios');
 const moment = require('moment-timezone');
 const bl = require('../bl/bl_auth');
-const {get_by_id_user} = require('../bl/bl_role_users');
+const { get_by_id_user } = require('../bl/bl_role_users');
+const Log = require('../logger/logManager');
 
+const FILE = 'authController';
 
 function redirectToLogin(req, res) {
-    console.log(`[Auth] Redirecting to login from: ${req.originalUrl}`);
+    Log.info(FILE, 'redirectToLogin', null, `Redirecting to login from: ${req.originalUrl}`);
     res.status(200).send(`
         <script>
             document.cookie = 'redirect=${req.originalUrl}; max-age=3600';
@@ -15,38 +17,40 @@ function redirectToLogin(req, res) {
 }
 
 exports.logout = async (req, res) => {
-    const userId = req.user ? req.user.id : null; 
-    console.log(`[Logout] Starting logout process for user ID: ${userId || 'Unknown'}`);
-    
+    const func = 'logout';
+    const userId = req.user ? req.user.id : null;
+    Log.info(FILE, func, userId, 'Starting logout process');
+
     try {
-        await bl.processUserLogout(userId); 
-        console.log(`[Logout] Business logic logout completed for user ID: ${userId}`);
-    } catch (Error) {
-        console.error(`[Logout] BL error for user ID ${userId}:`, Error.message);
+        await bl.processUserLogout(userId);
+        Log.info(FILE, func, userId, 'BL logout completed');
+    } catch (error) {
+        Log.error(FILE, func, userId, 'BL error during logout', error);
     }
 
     req.session.destroy(err => {
         if (err) {
-            console.error('[Logout] Session destruction failed:', err);
+            Log.error(FILE, func, userId, 'Session destruction failed', err);
             return res.status(500).json({ success: false, message: 'Could not log out due to server session error.' });
         }
-   
-        res.clearCookie('connect.sid'); 
-        res.clearCookie('sky');        
-        
-        console.log('[Logout] Session destroyed and cookies cleared successfully.');
+
+        res.clearCookie('connect.sid');
+        res.clearCookie('sky');
+
+        Log.info(FILE, func, userId, 'Session destroyed and cookies cleared');
         return res.status(200).json({ success: true, message: 'Logged out successfully, cookies deleted.' });
     });
 };
 
 exports.rootHandler = async (req, res, next) => {
-    console.log(`[RootHandler] Incoming request: ${req.method} ${req.path}`);
+    const func = 'rootHandler';
+    Log.info(FILE, func, null, `Incoming request: ${req.method} ${req.path}`);
 
     try {
         const allowedPaths = ['/index.html', '/login.html', '/search.html', '/registration.html', '/git', '/google', '/about', '/customer-service'];
-        
+
         if (allowedPaths.includes(req.path)) {
-            console.log(`[RootHandler] Path allowed without auth: ${req.path}`);
+            Log.info(FILE, func, null, `Path allowed without auth: ${req.path}`);
             return next();
         }
 
@@ -54,34 +58,32 @@ exports.rootHandler = async (req, res, next) => {
         const skyToken = cookies.find(cookie => cookie.startsWith('sky='));
 
         if (!skyToken) {
-            console.log('[RootHandler] No "sky" token found in cookies.');
+            Log.info(FILE, func, null, 'No "sky" token found in cookies');
             return redirectToLogin(req, res);
         }
 
         const token = skyToken.split('=')[1];
-        console.log('[RootHandler] Verifying token with auth server...');
+        Log.debug(FILE, func, null, 'Verifying token with auth server...');
 
         const response = await axios.post('https://jwt-node-mongodb.onrender.com/data', {
             token: token
         });
 
         if (response.data.valid) {
-            const id =response.data.user.id;
-            const userData = await get_by_id_user(id)
-            console.log("userData",userData);
-
-            const userRole = userData.role_id;
-            console.log("userRole",userRole);
+            const id = response.data.user.id;
+            const userData = await get_by_id_user(id);
             
+            const userRole = userData ? userData.role_id : 'Unknown';
             
-            console.log(`[RootHandler] Token valid. User ID: ${userData.id}, Role: ${userRole}`);
+            Log.info(FILE, func, id, `Token valid. Role: ${userRole}`);
 
-            const isRestrictedPath = 
-                req.path === '/database' || 
+            const isRestrictedPath =
+                req.path === '/database' ||
                 req.path.startsWith('/swagger');
+            
             if (isRestrictedPath && userRole != 3) {
-                console.warn(`[Auth Security] BLOCKED: User (Role ${userRole}) attempted access to restricted path: ${req.path}`);
-                return res.redirect('/'); 
+                Log.warn(FILE, func, id, `BLOCKED: User attempted access to restricted path: ${req.path}`);
+                return res.redirect('/');
             }
 
             const israelTime = moment.tz(Date.now(), 'Asia/Jerusalem');
@@ -91,15 +93,15 @@ exports.rootHandler = async (req, res, next) => {
                 sameSite: 'strict',
                 expires: israelTime.add(1, 'days').toDate()
             });
-            
-            console.log(`[RootHandler] Access granted to ${req.path}. Cookie refreshed.`);
+
+            Log.info(FILE, func, id, `Access granted to ${req.path}. Cookie refreshed.`);
             next();
         } else {
-            console.log('[RootHandler] Token validation failed (invalid token).');
+            Log.warn(FILE, func, null, 'Token validation failed (invalid token)');
             redirectToLogin(req, res);
         }
     } catch (e) {
-        console.error("[RootHandler] Critical error:", e.message);
+        Log.error(FILE, func, null, 'Critical error in rootHandler', e);
         redirectToLogin(req, res);
     }
 };

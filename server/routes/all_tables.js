@@ -1,45 +1,49 @@
-const express = require('express')
-const router = express.Router()
-const dal = require('../dals/dal_all_tables')
-const logger = require('../logger/my_logger')
+const express = require('express');
+const router = express.Router();
+const dal = require('../dals/dal_all_tables');
+const Log = require('../logger/logManager');
 
-// '/api/all_tables'
-// GET 
+const FILE = 'routes/all_tables';
+
+Log.info(FILE, 'init', null, 'All Tables Router initialized');
+
 router.get('/', async (request, response) => {
-    logger.info('Retrieving all tables information')
+    const func = 'get_all_tables';
+    Log.info(FILE, func, null, 'Retrieving all tables information');
     
     try {
-        const all_tables = await dal.get_all()
-        logger.debug(`Retrieved information for all tables: ${Object.keys(all_tables).length} tables found`)
-        response.json(all_tables)
+        const all_tables = await dal.get_all();
+        const tableCount = all_tables ? Object.keys(all_tables).length : 0;
+        Log.debug(FILE, func, null, `Retrieved information for ${tableCount} tables`);
+        response.json(all_tables);
     }
     catch (e) {
-        logger.error('Error retrieving all tables:', e)
-        response.json({ 'error': JSON.stringify(e) })
+        Log.error(FILE, func, null, 'Error retrieving all tables', e);
+        response.json({ 'error': JSON.stringify(e) });
     }
-})
+});
 
-// GET by ID
 router.get('/:id', async (request, response) => {
-    const table_id = parseInt(request.params.id)
-    logger.info(`Retrieving table with ID: ${table_id}`)
+    const func = 'get_table_by_id';
+    const table_id = parseInt(request.params.id);
+    Log.info(FILE, func, table_id, 'Retrieving table by ID');
     
     try {
-        const table = await dal.get_by_id(table_id)
+        const table = await dal.get_by_id(table_id);
         
         if (table) {
-            logger.info(`Table found for ID: ${table_id}`)
-            response.json(table)
+            Log.info(FILE, func, table_id, 'Table found');
+            response.json(table);
         }
         else {
-            logger.warn(`Table not found for ID: ${table_id}`)
-            response.status(404).json({ "error": `Cannot find table with id ${table_id}` })
+            Log.warn(FILE, func, table_id, 'Table not found');
+            response.status(404).json({ "error": `Cannot find table with id ${table_id}` });
         }
     }
     catch (e) {
-        logger.error(`Error retrieving table ID ${table_id}:`, e)
-        response.status(500).json({ 'error': `Failed to retrieve table: ${e.message}` })
+        Log.error(FILE, func, table_id, 'Error retrieving table', e);
+        response.status(500).json({ 'error': `Failed to retrieve table: ${e.message}` });
     }
-})
+});
 
-module.exports = router
+module.exports = router;
