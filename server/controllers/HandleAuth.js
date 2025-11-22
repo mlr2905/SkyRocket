@@ -1,4 +1,4 @@
-const axios = require('axios');
+const bl = require('../bl/bl_role_users'); // ייבוא ישיר של ה-BL
 const Log = require('../logger/logManager');
 
 const FILE = 'HandleAuth';
@@ -6,96 +6,86 @@ const FILE = 'HandleAuth';
 class HandAuth {
     static async processLogin(req, res, email, password, authProvider) {
         const func = 'processLogin';
-        Log.info(FILE, func, email, `Processing ${authProvider} login`);
+        Log.info(FILE, func, email, `Processing ${authProvider} login (Internal BL call)`);
 
         try {
-            Log.info(FILE, func, email, 'Checking if user exists');
+            // 1. בדיקה אם המשתמש קיים (קריאה ישירה ל-BL)
+            Log.info(FILE, func, email, 'Checking if user exists via BL');
             
-            const authServerUrl = 'https://skyrocket.onrender.com'; 
+            // BL מחזיר את ה-Provider (string) או false אם לא קיים
+            const existingAuthProvider = await bl.get_by_email_user(email);
+            
+            // בדיקת שגיאה מה-BL (אם הוא מחזיר אובייקט שגיאה)
+            if (existingAuthProvider && existingAuthProvider.error) {
+                 throw new Error(existingAuthProvider.error);
+            }
 
-            const Check = await axios.get(
-                `${authServerUrl}/role_users/users/search?email=${email}`,
-                {
-                    validateStatus: function (status) {
-                        return status < 500;
-                    }
-                }
-            );
-
-            const data = Check.data;
-            Log.debug(FILE, func, email, `User check response: ${JSON.stringify(data)}`);
-
-            if (data.error) {
-                Log.info(FILE, func, email, `User not found, proceeding with signup`);
+            // --- מקרה א: משתמש לא קיים - הרשמה ---
+            if (!existingAuthProvider) {
+                Log.info(FILE, func, email, `User not found, proceeding with signup via BL`);
 
                 try {
                     Log.info(FILE, func, email, `Creating new user with ${authProvider}`);
-                    await axios.post(`${authServerUrl}/role_users/signup`, {
-                        email: email,
-                        password: password,
-                        authProvider: authProvider
-                    });
+                    
+                    // קריאה ישירה ל-BL של הרשמה
+                    const signupResult = await bl.signup(email, password, authProvider);
+
+                    if (signupResult.e === "yes") {
+                        throw new Error(signupResult.error);
+                    }
 
                     Log.info(FILE, func, email, 'User successfully registered');
-                    return res.redirect(authServerUrl);
+                    return res.redirect('https://skyrocket.onrender.com'); // או לדף הבית
                 } catch (signupError) {
                     Log.error(FILE, func, email, 'Signup failed', signupError);
-                    if (signupError.response) {
-                        Log.error(FILE, func, email, `Signup error response: ${JSON.stringify(signupError.response.data)}`);
-                    }
                     throw signupError;
                 }
             }
 
-            if (data.e === "no" && data.status === true) {
-                Log.info(FILE, func, email, 'User exists, verifying authentication provider');
+            // --- מקרה ב: משתמש קיים - התחברות ---
+            else {
+                Log.info(FILE, func, email, `User exists (Provider: ${existingAuthProvider}), verifying provider`);
 
-                if (data.authProvider !== authProvider) {
-                    Log.warn(FILE, func, email, `Provider mismatch. Used: ${authProvider}, Required: ${data.authProvider}`);
-                    return res.status(403).send(`Access denied. Please log in using ${data.authProvider}.`);
+                if (existingAuthProvider !== authProvider) {
+                    Log.warn(FILE, func, email, `Provider mismatch. Used: ${authProvider}, Required: ${existingAuthProvider}`);
+                    return res.status(403).send(`Access denied. Please log in using ${existingAuthProvider}.`);
                 }
 
-                Log.info(FILE, func, email, 'Authenticating existing user');
+                Log.info(FILE, func, email, 'Authenticating existing user via BL');
                 try {
-                    const loginResponse = await axios.post(`${authServerUrl}/role_users/login`, {
-                        email: email,
-                        password: password,
-                        authProvider: authProvider
-                    });
+                    // השגת נתונים נדרשים ל-BL
+                    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
+                    const userAgent = req.headers['user-agent'];
 
-                    const token = loginResponse.data.jwt;
+                    // קריאה ישירה ל-BL של התחברות
+                    const loginResult = await bl.login(email, password, ip, userAgent);
+
+                    if (loginResult.e === "yes") {
+                        throw new Error(loginResult.error);
+                    }
+
+                    const token = loginResult.jwt;
                     Log.info(FILE, func, email, 'Authentication successful');
 
+                    // הגדרת העוגייה
                     res.cookie('sky', token, {
                         httpOnly: true,
                         sameSite: 'strict',
-                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
+                        maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3:15 שעות
                     });
 
                     Log.info(FILE, func, email, 'Redirecting authenticated user');
-                    return res.redirect(authServerUrl);
+                    return res.redirect('https://skyrocket.onrender.com'); // או לדף הבית
                 } catch (loginError) {
                     Log.error(FILE, func, email, 'Login failed', loginError);
-                    if (loginError.response) {
-                        Log.error(FILE, func, email, `Login error response: ${JSON.stringify(loginError.response.data)}`);
-                    }
                     throw loginError;
                 }
-            } else {
-                Log.warn(FILE, func, email, `Unexpected user data format: ${JSON.stringify(data)}`);
-                return res.status(400).send('Invalid user data format');
             }
         } catch (error) {
             Log.error(FILE, func, email, 'Error during authentication process', error);
 
-            if (error.response) {
-                Log.error(FILE, func, email, `Error response: ${JSON.stringify(error.response.data)}`);
-            } else if (error.request) {
-                Log.error(FILE, func, email, 'No response received from authentication server');
-            }
-
             if (!res.headersSent) {
-                return res.status(500).send('Error during signup or login');
+                return res.status(500).send('Error during signup or login: ' + error.message);
             }
         }
     }
