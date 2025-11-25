@@ -47,10 +47,25 @@ exports.rootHandler = async (req, res, next) => {
     Log.info(FILE, func, null, `Incoming request: ${req.method} ${req.path}`);
 
     try {
-        const allowedPaths = ['/index.html', '/login.html', '/registration.html', '/git', '/google', '/about', '/customer-service','/role_users'];
+       const allowedPaths = [
+            '/index.html', 
+            '/login.html', 
+            '/registration.html', 
+            '/git', 
+            '/google', 
+            '/about', 
+            '/customer-service',
+            '/favicon.ico'
+        ];
 
-       if (allowedPaths.includes(req.path) || req.path.startsWith('/role_users')) {
-            Log.info(FILE, func, null, `Path allowed without auth: ${req.path}`);
+        if (allowedPaths.includes(req.path) || 
+            req.path.startsWith('/role_users') || 
+            req.path.startsWith('/.well-known') || 
+            req.path.startsWith('/static')) {
+            
+            if (req.path !== '/favicon.ico') {
+                Log.info(FILE, func, null, `Path allowed without auth: ${req.path}`);
+            }
             return next();
         }
 
