@@ -5,25 +5,37 @@ import * as C from '../utils/constants.js';
  * @param {string} url
  * @param {object} options
  */
- async function apiRequest(url, options) {
+async function apiRequest(url, options) {
     try {
         const response = await fetch(url, options);
-        if (!response.ok) {
-            let errorData;
-            try {
-                errorData = await response.json();
-            } catch (e) {
-                errorData = { error: 'Unknown server error' };
-            }
-            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        
+        // 1. Check Content-Type header to see if server returned JSON
+        const contentType = response.headers.get("content-type");
+        
+        let data;
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            // Safe to parse as JSON
+            data = await response.json();
+        } else {
+            // Server returned HTML or Text (likely an error page or wrong route)
+            const textResponse = await response.text();
+            console.error('Expected JSON but received non-JSON response:', textResponse);
+            throw new Error('Server returned an invalid response format (HTML/Text instead of JSON). Check your API URL.');
         }
-        return await response.json();
+
+        // 2. Handle Logic Errors (even if JSON is valid, status might be 400/500)
+        if (!response.ok) {
+             const errorMessage = data.error || `HTTP error! status: ${response.status}`;
+             return errorMessage;
+        }
+
+        return data;
+
     } catch (error) {
-        console.error('API Request Error:', error);
+        console.error('API Request Failed:', error);
         throw error;
     }
 }
-
 export function redirectToGoogle() {
     window.location.href = C.GOOGLE_AUTH_URL;
 }
@@ -101,7 +113,7 @@ export async function checkEmailExists(email) {
 }
 
 export async function checkEmailDomain(email) {
-    return apiRequest(`${C.API_EMAIL_CHECK_URL}?email=${email}`);
+    return apiRequest(`${C.API_EMAIL_CHECK_URL}?${email}`);
 }
 
 export async function signupUser(email, password) {
