@@ -1,7 +1,8 @@
-
 import * as uiUtils from '../utils/uiUtils.js';
 import * as base64 from '../utils/formatters.js';
 import * as AuthService from '../services/authService.js';
+
+let isWebAuthnTransactionPending = false;
 
 export class WebAuthnController {
     #biometricStatus;
@@ -15,7 +16,19 @@ export class WebAuthnController {
         this.#credentialID = initialCredentialID;
         this.#checkWebAuthnSupport();
     }
+    
+    #acquireLock() {
+        if (isWebAuthnTransactionPending) {
+            console.warn('WebAuthn operation blocked: Another request is already pending.');
+            return false;
+        }
+        isWebAuthnTransactionPending = true;
+        return true;
+    }
 
+    #releaseLock() {
+        isWebAuthnTransactionPending = false;
+    }
 
     #showAlert(message, type, title) {
         if (type === 'success') {
@@ -71,6 +84,11 @@ export class WebAuthnController {
             return;
         }
 
+        if (!this.#acquireLock()) {
+            this.#showAlert('תהליך אחר רץ ברקע, אנא המתן...', 'warning', 'פעולה חסומה');
+            return;
+        }
+
         try {
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
@@ -103,7 +121,10 @@ export class WebAuthnController {
 
             if (data && (data.success === true || data.code === 'credential_registered')) {
                 this.#showAlert('טביעת האצבע נרשמה בהצלחה!', 'success', 'רישום הושלם');
+                
+                localStorage.setItem('credentialID', credentialID);
                 this.credentialID = credentialID;
+                
                 return credentialID;
             } else {
                 this.#showAlert(data.error || 'An error occurred', 'error', 'שגיאה ברישום');
@@ -115,12 +136,17 @@ export class WebAuthnController {
 
             if (error.name === 'NotAllowedError') {
                 this.#showAlert('תהליך רישום טביעת האצבע בוטל על ידך.', 'info', 'הרישום בוטל');
+            } else if (error.name === 'InvalidStateError') {
+                this.#showAlert('מכשיר זה כבר רשום במערכת.', 'warning', 'כפילות');
             } else {
                 this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה ברישום');
             }
             return;
+        } finally {
+            this.#releaseLock();
         }
     }
+
 
     async handleLoginBiometric(email) {
         if (!email) {
@@ -128,15 +154,24 @@ export class WebAuthnController {
             return { success: false };
         }
 
+        if (!this.#acquireLock()) {
+            return { success: false, message: 'Request pending' };
+        }
+
         try {
-            const credentialID = this.#credentialID;
+            let credentialID = this.#credentialID;
             if (!credentialID || credentialID === "null") {
+                credentialID = localStorage.getItem('credentialID');
+            }
+
+            if (!credentialID) {
                 console.warn("No credentialID found in local storage. User must register first.");
                 return { success: false, code: 'MUST_REGISTER' };
             }
 
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
+            
             const publicKeyOptions = {
                 challenge: challenge,
                 rpId: window.location.hostname,
@@ -151,6 +186,7 @@ export class WebAuthnController {
             const clientDataJSON = base64.bufferToBase64(assertion.response.clientDataJSON);
             const authenticatorData = base64.bufferToBase64(assertion.response.authenticatorData);
             const signature = base64.bufferToBase64(assertion.response.signature);
+            
             const data = await AuthService.loginBiometricAPI(assertionId, email, authenticatorData, clientDataJSON, signature);
 
             if (!data.e || data.e === 'no') {
@@ -168,6 +204,8 @@ export class WebAuthnController {
                 this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה בהתחברות');
                 return { success: false, message: error.message };
             }
+        } finally {
+            this.#releaseLock();
         }
     }
 }
