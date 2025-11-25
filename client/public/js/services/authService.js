@@ -8,26 +8,24 @@ import * as C from '../utils/constants.js';
 async function apiRequest(url, options) {
     try {
         const response = await fetch(url, options);
-        
-        // 1. Check Content-Type header to see if server returned JSON
+
         const contentType = response.headers.get("content-type");
-        
+
         let data;
         if (contentType && contentType.indexOf("application/json") !== -1) {
-            // Safe to parse as JSON
             data = await response.json();
         } else {
-            // Server returned HTML or Text (likely an error page or wrong route)
             const textResponse = await response.text();
             console.error('Expected JSON but received non-JSON response:', textResponse);
             throw new Error('Server returned an invalid response format (HTML/Text instead of JSON). Check your API URL.');
         }
 
-        // 2. Handle Logic Errors (even if JSON is valid, status might be 400/500)
         if (!response.ok) {
-             const errorMessage = data.error || `HTTP error! status: ${response.status}`;
-             return errorMessage;
+            const errorMessage = data.error || `HTTP error! status: ${response.status}`;
+            return errorMessage;
         }
+
+        ensureDeviceId();
 
         return data;
 
@@ -36,17 +34,52 @@ async function apiRequest(url, options) {
         throw error;
     }
 }
-export function redirectToGoogle() {
-    window.location.href = C.GOOGLE_AUTH_URL;
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+function setForeverCookie(name, value) {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 10);
+    const expires = "expires=" + d.toUTCString();
+
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+function ensureDeviceId() {
+    let deviceId = getCookie('auth_device_id');
+
+    if (!deviceId) {
+        deviceId = crypto.randomUUID();
+        setForeverCookie('auth_device_id', deviceId);
+    } else {
+
+        setForeverCookie('auth_device_id', deviceId);
+    }
+
+    return deviceId;
 }
 
 export function redirectToGit() {
+    ensureDeviceId();
+
     window.location.href = C.GIT_AUTH_URL;
 }
+
+export function redirectToGoogle() {
+    ensureDeviceId();
+
+    window.location.href = C.GOOGLE_AUTH_URL;
+}
 export async function logoutAPI() {
+
     return apiRequest(C.API_LOGOUT_URL, {
         method: 'POST',
-        credentials: 'include' 
+        credentials: 'include'
     });
 }
 
@@ -54,8 +87,8 @@ export async function registerBiometricAPI(credentialID, attestationObject, clie
     return apiRequest(C.API_REG_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            credentialID, 
+        body: JSON.stringify({
+            credentialID,
             attestationObject,
             clientDataJSON
         }),
@@ -63,15 +96,16 @@ export async function registerBiometricAPI(credentialID, attestationObject, clie
 }
 
 export async function loginBiometricAPI(credentialID, email, authenticatorData, clientData, signature) {
+
     return apiRequest(C.API_LOGIN_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            credentialID, 
-            email, 
-            authenticatorData, 
-            clientDataJSON: clientData, 
-            signature 
+        body: JSON.stringify({
+            credentialID,
+            email,
+            authenticatorData,
+            clientDataJSON: clientData,
+            signature
         }),
 
 
@@ -79,6 +113,7 @@ export async function loginBiometricAPI(credentialID, email, authenticatorData, 
 }
 
 export async function sendAuthCodeAPI(email) {
+
     return apiRequest(C.API_AUTH_CODE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,6 +122,7 @@ export async function sendAuthCodeAPI(email) {
 }
 
 export async function validateCodeAPI(email, code) {
+
     return apiRequest(C.API_VALIDATE_CODE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -95,11 +131,11 @@ export async function validateCodeAPI(email, code) {
 }
 
 
-export async function loginWithPasswordAPI(email, password,deviceId) {
+export async function loginWithPasswordAPI(email, password, deviceId) {
     return apiRequest(C.API_LOGIN_PASSWORD_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password ,deviceId}),
+        body: JSON.stringify({ email, password, deviceId }),
     });
 }
 

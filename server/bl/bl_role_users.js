@@ -91,8 +91,7 @@ async function signupWebAuthn(registrationData) {
 async function loginWebAuthn(authData) {
     const func = 'loginWebAuthn';
     const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWith';
-
-
+    
     if (!INTERNAL_SECRET) {
         Log.error(FILE, func, authData?.email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
         return {
@@ -109,7 +108,17 @@ async function loginWebAuthn(authData) {
             throw new Error("Authentication data is missing");
         }
 
-        const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
+        const { 
+            credentialID, 
+            email, 
+            authenticatorData, 
+            clientDataJSON, 
+            signature,
+            deviceId,
+            ip,
+            userAgent
+        } = authData;
+
         const missingFields = [];
         if (!credentialID) missingFields.push('credentialID');
         if (!email) missingFields.push('email');
@@ -122,10 +131,17 @@ async function loginWebAuthn(authData) {
         }
 
         const requestPayload = {
-            credentialID, email, authenticatorData, clientDataJSON, signature
+            credentialID, 
+            email, 
+            authenticatorData, 
+            clientDataJSON, 
+            signature,
+            deviceId,
+            ip,
+            userAgent
         };
 
-        Log.debug(FILE, func, email, 'Sending authentication request to internal server');
+        Log.debug(FILE, func, email, `Sending authentication request to internal server. Device: ${deviceId}`);
 
         const response = await fetch(API_LOGIN_URL, {
             method: 'POST',
@@ -150,7 +166,7 @@ async function loginWebAuthn(authData) {
                 Log.error(FILE, func, email, 'CRITICAL: Internal Service rejected the secret key (403 Forbidden)');
                 throw new Error('Internal communication error');
             }
-
+            
             Log.warn(FILE, func, email, `Authentication failed status: ${response.status}`);
             throw new Error(`Authentication failed: ${responseData.error || response.statusText}`);
         }
@@ -256,10 +272,17 @@ async function login_code(email, code) {
 async function login(email, password, ip, userAgent, deviceId) {
     const func = 'login';
     Log.info(FILE, func, email, 'Processing login request');
-    Log.debug(FILE, func, email, `IP: ${ip}, User-Agent: ${userAgent}`);
+    Log.debug(FILE, func, email, `IP: ${ip}, User-Agent: ${userAgent}, Device: ${deviceId}`);
 
     const url = 'https://jwt-node-mongodb.onrender.com/login';
-    const data = { email, password, ip, userAgent, deviceId };
+    
+    const data = { 
+        email, 
+        password, 
+        ip, 
+        userAgent, 
+        deviceId
+    };
 
     const requestOptions = {
         method: 'POST',
@@ -267,7 +290,6 @@ async function login(email, password, ip, userAgent, deviceId) {
             'Content-Type': 'application/json',
             'x-internal-secret': INTERNAL_SECRET
         },
-
         body: JSON.stringify(data)
     };
 
@@ -286,7 +308,13 @@ async function login(email, password, ip, userAgent, deviceId) {
         }
 
         Log.info(FILE, func, email, `Login successful for user ID: ${user.id}`);
-        return { e: "no", jwt: user.jwt, id: user.id, email: user.email };
+        return { 
+            e: "no", 
+            jwt: user.jwt, 
+            id: user.id, 
+            email: user.email,
+            mongo_id: user.mongo_id
+        };
 
     } catch (error) {
         Log.error(FILE, func, email, 'Login error', error);

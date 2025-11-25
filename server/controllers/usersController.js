@@ -64,7 +64,12 @@ exports.loginWebAuthn = async (req, res) => {
     const func = 'loginWebAuthn';
     const { email, credentialID, signature, clientDataJSON } = req.body;
 
-    Log.info(FILE, func, email, 'Login attempt');
+    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
+
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'] || 'unknown';
+
+    Log.info(FILE, func, email, `Login attempt from DeviceID: ${deviceId}`);
 
     if (!email || !credentialID || !signature || !clientDataJSON) {
         Log.warn(FILE, func, email, 'Missing required fields');
@@ -74,7 +79,17 @@ exports.loginWebAuthn = async (req, res) => {
     try {
         const { authenticatorData } = req.body;
 
-        const authData = { credentialID, email, signature, authenticatorData, clientDataJSON };
+        const authData = { 
+            credentialID, 
+            email, 
+            signature, 
+            authenticatorData, 
+            clientDataJSON,
+            deviceId,
+            ip,
+            userAgent
+        };
+
         const result = await bl.loginWebAuthn(authData);
 
         if (result && result.success === true) {
@@ -84,7 +99,6 @@ exports.loginWebAuthn = async (req, res) => {
             if (token && user) {
                 Log.info(FILE, func, user.id, `Login successful (Email: ${email})`);
 
-                // 1. Setting the secure cookie
                 res.cookie('sky', token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
@@ -113,7 +127,6 @@ exports.loginWebAuthn = async (req, res) => {
         res.status(500).json({ "e": "yes", "error": "Internal server error" });
     }
 };
-
 
 exports.authCode = async (req, res) => {
     const func = 'authCode';
@@ -182,11 +195,14 @@ exports.login = async (req, res) => {
     const func = 'login';
     Log.info(FILE, func, null, 'Processing login request');
     
-    const { email, password,deviceId } = req.body;
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim();
-    const userAgent = req.headers['user-agent'];
+    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
 
-    Log.debug(FILE, func, email, `[IP: ${ip}] - Login attempt`,deviceId);
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'] || 'unknown';
+
+    const { email, password } = req.body;
+
+    Log.debug(FILE, func, email, `[IP: ${ip}] - Login attempt. DeviceID: ${deviceId}`);
 
     try {
         if (!email || !password) {
@@ -194,14 +210,21 @@ exports.login = async (req, res) => {
             return res.status(400).json({ "e": "yes", "error": "Invalid email or password" });
         }
 
-        const datas = await bl.login(email, password, ip, userAgent,deviceId);
+        const datas = await bl.login(email, password, ip, userAgent, deviceId);
 
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Login failed: ${datas.error}`);
-            res.status(409).json({ "e": "yes", "error": datas.error });
+            res.status(401).json({ "e": "yes", "error": datas.error });
         } else {
             Log.info(FILE, func, datas.id, `Login successful (Email: ${email})`);
             const token = datas.jwt;
+
+            res.cookie('sky', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3h 15m
+            });
 
             res.status(200).json({
                 "e": datas.e,
