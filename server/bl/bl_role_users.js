@@ -8,15 +8,15 @@ const dal_8 = require('../dals/dal_table_passengers');
 const Log = require('../logger/logManager');
 
 const FILE = 'bl_role_users';
+const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
 
 Log.info(FILE, 'init', null, 'Role Users BL module initialized');
 
 async function signupWebAuthn(registrationData) {
     const func = 'signupWebAuthn';
     const email = registrationData.user.email;
-    const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/register'; 
+    const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/register';
 
-    const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
 
     if (!INTERNAL_SECRET) {
         Log.error(FILE, func, email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
@@ -27,7 +27,7 @@ async function signupWebAuthn(registrationData) {
         const payload = {
             email: email,
             credentialID: registrationData.body.credentialID,
-            publicKey: registrationData.body.attestationObject, 
+            publicKey: registrationData.body.attestationObject,
             credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
         };
 
@@ -56,7 +56,7 @@ async function signupWebAuthn(registrationData) {
 
         if (!response.ok) {
             if (response.status === 403) {
-                 Log.error(FILE, func, email, 'Security Breach: Internal Service rejected the secret key');
+                Log.error(FILE, func, email, 'Security Breach: Internal Service rejected the secret key');
             }
             throw new Error(`Registration failed: ${response.status} - ${result.error || response.statusText}`);
         }
@@ -91,8 +91,7 @@ async function signupWebAuthn(registrationData) {
 async function loginWebAuthn(authData) {
     const func = 'loginWebAuthn';
     const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWith';
-    
-    const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
+
 
     if (!INTERNAL_SECRET) {
         Log.error(FILE, func, authData?.email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
@@ -133,7 +132,7 @@ async function loginWebAuthn(authData) {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'x-internal-secret': INTERNAL_SECRET 
+                'x-internal-secret': INTERNAL_SECRET
             },
             body: JSON.stringify(requestPayload),
         });
@@ -151,7 +150,7 @@ async function loginWebAuthn(authData) {
                 Log.error(FILE, func, email, 'CRITICAL: Internal Service rejected the secret key (403 Forbidden)');
                 throw new Error('Internal communication error');
             }
-            
+
             Log.warn(FILE, func, email, `Authentication failed status: ${response.status}`);
             throw new Error(`Authentication failed: ${responseData.error || response.statusText}`);
         }
@@ -196,7 +195,11 @@ async function authcode(email) {
 
     let requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-secret': INTERNAL_SECRET
+        },
+
         body: JSON.stringify(data)
     };
 
@@ -226,7 +229,10 @@ async function login_code(email, code) {
 
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-secret': INTERNAL_SECRET
+        },
         body: JSON.stringify(data)
     };
 
@@ -247,20 +253,21 @@ async function login_code(email, code) {
     }
 }
 
-async function login(email, password, ip, userAgent,deviceId) {
-    const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
+async function login(email, password, ip, userAgent, deviceId) {
     const func = 'login';
     Log.info(FILE, func, email, 'Processing login request');
     Log.debug(FILE, func, email, `IP: ${ip}, User-Agent: ${userAgent}`);
 
     const url = 'https://jwt-node-mongodb.onrender.com/login';
-    const data = { email, password, ip, userAgent,deviceId };
+    const data = { email, password, ip, userAgent, deviceId };
 
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' ,
-            'x-internal-secret': INTERNAL_SECRET},
-        
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-secret': INTERNAL_SECRET
+        },
+
         body: JSON.stringify(data)
     };
 
@@ -289,8 +296,7 @@ async function login(email, password, ip, userAgent,deviceId) {
 
 async function signup(email, password, authProvider) {
     const func = 'signup';
-    
-    const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
+
     const URL_NODE_MONGO = process.env.AUTH_SERVICE_URL || 'https://jwt-node-mongodb.onrender.com/signup';
     const URL_SPRING_PG = process.env.BIZ_SERVICE_URL || "https://spring-postgresql.onrender.com"; // Add specific endpoint if needed, e.g., /api/users
 
@@ -306,9 +312,9 @@ async function signup(email, password, authProvider) {
     try {
         const authResponse = await fetch(URL_NODE_MONGO, {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
-                'x-internal-secret': INTERNAL_SECRET 
+                'x-internal-secret': INTERNAL_SECRET
             },
             body: JSON.stringify(signupData)
         });
@@ -316,10 +322,10 @@ async function signup(email, password, authProvider) {
         const authResult = await authResponse.json();
 
         if (authResult.errors || authResult.e === 'yes') {
-            const errorMsg = authResult.errors 
-                ? (authResult.errors.email || authResult.errors.password) 
+            const errorMsg = authResult.errors
+                ? (authResult.errors.email || authResult.errors.password)
                 : (authResult.error || 'Unknown auth error');
-            
+
             Log.warn(FILE, func, email, `Signup failed at Auth Service: ${errorMsg}`);
             return { "e": "yes", "error": errorMsg };
         }
@@ -339,9 +345,9 @@ async function signup(email, password, authProvider) {
         try {
             const bizResponse = await fetch(URL_SPRING_PG, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'x-internal-secret': INTERNAL_SECRET 
+                    'x-internal-secret': INTERNAL_SECRET
                 },
                 body: JSON.stringify(businessPayload)
             });
@@ -356,12 +362,12 @@ async function signup(email, password, authProvider) {
             return { "e": "no", "response": bizResult };
 
         } catch (bizError) {
-    
+
             Log.error(FILE, func, email, 'CRITICAL: Data Inconsistency - User created in Auth but failed in Business DB', bizError);
-            
-            return { 
-                "e": "yes", 
-                "error": "Account created but profile setup failed. Please contact support." 
+
+            return {
+                "e": "yes",
+                "error": "Account created but profile setup failed. Please contact support."
             };
         }
 
@@ -424,11 +430,18 @@ async function valid_email(email) {
 
 async function get_by_id_user(id) {
     const func = 'get_by_id_user';
+
     Log.info(FILE, func, id, 'Looking up user by id');
     let url = `https://spring-postgresql.onrender.com/${id}`;
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-internal-secret': INTERNAL_SECRET
+            },
+        });
 
         if (!response.ok) {
             Log.warn(FILE, func, id, `No user found (Status: ${response.status})`);
@@ -452,8 +465,13 @@ async function get_by_email_user(email) {
     let url = `https://jwt-node-mongodb.onrender.com/search?email=${email}`;
 
     try {
-        const response = await fetch(url);
-        const data = await response.json();
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-internal-secret': INTERNAL_SECRET
+            }
+        }); const data = await response.json();
 
         if (data && !data.status) {
             Log.info(FILE, func, email, 'User found');
