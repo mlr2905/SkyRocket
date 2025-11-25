@@ -113,7 +113,7 @@ export async function checkEmailExists(email) {
 }
 
 export async function checkEmailDomain(email) {
-    return apiRequest(`${C.API_EMAIL_CHECK_URL}?${email}`);
+    return apiRequest(`${C.API_EMAIL_CHECK_URL}?email=${email}`);
 }
 
 export async function signupUser(email, password) {
