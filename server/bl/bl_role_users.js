@@ -436,7 +436,7 @@ async function get_by_id_user(id) {
 
     try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'x-internal-secret': INTERNAL_SECRET
