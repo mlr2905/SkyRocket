@@ -248,6 +248,7 @@ async function login_code(email, code) {
 }
 
 async function login(email, password, ip, userAgent,deviceId) {
+    const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
     const func = 'login';
     Log.info(FILE, func, email, 'Processing login request');
     Log.debug(FILE, func, email, `IP: ${ip}, User-Agent: ${userAgent}`);
