@@ -144,7 +144,8 @@ document.body.addEventListener('click', async (event) => {
             console.error("Logout API failed, proceeding with local cleanup:", error);
         }
 
-        localStorage.clear();
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('user_role');
         history.pushState(null, null, '/login');
         navigateTo('/login');
     }
