@@ -82,11 +82,12 @@ export async function validateCodeAPI(email, code) {
     });
 }
 
-export async function loginWithPasswordAPI(email, password) {
+
+export async function loginWithPasswordAPI(email, password,deviceId) {
     return apiRequest(C.API_LOGIN_PASSWORD_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password ,deviceId}),
     });
 }
 

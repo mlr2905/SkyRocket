@@ -297,6 +297,16 @@ export class LoginController {
             console.error('Error:', error);
         }
     }
+     #getDeviceId() {
+        let deviceId = localStorage.getItem('skyrocket_device_id');
+        
+        if (!deviceId) {
+            deviceId = crypto.randomUUID();
+            localStorage.setItem('skyrocket_device_id', deviceId);
+        }
+        
+        return deviceId;
+    }
     async #handleConnect(event) {
         event.preventDefault();
         const email = this.#elements.emailInput.value;;
@@ -304,7 +314,7 @@ export class LoginController {
         if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'block';
 
         try {
-            const data = await AuthService.loginWithPasswordAPI(email, password);
+            const data = await AuthService.loginWithPasswordAPI(email, password,getDeviceId());
             if (this.#elements.loadingIcon) this.#elements.loadingIcon.style.display = 'none';
 
             if (data.e === "no") {

@@ -14,13 +14,20 @@ Log.info(FILE, 'init', null, 'Role Users BL module initialized');
 async function signupWebAuthn(registrationData) {
     const func = 'signupWebAuthn';
     const email = registrationData.user.email;
-    const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/register';
+    const API_REGISTER_URL = 'https://jwt-node-mongodb.onrender.com/register'; 
+
+    const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
+
+    if (!INTERNAL_SECRET) {
+        Log.error(FILE, func, email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
+        throw new Error('Server configuration error: Missing internal secret');
+    }
 
     try {
         const payload = {
             email: email,
             credentialID: registrationData.body.credentialID,
-            publicKey: registrationData.body.attestationObject,
+            publicKey: registrationData.body.attestationObject, 
             credentialName: registrationData.body.credentialName || `Access Key ${new Date().toLocaleDateString()}`
         };
 
@@ -30,7 +37,8 @@ async function signupWebAuthn(registrationData) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'x-internal-secret': INTERNAL_SECRET
             },
             body: JSON.stringify(payload),
         });
@@ -47,6 +55,9 @@ async function signupWebAuthn(registrationData) {
         }
 
         if (!response.ok) {
+            if (response.status === 403) {
+                 Log.error(FILE, func, email, 'Security Breach: Internal Service rejected the secret key');
+            }
             throw new Error(`Registration failed: ${response.status} - ${result.error || response.statusText}`);
         }
 
@@ -79,39 +90,50 @@ async function signupWebAuthn(registrationData) {
 
 async function loginWebAuthn(authData) {
     const func = 'loginWebAuthn';
-    Log.info(FILE, func, authData?.email, 'Starting WebAuthn login process');
-
     const API_LOGIN_URL = 'https://jwt-node-mongodb.onrender.com/loginWith';
+    
+    const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
+
+    if (!INTERNAL_SECRET) {
+        Log.error(FILE, func, authData?.email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
+        return {
+            success: false,
+            error: 'Server configuration error',
+            message: 'Authentication failed due to server error'
+        };
+    }
+
+    Log.info(FILE, func, authData?.email, 'Starting WebAuthn login process');
 
     try {
         if (!authData) {
-            Log.error(FILE, func, null, 'authData is missing');
             throw new Error("Authentication data is missing");
         }
 
         const { credentialID, email, authenticatorData, clientDataJSON, signature } = authData;
-
         const missingFields = [];
         if (!credentialID) missingFields.push('credentialID');
         if (!email) missingFields.push('email');
         if (!signature) missingFields.push('signature');
 
         if (missingFields.length > 0) {
-            Log.warn(FILE, func, email, `Missing required fields: ${missingFields.join(', ')}`);
-            throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+            const errorMsg = `Missing required fields: ${missingFields.join(', ')}`;
+            Log.warn(FILE, func, email, errorMsg);
+            throw new Error(errorMsg);
         }
 
         const requestPayload = {
             credentialID, email, authenticatorData, clientDataJSON, signature
         };
 
-        Log.debug(FILE, func, email, 'Sending authentication request to external server');
+        Log.debug(FILE, func, email, 'Sending authentication request to internal server');
 
         const response = await fetch(API_LOGIN_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'x-internal-secret': INTERNAL_SECRET 
             },
             body: JSON.stringify(requestPayload),
         });
@@ -121,12 +143,17 @@ async function loginWebAuthn(authData) {
             responseData = await response.json();
         } catch (parseError) {
             Log.error(FILE, func, email, 'Failed to parse JSON response', parseError);
-            throw new Error(`Failed to parse response as JSON: ${parseError.message}`);
+            throw new Error(`Failed to parse response as JSON. Status: ${response.status}`);
         }
 
         if (!response.ok) {
+            if (response.status === 403) {
+                Log.error(FILE, func, email, 'CRITICAL: Internal Service rejected the secret key (403 Forbidden)');
+                throw new Error('Internal communication error');
+            }
+            
             Log.warn(FILE, func, email, `Authentication failed status: ${response.status}`);
-            throw new Error(`Authentication failed: ${response.status} - ${responseData.error || response.statusText}`);
+            throw new Error(`Authentication failed: ${responseData.error || response.statusText}`);
         }
 
         if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
@@ -139,11 +166,11 @@ async function loginWebAuthn(authData) {
                 message: 'Authentication successful'
             };
         } else if (responseData.e === 'yes') {
-            Log.warn(FILE, func, email, `Server returned error: ${responseData.error}`);
+            Log.warn(FILE, func, email, `Server returned logical error: ${responseData.error}`);
             throw new Error(responseData.error || 'Authentication failed');
         }
 
-        Log.warn(FILE, func, email, 'Unexpected response format, returning success anyway');
+        Log.warn(FILE, func, email, 'Unexpected response format from internal server');
         return {
             success: true,
             data: responseData,
@@ -151,7 +178,7 @@ async function loginWebAuthn(authData) {
         };
 
     } catch (error) {
-        Log.error(FILE, func, authData?.email, 'Error in WebAuthn login process', error);
+        Log.error(FILE, func, authData?.email, 'Error in WebAuthn login process', error.message);
         return {
             success: false,
             error: error.message,
@@ -220,13 +247,13 @@ async function login_code(email, code) {
     }
 }
 
-async function login(email, password, ip, userAgent) {
+async function login(email, password, ip, userAgent,deviceId) {
     const func = 'login';
     Log.info(FILE, func, email, 'Processing login request');
     Log.debug(FILE, func, email, `IP: ${ip}, User-Agent: ${userAgent}`);
 
     const url = 'https://jwt-node-mongodb.onrender.com/login';
-    const data = { email, password, ip, userAgent };
+    const data = { email, password, ip, userAgent,deviceId };
 
     const requestOptions = {
         method: 'POST',
@@ -259,50 +286,84 @@ async function login(email, password, ip, userAgent) {
 
 async function signup(email, password, authProvider) {
     const func = 'signup';
+    
+    const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
+    const URL_NODE_MONGO = process.env.AUTH_SERVICE_URL || 'https://jwt-node-mongodb.onrender.com/signup';
+    const URL_SPRING_PG = process.env.BIZ_SERVICE_URL || "https://spring-postgresql.onrender.com"; // Add specific endpoint if needed, e.g., /api/users
+
+    if (!INTERNAL_SECRET) {
+        Log.error(FILE, func, email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
+        return { "e": "yes", "error": "Server configuration error" };
+    }
+
     Log.info(FILE, func, email, `Processing signup request (${authProvider})`);
 
-    let url_node_mongo = 'https://jwt-node-mongodb.onrender.com/signup';
-    let url_spring = "https://spring-postgresql.onrender.com";
-
-    const data = { email, password, authProvider };
-
-    let requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    };
+    const signupData = { email, password, authProvider };
 
     try {
-        const response = await fetch(url_node_mongo, requestOptions);
-        const data_mongo = await response.json();
+        const authResponse = await fetch(URL_NODE_MONGO, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-internal-secret': INTERNAL_SECRET 
+            },
+            body: JSON.stringify(signupData)
+        });
 
-        if (data_mongo.errors) {
-            const errorMsg = data_mongo.errors.email ? data_mongo.errors.email : data_mongo.errors.password;
-            Log.warn(FILE, func, email, `Signup failed at MongoDB: ${errorMsg}`);
+        const authResult = await authResponse.json();
+
+        if (authResult.errors || authResult.e === 'yes') {
+            const errorMsg = authResult.errors 
+                ? (authResult.errors.email || authResult.errors.password) 
+                : (authResult.error || 'Unknown auth error');
+            
+            Log.warn(FILE, func, email, `Signup failed at Auth Service: ${errorMsg}`);
             return { "e": "yes", "error": errorMsg };
         }
 
-        if (data_mongo.mongo_id !== undefined) {
-            data_mongo.role_id = 1;
-            Log.debug(FILE, func, email, 'MongoDB signup successful, creating user in PostgreSQL');
-
-            requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data_mongo)
-            };
-
-            const create_user_response = await fetch(url_spring, requestOptions);
-            const response = await create_user_response.json();
-
-            Log.info(FILE, func, email, 'Signup completed successfully');
-            return { "e": "no", "response": response };
-        } else {
-            Log.warn(FILE, func, email, 'MongoDB signup response missing mongo_id');
+        if (!authResult.mongo_id) {
+            Log.error(FILE, func, email, 'Auth service returned success but missing mongo_id');
             return { "e": "yes", "error": "Invalid response from authentication service" };
         }
+
+        Log.debug(FILE, func, email, 'Identity created, propagating to Business Service (Spring/PG)');
+
+        const businessPayload = {
+            ...authResult,
+            role_id: 1
+        };
+
+        try {
+            const bizResponse = await fetch(URL_SPRING_PG, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-internal-secret': INTERNAL_SECRET 
+                },
+                body: JSON.stringify(businessPayload)
+            });
+
+            if (!bizResponse.ok) {
+                throw new Error(`Business service returned ${bizResponse.status}`);
+            }
+
+            const bizResult = await bizResponse.json();
+
+            Log.info(FILE, func, email, 'Signup workflow completed successfully');
+            return { "e": "no", "response": bizResult };
+
+        } catch (bizError) {
+    
+            Log.error(FILE, func, email, 'CRITICAL: Data Inconsistency - User created in Auth but failed in Business DB', bizError);
+            
+            return { 
+                "e": "yes", 
+                "error": "Account created but profile setup failed. Please contact support." 
+            };
+        }
+
     } catch (error) {
-        Log.error(FILE, func, email, 'Signup error', error);
+        Log.error(FILE, func, email, 'Signup orchestration error', error);
         return { "e": "yes", "error": error.message || "Network error" };
     }
 }

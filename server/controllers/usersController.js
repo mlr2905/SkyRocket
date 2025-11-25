@@ -182,11 +182,11 @@ exports.login = async (req, res) => {
     const func = 'login';
     Log.info(FILE, func, null, 'Processing login request');
     
-    const { email, password } = req.body;
+    const { email, password,deviceId } = req.body;
     const ip = req.headers['x-forwarded-for']?.split(',')[0].trim();
     const userAgent = req.headers['user-agent'];
 
-    Log.debug(FILE, func, email, `[IP: ${ip}] - Login attempt`);
+    Log.debug(FILE, func, email, `[IP: ${ip}] - Login attempt`,deviceId);
 
     try {
         if (!email || !password) {
@@ -194,7 +194,7 @@ exports.login = async (req, res) => {
             return res.status(400).json({ "e": "yes", "error": "Invalid email or password" });
         }
 
-        const datas = await bl.login(email, password, ip, userAgent);
+        const datas = await bl.login(email, password, ip, userAgent,deviceId);
 
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Login failed: ${datas.error}`);
