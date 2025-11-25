@@ -257,7 +257,9 @@ async function login(email, password, ip, userAgent,deviceId) {
 
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' ,
+            'x-internal-secret': INTERNAL_SECRET},
+        
         body: JSON.stringify(data)
     };
 
