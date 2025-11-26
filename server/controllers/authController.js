@@ -47,22 +47,23 @@ exports.rootHandler = async (req, res, next) => {
     Log.info(FILE, func, null, `Incoming request: ${req.method} ${req.path}`);
 
     try {
-       const allowedPaths = [
-            '/index.html', 
-            '/login.html', 
-            '/registration.html', 
-            '/git', 
-            '/google', 
-            '/about', 
+        const allowedPaths = [
+            '/index.html',
+            '/search.html',
+            '/login.html',
+            '/registration.html',
+            '/git',
+            '/google',
+            '/about',
             '/customer-service',
             '/favicon.ico'
         ];
 
-        if (allowedPaths.includes(req.path) || 
-            req.path.startsWith('/role_users') || 
-            req.path.startsWith('/.well-known') || 
+        if (allowedPaths.includes(req.path) ||
+            req.path.startsWith('/role_users') ||
+            req.path.startsWith('/.well-known') ||
             req.path.startsWith('/static')) {
-            
+
             if (req.path !== '/favicon.ico') {
                 Log.info(FILE, func, null, `Path allowed without auth: ${req.path}`);
             }
@@ -80,22 +81,30 @@ exports.rootHandler = async (req, res, next) => {
         const token = skyToken.split('=')[1];
         Log.debug(FILE, func, null, 'Verifying token with auth server...');
 
-        const response = await axios.post('https://jwt-node-mongodb.onrender.com/data', {
-            token: token
-        });
+        const response = await axios.post(`${process.env.JWT_NODE_MONGODB}/data`,
+            {
+                token: token
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-internal-secret': process.env.INTERNAL_SERVICE_SECRET
+                }
+            }
+        );
 
         if (response.data.valid) {
             const id = response.data.user.id;
             const userData = await get_by_id_user(id);
-            
+
             const userRole = userData ? userData.role_id : 'Unknown';
-            
+
             Log.info(FILE, func, id, `Token valid. Role: ${userRole}`);
 
             const isRestrictedPath =
                 req.path === '/database' ||
                 req.path.startsWith('/swagger');
-            
+
             if (isRestrictedPath && userRole != 3) {
                 Log.warn(FILE, func, id, `BLOCKED: User attempted access to restricted path: ${req.path}`);
                 return res.redirect('/');

@@ -21,20 +21,26 @@ const protect = async (req, res, next) => {
     }
 
     try {
-        const response = await axios.post('https://jwt-node-mongodb.onrender.com/data', {
-            token: token // שלח את הטוקן ישירות כאובייקט
-        });
+        const response = await axios.post(`${process.env.JWT_NODE_MONGODB}/data`,
+            {
+                token: token
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-internal-secret': process.env.INTERNAL_SERVICE_SECRET
+                }
+            }
+        );
         console.log("response.data", response.data);
 
         if (response.data.valid) {
-             console.log("response.data.", response.data);
-            // 3. הוסף את פרטי המשתמש המפוענחים לבקשה
-            //    הטוקן מכיל את ה-ID והמייל (לפי bl_role_users.js)
-            req.user = response.data.user; // נניח שהאוביקט חוזר כ- { user: { id: 49, email: '...' } }
+            console.log("response.data.", response.data);
+            req.user = response.data.user;
             console.log("req.user", req.user);
 
             logger.debug(`User authorized: ${req.user.email} (ID: ${req.user.id})`);
-            next(); // המשך לבקר (Controller)
+            next();
         } else {
             logger.warn('Access denied: Invalid token');
             return res.status(401).json({ error: 'Not authorized, token failed' });

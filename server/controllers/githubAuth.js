@@ -14,7 +14,7 @@ Log.info(FILE, 'init', null, 'Initializing GitHub authentication strategy');
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "https://skyrocket.onrender.com/git",
+    callbackURL: `${process.env.MAIN_SITE}/git`,
     scope: ['read:user', 'user:email', 'user:read:email']
 },
     function (accessToken, refreshToken, profile, done) {

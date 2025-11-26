@@ -35,7 +35,7 @@ class HandAuth {
           }
 
           Log.info(FILE, func, email, 'User successfully registered');
-          return res.redirect('https://skyrocket.onrender.com');
+          return res.redirect('/search.html');
         } catch (signupError) {
           Log.error(FILE, func, email, 'Signup failed', signupError);
           throw signupError;
@@ -74,7 +74,7 @@ class HandAuth {
           });
 
           Log.info(FILE, func, email, 'Redirecting authenticated user');
-          return res.redirect('https://skyrocket.onrender.com');
+          return res.redirect('/search.html');
         } catch (loginError) {
           Log.error(FILE, func, email, 'Login failed', loginError);
           throw loginError;

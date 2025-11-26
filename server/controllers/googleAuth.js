@@ -12,7 +12,7 @@ Log.info(FILE, 'init', null, 'Initializing Google authentication strategy');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://skyrocket.onrender.com/google"
+    callbackURL: `${process.env.MAIN_SITE}/google`
 },
     async function (accessToken, refreshToken, profile, cb) {
         Log.info(FILE, 'GoogleStrategy', profile.id, `Google auth successful for: ${profile.displayName}`);
