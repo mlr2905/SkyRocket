@@ -13,7 +13,7 @@ router.get('/ip', usersController.ip);
 router.get('/email', usersController.email);
 router.get('/users/search', usersController.usersSearch);
 
-router.post('/authcode', protect, usersController.authCode);
+router.post('/authcode', usersController.authCode);
 router.post('/validation', usersController.validation);
 router.post('/loginwebauthn', usersController.loginWebAuthn);
 router.post('/signupwebauthn', protect, usersController.signupWebAuthn);
