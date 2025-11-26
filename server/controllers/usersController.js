@@ -31,16 +31,15 @@ exports.signupWebAuthn = async (req, res) => {
     const func = 'signupWebAuthn';
     Log.info(FILE, func, null, 'WebAuthn registration request received');
 
-    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
     const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'] || 'unknown';
     
     const user = req.user || req.body; 
 
-    Log.info(FILE, func, user?.email, `Registration attempt. Device: ${deviceId}, IP: ${ip}`);
+    Log.info(FILE, func, user?.email, `Registration attempt. IP: ${ip}`);
 
     try {
-        const result = await bl.signupWebAuthn(req.body, user, deviceId, ip, userAgent);
+        const result = await bl.signupWebAuthn(req.body, user, ip, userAgent);
         
         Log.debug(FILE, func, null, `BL result: ${result.message || result.error}`);
 
@@ -69,11 +68,10 @@ exports.loginWebAuthn = async (req, res) => {
     const func = 'loginWebAuthn';
     const { email, credentialID, signature, clientDataJSON } = req.body;
 
-    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
     const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'] || 'unknown';
 
-    Log.info(FILE, func, email, `Login attempt from DeviceID: ${deviceId}, IP: ${ip}`);
+    Log.info(FILE, func, email, `Login attempt from IP: ${ip}`);
 
     if (!email || !credentialID || !signature || !clientDataJSON) {
         return res.status(400).json({ "e": "yes", "error": "Missing required fields" });
@@ -88,7 +86,6 @@ exports.loginWebAuthn = async (req, res) => {
             signature,
             authenticatorData,
             clientDataJSON,
-            deviceId,
             ip,
             userAgent
         };
@@ -157,15 +154,14 @@ exports.authCode = async (req, res) => {
 exports.validation = async (req, res) => {
     const func = 'validation';
     
-    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
     const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'] || 'unknown';
 
     const { email, code } = req.body;
-    Log.info(FILE, func, email, `Processing code validation. Device: ${deviceId}`);
+    Log.info(FILE, func, email, 'Processing code validation.');
 
     try {
-        const datas = await bl.login_code(email, code, deviceId, ip, userAgent);
+        const datas = await bl.login_code(email, code, ip, userAgent);
         
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Validation failed: ${datas.error}`);
@@ -201,19 +197,18 @@ exports.login = async (req, res) => {
     const func = 'login';
     Log.info(FILE, func, null, 'Processing login request');
 
-    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
     const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'] || 'unknown';
 
     const { email, password } = req.body;
-    Log.debug(FILE, func, email, `[IP: ${ip}] - Login attempt. DeviceID: ${deviceId}`);
+    Log.debug(FILE, func, email, '[IP: ${ip}] - Login attempt.');
 
     try {
         if (!email || !password) {
             return res.status(400).json({ "e": "yes", "error": "Invalid email or password" });
         }
 
-        const datas = await bl.login(email, password, ip, userAgent, deviceId);
+        const datas = await bl.login(email, password, ip, userAgent);
 
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Login failed: ${datas.error}`);

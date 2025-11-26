@@ -7,7 +7,6 @@ import * as C from '../utils/constants.js';
  */
 async function apiRequest(url, options) {
     try {
-        ensureDeviceId();
 
         const response = await fetch(url, options);
 
@@ -51,28 +50,14 @@ function setForeverCookie(name, value) {
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }
 
-function ensureDeviceId() {
-    let deviceId = getCookie('auth_device_id');
 
-    if (!deviceId) {
-        deviceId = crypto.randomUUID();
-        setForeverCookie('auth_device_id', deviceId);
-    } else {
-
-        setForeverCookie('auth_device_id', deviceId);
-    }
-
-    return deviceId;
-}
 
 export function redirectToGit() {
-    ensureDeviceId();
 
     window.location.href = C.GIT_AUTH_URL;
 }
 
 export function redirectToGoogle() {
-    ensureDeviceId();
 
     window.location.href = C.GOOGLE_AUTH_URL;
 }

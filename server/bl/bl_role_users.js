@@ -14,7 +14,7 @@ const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
 
 Log.info(FILE, 'init', null, 'Role Users BL module initialized');
 
-async function signupWebAuthn(body, user, deviceId, ip, userAgent) {
+async function signupWebAuthn(body, user, ip, userAgent) {
     const func = 'signupWebAuthn';
     const email = user ? user.email : body.email;
     const API_REGISTER_URL = `${JWT_NODE_MONGODB}/register`;
@@ -27,12 +27,11 @@ async function signupWebAuthn(body, user, deviceId, ip, userAgent) {
             credentialID: body.credentialID,
             publicKey: body.attestationObject,
             credentialName: body.credentialName || `Access Key ${new Date().toLocaleDateString()}`,
-            deviceId: deviceId,
             ip: ip,
             userAgent: userAgent
         };
 
-        Log.debug(FILE, func, email, `Sending registration request. Device: ${deviceId}`);
+        Log.debug(FILE, func, email, `Sending registration request.`);
 
         const response = await fetch(API_REGISTER_URL, {
             method: 'POST',
@@ -120,7 +119,7 @@ async function loginWebAuthn(authData) {
             throw new Error(errorMsg);
         }
 
-        Log.debug(FILE, func, authData.email, `Sending authentication request. Device: ${authData.deviceId}`);
+        Log.debug(FILE, func, authData.email, 'Sending authentication request.');
 
         const response = await fetch(API_LOGIN_WITH_URL, {
             method: 'POST',
@@ -215,16 +214,15 @@ async function authcode(email) {
     }
 }
 
-async function login_code(email, code, deviceId, ip, userAgent) {
+async function login_code(email, code, ip, userAgent) {
     const func = 'login_code';
-    Log.info(FILE, func, email, `Verifying authentication code. Device: ${deviceId}`);
+    Log.info(FILE, func, email, 'Verifying authentication code.');
 
     let API_VERIFY_CODE_URL = `${JWT_NODE_MONGODB}/verifyCode`;
 
     const data = {
         email: email,
         code: code,
-        deviceId: deviceId,
         ip: ip,
         userAgent: userAgent
     };
@@ -255,7 +253,7 @@ async function login_code(email, code, deviceId, ip, userAgent) {
     }
 }
 
-async function login(email, password, ip, userAgent, deviceId) {
+async function login(email, password, ip, userAgent) {
     const func = 'login';
     Log.info(FILE, func, email, 'Processing login request');
     const API_LOGIN_URL = `${JWT_NODE_MONGODB}/login`;
@@ -265,7 +263,6 @@ async function login(email, password, ip, userAgent, deviceId) {
         password, 
         ip,
         userAgent,
-        deviceId
     };
 
     const requestOptions = {
