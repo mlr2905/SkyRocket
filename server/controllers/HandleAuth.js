@@ -9,25 +9,20 @@ class HandAuth {
     Log.info(FILE, func, email, `Processing ${authProvider} login (Internal BL call)`);
 
     try {
-      // 1. Check if user exists (direct call to BL)
       Log.info(FILE, func, email, 'Checking if user exists via BL');
 
-      // BL returns the Provider (string) or false if it does not exist
       const existingAuthProvider = await bl.get_by_email_user(email);
 
-      // Error checking from the BL (if it returns an error object)
       if (existingAuthProvider && existingAuthProvider.error) {
         throw new Error(existingAuthProvider.error);
       }
 
-      // --- Case A: User does not exist - Registration ---
       if (!existingAuthProvider) {
         Log.info(FILE, func, email, `User not found, proceeding with signup via BL`);
 
         try {
           Log.info(FILE, func, email, `Creating new user with ${authProvider}`);
 
-          // Direct call to registration BL
           const signupResult = await bl.signup(email, password, authProvider);
 
           if (signupResult.e === "yes") {
@@ -42,7 +37,6 @@ class HandAuth {
         }
       }
 
-      // --- Case B: Existing User - Login ---
       else {
         Log.info(FILE, func, email, `User exists (Provider: ${existingAuthProvider}), verifying provider`);
 
@@ -53,12 +47,10 @@ class HandAuth {
 
         Log.info(FILE, func, email, 'Authenticating existing user via BL');
         try {
-          // Obtaining required data for BL
           const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
           const userAgent = req.headers['user-agent'];
 
-          // Direct call to the login BL
-          const loginResult = await bl.login(email, password, ip, userAgent);
+          const loginResult = await bl.login(email, password, ip, userAgent,authProvider);
 
           if (loginResult.e === "yes") {
             throw new Error(loginResult.error);
