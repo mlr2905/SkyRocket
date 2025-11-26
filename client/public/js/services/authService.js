@@ -7,6 +7,8 @@ import * as C from '../utils/constants.js';
  */
 async function apiRequest(url, options) {
     try {
+        ensureDeviceId();
+
         const response = await fetch(url, options);
 
         const contentType = response.headers.get("content-type");
@@ -25,7 +27,6 @@ async function apiRequest(url, options) {
             return errorMessage;
         }
 
-        ensureDeviceId();
 
         return data;
 

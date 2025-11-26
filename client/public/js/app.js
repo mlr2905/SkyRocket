@@ -194,10 +194,7 @@ async function initializeAppState() {
         if (activationResult.role_id) {
             localStorage.setItem('user_role', activationResult.role_id);
         }
-    } else {
-        localStorage.clear();
-    }
-
+    } 
     updateNavbarAuth();
 
     navigateTo(window.location.pathname);

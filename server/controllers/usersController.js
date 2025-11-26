@@ -30,9 +30,18 @@ async function getNumericIdFromToken(req) {
 exports.signupWebAuthn = async (req, res) => {
     const func = 'signupWebAuthn';
     Log.info(FILE, func, null, 'WebAuthn registration request received');
+
+    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'] || 'unknown';
     
+    const user = req.user || req.body; 
+
+    Log.info(FILE, func, user?.email, `Registration attempt. Device: ${deviceId}, IP: ${ip}`);
+
     try {
-        const result = await bl.signupWebAuthn(req);
+        const result = await bl.signupWebAuthn(req.body, user, deviceId, ip, userAgent);
+        
         Log.debug(FILE, func, null, `BL result: ${result.message || result.error}`);
 
         if (result && result.success === false) {
@@ -40,10 +49,8 @@ exports.signupWebAuthn = async (req, res) => {
             return res.status(400).json({ "e": "yes", "error": result.error, "success": false });
         } else {
             Log.info(FILE, func, null, 'Registration successful');
-
             const token = result.data?.token;
             if (token) {
-                Log.info(FILE, func, null, 'Setting login cookie after registration');
                 res.cookie('sky', token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
@@ -51,7 +58,6 @@ exports.signupWebAuthn = async (req, res) => {
                     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
                 });
             }
-
             return res.status(201).json(result.data);
         }
     } catch (error) {
@@ -59,31 +65,28 @@ exports.signupWebAuthn = async (req, res) => {
         res.status(500).json({ "e": "yes", "error": "Internal server error", "success": false });
     }
 };
-
 exports.loginWebAuthn = async (req, res) => {
     const func = 'loginWebAuthn';
     const { email, credentialID, signature, clientDataJSON } = req.body;
 
     const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
-
-    const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'] || 'unknown';
 
-    Log.info(FILE, func, email, `Login attempt from DeviceID: ${deviceId}`);
+    Log.info(FILE, func, email, `Login attempt from DeviceID: ${deviceId}, IP: ${ip}`);
 
     if (!email || !credentialID || !signature || !clientDataJSON) {
-        Log.warn(FILE, func, email, 'Missing required fields');
         return res.status(400).json({ "e": "yes", "error": "Missing required fields" });
     }
 
     try {
         const { authenticatorData } = req.body;
 
-        const authData = { 
-            credentialID, 
-            email, 
-            signature, 
-            authenticatorData, 
+        const authData = {
+            credentialID,
+            email,
+            signature,
+            authenticatorData,
             clientDataJSON,
             deviceId,
             ip,
@@ -98,29 +101,27 @@ exports.loginWebAuthn = async (req, res) => {
 
             if (token && user) {
                 Log.info(FILE, func, user.id, `Login successful (Email: ${email})`);
-
                 res.cookie('sky', token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'strict',
                     maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
                 });
-                
+
                 res.status(200).json({
                     "e": "no",
                     "jwt": token,
                     "id": user.id,
                     "mongo_id": user.mongo_id,
                     "email": user.email,
-                    "redirectUrl": "https://skyrocket.onrender.com"
+                    "redirectUrl": "/search.html",
+                    "message": "Login successful! Redirecting..."
                 });
             } else {
-                Log.warn(FILE, func, email, 'Auth succeeded but no token/user received');
                 res.status(500).json({ "e": "yes", "error": "Auth succeeded but no token/user received" });
             }
         } else {
-            Log.warn(FILE, func, email, `Login failed: ${result.error}`);
-            res.status(401).json({ "e": "yes", "error": result.error || "Authentication failed" });
+            res.status(401).json({ "e": "yes", "error": result.error || "Authentication failed", "message": result.error });
         }
     } catch (error) {
         Log.error(FILE, func, email, 'Internal server error', error);
@@ -131,7 +132,7 @@ exports.loginWebAuthn = async (req, res) => {
 exports.authCode = async (req, res) => {
     const func = 'authCode';
     try {
-        const email = req.user.email;
+        const email = req.body.email;
         Log.info(FILE, func, email, 'Processing auth code request');
 
         if (!email) {
@@ -155,20 +156,24 @@ exports.authCode = async (req, res) => {
 
 exports.validation = async (req, res) => {
     const func = 'validation';
-    try {
-        const email = req.body.email;
-        const code = req.body.code;
-        Log.info(FILE, func, email, 'Processing code validation');
+    
+    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'] || 'unknown';
 
-        const datas = await bl.login_code(email, code);
+    const { email, code } = req.body;
+    Log.info(FILE, func, email, `Processing code validation. Device: ${deviceId}`);
+
+    try {
+        const datas = await bl.login_code(email, code, deviceId, ip, userAgent);
+        
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Validation failed: ${datas.error}`);
-            res.status(409).json({ "e": "yes", "error": datas.error });
+            res.status(409).json({ "e": "yes", "error": datas.error, "message": datas.error });
         } else {
             Log.info(FILE, func, email, 'Validation successful');
             const token = datas.jwt;
 
-            // 1. Setting the secure cookie
             res.cookie('sky', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -182,7 +187,8 @@ exports.validation = async (req, res) => {
                 "id": datas.id,
                 "mongo_id": datas.mongo_id,
                 "email": datas.email,
-                "redirectUrl": 'https://skyrocket.onrender.com'
+                "redirectUrl": '/search.html',
+                "message": "Login successful! Redirecting..."
             });
         }
     } catch (error) {
@@ -194,19 +200,16 @@ exports.validation = async (req, res) => {
 exports.login = async (req, res) => {
     const func = 'login';
     Log.info(FILE, func, null, 'Processing login request');
-    
-    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
 
+    const deviceId = req.cookies['auth_device_id'] || req.body.deviceId || 'unknown_device';
     const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'] || 'unknown';
 
     const { email, password } = req.body;
-
     Log.debug(FILE, func, email, `[IP: ${ip}] - Login attempt. DeviceID: ${deviceId}`);
 
     try {
         if (!email || !password) {
-            Log.warn(FILE, func, email, 'Login failed: invalid credentials');
             return res.status(400).json({ "e": "yes", "error": "Invalid email or password" });
         }
 
@@ -214,7 +217,7 @@ exports.login = async (req, res) => {
 
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Login failed: ${datas.error}`);
-            res.status(401).json({ "e": "yes", "error": datas.error });
+            res.status(401).json({ "e": "yes", "error": datas.error, "message": datas.error });
         } else {
             Log.info(FILE, func, datas.id, `Login successful (Email: ${email})`);
             const token = datas.jwt;
@@ -223,7 +226,7 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
-                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000) // 3h 15m
+                maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
             });
 
             res.status(200).json({
@@ -232,7 +235,8 @@ exports.login = async (req, res) => {
                 "id": datas.id,
                 "mongo_id": datas.mongo_id,
                 "email": datas.email,
-                "redirectUrl": 'https://skyrocket.onrender.com'
+                "message": 'Login succeeded',
+                "redirectUrl": '/search.html'
             });
         }
     } catch (error) {
@@ -240,7 +244,6 @@ exports.login = async (req, res) => {
         res.status(503).json({ 'error': 'The request failed, try again later', error: error.message });
     }
 };
-
 exports.signup = async (req, res) => {
     const func = 'signup';
     try {
@@ -248,10 +251,10 @@ exports.signup = async (req, res) => {
         Log.info(FILE, func, email, 'Processing signup request');
 
         const user = await bl.signup(email, password, authProvider);
-        
+
         if (user.e === "yes") {
             Log.warn(FILE, func, email, `Signup failed: ${user.error}`);
-            res.status(409).json({ "e": "yes", "error": user.error, "loginUrl": 'https://skyrocket.onrender.com/login.html' });
+            res.status(409).json({ "e": "yes", "error": user.error, "loginUrl": '/login.html' });
         } else {
             Log.info(FILE, func, user.res.id, 'Signup successful');
             res.status(200).json({ "e": "no", "id": user.res.id });
@@ -272,7 +275,7 @@ exports.ip = async (req, res) => {
 
     try {
         const countryCode = req.headers['cf-ipcountry'];
-        
+
         if (!countryCode) {
             Log.debug(FILE, func, null, 'No header, returning default');
             return res.status(200).json(defaultResponse);
@@ -282,14 +285,14 @@ exports.ip = async (req, res) => {
 
         try {
             const externalResponse = await fetch(`${COUNTRY_API_URL}${countryCode}${API_FIELDS}`);
-            
+
             if (!externalResponse.ok) {
                 Log.warn(FILE, func, countryCode, `External API error. Status: ${externalResponse.status}`);
                 return res.status(200).json(defaultResponse);
             }
 
             const data = await externalResponse.json();
-            
+
             if (data && data.name && data.name.common) {
                 const countryName = data.name.common;
                 Log.debug(FILE, func, countryCode, `Found: ${countryName}`);
@@ -597,7 +600,7 @@ exports.createCustomer = async (req, res) => {
     try {
         const numeric_id = await getNumericIdFromToken(req);
         Log.info(FILE, func, numeric_id, 'Creating customer');
-        
+
         const new_customer = req.body;
         new_customer.user_id = numeric_id;
 
@@ -624,10 +627,10 @@ exports.updateCustomer = async (req, res) => {
     try {
         const numeric_id = await getNumericIdFromToken(req);
         Log.info(FILE, func, numeric_id, 'Updating customer');
-        
+
         const updated_customer_req = req.body;
         const result = await bl.update_customer(numeric_id, updated_customer_req);
-        
+
         Log.info(FILE, func, numeric_id, 'Updated successfully');
         res.json(updated_customer_req);
     } catch (error) {
@@ -643,7 +646,7 @@ exports.createChairAssignment = async (req, res) => {
     try {
         const numeric_id = await getNumericIdFromToken(req);
         Log.info(FILE, func, numeric_id, 'Creating assignment');
-        
+
         const chairData = req.body;
         chairData.user_id = numeric_id;
 
@@ -664,7 +667,7 @@ exports.createTicket = async (req, res) => {
     try {
         const numeric_id = await getNumericIdFromToken(req);
         Log.info(FILE, func, numeric_id, 'Creating ticket');
-        
+
         const new_ticket = req.body;
         new_ticket.user_id = numeric_id;
         const customer = await bl.get_by_id_customer(numeric_id);
@@ -690,7 +693,7 @@ exports.deleteMyTicket = async (req, res) => {
     try {
         const numeric_id = await getNumericIdFromToken(req);
         const ticket_id = parseInt(req.params.id, 10);
-        
+
         Log.info(FILE, func, numeric_id, `[TicketID: ${ticket_id}] - Delete request`);
 
         if (isNaN(ticket_id)) {

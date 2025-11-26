@@ -1,18 +1,17 @@
-// מודולים חיצוניים
+// External modules
 const express = require('express');
 const cookieParser = require('cookie-parser'); 
 const session = require('express-session');
 const moment = require('moment-timezone');
 const path = require('path');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const passport = require('passport');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const app = express(); 
-app.use(cookieParser());
 
-// מודולים פנימיים
+const app = express(); 
+
+// Internal modules
 const logger = require('./logger/my_logger');
 const allTablesRouter = require('./routes/all_tables');
 const roleUsers = require('./routes/role_users');
@@ -22,23 +21,34 @@ const googleRoutes = require('./routes/googleRoutes');
 const githubRoutes = require('./routes/githubRoutes');
 const authRoutes = require('./routes/authRoutes');
 
-// הגדרות סביבתיות
+//Environmental settings
 require('dotenv').config();
 
-// Middlewares
+// Middlewares Setup
 app.use(cors());
-app.use(bodyParser.json());
+app.use(cookieParser());
+
+
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
+
 const clientPath = path.join(__dirname, '..', 'client', 'public');
 app.use(express.static(clientPath));
+
 app.use(session({
     secret: process.env.SESSION_SECRET || 'keyboard',
     resave: false,
     saveUninitialized: false,
+    cookie: { 
+        secure: process.env.NODE_ENV === 'production',// Recommended: true in production
+        httpOnly: true 
+    }
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-// לוג התחלה
+// Start log
 logger.info('==== System start =======');
 
 // Routes
@@ -67,13 +77,13 @@ const options = {
 const specs = swaggerJsdoc(options);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
 
+// Fallback to SPA (any request not handled in the API will return the React/HTML)
 app.get('*', (req, res) => {
     res.sendFile(path.join(clientPath, 'index.html'));
 });
 
-// Start Server
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`Serving client from: ${clientPath}`); // Debug log
+    console.log(`Serving client from: ${clientPath}`);
 });

@@ -284,8 +284,9 @@ export class LoginController {
             if (data.redirectUrl) {
                 this.userEmail = email;
 
-                if (this.#elements.successMessage) this.#elements.successMessage.textContent = data.datas.code;
-
+                if (this.#elements.successMessage) {
+                    this.#elements.successMessage.textContent = data.message || 'Login successful';
+                }
                 history.pushState(null, null, data.redirectUrl);
                 window.dispatchEvent(new PopStateEvent('popstate'));
             } else {
@@ -310,7 +311,7 @@ export class LoginController {
 
             if (data.e === "no") {
                 this.userEmail = email;
-             
+
                 if (this.#elements.successMessage) this.#elements.successMessage.textContent = 'Login successful!';
                 history.pushState(null, null, data.redirectUrl);
                 window.dispatchEvent(new PopStateEvent('popstate'));
