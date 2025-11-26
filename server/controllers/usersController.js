@@ -25,21 +25,66 @@ async function getNumericIdFromToken(req) {
     throw new Error(`User not found for token.`);
 }
 
+/**
+* Smart extraction of device, browser and IP information
+* Uses modern Client Hints as a top priority
+*/
+function extractClientInfo(req) {
+    const headers = req.headers;
+    
+    const ip = headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress || 'unknown';
+
+    const userAgent = headers['user-agent'] || 'unknown';
+
+    let os = 'Unknown OS';
+    if (headers['sec-ch-ua-platform']) {
+        os = headers['sec-ch-ua-platform'].replace(/"/g, '');
+    } else {
+        if (userAgent.includes('Windows')) os = 'Windows';
+        else if (userAgent.includes('Android')) os = 'Android';
+        else if (userAgent.includes('iPhone') || userAgent.includes('iPad')) os = 'iOS';
+        else if (userAgent.includes('Macintosh')) os = 'Mac';
+        else if (userAgent.includes('Linux')) os = 'Linux';
+    }
+
+    let browser = 'Unknown Browser';
+    if (headers['sec-ch-ua']) {
+        const brands = headers['sec-ch-ua'];
+        if (brands.includes('Google Chrome')) browser = 'Chrome';
+        else if (brands.includes('Edg')) browser = 'Edge';
+        else if (brands.includes('Opera')) browser = 'Opera';
+        else if (brands.includes('Chromium')) browser = 'Chromium';
+    } 
+    
+    if (browser === 'Unknown Browser') {
+        if (userAgent.includes('Edg')) browser = 'Edge';
+        else if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) browser = 'Chrome';
+        else if (userAgent.includes('Firefox')) browser = 'Firefox';
+        else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) browser = 'Safari';
+    }
+
+    const isMobile = headers['sec-ch-ua-mobile'] === '?1';
+    if (isMobile) {
+        os += ' (Mobile)';
+    }
+
+    return { ip, userAgent, os, browser };
+}
+
 // --- Authentication and WebAuthn functions (public) ---
 
 exports.signupWebAuthn = async (req, res) => {
     const func = 'signupWebAuthn';
     Log.info(FILE, func, null, 'WebAuthn registration request received');
 
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
-    const userAgent = req.headers['user-agent'] || 'unknown';
+    const clientInfo = extractClientInfo(req);
     
     const user = req.user || req.body; 
 
-    Log.info(FILE, func, user?.email, `Registration attempt. IP: ${ip}`);
+    Log.info(FILE, func, user?.email, `Registration attempt. IP: ${clientInfo.ip}, OS: ${clientInfo.os}`);
 
     try {
-        const result = await bl.signupWebAuthn(req.body, user, ip, userAgent);
+        const result = await bl.signupWebAuthn(req.body, user, clientInfo.ip, clientInfo.userAgent);
         
         Log.debug(FILE, func, null, `BL result: ${result.message || result.error}`);
 
@@ -64,14 +109,14 @@ exports.signupWebAuthn = async (req, res) => {
         res.status(500).json({ "e": "yes", "error": "Internal server error", "success": false });
     }
 };
+
 exports.loginWebAuthn = async (req, res) => {
     const func = 'loginWebAuthn';
     const { email, credentialID, signature, clientDataJSON } = req.body;
 
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
-    const userAgent = req.headers['user-agent'] || 'unknown';
+    const clientInfo = extractClientInfo(req);
 
-    Log.info(FILE, func, email, `Login attempt from IP: ${ip}`);
+    Log.info(FILE, func, email, `Login attempt from IP: ${clientInfo.ip}, OS: ${clientInfo.os}`);
 
     if (!email || !credentialID || !signature || !clientDataJSON) {
         return res.status(400).json({ "e": "yes", "error": "Missing required fields" });
@@ -86,8 +131,8 @@ exports.loginWebAuthn = async (req, res) => {
             signature,
             authenticatorData,
             clientDataJSON,
-            ip,
-            userAgent
+            ip: clientInfo.ip,
+            userAgent: clientInfo.userAgent
         };
 
         const result = await bl.loginWebAuthn(authData);
@@ -154,14 +199,13 @@ exports.authCode = async (req, res) => {
 exports.validation = async (req, res) => {
     const func = 'validation';
     
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
-    const userAgent = req.headers['user-agent'] || 'unknown';
+    const clientInfo = extractClientInfo(req);
 
     const { email, code } = req.body;
-    Log.info(FILE, func, email, 'Processing code validation.');
+    Log.info(FILE, func, email, `Processing code validation. OS: ${clientInfo.os}`);
 
     try {
-        const datas = await bl.login_code(email, code, ip, userAgent);
+        const datas = await bl.login_code(email, code, clientInfo.ip, clientInfo.userAgent);
         
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Validation failed: ${datas.error}`);
@@ -197,18 +241,17 @@ exports.login = async (req, res) => {
     const func = 'login';
     Log.info(FILE, func, null, 'Processing login request');
 
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress;
-    const userAgent = req.headers['user-agent'] || 'unknown';
+    const clientInfo = extractClientInfo(req);
 
     const { email, password } = req.body;
-    Log.debug(FILE, func, email, '[IP: ${ip}] - Login attempt.');
+    Log.debug(FILE, func, email, `[IP: ${clientInfo.ip}, OS: ${clientInfo.os}] - Login attempt.`);
 
     try {
         if (!email || !password) {
             return res.status(400).json({ "e": "yes", "error": "Invalid email or password" });
         }
 
-        const datas = await bl.login(email, password, ip, userAgent);
+        const datas = await bl.login(email, password, clientInfo.ip, clientInfo.userAgent);
 
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Login failed: ${datas.error}`);
