@@ -253,16 +253,19 @@ async function login_code(email, code, ip, userAgent) {
     }
 }
 
-async function login(email, password, ip, userAgent) {
+async function login(email, password, ip, userAgent, auth) {
     const func = 'login';
     Log.info(FILE, func, email, 'Processing login request');
     const API_LOGIN_URL = `${JWT_NODE_MONGODB}/login`;
-    
+    if (!auth) {
+        auth = 'password';
+    }
     const data = { 
         email, 
         password, 
         ip,
         userAgent,
+        auth,
     };
 
     const requestOptions = {
