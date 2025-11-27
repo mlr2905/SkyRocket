@@ -1,13 +1,11 @@
 const axios = require('axios');
 const logger = require('../logger/my_logger');
 
-// זהו ה-Middleware שיגן על הנתיבים
 const protect = async (req, res, next) => {
     logger.debug('Running protection middleware');
     let token;
     console.log("req.cookies.sky", req.cookies.sky);
 
-    // 1. נסה לקרוא את העוגייה המאובטחת
     if (req.cookies && req.cookies.sky) {
 
         token = req.cookies.sky;

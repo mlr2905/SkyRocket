@@ -14,7 +14,7 @@ const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
 
 Log.info(FILE, 'init', null, 'Role Users BL module initialized');
 
-async function signupWebAuthn(body, user, ip, userAgent) {
+async function signupWebAuthn(body, user, clientInfo) {
     const func = 'signupWebAuthn';
     const email = user ? user.email : body.email;
     const API_REGISTER_URL = `${JWT_NODE_MONGODB}/register`;
@@ -27,8 +27,8 @@ async function signupWebAuthn(body, user, ip, userAgent) {
             credentialID: body.credentialID,
             publicKey: body.attestationObject,
             credentialName: body.credentialName || `Access Key ${new Date().toLocaleDateString()}`,
-            ip: ip,
-            userAgent: userAgent
+            clientInfo: clientInfo
+
         };
 
         Log.debug(FILE, func, email, `Sending registration request.`);
@@ -94,32 +94,48 @@ async function loginWebAuthn(authData) {
     
     if (!INTERNAL_SECRET) {
         Log.error(FILE, func, authData?.email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
-        return {
-            success: false,
-            error: 'Server configuration error',
-            message: 'Authentication failed due to server error'
-        };
+        return { success: false, error: 'Server configuration error' };
     }
 
     Log.info(FILE, func, authData?.email, 'Starting WebAuthn login process');
 
     try {
-        if (!authData) {
-            throw new Error("Authentication data is missing");
-        }
+        
+        if (!authData) throw new Error("Authentication data is missing");
+
+        const { 
+            credentialID, 
+            email, 
+            signature, 
+            authenticatorData,
+            clientDataJSON,
+            clientInfo
+        } = authData;
 
         const missingFields = [];
-        if (!authData.credentialID) missingFields.push('credentialID');
-        if (!authData.email) missingFields.push('email');
-        if (!authData.signature) missingFields.push('signature');
+        if (!credentialID) missingFields.push('credentialID');
+        if (!email) missingFields.push('email');
+        if (!signature) missingFields.push('signature');
 
         if (missingFields.length > 0) {
             const errorMsg = `Missing required fields: ${missingFields.join(', ')}`;
-            Log.warn(FILE, func, authData.email, errorMsg);
+            Log.warn(FILE, func, email, errorMsg);
             throw new Error(errorMsg);
         }
 
-        Log.debug(FILE, func, authData.email, 'Sending authentication request.');
+        const securePayload = {
+            credentialID,
+            email,
+            signature,
+            authenticatorData,
+            clientDataJSON,
+            ip: clientInfo?.ip,
+            userAgent: clientInfo?.userAgent,
+            os: clientInfo?.os,
+            browser: clientInfo?.browser
+        };
+
+        Log.debug(FILE, func, email, `Sending sanitized authentication request.`);
 
         const response = await fetch(API_LOGIN_WITH_URL, {
             method: 'POST',
@@ -128,29 +144,24 @@ async function loginWebAuthn(authData) {
                 'Accept': 'application/json',
                 'x-internal-secret': INTERNAL_SECRET
             },
-            body: JSON.stringify(authData),
+            body: JSON.stringify(securePayload),
         });
 
         let responseData;
         try {
             responseData = await response.json();
         } catch (parseError) {
-            Log.error(FILE, func, authData.email, 'Failed to parse JSON response', parseError);
+            Log.error(FILE, func, email, 'Failed to parse JSON response', parseError);
             throw new Error(`Failed to parse response as JSON. Status: ${response.status}`);
         }
 
         if (!response.ok) {
-            if (response.status === 403) {
-                Log.error(FILE, func, authData.email, 'CRITICAL: Internal Service rejected the secret key (403 Forbidden)');
-                throw new Error('Internal communication error');
-            }
-            
-            Log.warn(FILE, func, authData.email, `Authentication failed status: ${response.status}`);
-            throw new Error(`Authentication failed: ${responseData.error || response.statusText}`);
+            Log.warn(FILE, func, email, `Authentication failed status: ${response.status}`);
+            throw new Error(responseData.error || response.statusText);
         }
 
         if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
-            Log.info(FILE, func, authData.email, 'WebAuthn authentication successful');
+            Log.info(FILE, func, email, 'WebAuthn authentication successful');
             return {
                 success: true,
                 data: responseData,
@@ -158,25 +169,14 @@ async function loginWebAuthn(authData) {
                 token: responseData.jwt,
                 message: 'Authentication successful'
             };
-        } else if (responseData.e === 'yes') {
-            Log.warn(FILE, func, authData.email, `Server returned logical error: ${responseData.error}`);
+        } else {
+            Log.warn(FILE, func, email, `Server logic error: ${responseData.error}`);
             throw new Error(responseData.error || 'Authentication failed');
         }
 
-        Log.warn(FILE, func, authData.email, 'Unexpected response format from internal server');
-        return {
-            success: true,
-            data: responseData,
-            message: 'Authentication completed'
-        };
-
     } catch (error) {
         Log.error(FILE, func, authData?.email, 'Error in WebAuthn login process', error.message);
-        return {
-            success: false,
-            error: error.message,
-            message: 'Authentication failed'
-        };
+        return { success: false, error: error.message };
     }
 }
 
@@ -214,17 +214,19 @@ async function authcode(email) {
     }
 }
 
-async function login_code(email, code, ip, userAgent) {
+async function login_code(email, code, clientInfo) {
     const func = 'login_code';
     Log.info(FILE, func, email, 'Verifying authentication code.');
 
-    let API_VERIFY_CODE_URL = `${JWT_NODE_MONGODB}/verifyCode`;
+    let API_VERIFY_CODE_URL = `${process.env.JWT_NODE_MONGODB}/verifyCode`;
 
     const data = {
         email: email,
         code: code,
-        ip: ip,
-        userAgent: userAgent
+        ip: clientInfo?.ip,
+        userAgent: clientInfo?.userAgent,
+        os: clientInfo?.os,
+        browser: clientInfo?.browser
     };
 
     const requestOptions = {
@@ -253,19 +255,23 @@ async function login_code(email, code, ip, userAgent) {
     }
 }
 
-async function login(email, password, ip, userAgent, auth) {
+async function login(email, password, clientInfo, auth) {
     const func = 'login';
     Log.info(FILE, func, email, 'Processing login request');
-    const API_LOGIN_URL = `${JWT_NODE_MONGODB}/login`;
+    const API_LOGIN_URL = `${process.env.JWT_NODE_MONGODB}/login`;
+    
     if (!auth) {
         auth = 'password';
     }
+
     const data = { 
         email, 
         password, 
-        ip,
-        userAgent,
         auth,
+        ip: clientInfo?.ip,
+        userAgent: clientInfo?.userAgent,
+        os: clientInfo?.os,
+        browser: clientInfo?.browser
     };
 
     const requestOptions = {

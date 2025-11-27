@@ -1,6 +1,6 @@
 const bl = require('../bl/bl_role_users');
 const Log = require('../logger/logManager');
-
+const { extractClientInfo } = require('../utils/clientHelper');
 const FILE = 'HandleAuth';
 
 class HandAuth {
@@ -47,10 +47,9 @@ class HandAuth {
 
         Log.info(FILE, func, email, 'Authenticating existing user via BL');
         try {
-          const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
-          const userAgent = req.headers['user-agent'];
+          const clientInfo = extractClientInfo(req);
 
-          const loginResult = await bl.login(email, password, ip, userAgent,authProvider);
+          const loginResult = await bl.login(email, password, clientInfo, authProvider);
 
           if (loginResult.e === "yes") {
             throw new Error(loginResult.error);

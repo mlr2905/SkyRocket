@@ -1,75 +1,8 @@
 const bl = require('../bl/bl_role_users');
-const Log = require('../logger/logManager'); // שינוי: שימוש במנהל הלוגים
+const Log = require('../logger/logManager'); 
+const { extractClientInfo,getNumericIdFromToken } = require('../utils/clientHelper');
 
 const FILE = 'usersController';
-
-// --- Internal helper function for ID translation ---
-/**
-* Calls BL to translate the mongo_id (from the token) to the PostgreSQL numeric ID.
-* @param {object} req - the Express request object, containing req.user
-* @returns {Promise<number>} - the numeric ID (e.g. 49)
-* @throws {Error} - if the user is not found
-*/
-async function getNumericIdFromToken(req) {
-    const func = 'getNumericIdFromToken';
-    const mongoIdFromToken = req.user.id; // This is the Mongo ID (string)
-
-    // Calling BL to get the full user information
-    const user = await bl.get_by_id_user(mongoIdFromToken);
-
-    if (user && user.id) {
-        return user.id;
-    }
-
-    Log.warn(FILE, func, mongoIdFromToken, 'User not found in PostgreSQL DB');
-    throw new Error(`User not found for token.`);
-}
-
-/**
-* Smart extraction of device, browser and IP information
-* Uses modern Client Hints as a top priority
-*/
-function extractClientInfo(req) {
-    const headers = req.headers;
-    
-    const ip = headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress || 'unknown';
-
-    const userAgent = headers['user-agent'] || 'unknown';
-
-    let os = 'Unknown OS';
-    if (headers['sec-ch-ua-platform']) {
-        os = headers['sec-ch-ua-platform'].replace(/"/g, '');
-    } else {
-        if (userAgent.includes('Windows')) os = 'Windows';
-        else if (userAgent.includes('Android')) os = 'Android';
-        else if (userAgent.includes('iPhone') || userAgent.includes('iPad')) os = 'iOS';
-        else if (userAgent.includes('Macintosh')) os = 'Mac';
-        else if (userAgent.includes('Linux')) os = 'Linux';
-    }
-
-    let browser = 'Unknown Browser';
-    if (headers['sec-ch-ua']) {
-        const brands = headers['sec-ch-ua'];
-        if (brands.includes('Google Chrome')) browser = 'Chrome';
-        else if (brands.includes('Edg')) browser = 'Edge';
-        else if (brands.includes('Opera')) browser = 'Opera';
-        else if (brands.includes('Chromium')) browser = 'Chromium';
-    } 
-    
-    if (browser === 'Unknown Browser') {
-        if (userAgent.includes('Edg')) browser = 'Edge';
-        else if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) browser = 'Chrome';
-        else if (userAgent.includes('Firefox')) browser = 'Firefox';
-        else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) browser = 'Safari';
-    }
-
-    const isMobile = headers['sec-ch-ua-mobile'] === '?1';
-    if (isMobile) {
-        os += ' (Mobile)';
-    }
-
-    return { ip, userAgent, os, browser };
-}
 
 // --- Authentication and WebAuthn functions (public) ---
 
@@ -84,7 +17,7 @@ exports.signupWebAuthn = async (req, res) => {
     Log.info(FILE, func, user?.email, `Registration attempt. IP: ${clientInfo.ip}, OS: ${clientInfo.os}`);
 
     try {
-        const result = await bl.signupWebAuthn(req.body, user, clientInfo.ip, clientInfo.userAgent);
+        const result = await bl.signupWebAuthn(req.body, user, clientInfo);
         
         Log.debug(FILE, func, null, `BL result: ${result.message || result.error}`);
 
@@ -131,8 +64,7 @@ exports.loginWebAuthn = async (req, res) => {
             signature,
             authenticatorData,
             clientDataJSON,
-            ip: clientInfo.ip,
-            userAgent: clientInfo.userAgent
+            clientInfo: clientInfo
         };
 
         const result = await bl.loginWebAuthn(authData);
@@ -205,7 +137,7 @@ exports.validation = async (req, res) => {
     Log.info(FILE, func, email, `Processing code validation. OS: ${clientInfo.os}`);
 
     try {
-        const datas = await bl.login_code(email, code, clientInfo.ip, clientInfo.userAgent);
+        const datas = await bl.login_code(email, code, clientInfo);
         
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Validation failed: ${datas.error}`);
@@ -251,7 +183,7 @@ exports.login = async (req, res) => {
             return res.status(400).json({ "e": "yes", "error": "Invalid email or password" });
         }
 
-        const datas = await bl.login(email, password, clientInfo.ip, clientInfo.userAgent);
+        const datas = await bl.login(email, password, clientInfo, 'password');
 
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Login failed: ${datas.error}`);
