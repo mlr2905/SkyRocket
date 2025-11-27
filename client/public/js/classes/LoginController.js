@@ -179,9 +179,7 @@ export class LoginController {
         this.#storedEmail = email;
         if (email) {
             localStorage.setItem('userEmail', email);
-        } else {
-            localStorage.removeItem('userEmail');
-        }
+        } 
     }
 
     get credentialID() {
@@ -192,9 +190,7 @@ export class LoginController {
         this.#storedCredentialID = id;
         if (id) {
             localStorage.setItem('credentialID', id);
-        } else {
-            localStorage.removeItem('credentialID');
-        }
+        } 
         if (this.#webAuthn) {
             this.#webAuthn.credentialID = id;
         }
