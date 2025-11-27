@@ -78,134 +78,152 @@ export class WebAuthnController {
         }
     }
 
-    async handleRegisterBiometric(email) {
-        if (!email) {
-            this.#showAlert('You must enter an email or register first', 'error', 'error');
-            return;
-        }
-
-        if (!this.#acquireLock()) {
-            this.#showAlert('תהליך אחר רץ ברקע, אנא המתן...', 'warning', 'פעולה חסומה');
-            return;
-        }
-
-        try {
-            const challenge = new Uint8Array(32);
-            window.crypto.getRandomValues(challenge);
-
-            const publicKeyOptions = {
-                challenge: challenge,
-                rp: { name: "SkyRocket", id: window.location.hostname },
-                user: { id: new TextEncoder().encode(email), name: email, displayName: email },
-                pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-                authenticatorSelection: {
-                    authenticatorAttachment: "platform",
-                    requireResidentKey: true,
-                    userVerification: "required"
-                },
-                timeout: 60000,
-                attestation: "none"
-            };
-
-            const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
-
-            uiUtils.showRegistrationAlert();
-            uiUtils.updateRegistrationAlert('Sending data to server...');
-
-            const credentialID = base64.bufferToBase64(credential.rawId);
-            const clientDataJSON = base64.bufferToBase64(credential.response.clientDataJSON);
-            const attestationObject = base64.bufferToBase64(credential.response.attestationObject);
-
-            const data = await AuthService.registerBiometricAPI(credentialID, attestationObject, clientDataJSON);
-            uiUtils.hideRegistrationAlert();
-
-            if (data && (data.success === true || data.code === 'credential_registered')) {
-                this.#showAlert('טביעת האצבע נרשמה בהצלחה!', 'success', 'רישום הושלם');
-                
-                localStorage.setItem('credentialID', credentialID);
-                this.credentialID = credentialID;
-                
-                return credentialID;
-            } else {
-                this.#showAlert(data.error || 'An error occurred', 'error', 'שגיאה ברישום');
-                return;
-            }
-        } catch (error) {
-            console.error('Error in biometric identification registration:', error);
-            uiUtils.hideRegistrationAlert();
-
-            if (error.name === 'NotAllowedError') {
-                this.#showAlert('תהליך רישום טביעת האצבע בוטל על ידך.', 'info', 'הרישום בוטל');
-            } else if (error.name === 'InvalidStateError') {
-                this.#showAlert('מכשיר זה כבר רשום במערכת.', 'warning', 'כפילות');
-            } else {
-                this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה ברישום');
-            }
-            return;
-        } finally {
-            this.#releaseLock();
-        }
+  async handleRegisterBiometric(email) {
+    if (!email) {
+        this.#showAlert('You must enter an email or register first', 'error', 'error');
+        return;
     }
 
-
-    async handleLoginBiometric(email) {
-        if (!email) {
-            this.#showAlert('You must enter an email.', 'error', 'שגיאה');
-            return { success: false };
-        }
-
-        if (!this.#acquireLock()) {
-            return { success: false, message: 'Request pending' };
-        }
-
-        try {
-            let credentialID = this.#credentialID;
-            if (!credentialID || credentialID === "null") {
-                credentialID = localStorage.getItem('credentialID');
-            }
-
-            if (!credentialID) {
-                console.warn("No credentialID found in local storage. User must register first.");
-                return { success: false, code: 'MUST_REGISTER' };
-            }
-
-            const challenge = new Uint8Array(32);
-            window.crypto.getRandomValues(challenge);
-            
-            const publicKeyOptions = {
-                challenge: challenge,
-                rpId: window.location.hostname,
-                allowCredentials: [{ id: base64.base64ToBuffer(credentialID), type: 'public-key' }],
-                timeout: 60000,
-                userVerification: "required"
-            };
-
-            const assertion = await navigator.credentials.get({ publicKey: publicKeyOptions });
-
-            const assertionId = base64.bufferToBase64(assertion.rawId);
-            const clientDataJSON = base64.bufferToBase64(assertion.response.clientDataJSON);
-            const authenticatorData = base64.bufferToBase64(assertion.response.authenticatorData);
-            const signature = base64.bufferToBase64(assertion.response.signature);
-            
-            const data = await AuthService.loginBiometricAPI(assertionId, email, authenticatorData, clientDataJSON, signature);
-
-            if (!data.e || data.e === 'no') {
-                return { success: true, jwt: data.jwt, redirectUrl: data.redirectUrl, message: 'Login successful!' };
-            } else {
-                return { success: false, message: data.error };
-            }
-        } catch (error) {
-            console.error('Error connecting with biometric identification:', error);
-
-            if (error.name === 'NotAllowedError') {
-                this.#showAlert('תהליך ההתחברות בוטל.', 'info', 'ההתחברות בוטלה');
-                return { success: false, message: 'Login canceled.' };
-            } else {
-                this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה בהתחברות');
-                return { success: false, message: error.message };
-            }
-        } finally {
-            this.#releaseLock();
-        }
+    if (!this.#acquireLock()) {
+        this.#showAlert('תהליך אחר רץ ברקע, אנא המתן...', 'warning', 'פעולה חסומה');
+        return;
     }
+
+    try {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const publicKeyOptions = {
+            challenge: challenge,
+            rp: { name: "SkyRocket", id: window.location.hostname },
+            user: { 
+                id: new TextEncoder().encode(email), 
+                name: email, 
+                displayName: email 
+            },
+            pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+            
+            authenticatorSelection: {
+                authenticatorAttachment: "platform", // משתמש ב-TouchID/Windows Hello של המכשיר
+                
+                // ✅ השינוי החשוב: הגדרת Passkey מודרנית
+                residentKey: "required",      // מכריח יצירת מפתח ששמור במכשיר (Passkey)
+                requireResidentKey: true,     // תמיכה לאחור בדפדפנים ישנים
+                
+                userVerification: "required"  // מחייב זיהוי ביומטרי/PIN (לא סתם לחיצה)
+            },
+            timeout: 60000,
+            attestation: "none"
+        };
+
+        const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
+
+        uiUtils.showRegistrationAlert();
+        uiUtils.updateRegistrationAlert('Sending data to server...');
+
+        const credentialID = base64.bufferToBase64(credential.rawId);
+        const clientDataJSON = base64.bufferToBase64(credential.response.clientDataJSON);
+        const attestationObject = base64.bufferToBase64(credential.response.attestationObject);
+
+        const data = await AuthService.registerBiometricAPI(credentialID, attestationObject, clientDataJSON);
+        uiUtils.hideRegistrationAlert();
+
+        if (data && (data.success === true || data.code === 'credential_registered')) {
+            this.#showAlert('טביעת האצבע נרשמה בהצלחה!', 'success', 'רישום הושלם');
+            
+            // הערה: מכיוון שעברנו ל-Passkeys, השמירה ב-localStorage היא אופציונלית.
+            // היא טובה כדי להציג ב-UI שהמשתמש רשום, אבל הלוגין יעבוד גם בלעדיה.
+            localStorage.setItem('credentialID', credentialID);
+            this.credentialID = credentialID;
+            
+            return credentialID;
+        } else {
+            this.#showAlert(data.error || 'An error occurred', 'error', 'שגיאה ברישום');
+            return;
+        }
+    } catch (error) {
+        console.error('Error in biometric identification registration:', error);
+        uiUtils.hideRegistrationAlert();
+
+        if (error.name === 'NotAllowedError') {
+            this.#showAlert('תהליך רישום טביעת האצבע בוטל על ידך.', 'info', 'הרישום בוטל');
+        } else if (error.name === 'InvalidStateError') {
+            this.#showAlert('מכשיר זה כבר רשום במערכת.', 'warning', 'כפילות');
+        } else {
+            this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה ברישום');
+        }
+        return;
+    } finally {
+        this.#releaseLock();
+    }
+}
+
+  async handleLoginBiometric(email) {
+    // שלב 1: כבר לא חובה לקבל אימייל, כי הדפדפן יזהה את המשתמש לפי המפתח.
+    // אבל אם קיבלנו אימייל, נשמור אותו להמשך.
+    
+    if (!this.#acquireLock()) {
+        return { success: false, message: 'Request pending' };
+    }
+
+    try {
+        // שלב 2: יצירת האתגר
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+        
+        const publicKeyOptions = {
+            challenge: challenge,
+            rpId: window.location.hostname, // חובה: הדומיין הנוכחי
+            
+            // === השינוי הגדול ===
+            // שולחים מערך ריק. זה אומר לדפדפן: "תמצא אתה את המפתחות ששמורים אצלך (בגוגל/אפל) לאתר הזה"
+            allowCredentials: [], 
+            
+            userVerification: "required", // חובה עבור Passkeys
+            timeout: 60000
+        };
+
+        // שלב 3: הקפצת החלונית של הדפדפן/גוגל
+        // המשתמש יראה רשימה של החשבונות השמורים ויבחר אחד
+        const assertion = await navigator.credentials.get({ publicKey: publicKeyOptions });
+
+        // שלב 4: חילוץ המידע מהתשובה שנבחרה
+        const assertionId = base64.bufferToBase64(assertion.rawId); // זה ה-ID שהדפדפן מצא
+        const clientDataJSON = base64.bufferToBase64(assertion.response.clientDataJSON);
+        const authenticatorData = base64.bufferToBase64(assertion.response.authenticatorData);
+        const signature = base64.bufferToBase64(assertion.response.signature);
+        
+        // הערה: בשלב זה אנחנו לא בהכרח יודעים את האימייל אם המשתמש לא הזין אותו בטופס.
+        // השרת יצטרך לזהות את האימייל לפי ה-assertionId (Credential ID) שנשלח אליו.
+        // אם השרת שלך חייב לקבל אימייל ב-Body, ייתכן שתצטרך לשנות את השרת שיחפש לפי ID בלבד,
+        // או להסתמך על האימייל שהמשתמש הזין בטופס (אם הזין).
+        
+        const data = await AuthService.loginBiometricAPI(
+            assertionId, 
+            email, // אם זה null, השרת צריך לדעת להסתדר (לחפש לפי ID)
+            authenticatorData, 
+            clientDataJSON, 
+            signature
+        );
+
+        if (!data.e || data.e === 'no') {
+            return { success: true, jwt: data.jwt, redirectUrl: data.redirectUrl, message: 'Login successful!' };
+        } else {
+            return { success: false, message: data.error };
+        }
+
+    } catch (error) {
+        console.error('Error connecting with biometric identification:', error);
+
+        if (error.name === 'NotAllowedError') {
+            this.#showAlert('תהליך ההתחברות בוטל.', 'info', 'ההתחברות בוטלה');
+            return { success: false, message: 'Login canceled.' };
+        } else {
+            this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה בהתחברות');
+            return { success: false, message: error.message };
+        }
+    } finally {
+        this.#releaseLock();
+    }
+}
 }
