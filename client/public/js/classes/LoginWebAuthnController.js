@@ -158,49 +158,34 @@ export class WebAuthnController {
     }
 }
 
-  async handleLoginBiometric(email) {
-    // שלב 1: כבר לא חובה לקבל אימייל, כי הדפדפן יזהה את המשתמש לפי המפתח.
-    // אבל אם קיבלנו אימייל, נשמור אותו להמשך.
-    
+async handleLoginBiometric(email = null) {
+
     if (!this.#acquireLock()) {
         return { success: false, message: 'Request pending' };
     }
 
     try {
-        // שלב 2: יצירת האתגר
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
         
         const publicKeyOptions = {
             challenge: challenge,
-            rpId: window.location.hostname, // חובה: הדומיין הנוכחי
-            
-            // === השינוי הגדול ===
-            // שולחים מערך ריק. זה אומר לדפדפן: "תמצא אתה את המפתחות ששמורים אצלך (בגוגל/אפל) לאתר הזה"
-            allowCredentials: [], 
-            
-            userVerification: "required", // חובה עבור Passkeys
+            rpId: window.location.hostname,
+            allowCredentials: [],
+            userVerification: "required",
             timeout: 60000
         };
 
-        // שלב 3: הקפצת החלונית של הדפדפן/גוגל
-        // המשתמש יראה רשימה של החשבונות השמורים ויבחר אחד
         const assertion = await navigator.credentials.get({ publicKey: publicKeyOptions });
 
-        // שלב 4: חילוץ המידע מהתשובה שנבחרה
-        const assertionId = base64.bufferToBase64(assertion.rawId); // זה ה-ID שהדפדפן מצא
+        const assertionId = base64.bufferToBase64(assertion.rawId);
         const clientDataJSON = base64.bufferToBase64(assertion.response.clientDataJSON);
         const authenticatorData = base64.bufferToBase64(assertion.response.authenticatorData);
         const signature = base64.bufferToBase64(assertion.response.signature);
         
-        // הערה: בשלב זה אנחנו לא בהכרח יודעים את האימייל אם המשתמש לא הזין אותו בטופס.
-        // השרת יצטרך לזהות את האימייל לפי ה-assertionId (Credential ID) שנשלח אליו.
-        // אם השרת שלך חייב לקבל אימייל ב-Body, ייתכן שתצטרך לשנות את השרת שיחפש לפי ID בלבד,
-        // או להסתמך על האימייל שהמשתמש הזין בטופס (אם הזין).
-        
         const data = await AuthService.loginBiometricAPI(
             assertionId, 
-            email, // אם זה null, השרת צריך לדעת להסתדר (לחפש לפי ID)
+            email, 
             authenticatorData, 
             clientDataJSON, 
             signature
