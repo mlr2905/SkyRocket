@@ -196,10 +196,8 @@ export class LoginController {
         }
     }
 
-    async #handleBiometricLogin(event) {
+   async #handleBiometricLogin(event) {
     event.preventDefault();
-    
-
     const result = await this.#webAuthn.handleLoginBiometric();
 
     if (result.success) {
@@ -210,14 +208,15 @@ export class LoginController {
         }
 
         if (this.#elements.successMessage) {
-            this.#elements.successMessage.textContent = result.message || 'Login successful!';
+            this.#elements.successMessage.textContent = result.message || 'Login successful';
             this.#elements.successMessage.style.color = 'green';
         }
         
         history.pushState(null, null, result.redirectUrl);
         window.dispatchEvent(new PopStateEvent('popstate'));
 
-    } else if (result.code === 'MUST_REGISTER') {
+    } 
+    else if (result.code === 'MUST_REGISTER') {
         if (this.#elements.successMessage) {
             this.#elements.successMessage.textContent = 'Device not recognized. Please sign in with password first to register this passkey.';
             this.#elements.successMessage.style.color = 'red';
@@ -229,7 +228,6 @@ export class LoginController {
         }
     }
 }
-
     async #handleAuthCode(event) {
         event.preventDefault();
         const email = this.#elements.emailInput.value;

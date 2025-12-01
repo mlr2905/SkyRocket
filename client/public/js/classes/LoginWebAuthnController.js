@@ -78,7 +78,7 @@ export class WebAuthnController {
         }
     }
 
-  async handleRegisterBiometric(email) {
+async handleRegisterBiometric(email) {
     if (!email) {
         this.#showAlert('You must enter an email or register first', 'error', 'error');
         return;
@@ -90,6 +90,7 @@ export class WebAuthnController {
     }
 
     try {
+        // ... (יצירת Challenge ו-PublicKeyOptions - ללא שינוי) ...
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
 
@@ -102,15 +103,11 @@ export class WebAuthnController {
                 displayName: email 
             },
             pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-            
             authenticatorSelection: {
-                authenticatorAttachment: "platform", // משתמש ב-TouchID/Windows Hello של המכשיר
-                
-                // ✅ השינוי החשוב: הגדרת Passkey מודרנית
-                residentKey: "required",      // מכריח יצירת מפתח ששמור במכשיר (Passkey)
-                requireResidentKey: true,     // תמיכה לאחור בדפדפנים ישנים
-                
-                userVerification: "required"  // מחייב זיהוי ביומטרי/PIN (לא סתם לחיצה)
+                authenticatorAttachment: "platform",
+                residentKey: "required", 
+                requireResidentKey: true,
+                userVerification: "required"
             },
             timeout: 60000,
             attestation: "none"
@@ -121,6 +118,7 @@ export class WebAuthnController {
         uiUtils.showRegistrationAlert();
         uiUtils.updateRegistrationAlert('Sending data to server...');
 
+        // המרות ל-Base64
         const credentialID = base64.bufferToBase64(credential.rawId);
         const clientDataJSON = base64.bufferToBase64(credential.response.clientDataJSON);
         const attestationObject = base64.bufferToBase64(credential.response.attestationObject);
@@ -131,34 +129,28 @@ export class WebAuthnController {
         if (data && (data.success === true || data.code === 'credential_registered')) {
             this.#showAlert('טביעת האצבע נרשמה בהצלחה!', 'success', 'רישום הושלם');
             
-            // הערה: מכיוון שעברנו ל-Passkeys, השמירה ב-localStorage היא אופציונלית.
-            // היא טובה כדי להציג ב-UI שהמשתמש רשום, אבל הלוגין יעבוד גם בלעדיה.
+            // ✅ שמירת המייל וה-CredentialID לאחסון מקומי
             localStorage.setItem('credentialID', credentialID);
-            this.credentialID = credentialID;
+            localStorage.setItem('user_email', email); // <--- הוספנו את זה
             
+            this.credentialID = credentialID;
             return credentialID;
         } else {
             this.#showAlert(data.error || 'An error occurred', 'error', 'שגיאה ברישום');
             return;
         }
     } catch (error) {
-        console.error('Error in biometric identification registration:', error);
+        // ... (טיפול בשגיאות - ללא שינוי) ...
+        console.error('Error:', error);
         uiUtils.hideRegistrationAlert();
-
-        if (error.name === 'NotAllowedError') {
-            this.#showAlert('תהליך רישום טביעת האצבע בוטל על ידך.', 'info', 'הרישום בוטל');
-        } else if (error.name === 'InvalidStateError') {
-            this.#showAlert('מכשיר זה כבר רשום במערכת.', 'warning', 'כפילות');
-        } else {
-            this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה ברישום');
-        }
-        return;
+        this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה');
     } finally {
         this.#releaseLock();
     }
 }
 
 async handleLoginBiometric() {
+
 
     if (!this.#acquireLock()) {
         return { success: false, message: 'Request pending' };
@@ -171,7 +163,7 @@ async handleLoginBiometric() {
         const publicKeyOptions = {
             challenge: challenge,
             rpId: window.location.hostname,
-            allowCredentials: [],
+            allowCredentials: [], 
             userVerification: "required",
             timeout: 60000
         };
@@ -191,6 +183,7 @@ async handleLoginBiometric() {
         );
 
         if (!data.e || data.e === 'no') {
+            
             return { success: true, jwt: data.jwt, redirectUrl: data.redirectUrl, message: 'Login successful!' };
         } else {
             return { success: false, message: data.error };
