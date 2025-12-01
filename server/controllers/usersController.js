@@ -45,13 +45,13 @@ exports.signupWebAuthn = async (req, res) => {
 
 exports.loginWebAuthn = async (req, res) => {
     const func = 'loginWebAuthn';
-    const {  credentialID, signature, clientDataJSON } = req.body;
+    const { email, credentialID, signature, clientDataJSON } = req.body;
 
     const clientInfo = extractClientInfo(req);
 
-    Log.info(FILE, func, `Login attempt from IP: ${clientInfo.ip}, OS: ${clientInfo.os}`);
+    Log.info(FILE, func, email, `Login attempt from IP: ${clientInfo.ip}, OS: ${clientInfo.os}`);
 
-    if ( !credentialID || !signature || !clientDataJSON) {
+    if (!email || !credentialID || !signature || !clientDataJSON) {
         return res.status(400).json({ "e": "yes", "error": "Missing required fields" });
     }
 
@@ -60,6 +60,7 @@ exports.loginWebAuthn = async (req, res) => {
 
         const authData = {
             credentialID,
+            email,
             signature,
             authenticatorData,
             clientDataJSON,
@@ -73,7 +74,7 @@ exports.loginWebAuthn = async (req, res) => {
             const user = result.user || result.data?.user;
 
             if (token && user) {
-                Log.info(FILE, func, user.id, `Login successful`);
+                Log.info(FILE, func, user.id, `Login successful (Email: ${email})`);
                 res.cookie('sky', token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
@@ -97,7 +98,7 @@ exports.loginWebAuthn = async (req, res) => {
             res.status(401).json({ "e": "yes", "error": result.error || "Authentication failed", "message": result.error });
         }
     } catch (error) {
-        Log.error(FILE, func, 'Internal server error', error);
+        Log.error(FILE, func, email, 'Internal server error', error);
         res.status(500).json({ "e": "yes", "error": "Internal server error" });
     }
 };

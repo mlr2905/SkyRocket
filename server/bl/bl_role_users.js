@@ -93,11 +93,11 @@ async function loginWebAuthn(authData) {
     const API_LOGIN_WITH_URL = `${JWT_NODE_MONGODB}/loginWith`;
     
     if (!INTERNAL_SECRET) {
-        Log.error(FILE, func, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
+        Log.error(FILE, func, authData?.email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
         return { success: false, error: 'Server configuration error' };
     }
 
-    Log.info(FILE, func, 'Starting WebAuthn login process');
+    Log.info(FILE, func, authData?.email, 'Starting WebAuthn login process');
 
     try {
         
@@ -105,6 +105,7 @@ async function loginWebAuthn(authData) {
 
         const { 
             credentialID, 
+            email, 
             signature, 
             authenticatorData,
             clientDataJSON,
@@ -113,6 +114,7 @@ async function loginWebAuthn(authData) {
 
         const missingFields = [];
         if (!credentialID) missingFields.push('credentialID');
+        if (!email) missingFields.push('email');
         if (!signature) missingFields.push('signature');
 
         if (missingFields.length > 0) {
@@ -123,6 +125,7 @@ async function loginWebAuthn(authData) {
 
         const securePayload = {
             credentialID,
+            email,
             signature,
             authenticatorData,
             clientDataJSON,
@@ -132,7 +135,7 @@ async function loginWebAuthn(authData) {
             browser: clientInfo?.browser
         };
 
-        Log.debug(FILE, func, `Sending sanitized authentication request.`);
+        Log.debug(FILE, func, email, `Sending sanitized authentication request.`);
 
         const response = await fetch(API_LOGIN_WITH_URL, {
             method: 'POST',
@@ -148,17 +151,17 @@ async function loginWebAuthn(authData) {
         try {
             responseData = await response.json();
         } catch (parseError) {
-            Log.error(FILE, func, 'Failed to parse JSON response', parseError);
+            Log.error(FILE, func, email, 'Failed to parse JSON response', parseError);
             throw new Error(`Failed to parse response as JSON. Status: ${response.status}`);
         }
 
         if (!response.ok) {
-            Log.warn(FILE, func, `Authentication failed status: ${response.status}`);
+            Log.warn(FILE, func, email, `Authentication failed status: ${response.status}`);
             throw new Error(responseData.error || response.statusText);
         }
 
         if (responseData.e === 'no' && responseData.code === 'login_succeeded') {
-            Log.info(FILE, func, 'WebAuthn authentication successful');
+            Log.info(FILE, func, email, 'WebAuthn authentication successful');
             return {
                 success: true,
                 data: responseData,
