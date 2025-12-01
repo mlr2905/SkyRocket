@@ -158,7 +158,7 @@ export class WebAuthnController {
     }
 }
 
-async handleLoginBiometric(email = null) {
+async handleLoginBiometric() {
 
     if (!this.#acquireLock()) {
         return { success: false, message: 'Request pending' };
@@ -185,7 +185,6 @@ async handleLoginBiometric(email = null) {
         
         const data = await AuthService.loginBiometricAPI(
             assertionId, 
-            email, 
             authenticatorData, 
             clientDataJSON, 
             signature
