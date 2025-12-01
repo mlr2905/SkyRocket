@@ -196,38 +196,31 @@ export class LoginController {
         }
     }
 
-   async #handleBiometricLogin(event) {
-    event.preventDefault();
-    const result = await this.#webAuthn.handleLoginBiometric();
+    async #handleBiometricLogin(event) {
+        event.preventDefault();
+        const email = this.#elements.emailInput.value || this.userEmail;
+        if (!email) {
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = 'Please enter an email first.';
+            return;
+        }
 
-    if (result.success) {
-        if (result.user && result.user.email) {
-            this.userEmail = result.user.email;
-        } else if (email) {
+        const result = await this.#webAuthn.handleLoginBiometric(email);
+
+        if (result.success) {
             this.userEmail = email;
-        }
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = result.message;
+            history.pushState(null, null, result.redirectUrl);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+        } else if (result.code === 'MUST_REGISTER') {
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = 'This device is not registered. The domain must be registered through the personal domain.';
 
-        if (this.#elements.successMessage) {
-            this.#elements.successMessage.textContent = result.message || 'Login successful';
-            this.#elements.successMessage.style.color = 'green';
-        }
-        
-        history.pushState(null, null, result.redirectUrl);
-        window.dispatchEvent(new PopStateEvent('popstate'));
-
-    } 
-    else if (result.code === 'MUST_REGISTER') {
-        if (this.#elements.successMessage) {
-            this.#elements.successMessage.textContent = 'Device not recognized. Please sign in with password first to register this passkey.';
-            this.#elements.successMessage.style.color = 'red';
-        }
-    } else if (result.message) {
-        if (this.#elements.successMessage) {
-            this.#elements.successMessage.textContent = result.message;
-            this.#elements.successMessage.style.color = 'red';
+        } else if (result.newCredentialID) {
+            this.credentialID = result.newCredentialID;
+        } else if (result.message) {
+            if (this.#elements.successMessage) this.#elements.successMessage.textContent = result.message;
         }
     }
-}
+
     async #handleAuthCode(event) {
         event.preventDefault();
         const email = this.#elements.emailInput.value;

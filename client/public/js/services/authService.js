@@ -88,6 +88,7 @@ export async function loginBiometricAPI(credentialID, authenticatorData, clientD
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             credentialID,
+            email,
             authenticatorData,
             clientDataJSON: clientData,
             signature

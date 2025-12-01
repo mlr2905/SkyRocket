@@ -78,7 +78,7 @@ export class WebAuthnController {
         }
     }
 
-async handleRegisterBiometric(email) {
+  async handleRegisterBiometric(email) {
     if (!email) {
         this.#showAlert('You must enter an email or register first', 'error', 'error');
         return;
@@ -90,7 +90,6 @@ async handleRegisterBiometric(email) {
     }
 
     try {
-        // ... (יצירת Challenge ו-PublicKeyOptions - ללא שינוי) ...
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
 
@@ -103,11 +102,15 @@ async handleRegisterBiometric(email) {
                 displayName: email 
             },
             pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+            
             authenticatorSelection: {
-                authenticatorAttachment: "platform",
-                residentKey: "required", 
-                requireResidentKey: true,
-                userVerification: "required"
+                authenticatorAttachment: "platform", // משתמש ב-TouchID/Windows Hello של המכשיר
+                
+                // ✅ השינוי החשוב: הגדרת Passkey מודרנית
+                residentKey: "required",      // מכריח יצירת מפתח ששמור במכשיר (Passkey)
+                requireResidentKey: true,     // תמיכה לאחור בדפדפנים ישנים
+                
+                userVerification: "required"  // מחייב זיהוי ביומטרי/PIN (לא סתם לחיצה)
             },
             timeout: 60000,
             attestation: "none"
@@ -118,7 +121,6 @@ async handleRegisterBiometric(email) {
         uiUtils.showRegistrationAlert();
         uiUtils.updateRegistrationAlert('Sending data to server...');
 
-        // המרות ל-Base64
         const credentialID = base64.bufferToBase64(credential.rawId);
         const clientDataJSON = base64.bufferToBase64(credential.response.clientDataJSON);
         const attestationObject = base64.bufferToBase64(credential.response.attestationObject);
@@ -129,61 +131,82 @@ async handleRegisterBiometric(email) {
         if (data && (data.success === true || data.code === 'credential_registered')) {
             this.#showAlert('טביעת האצבע נרשמה בהצלחה!', 'success', 'רישום הושלם');
             
-            // ✅ שמירת המייל וה-CredentialID לאחסון מקומי
+            // הערה: מכיוון שעברנו ל-Passkeys, השמירה ב-localStorage היא אופציונלית.
+            // היא טובה כדי להציג ב-UI שהמשתמש רשום, אבל הלוגין יעבוד גם בלעדיה.
             localStorage.setItem('credentialID', credentialID);
-            localStorage.setItem('user_email', email); // <--- הוספנו את זה
-            
             this.credentialID = credentialID;
+            
             return credentialID;
         } else {
             this.#showAlert(data.error || 'An error occurred', 'error', 'שגיאה ברישום');
             return;
         }
     } catch (error) {
-        // ... (טיפול בשגיאות - ללא שינוי) ...
-        console.error('Error:', error);
+        console.error('Error in biometric identification registration:', error);
         uiUtils.hideRegistrationAlert();
-        this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה');
+
+        if (error.name === 'NotAllowedError') {
+            this.#showAlert('תהליך רישום טביעת האצבע בוטל על ידך.', 'info', 'הרישום בוטל');
+        } else if (error.name === 'InvalidStateError') {
+            this.#showAlert('מכשיר זה כבר רשום במערכת.', 'warning', 'כפילות');
+        } else {
+            this.#showAlert('אירעה שגיאה: ' + error.message, 'error', 'שגיאה ברישום');
+        }
+        return;
     } finally {
         this.#releaseLock();
     }
 }
 
-async handleLoginBiometric() {
-
-
+  async handleLoginBiometric(email) {
+    // שלב 1: כבר לא חובה לקבל אימייל, כי הדפדפן יזהה את המשתמש לפי המפתח.
+    // אבל אם קיבלנו אימייל, נשמור אותו להמשך.
+    
     if (!this.#acquireLock()) {
         return { success: false, message: 'Request pending' };
     }
 
     try {
+        // שלב 2: יצירת האתגר
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
         
         const publicKeyOptions = {
             challenge: challenge,
-            rpId: window.location.hostname,
+            rpId: window.location.hostname, // חובה: הדומיין הנוכחי
+            
+            // === השינוי הגדול ===
+            // שולחים מערך ריק. זה אומר לדפדפן: "תמצא אתה את המפתחות ששמורים אצלך (בגוגל/אפל) לאתר הזה"
             allowCredentials: [], 
-            userVerification: "required",
+            
+            userVerification: "required", // חובה עבור Passkeys
             timeout: 60000
         };
 
+        // שלב 3: הקפצת החלונית של הדפדפן/גוגל
+        // המשתמש יראה רשימה של החשבונות השמורים ויבחר אחד
         const assertion = await navigator.credentials.get({ publicKey: publicKeyOptions });
 
-        const assertionId = base64.bufferToBase64(assertion.rawId);
+        // שלב 4: חילוץ המידע מהתשובה שנבחרה
+        const assertionId = base64.bufferToBase64(assertion.rawId); // זה ה-ID שהדפדפן מצא
         const clientDataJSON = base64.bufferToBase64(assertion.response.clientDataJSON);
         const authenticatorData = base64.bufferToBase64(assertion.response.authenticatorData);
         const signature = base64.bufferToBase64(assertion.response.signature);
         
+        // הערה: בשלב זה אנחנו לא בהכרח יודעים את האימייל אם המשתמש לא הזין אותו בטופס.
+        // השרת יצטרך לזהות את האימייל לפי ה-assertionId (Credential ID) שנשלח אליו.
+        // אם השרת שלך חייב לקבל אימייל ב-Body, ייתכן שתצטרך לשנות את השרת שיחפש לפי ID בלבד,
+        // או להסתמך על האימייל שהמשתמש הזין בטופס (אם הזין).
+        
         const data = await AuthService.loginBiometricAPI(
             assertionId, 
+            email, // אם זה null, השרת צריך לדעת להסתדר (לחפש לפי ID)
             authenticatorData, 
             clientDataJSON, 
             signature
         );
 
         if (!data.e || data.e === 'no') {
-            
             return { success: true, jwt: data.jwt, redirectUrl: data.redirectUrl, message: 'Login successful!' };
         } else {
             return { success: false, message: data.error };
