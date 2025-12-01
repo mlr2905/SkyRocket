@@ -255,23 +255,11 @@ async function set_id(id) {
 
 async function logLogoutEvent(userId) {
     const func = 'logLogoutEvent';
-    Log.debug(FILE, func, userId, 'Logging logout event');
     
-    try {
-        const result = await connectedKnex('audit_logs').insert({
-            user_id: userId,
-            action: 'USER_LOGOUT',
-            timestamp: connectedKnex.fn.now() 
-        });
-
-        Log.info(FILE, func, userId, 'Logout event successfully logged'); 
-        return true;
-    } catch (error) {
-        Log.error(FILE, func, userId, 'Error logging out event', error);
-        throw error;
-    }
+    Log.info(FILE, func, userId, 'User logged out successfully (No DB record created)');
+    
+    return true; 
 }
-
 module.exports = {
     get_by_name, 
     get_all, 
