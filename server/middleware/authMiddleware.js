@@ -1,24 +1,26 @@
 const axios = require('axios');
-const logger = require('../logger/my_logger');
+const Log = require('../logger/logManager');
+
+const FILE = 'authMiddleware';
 
 const protect = async (req, res, next) => {
-    logger.debug('Running protection middleware');
+    const func = 'protect';
+    Log.debug(FILE, func, null, 'Running protection middleware');
+    
     let token;
-    console.log("req.cookies.sky", req.cookies.sky);
 
     if (req.cookies && req.cookies.sky) {
-
         token = req.cookies.sky;
-        console.log("token", token);
-
     }
 
     if (!token) {
-        logger.warn('Access denied: No token provided');
+        Log.warn(FILE, func, null, 'Access denied: No token provided');
         return res.status(401).json({ error: 'Not authorized, no token' });
     }
 
     try {
+        Log.debug(FILE, func, null, 'Verifying token with auth server...');
+
         const response = await axios.post(`${process.env.JWT_NODE_MONGODB}/data`,
             {
                 token: token
@@ -30,21 +32,20 @@ const protect = async (req, res, next) => {
                 }
             }
         );
-        console.log("response.data", response.data);
 
-        if (response.data.valid) {
-            console.log("response.data.", response.data);
+        if (response.data && response.data.valid) {
             req.user = response.data.user;
-            console.log("req.user", req.user);
-
-            logger.debug(`User authorized: ${req.user.email} (ID: ${req.user.id})`);
+            
+            // Log success with the identified user ID
+            Log.info(FILE, func, req.user.id, `User authorized: ${req.user.email}`);
+            
             next();
         } else {
-            logger.warn('Access denied: Invalid token');
+            Log.warn(FILE, func, null, 'Access denied: Invalid token validation response');
             return res.status(401).json({ error: 'Not authorized, token failed' });
         }
     } catch (error) {
-        logger.error('Token verification error:', error);
+        Log.error(FILE, func, null, 'Token verification error', error);
         return res.status(401).json({ error: 'Not authorized, token verification error' });
     }
 };

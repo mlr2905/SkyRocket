@@ -1,6 +1,12 @@
 const bl = require('../bl/bl_role_users');
+const Log = require('../logger/logManager');
+
+const FILE = 'clientHelper';
+Log.info(FILE, 'init', null, 'Client Helper module initialized');
 
 function extractClientInfo(req) {
+    Log.debug(FILE, 'extractClientInfo', null, 'Extracting client info from headers');
+
     const headers = req.headers;
     
     const ip = headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress || 'unknown';
@@ -18,7 +24,6 @@ function extractClientInfo(req) {
         else if (userAgent.includes('Linux')) os = 'Linux';
     }
 
-    // זיהוי דפדפן
     let browser = 'Unknown Browser';
     if (headers['sec-ch-ua']) {
         const brands = headers['sec-ch-ua'];
@@ -42,14 +47,17 @@ function extractClientInfo(req) {
 
     return { ip, userAgent, os, browser };
 }
+
 async function getNumericIdFromToken(req) {
     const func = 'getNumericIdFromToken';
-    const mongoIdFromToken = req.user.id; // This is the Mongo ID (string)
+    const mongoIdFromToken = req.user.id; 
 
-    // Calling BL to get the full user information
+    Log.info(FILE, func, mongoIdFromToken, 'Resolving numeric ID from SQL DB');
+
     const user = await bl.get_by_id_user(mongoIdFromToken);
 
     if (user && user.id) {
+        Log.debug(FILE, func, mongoIdFromToken, `Resolved numeric ID: ${user.id}`);
         return user.id;
     }
 
@@ -57,4 +65,4 @@ async function getNumericIdFromToken(req) {
     throw new Error(`User not found for token.`);
 }
 
-module.exports = { extractClientInfo ,getNumericIdFromToken};
+module.exports = { extractClientInfo, getNumericIdFromToken };

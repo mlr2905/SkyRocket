@@ -1,5 +1,5 @@
 const bl = require('../bl/bl_role_airlines');
-const Log = require('../logger/logManager'); // שינוי: שימוש במנהל הלוגים
+const Log = require('../logger/logManager');
 
 const FILE = 'airlinesController';
 
