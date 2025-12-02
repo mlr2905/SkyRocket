@@ -1,4 +1,3 @@
-
 import * as C from '../utils/constants.js';
 import * as formatters from '../utils/formatters.js';
 import * as AuthService from '../services/authService.js';
@@ -11,6 +10,7 @@ export class RegistrationController {
     #elements = {}; 
     #validator;
     #ui;
+    #libraryStyleLink = null; // New: Store reference to the dynamically loaded CSS
 
     #bound = {
         submitForm: null,
@@ -39,6 +39,10 @@ export class RegistrationController {
     init() {
         this.#currentTab = 0;
         this.#selectDOMElements();
+        
+        // New: Load the 3rd party library CSS specifically for this view
+        this.#loadLibraryCSS();
+
         this.#validator = new RegistrationValidator(this.#elements);
         this.#bindEventHandlers();
         this.#elements.nextPrevHandler = this.#bound.handleNext;
@@ -56,10 +60,14 @@ export class RegistrationController {
             this.#iti = null;
         }
 
+        // New: Remove the 3rd party library CSS to avoid conflicts/pollution
+        this.#removeLibraryCSS();
+
         this.#elements = {};
         this.#validator = null;
         this.#ui = null;
         this.#bound = {};
+        this.#libraryStyleLink = null;
     }
 
     #selectDOMElements() {
@@ -184,6 +192,29 @@ export class RegistrationController {
         window.dispatchEvent(new PopStateEvent('popstate')); 
     }
 
+    /**
+     * Dynamically injects the intl-tel-input CSS file into the head.
+     */
+    #loadLibraryCSS() {
+        const cssPath = '/build/css/intlTelInput.css'; 
+        
+        if (!document.querySelector(`link[href="${cssPath}"]`)) {
+            this.#libraryStyleLink = document.createElement('link');
+            this.#libraryStyleLink.rel = 'stylesheet';
+            this.#libraryStyleLink.href = cssPath;
+            document.head.appendChild(this.#libraryStyleLink);
+        }
+    }
+
+    /**
+     * Removes the dynamically injected CSS.
+     */
+    #removeLibraryCSS() {
+        if (this.#libraryStyleLink && this.#libraryStyleLink.parentNode) {
+            this.#libraryStyleLink.parentNode.removeChild(this.#libraryStyleLink);
+        }
+    }
+
     async #initializePage() {
         this.#ui.hideLoading();
         this.#ui.showTab(this.#currentTab, this.#bound.submitForm);
@@ -202,7 +233,8 @@ export class RegistrationController {
         if (window.intlTelInput && this.#elements.phone) {
             this.#iti = window.intlTelInput(this.#elements.phone, { 
                 initialCountry: countryCode,
-                utilsScript: "./build/js/intlTelInputWithUtils.js"
+                utilsScript: "/build/js/intlTelInputWithUtils.js",
+                separateDialCode: true 
             });
         } else {
             console.error("intlTelInput library not loaded or phone element not found");
