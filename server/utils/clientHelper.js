@@ -1,19 +1,12 @@
-// utils/clientHelper.js
+const bl = require('../bl/bl_role_users');
 
-/**
- * Smart extraction of device, browser and IP information
- * Uses modern Client Hints as a top priority
- */
 function extractClientInfo(req) {
     const headers = req.headers;
     
-    // חילוץ IP
     const ip = headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.connection.remoteAddress || 'unknown';
 
-    // חילוץ User-Agent
     const userAgent = headers['user-agent'] || 'unknown';
 
-    // זיהוי מערכת הפעלה
     let os = 'Unknown OS';
     if (headers['sec-ch-ua-platform']) {
         os = headers['sec-ch-ua-platform'].replace(/"/g, '');
