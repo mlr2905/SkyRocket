@@ -8,51 +8,51 @@ const FILE = 'routes/role_users';
 
 Log.info(FILE, 'init', null, 'Role Users Router initialized');
 
-// --- Generic and appropriate paths (Auth) ---
+// VALIDATION (Public)
 router.get('/ip', usersController.ip);
-router.get('/email', usersController.email);
-router.get('/users/search', usersController.usersSearch);
+router.get('/email', usersController.email); // Email validation
+router.get('/users/search', usersController.usersSearch); // Check if user exists
 
+// CONNECTION (Public)
 router.post('/authcode', usersController.authCode);
 router.post('/validation', usersController.validation);
-router.post('/loginwebauthn', usersController.loginWebAuthn);
-router.post('/signupwebauthn', protect, usersController.signupWebAuthn);
 router.post('/login', usersController.login);
 router.post('/signup', usersController.signup);
-router.post('/users', usersController.createUser);
 
-// --- Public search paths (anyone can search for flights) ---
-router.get('/flights/search', usersController.getFilteredFlights);
+// WebAuthn
+router.post('/loginwebauthn', usersController.loginWebAuthn); // Public
+router.post('/signupwebauthn', protect, usersController.signupWebAuthn); // Protected
+
+// COUNTRIES (Public)
 router.get('/countries/origins', usersController.getAllOriginCountries);
 router.get('/countries/destinations', usersController.getDestinationsFromOrigin);
+
+// FLIGHT (Public)
 router.get('/flights', usersController.get_all_flights);
+router.get('/flights/search', usersController.getFilteredFlights);
 router.get('/flights/:id', usersController.getFlightById);
 
-// --- Protected paths (require login - protect) ---
-
-// Path to the personal area
+// USER (Protected)
 router.get('/me', protect, usersController.getMyDetails);
-router.get('/my-tickets', protect, usersController.getMyTickets);
+router.delete('/me', protect, usersController.deleteMe);
 
-// User management paths (update and delete personal account)
-router.get('/users/:id', protect, usersController.usersById);
-router.put('/users/:id', protect, usersController.updateUser);
-router.delete('/me', protect, usersController.deleteMe); 
-
-// Customer paths (customer details related to logged in user)
-router.get('/customers/:id', protect, usersController.customersById);
-router.post('/customers/verify-cvv', protect, usersController.verifyCustomerCvv);
+// CUSTOMER (Protected)
+router.get('/customers/me', protect, usersController.customersById);
 router.post('/customers', protect, usersController.createCustomer);
-router.put('/customers/:id', protect, usersController.updateCustomer);
+router.put('/customers/me', protect, usersController.updateCustomer);
+router.post('/customers/verify-cvv', protect, usersController.verifyCustomerCvv);
 
-// Order creation paths (passengers, tickets, seats)
-router.post('/chairs', protect, usersController.createChairAssignment);
+// TICKETS (Protected)
+router.get('/my-tickets', protect, usersController.getMyTickets);
 router.post('/tickets', protect, usersController.createTicket);
 router.delete('/my-tickets/:id', protect, usersController.deleteMyTicket);
-router.post('/passengers', protect, usersController.createPassenger);
 
-// Order-specific information reading paths
-router.get('/chairs/:id', protect, usersController.getAllChairsByFlightId);
+// Passengers (Protected)
+router.post('/passengers', protect, usersController.createPassenger);
 router.get('/passengers/:id', protect, usersController.PassengerById);
+
+// Chairs / Seats (Protected)
+router.get('/chairs/:id', protect, usersController.getAllChairsByFlightId);
+router.post('/chairs', protect, usersController.createChairAssignment);
 
 module.exports = router;

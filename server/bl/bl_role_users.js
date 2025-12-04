@@ -14,12 +14,25 @@ const INTERNAL_SECRET = process.env.INTERNAL_SERVICE_SECRET;
 
 Log.info(FILE, 'init', null, 'Role Users BL module initialized');
 
+function createSecureHeaders(funcName, identifier) {
+    if (!INTERNAL_SECRET) {
+        Log.error(FILE, funcName, identifier, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
+        throw new Error("Server configuration error: Missing Secret");
+    }
+
+    return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-internal-secret': INTERNAL_SECRET
+    };
+}
+
 async function signupWebAuthn(body, user, clientInfo) {
     const func = 'signupWebAuthn';
     const email = user ? user.email : body.email;
     const API_REGISTER_URL = `${JWT_NODE_MONGODB}/register`;
 
-    if (!INTERNAL_SECRET) throw new Error('Server configuration error: Missing internal secret');
+    const headers = createSecureHeaders(func, email);
 
     try {
         const payload = {
@@ -35,11 +48,7 @@ async function signupWebAuthn(body, user, clientInfo) {
 
         const response = await fetch(API_REGISTER_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'x-internal-secret': INTERNAL_SECRET
-            },
+            headers: headers,
             body: JSON.stringify(payload),
         });
 
@@ -91,22 +100,19 @@ async function signupWebAuthn(body, user, clientInfo) {
 async function loginWebAuthn(authData) {
     const func = 'loginWebAuthn';
     const API_LOGIN_WITH_URL = `${JWT_NODE_MONGODB}/loginWith`;
-    
-    if (!INTERNAL_SECRET) {
-        Log.error(FILE, func, authData?.email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
-        return { success: false, error: 'Server configuration error' };
-    }
+
+       const headers = createSecureHeaders(func, authData.email);
 
     Log.info(FILE, func, authData?.email, 'Starting WebAuthn login process');
 
     try {
-        
+
         if (!authData) throw new Error("Authentication data is missing");
 
-        const { 
-            credentialID, 
-            email, 
-            signature, 
+        const {
+            credentialID,
+            email,
+            signature,
             authenticatorData,
             clientDataJSON,
             clientInfo
@@ -139,11 +145,7 @@ async function loginWebAuthn(authData) {
 
         const response = await fetch(API_LOGIN_WITH_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'x-internal-secret': INTERNAL_SECRET
-            },
+            headers: headers,
             body: JSON.stringify(securePayload),
         });
 
@@ -184,16 +186,14 @@ async function authcode(email) {
     const func = 'authcode';
     Log.info(FILE, func, email, 'Sending authentication code');
 
+    const headers = createSecureHeaders(func, email);
+
     const API_AUTH_CODE_URL = `${JWT_NODE_MONGODB}/authcode`;
     const data = { email: email };
 
     let requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-internal-secret': INTERNAL_SECRET
-        },
-
+        headers: headers,
         body: JSON.stringify(data)
     };
 
@@ -217,8 +217,9 @@ async function authcode(email) {
 async function login_code(email, code, clientInfo) {
     const func = 'login_code';
     Log.info(FILE, func, email, 'Verifying authentication code.');
+    const headers = createSecureHeaders(func, email);
 
-    let API_VERIFY_CODE_URL = `${process.env.JWT_NODE_MONGODB}/verifyCode`;
+    let API_VERIFY_CODE_URL = `${JWT_NODE_MONGODB}/verifyCode`;
 
     const data = {
         email: email,
@@ -231,10 +232,7 @@ async function login_code(email, code, clientInfo) {
 
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-internal-secret': INTERNAL_SECRET
-        },
+        headers: headers,
         body: JSON.stringify(data)
     };
 
@@ -258,15 +256,17 @@ async function login_code(email, code, clientInfo) {
 async function login(email, password, clientInfo, auth) {
     const func = 'login';
     Log.info(FILE, func, email, 'Processing login request');
+    const headers = createSecureHeaders(func, email);
+
     const API_LOGIN_URL = `${process.env.JWT_NODE_MONGODB}/login`;
-    
+
     if (!auth) {
         auth = 'password';
     }
 
-    const data = { 
-        email, 
-        password, 
+    const data = {
+        email,
+        password,
         auth,
         ip: clientInfo?.ip,
         userAgent: clientInfo?.userAgent,
@@ -276,10 +276,7 @@ async function login(email, password, clientInfo, auth) {
 
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-internal-secret': INTERNAL_SECRET
-        },
+        headers: headers,
         body: JSON.stringify(data)
     };
 
@@ -290,10 +287,10 @@ async function login(email, password, clientInfo, auth) {
         if (!response.ok) throw new Error(user.message || response.statusText);
         if (user.errors) throw new Error(user.errors.email || JSON.stringify(user.errors));
 
-        return { 
-            e: "no", 
-            jwt: user.jwt, 
-            id: user.id, 
+        return {
+            e: "no",
+            jwt: user.jwt,
+            id: user.id,
             email: user.email,
             mongo_id: user.mongo_id
         };
@@ -307,10 +304,7 @@ async function signup(email, password, authProvider) {
     const func = 'signup';
     const API_SIGNUP_URL = `${JWT_NODE_MONGODB}/signup`;
 
-    if (!INTERNAL_SECRET) {
-        Log.error(FILE, func, email, 'Configuration Error: INTERNAL_SERVICE_SECRET is missing');
-        return { "e": "yes", "error": "Server configuration error" };
-    }
+    const headers = createSecureHeaders(func, email);
 
     Log.info(FILE, func, email, `Processing signup request (${authProvider})`);
 
@@ -319,10 +313,7 @@ async function signup(email, password, authProvider) {
     try {
         const authResponse = await fetch(API_SIGNUP_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-internal-secret': INTERNAL_SECRET
-            },
+            headers: headers,
             body: JSON.stringify(signupData)
         });
 
@@ -352,10 +343,7 @@ async function signup(email, password, authProvider) {
         try {
             const bizResponse = await fetch(SPRING_POSTGRESQL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-internal-secret': INTERNAL_SECRET
-                },
+                headers: headers,
                 body: JSON.stringify(businessPayload)
             });
 
@@ -384,38 +372,7 @@ async function signup(email, password, authProvider) {
     }
 }
 
-async function create_user(user) {
-    const func = 'create_user';
-    Log.info(FILE, func, user.username, 'Creating new user');
 
-    try {
-        const user_name = await dal_1.get_by_name(user.username);
-
-        if (user_name === undefined) {
-            Log.debug(FILE, func, user.username, 'Username is available, proceeding');
-            const new_user = await dal_1.new_user_role1(user);
-
-            if (typeof new_user === 'string' && new_user.length === 8) {
-                Log.info(FILE, func, user.username, 'User created with generated password');
-                return { 'OK': `'${user.username}' successfully created, This is the generated password, '${new_user}'` };
-            }
-
-            if (new_user === true) {
-                Log.info(FILE, func, user.username, 'User created successfully');
-                return { 'OK': `'${user.username}' successfully created` };
-            }
-
-            Log.warn(FILE, func, user.username, 'Unexpected result when creating user');
-            return new_user;
-        } else {
-            Log.warn(FILE, func, user.username, 'Username already exists');
-            return 'rejected';
-        }
-    } catch (error) {
-        Log.error(FILE, func, user.username, 'Error creating user', error);
-        return error;
-    }
-}
 
 async function valid_email(email) {
     const func = 'valid_email';
@@ -438,16 +395,15 @@ async function valid_email(email) {
 async function get_by_id_user(id) {
     const func = 'get_by_id_user';
 
+        const headers = createSecureHeaders(func, id);
+
     Log.info(FILE, func, id, 'Looking up user by id');
     let API_GET_BY_ID_USER_URL = `${SPRING_POSTGRESQL}/${id}`;
 
     try {
         const response = await fetch(API_GET_BY_ID_USER_URL, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-internal-secret': INTERNAL_SECRET
-            },
+            headers: headers,
         });
 
         if (!response.ok) {
@@ -468,16 +424,14 @@ async function get_by_id_user(id) {
 async function get_by_email_user(email) {
     const func = 'get_by_email_user';
     Log.info(FILE, func, email, 'Looking up user by email');
+    const headers = createSecureHeaders(func, email);
 
-    let API_GET_BY_EMAIL_URL =  `${JWT_NODE_MONGODB}/search?email=${email}`;
+    let API_GET_BY_EMAIL_URL = `${JWT_NODE_MONGODB}/search?email=${email}`;
 
     try {
         const response = await fetch(API_GET_BY_EMAIL_URL, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-internal-secret': INTERNAL_SECRET
-            }
+            headers:headers,
         }); const data = await response.json();
 
         if (data && !data.status) {
@@ -527,44 +481,69 @@ async function verify_cvv(user_id, cvv) {
     }
 }
 
-async function update_user(id, user) {
-    const func = 'update_user';
-    Log.info(FILE, func, id, 'Updating user');
-
-    try {
-        const user_id = await dal_1.get_by_id('id', id);
-
-        if (user_id) {
-            const update_user = await dal_1.update_user(id, user);
-            Log.info(FILE, func, id, `User updated successfully`);
-            return { 'ok': `${user_id.username}${update_user}` };
-        } else {
-            Log.warn(FILE, func, id, 'Update failed - user not found');
-            return false;
-        }
-    } catch (error) {
-        Log.error(FILE, func, id, 'Error updating user', error);
-        throw error;
-    }
-}
 
 async function delete_account(id) {
     const func = 'delete_account';
-    Log.info(FILE, func, id, 'Deleting user account');
+    Log.info(FILE, func, id, 'Starting deletion process (SQL -> Mongo) using fetch');
 
     try {
-        const user_id = await dal_1.get_by_id('id', id);
+        if (get_my_tickets(id)) {
+            Log.warn(FILE, func, id, `Tickets check : is true`);
 
-        if (user_id) {
-            const delete_user = await dal_1.delete_user(id);
-            Log.info(FILE, func, id, `User deleted successfully`);
-            return `User '${user_id.username}' deleted successfully `;
-        } else {
-            Log.warn(FILE, func, id, 'Deletion failed - user not found');
+            return `For ID ${id} there are Tickets so it cannot be deleted without ADMIN permission.`;
+
+        }
+        const headers = createSecureHeaders(func, id);
+
+        let userEmail = null;
+        try {
+            const getUserResponse = await fetch(`${SPRING_URL}/${id}`, {
+                method: 'GET',
+                headers: headers
+            });
+
+            if (getUserResponse.ok) {
+                const userData = await getUserResponse.json();
+                userEmail = userData.email;
+            } else {
+                Log.warn(FILE, func, id, `User check failed: ${getUserResponse.status}`);
+                return `The ID ${id} you specified does not exist`;
+            }
+        } catch (fetchError) {
             return `The ID ${id} you specified does not exist`;
         }
+
+        Log.info(FILE, func, id, 'Deleting from Spring SQL...');
+        const deleteSqlResponse = await fetch(`${SPRING_URL}/${id}`, {
+            method: 'DELETE',
+            headers: headers
+        });
+
+        if (!deleteSqlResponse.ok) {
+             throw new Error(`Failed to delete from SQL: ${deleteSqlResponse.status}`);
+        }
+        
+        if (userEmail) {
+            Log.info(FILE, func, id, `Deleting from Mongo Auth for email: ${userEmail}`);
+            try {
+                await fetch(`${NODE_AUTH_URL}/delete`, {
+                    method: 'DELETE',
+                    headers: headers,
+                    body: JSON.stringify({ email: userEmail }) 
+                });
+                Log.info(FILE, func, id, 'Mongo deletion request sent');
+            } catch (mongoError) {
+                Log.error(FILE, func, id, 'Failed to delete from Mongo', mongoError.message);
+            }
+        }
+
+        return `User with ID ${id} and Email ${userEmail} deleted successfully`;
+
     } catch (error) {
-        Log.error(FILE, func, id, 'Error deleting user', error);
+        Log.error(FILE, func, id, 'Error in delete process', error.message);
+        if (error.message.includes("Server configuration")) {
+             return "Server configuration error";
+        }
         throw error;
     }
 }
@@ -897,12 +876,10 @@ module.exports = {
     signup,
     get_my_tickets,
     purchase_ticket,
-    create_user,
     get_by_email_user,
     get_by_id_flights,
     get_all_flights,
     get_by_id_user,
-    update_user,
     delete_account,
     new_customer,
     get_by_id_customer,
