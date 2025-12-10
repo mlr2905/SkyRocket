@@ -110,7 +110,7 @@ export class PersonalDetailsController {
         }
     }
 
-    async fetchUserAndCustomerData() {
+  async fetchUserAndCustomerData() {
         if (this.elements.loadingSpinner) this.elements.loadingSpinner.style.display = 'block';
         try {
             const userRes = await fetch(C.API_ACTIVATION_URL, { credentials: 'include' });
@@ -121,7 +121,15 @@ export class PersonalDetailsController {
             if (this.elements.emailInput) this.elements.emailInput.value = user.email || '';
             if (this.elements.usernameInput) this.elements.usernameInput.value = user.username || '';
 
-            const customerRes = await fetch(`${C.API_CUSTOMERS_URL}/${this.currentUserId}`, { credentials: 'include' });
+            const customerRes = await fetch(`${C.API_CUSTOMERS_URL}/me`, { credentials: 'include' }); //
+
+            // *** הוספת בדיקת Content-Type וטיפול שגיאות חזק יותר (Content-Type validation) ***
+            const contentType = customerRes.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const errorText = await customerRes.text();
+                console.error(`API Error fetching customer data: Expected JSON, got non-JSON response. Status: ${customerRes.status}`, errorText);
+                throw new Error("Server returned an invalid response format (Expected JSON). Check your API routing.");
+            }
 
             if (customerRes.ok) {
                 const customer = await customerRes.json();
@@ -131,6 +139,7 @@ export class PersonalDetailsController {
                 this.showMessage('It looks like this is your first time here. Please fill in your customer details.', 'info');
                 this.toggleEdit(true);
             } else {
+                // בשלב זה אנחנו יודעים שזו תגובת JSON תקינה שנוצרה בשרת
                 const errData = await customerRes.json();
                 throw new Error(errData.error || 'Error loading customer details');
             }
