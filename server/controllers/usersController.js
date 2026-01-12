@@ -1,6 +1,6 @@
 const bl = require('../bl/bl_role_users');
-const Log = require('../logger/logManager'); 
-const { extractClientInfo,getNumericIdFromToken } = require('../utils/clientHelper');
+const Log = require('../logger/logManager');
+const { extractClientInfo, getNumericIdFromToken } = require('../utils/clientHelper');
 
 const FILE = 'usersController';
 
@@ -50,8 +50,8 @@ exports.login = async (req, res) => {
 
             res.cookie('sky', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                secure: true,
+                sameSite: 'none',
                 maxAge: (3 * 60 * 60 * 1000) + (15 * 60 * 1000)
             });
 
@@ -107,7 +107,7 @@ exports.validation = async (req, res) => {
 
     try {
         const datas = await bl.login_code(email, code, clientInfo);
-        
+
         if (datas.e === "yes") {
             Log.warn(FILE, func, email, `Validation failed: ${datas.error}`);
             res.status(409).json({ "e": "yes", "error": datas.error, "message": datas.error });
@@ -143,14 +143,14 @@ exports.signupWebAuthn = async (req, res) => {
     Log.info(FILE, func, null, 'WebAuthn registration request received');
 
     const clientInfo = extractClientInfo(req);
-    
-    const user = req.user || req.body; 
+
+    const user = req.user || req.body;
 
     Log.info(FILE, func, user?.email, `Registration attempt. IP: ${clientInfo.ip}, OS: ${clientInfo.os}`);
 
     try {
         const result = await bl.signupWebAuthn(req.body, user, clientInfo);
-        
+
         Log.debug(FILE, func, null, `BL result: ${result.message || result.error}`);
 
         if (result && result.success === false) {

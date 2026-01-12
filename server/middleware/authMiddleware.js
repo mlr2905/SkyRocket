@@ -36,7 +36,6 @@ const protect = async (req, res, next) => {
         if (response.data && response.data.valid) {
             req.user = response.data.user;
             
-            // Log success with the identified user ID
             Log.info(FILE, func, req.user.id, `User authorized: ${req.user.email}`);
             
             next();

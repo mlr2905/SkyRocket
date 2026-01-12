@@ -10,6 +10,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const app = express(); 
+app.set('trust proxy', 1);
 
 // Internal modules
 const logger = require('./logger/my_logger');
@@ -25,7 +26,10 @@ const authRoutes = require('./routes/authRoutes');
 require('dotenv').config();
 
 // Middlewares Setup
-app.use(cors());
+app.use(cors({
+    origin: 'https://skyrocket.onrender.com',
+    credentials: true
+}));
 app.use(cookieParser());
 
 
@@ -40,8 +44,9 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        secure: process.env.NODE_ENV === 'production',// Recommended: true in production
-        httpOnly: true 
+        secure: true,
+        httpOnly: true,
+        sameSite: 'none'
     }
 }));
 
